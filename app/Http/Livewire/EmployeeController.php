@@ -190,7 +190,7 @@ class EmployeeController extends Component
         $this->search = '';
         $this->selected_id = 0;
     }
-
+    //
     protected $listeners = [
         'deleteRow' => 'Destroy'
     ];

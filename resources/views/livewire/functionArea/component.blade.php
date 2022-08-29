@@ -20,14 +20,16 @@
                             <tr>
                                <th class="table-th text-white">NOMBRE</th>
                                <th class="table-th text-white text-center">DESCRIPCION</th>
+                               <th class="table-th text-withe text-center">AREA</th>
                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($functionarea as $area) {{--Resive functionarea--}}
+                            @foreach($functionarea as $area)
                             <tr>
                                 <td><h6>{{$area->name}}</h6></td>
                                 <td><h6 class="text-center">{{$area->description}}</h6></td>
+                                <td><h6 class="text-center">{{ $area->area }}</h6></td>
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"

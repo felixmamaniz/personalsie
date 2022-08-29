@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
+class AreaTrabajo extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'description'];
@@ -14,7 +14,7 @@ class Area extends Model
         return $this->hasMany(Employee::class);
     }
 
-    public function function(){
-        return $this->belongsToMany(FunctionArea::class);
+    public function functionArea(){
+        return $this->hasMany(FunctionArea::class);
     }
 }

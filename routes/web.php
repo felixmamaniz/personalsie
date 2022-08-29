@@ -8,7 +8,7 @@ use App\Http\Livewire\UsersController;
 use App\Http\Livewire\CompaniesController;
 use App\Http\Livewire\SucursalController;
 use App\Http\Livewire\EmployeeController;
-use App\Http\Livewire\AreaController;
+use App\Http\Livewire\AreaTrabajoController;
 use App\Http\Livewire\FunctionAreaController;
 use App\Http\Livewire\AsignarFuncionController;
 
@@ -30,7 +30,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('companies', CompaniesController::class)->name('empresa')->middleware('permission:Empresa_Index');
     Route::get('sucursales', SucursalController::class)->name('sucursal')->middleware('permission:Sucursal_Index');
     Route::get('employees', EmployeeController::class);
-    Route::get('areas', AreaController::class);
+    Route::get('areas_de_trabajos', AreaTrabajoController::class);
     Route::get('function_areas', FunctionAreaController::class);
     Route::get('asignation_functions', AsignarFuncionController::class);
 

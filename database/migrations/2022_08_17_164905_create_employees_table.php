@@ -25,7 +25,7 @@ class CreateEmployeesTable extends Migration
             $table->date('dateAdmission');
 
             $table->unsignedBigInteger('area_id');
-            $table->foreign('area_id')->references('id')->on('areas');
+            $table->foreign('area_id')->references('id')->on('area_trabajos');
 
             $table->timestamps();
         });

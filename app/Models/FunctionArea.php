@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class FunctionArea extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'description'];
+    protected $fillable = ['name', 'description', 'area_id'];
 
     public function area(){
-        return $this->belongsToMany(Area::class);
+        return $this->belongsTo(AreaTrabajo::class);
     }
 }

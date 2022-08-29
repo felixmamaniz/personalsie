@@ -145,9 +145,9 @@
 									@endcan
 									@can('Sucursal_Index')
 										<li>
-											<a href="{{ url('employees') }}">
+											<a href="{{ url('areas_de_trabajos') }}">
 												<i class="fa fas fa-minus"></i>
-												Empleados</a>
+												Areas de Trabajo</a>
 										</li>
 									@endcan
 									@can('Sucursal_Index')
@@ -159,9 +159,9 @@
 									@endcan
 									@can('Sucursal_Index')
 										<li>
-											<a href="{{ url('areas') }}">
+											<a href="{{ url('employees') }}">
 												<i class="fa fas fa-minus"></i>
-												Areas</a>
+												Empleados</a>
 										</li>
 									@endcan
 									@can('Sucursal_Index')

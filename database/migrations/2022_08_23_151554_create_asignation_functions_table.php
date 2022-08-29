@@ -20,7 +20,7 @@ class CreateAsignationFunctionsTable extends Migration
             $table->foreign('function_id')->references('id')->on('function_areas');
 
             $table->unsignedBigInteger('area_id');
-            $table->foreign('area_id')->references('id')->on('areas');
+            $table->foreign('area_id')->references('id')->on('area_trabajos');
 
             $table->timestamps();
         });

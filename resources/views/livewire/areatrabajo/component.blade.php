@@ -50,7 +50,7 @@
             </div>
         </div>
     </div>
-    @include('livewire.areas.form')
+    @include('livewire.areatrabajo.form')
 </div>
 
 @section('javascript')
@@ -70,22 +70,10 @@
         });
     });
 
-    // Código para lanzar la Alerta de Hacerse Técnico Responsable de un Servicio
-    /*function Confirmar2(id, verificar) {
-        swal("¡No se puede realizar esta acción!", "No se pueden Anular o Eliminar las Ordenes de Servicio que tengan Servicios Terminados o Entregados", {
-						icon : "info",
-						buttons: {        			
-							confirm: {
-								className : 'btn btn-info'
-							}
-						},
-					});
-        }*/
-
     function Confirmar1(id, verificar){
         if(verificar == 'no')
         {
-            swal('no es posible eliminar porque tiene empleados relacionados')
+            swal('no es posible eliminar porque tiene datos relacionados')
             return;
         }
         else

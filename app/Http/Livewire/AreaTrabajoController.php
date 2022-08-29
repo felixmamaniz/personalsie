@@ -3,14 +3,15 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Area;
+use App\Models\AreaTrabajo;
 use App\Models\Employee;
+use App\Models\FunctionArea;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 use Illuminate\Support\Facades\DB;
 
-class AreaController extends Component
+class AreaTrabajoController extends Component
 {
     use WithFileUploads;
     use WithPagination;
@@ -21,7 +22,7 @@ class AreaController extends Component
 
     public function mount(){
         $this -> pageTitle = 'Listado';
-        $this -> componentName = 'Areas';
+        $this -> componentName = 'Areas de Trabajo';
     }
 
     public function paginationView()
@@ -33,10 +34,10 @@ class AreaController extends Component
     {
         if(strlen($this->search) > 0){
             //$data = Area::where('name','like','%' . $this->search . '%')->paginate($this->pagination);
-            $data = Area::select('areas.id as idarea','areas.name as name','areas.description as description',
+            $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
-            ->where('areas.name', 'like', '%' . $this->search . '%')
+            ->where('area_trabajos.name', 'like', '%' . $this->search . '%')
             ->paginate($this->pagination);
 
             foreach ($data as $os)
@@ -47,7 +48,7 @@ class AreaController extends Component
         }
         else
            // $data = Area::orderBy('id','desc')->paginate($this->pagination);
-           $data = Area::select('areas.id as idarea','areas.name as name','areas.description as description',
+           $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
@@ -60,7 +61,7 @@ class AreaController extends Component
 
             //dd($data);
 
-        return view('livewire.areas.component', ['areas' => $data ]) // se envia areas
+        return view('livewire.areatrabajo.component', ['areas' => $data ]) // se envia areas
         ->extends('layouts.theme.app')
         ->section('content');
     }
@@ -68,7 +69,8 @@ class AreaController extends Component
     // verificar 
     public function verificar($idarea)
     {
-        $consulta = Employee::join('areas as c', 'c.id', 'employees.area_id')
+        $consulta = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id')
+        ->join('function_areas as fa', 'fa.area_id', 'employees.area_id')
         ->select('employees.id as id')
         ->where('c.id', $idarea)
         ->get();
@@ -82,11 +84,24 @@ class AreaController extends Component
             return "si";
         }
 
+        // $consulta = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_id')
+        // ->select('function_areas.id as id')
+        // ->where('c.id', $idarea)
+        // ->get();
+
+        // if($consulta->count() > 0)
+        // {
+        //     return "no";
+        // }
+        // else
+        // {
+        //     return "si";
+        // }
     }
 
     // editar 
     public function Edit($id){
-        $record = Area::find($id, ['id', 'name', 'description']);
+        $record = AreaTrabajo::find($id, ['id', 'name', 'description']);
         $this->name = $record->name;
         $this->description = $record->description;
         $this->selected_id = $record->id;
@@ -96,7 +111,7 @@ class AreaController extends Component
 
     public function Store(){
         $rules = [
-            'name' => 'required|unique:areas|min:3',
+            'name' => 'required|unique:area_trabajos|min:3',
         ];
         $messages =  [
             'name.required' => 'Nombre del area es requerida',
@@ -106,7 +121,7 @@ class AreaController extends Component
 
         $this->validate($rules, $messages);
        
-        $area = Area::create([
+        $area = AreaTrabajo::create([
             'name'=>$this->name, 
             'description'=>$this->description
         ]);
@@ -118,7 +133,7 @@ class AreaController extends Component
     // actualizar
     public function Update(){
         $rules = [
-            'name' => "required|min:3|unique:areas,name,{$this->selected_id}",
+            'name' => "required|min:3|unique:area_trabajos,name,{$this->selected_id}",
         ];
 
         $messages = [
@@ -128,7 +143,7 @@ class AreaController extends Component
         ];
         $this->validate($rules,$messages);
 
-        $area = Area::find($this->selected_id);
+        $area = AreaTrabajo::find($this->selected_id);
         $area -> update([
             'name' => $this->name,
             'description' => $this->description,
@@ -152,7 +167,7 @@ class AreaController extends Component
     // eliminar
     public function Destroy($id)
     {
-        $area = Area::find($id);
+        $area = AreaTrabajo::find($id);
         $area->delete();
         $this->resetUI();
         $this->emit('area-deleted','Area Eliminada');

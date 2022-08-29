@@ -20,6 +20,6 @@ class Employee extends Model
     ];
 
     public function area(){
-        return $this->belongsTo(Area::class);
+        return $this->belongsTo(AreaTrabajo::class);
     }
 }

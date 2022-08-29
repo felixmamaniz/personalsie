@@ -3,7 +3,7 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\Area; // Category = Area
+use App\Models\AreaTrabajo; // Category = Area
 use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
@@ -40,7 +40,7 @@ class EmployeeController extends Component
     public function render()
     {
         if(strlen($this->search) > 0)
-            $employ = Employee::join('areas as c', 'c.id', 'employees.area_id') // se uno amabas tablas
+            $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id') // se uno amabas tablas
             ->select('employees.*','c.name as area')
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
@@ -48,14 +48,14 @@ class EmployeeController extends Component
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         else
-            $employ = Employee::join('areas as c', 'c.id', 'employees.area_id')
+            $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id')
             ->select('employees.*','c.name as area')
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
-            'areas' => Area::orderBy('name', 'asc')->get()
+            'areas' => AreaTrabajo::orderBy('name', 'asc')->get()
         ])
         ->extends('layouts.theme.app')
         ->section('content');
@@ -205,7 +205,7 @@ class EmployeeController extends Component
 
     public function getDetails($saleId)
     {
-        $this->details = AsignationFunction::join('areas as p','p.id','sale_details.product_id')
+        $this->details = AsignationFunction::join('area_trabajos as p','p.id','sale_details.product_id')
         ->select('sale_details.id','sale_details.price','sale_details.quantity','p.name as product')
         ->where('sale_details.sale_id', $saleId)
         ->get();

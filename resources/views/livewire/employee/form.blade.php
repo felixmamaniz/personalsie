@@ -1,14 +1,7 @@
 @Include('common.modalHead')
 <!-- Controles de formulario -->
 <div class="row">
-    <div class="col-sm-12 col-md-6">
-        <div class="form-group">
-            <label>CI</label>
-            <input type="text" wire:model.lazy="ci" class="form-control" placeholder="ej. 6869334">
-        </div>
-        @error('ci') <span class="text-danger er">{{ $message }}</span> @enderror
-    </div>
-
+    
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <label>Nombre</label>
@@ -27,6 +20,14 @@
 
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
+            <label>CI</label>
+            <input type="text" wire:model.lazy="ci" class="form-control" placeholder="ej. 6869334">
+        </div>
+        @error('ci') <span class="text-danger er">{{ $message }}</span> @enderror
+    </div>
+
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group">
             <label>Sexo</label>
             <select wire:model="genero" class="form-control">
                 <option value="Seleccionar" disabled>Elegir</option>
@@ -35,6 +36,14 @@
             </select>
             @error('genero') <span class="text-danger er">{{ $message }}</span> @enderror
         </div>
+    </div>
+
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group">
+            <label>Fecha de Nacimiento</label>
+            <input type="date" wire:model.lazy="dateNac" class="form-control">
+        </div>
+        @error('dateNac') <span class="text-danger er">{{ $message }}</span> @enderror
     </div>
 
     <div class="col-sm-12 col-md-6">

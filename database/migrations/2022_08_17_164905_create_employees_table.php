@@ -20,6 +20,7 @@ class CreateEmployeesTable extends Migration
             $table->string('name',255);
             $table->string('lastname',255);
             $table->enum('genero',['Masculino','Femenino'])->default('Masculino'); // seleccionar genero
+            $table->date('dateNac');    // fecha de nacimiento
             $table->string('address',255);
             $table->string('phone',10)->unique();
             $table->date('dateAdmission');

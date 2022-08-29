@@ -15,7 +15,7 @@ class EmployeeController extends Component
     use withPagination;
     use withFileUploads;
 
-    public $ci, $name, $lastname, $genero, $address, $phone, $dateAdmission, $areaid, $selected_id;
+    public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $dateAdmission, $areaid, $selected_id;
     public $pageTitle, $componentName, $search;
     public $details, $sumDetails, $countDetails, $saleId;
     private $pagination = 5;
@@ -30,11 +30,6 @@ class EmployeeController extends Component
         $this->componentName = 'Empleados';
         $this->areaid = 'Elegir';
         $this->genero = 'Seleccionar';
-
-        $this->details = [];
-        $this->sumDetails = 0;
-        $this->countDetails = 0;
-        $this->saleId = 0;
     }
     
     public function render()
@@ -68,6 +63,7 @@ class EmployeeController extends Component
             'name' => 'required',
             'lastname' => 'required',
             'genero' => 'required|not_in:Seleccionar',
+            'dateNac' => 'required',
             'address' => 'required',
             'phone' => 'required|unique:employees',
             'dateAdmission' => 'required',
@@ -83,6 +79,8 @@ class EmployeeController extends Component
             
             'genero.required' => 'seleccione el genero del empleado',
             'genero.not_in' => 'selecciona genero',
+
+            'dateNac.required' => 'la fecha de nacimiento es requerido',
 
             'address.required' => 'la direccion es requerida',
 
@@ -101,6 +99,7 @@ class EmployeeController extends Component
             'name'=>$this->name,
             'lastname'=>$this->lastname,
             'genero'=>$this->genero,
+            'dateNac'=>$this->dateNac,
             'address'=>$this->address,
             'phone'=>$this->phone,
             'dateAdmission'=>$this->dateAdmission,
@@ -118,6 +117,7 @@ class EmployeeController extends Component
         $this->name = $employee->name;
         $this->lastname = $employee->lastname;
         $this->genero = $employee->genero;
+        $this->dateNac = $employee->dateNac;
         $this->address = $employee->address;
         $this->phone = $employee->phone;
         $this->dateAdmission = $employee->dateAdmission;
@@ -134,6 +134,7 @@ class EmployeeController extends Component
             'name' => 'required',
             'lastname' => 'required',
             'genero' => 'required|not_in:Seleccionar',
+            'dateNac' => 'required',
             'address' => 'required',
             'phone' => 'required',
             'dateAdmission' => 'required',
@@ -148,6 +149,8 @@ class EmployeeController extends Component
 
             'genero.required' => 'el genero del empleado es requerido',
             'genero.not_in' => 'selcciona genero',
+
+            'dateNac.required' => 'la fecha de nacimiento es requerido',
 
             'address.required' => 'la direccion es requerida',
             'phone.required' => 'el numero de telefono es requerido',
@@ -166,6 +169,7 @@ class EmployeeController extends Component
             'name' => $this->name,
             'lastname' => $this->lastname,
             'genero' => $this->genero,
+            'dateNac' => $this->dateNac,
             'address' => $this->address,
             'phone' => $this->phone,
             'dateAdmission' => $this->dateAdmission,
@@ -183,6 +187,7 @@ class EmployeeController extends Component
         $this->name = '';
         $this->lastname = '';
         $this->genero = 'Seleccionar';
+        $this->dateNac = '';
         $this->address = '';
         $this->phone = '';
         $this->dateAdmission = '';
@@ -201,24 +206,5 @@ class EmployeeController extends Component
         $employee->delete();
         $this->resetUI();
         $this->emit('employee-deleted','Empleado Eliminado');
-    }
-
-    public function getDetails($saleId)
-    {
-        $this->details = AsignationFunction::join('area_trabajos as p','p.id','sale_details.product_id')
-        ->select('sale_details.id','sale_details.price','sale_details.quantity','p.name as product')
-        ->where('sale_details.sale_id', $saleId)
-        ->get();
-
-        // suma de la suma y multiplicacion
-        $suma = $this->details->sum(function($item){
-            return $item->price *  $item->quantity;
-       
-        });
-        $this->sumDetails = $suma;
-        $this->countDetails = $this->details->sum('quantity');
-        $this->saleId = $saleId;
-
-        $this->emit('show-modal','details loaded');
     }
 }

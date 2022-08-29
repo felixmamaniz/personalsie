@@ -17,13 +17,15 @@
                     <table class="table table-hover table table-bordered table-bordered-bd-warning mt-4">
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                                <th class="table-th text-withe">CI</th>
-                                <th class="table-th text-withe text-center">NOMBRE</th>
+                                <th class="table-th text-withe">NOMBRE</th>
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
+                                <th class="table-th text-withe text-center">CI</th>
                                 <th class="table-th text-withe text-center">SEXO</th>
+                                <th class="table-th text-withe text-center">FECHA DE NAC.</th>
                                 <th class="table-th text-withe text-center">DIRECCION</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
                                 <th class="table-th text-withe text-center">FACHA DE ADMISION</th>
+                                {{--<th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>   fecha de admicion menos fecha actual y mostrar--}}
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
@@ -31,29 +33,21 @@
                         <tbody>
                             @foreach ($data as $employee)
                                 <tr>
-                                    <td><h6 class="text-center">{{ $employee->ci }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->name }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->lastname }}</h6></td>
-
+                                    <td><h6 class="text-center">{{ $employee->ci }}</h6></td>
                                     <td class="text-center">
                                         <span class="badge {{$employee->genero == 'Masculino' ? 'badge-success' : 'badge-danger'}}
                                             text-uppercase" style="background-color: #fff; color: black">
                                             {{$employee->genero}}
                                         </span>
                                     </td>
-
+                                    <td><h6 class="text-center">{{ $employee->dateNac }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->address }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->dateAdmission }}</h6></td>
 
-                                    <td><h6 class="text-center">{{ $employee->area }}</h6></td> {{--revisar--}}
-
-                                    {{--<td class="text-center" width="50px">
-                                        <button wire:click.prevent="getDetails({{$d->id}})" class="btn btn-dark btn-sm">
-                                            {{ $employee->area }}
-                                            <i class="bi bi-list"></i>
-                                        </button> 
-                                    </td>--}}
+                                    <td><h6 class="text-center">{{ $employee->area }}</h6></td>
 
                                     <td class="text-center">
                                         <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"

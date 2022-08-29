@@ -95,9 +95,6 @@ class AreaTrabajoController extends Component
         ->where('area_trabajos.id', $idarea)
         ->get();
 
-
-
-
         if($consulta1->count() > 0 || $consulta2->count() > 0)
         {
             return "no";
@@ -106,8 +103,6 @@ class AreaTrabajoController extends Component
         {
             return "si";
         }
-
-
     }
 
     // editar 

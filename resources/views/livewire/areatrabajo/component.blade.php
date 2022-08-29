@@ -13,10 +13,6 @@
 
             @include('common.searchbox')
 
-            <button wire:click="asd()">
-                sdfsdf
-            </button>
-
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
@@ -44,9 +40,6 @@
                                         class="btn btn-dark mtmobile" title="Destroy">
                                         <i class="fas fa-trash"></i>
                                     </a>
-                                </td>
-                                <td>
-                                    {{$area->verificar}}
                                 </td>
                             </tr>
                             @endforeach

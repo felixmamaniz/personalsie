@@ -13,6 +13,7 @@ class Employee extends Model
         'name',
         'lastname',
         'genero',
+        'dateNac',
         'address',
         'phone',
         'dateAdmission',

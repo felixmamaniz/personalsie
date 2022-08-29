@@ -33,16 +33,15 @@ class FunctionAreaController extends Component
     public function render()
     {
         if(strlen($this->search) > 0)
-            $data = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_trabajo_id') // se uno amabas tablas
-            ->select('function_areas.*','c.name as area')
-            ->where('function_areas.name', 'like', '%' . $this->search . '%')    // busquedas employees
-            ->orWhere('function_areas.ci', 'like', '%' . $this->search . '%')    // busquedas
-            ->orWhere('c.name', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
+            $data = FunctionArea::join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id') // se uno amabas tablas
+            ->select('function_areas.*','at.name as area')
+            ->where('function_areas.name', 'like', '%' . $this->search . '%')   
+            ->orWhere('at.name', 'like', '%' . $this->search . '%')         
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
         else
-            $data = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_trabajo_id')
-            ->select('function_areas.*','c.name as area')
+            $data = FunctionArea::join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id')
+            ->select('function_areas.*','at.name as area')
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
 

@@ -10,7 +10,6 @@ use App\Http\Livewire\SucursalController;
 use App\Http\Livewire\EmployeeController;
 use App\Http\Livewire\AreaTrabajoController;
 use App\Http\Livewire\FunctionAreaController;
-use App\Http\Livewire\AsignarFuncionController;
 
 use App\Http\Livewire\InicioController;
 use Illuminate\Support\Facades\Auth;
@@ -32,7 +31,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('employees', EmployeeController::class);
     Route::get('areas_de_trabajos', AreaTrabajoController::class);
     Route::get('function_areas', FunctionAreaController::class);
-    Route::get('asignation_functions', AsignarFuncionController::class);
 
 });
 

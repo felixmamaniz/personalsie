@@ -24,8 +24,8 @@ class CreateEmployeesTable extends Migration
             $table->string('phone',10)->unique();
             $table->date('dateAdmission');
 
-            $table->unsignedBigInteger('area_id');
-            $table->foreign('area_id')->references('id')->on('area_trabajos');
+            $table->unsignedBigInteger('area_trabajo_id');
+            $table->foreign('area_trabajo_id')->references('id')->on('area_trabajos');
 
             $table->timestamps();
         });

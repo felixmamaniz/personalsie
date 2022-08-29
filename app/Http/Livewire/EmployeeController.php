@@ -40,7 +40,7 @@ class EmployeeController extends Component
     public function render()
     {
         if(strlen($this->search) > 0)
-            $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id') // se uno amabas tablas
+            $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->select('employees.*','c.name as area')
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
@@ -48,7 +48,7 @@ class EmployeeController extends Component
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         else
-            $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id')
+            $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->select('employees.*','c.name as area')
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
@@ -104,7 +104,7 @@ class EmployeeController extends Component
             'address'=>$this->address,
             'phone'=>$this->phone,
             'dateAdmission'=>$this->dateAdmission,
-            'area_id' => $this->areaid
+            'area_trabajo_id' => $this->areaid
         ]);
 
         $this->resetUI();
@@ -121,7 +121,7 @@ class EmployeeController extends Component
         $this->address = $employee->address;
         $this->phone = $employee->phone;
         $this->dateAdmission = $employee->dateAdmission;
-        $this->areaid = $employee->area_id;
+        $this->areaid = $employee->area_trabajo_id;
         $this->selected_id = $employee->id;
 
         $this->emit('modal-show', 'Show modal!');
@@ -169,7 +169,7 @@ class EmployeeController extends Component
             'address' => $this->address,
             'phone' => $this->phone,
             'dateAdmission' => $this->dateAdmission,
-            'area_id' => $this->areaid
+            'area_trabajo_id' => $this->areaid
         ]);
         $employee->save();
 

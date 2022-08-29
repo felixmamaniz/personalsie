@@ -32,7 +32,8 @@ class AreaTrabajoController extends Component
 
     public function render()
     {
-        if(strlen($this->search) > 0){
+        if(strlen($this->search) > 0)
+        {
             //$data = Area::where('name','like','%' . $this->search . '%')->paginate($this->pagination);
             $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
             DB::raw('0 as verificar'))
@@ -47,8 +48,9 @@ class AreaTrabajoController extends Component
             }
         }
         else
-           // $data = Area::orderBy('id','desc')->paginate($this->pagination);
-           $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
+        {
+            // $data = Area::orderBy('id','desc')->paginate($this->pagination);
+            $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
@@ -58,49 +60,51 @@ class AreaTrabajoController extends Component
                 //Obtener los servicios de la orden de servicio idcategoria
                 $os->verificar = $this->verificar($os->idarea);
             }
-
-            //dd($data);
+        }
 
         return view('livewire.areatrabajo.component', ['areas' => $data ]) // se envia areas
         ->extends('layouts.theme.app')
         ->section('content');
     }
 
+    public function asd()
+    {
+        $aa = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
+            DB::raw('0 as verificar'))
+            ->orderBy('id','desc')
+            ->paginate($this->pagination);
+
+            foreach ($aa as $os)
+            {
+                //Obtener los servicios de la orden de servicio idcategoria
+                $os->verificar = $this->verificar($os->idarea);
+            }
+
+            dd($aa);
+    }
+
     // verificar 
     public function verificar($idarea)
     {
-        $v1 = false;
-        $v2 = false;
-
-
-        $consulta1 = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id')
-        ->join('function_areas as fa', 'fa.area_id', 'employees.area_id')
-        ->select('employees.id as id')
-        ->where('c.id', $idarea)
+        $consulta1 = AreaTrabajo::join('employees as e', 'e.area_trabajo_id', 'area_trabajos.id')
+        ->select('area_trabajos.*')
+        ->where('area_trabajos.id', $idarea)
+        ->get();
+        $consulta2 = AreaTrabajo::join('function_areas as fa', 'fa.area_trabajo_id', 'area_trabajos.id')
+        ->select('area_trabajos.*')
+        ->where('area_trabajos.id', $idarea)
         ->get();
 
-        if($consulta1->count() > 0)
-        {
-            $v1 = true;
-        }
 
-        $consulta2 = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_id')
-        ->select('function_areas.id as id')
-        ->where('c.id', $idarea)
-        ->get();
 
-        if($consulta2->count() > 0)
-        {
-            $v2 = true;
-        }
 
-        if($v1 == true && $v2 == true)
+        if($consulta1->count() > 0 || $consulta2->count() > 0)
         {
-            return 'si';
+            return "no";
         }
         else
         {
-            return 'no';
+            return "si";
         }
 
 

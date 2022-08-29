@@ -13,6 +13,10 @@
 
             @include('common.searchbox')
 
+            <button wire:click="asd()">
+                sdfsdf
+            </button>
+
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
@@ -36,10 +40,13 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     
-                                    <a onclick="Confirmar1('{{$area->idarea}}','{{$area->verificar}}')" 
+                                    <a onclick="Confirmar1({{$area->idarea}},'{{$area->verificar}}')" 
                                         class="btn btn-dark mtmobile" title="Destroy">
                                         <i class="fas fa-trash"></i>
                                     </a>
+                                </td>
+                                <td>
+                                    {{$area->verificar}}
                                 </td>
                             </tr>
                             @endforeach
@@ -70,7 +77,8 @@
         });
     });
 
-    function Confirmar1(id, verificar){
+    function Confirmar1(id, verificar)
+    {
         if(verificar == 'no')
         {
             swal('no es posible eliminar porque tiene datos relacionados')

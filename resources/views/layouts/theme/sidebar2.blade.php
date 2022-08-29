@@ -164,13 +164,6 @@
 												Empleados</a>
 										</li>
 									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="asignation_functions">
-												<i class="fa fas fa-minus"></i>
-												Asignar Area</a>
-										</li>
-									@endcan
 								</ul>
 							</div>
 						</li>

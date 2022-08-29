@@ -16,7 +16,7 @@ class Employee extends Model
         'address',
         'phone',
         'dateAdmission',
-        'area_id'
+        'area_trabajo_id'
     ];
 
     public function area(){

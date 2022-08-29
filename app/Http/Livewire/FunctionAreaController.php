@@ -33,7 +33,7 @@ class FunctionAreaController extends Component
     public function render()
     {
         if(strlen($this->search) > 0)
-            $data = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_id') // se uno amabas tablas
+            $data = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_trabajo_id') // se uno amabas tablas
             ->select('function_areas.*','c.name as area')
             ->where('function_areas.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('function_areas.ci', 'like', '%' . $this->search . '%')    // busquedas
@@ -41,7 +41,7 @@ class FunctionAreaController extends Component
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
         else
-            $data = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_id')
+            $data = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_trabajo_id')
             ->select('function_areas.*','c.name as area')
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
@@ -73,7 +73,7 @@ class FunctionAreaController extends Component
         $functionarea = FunctionArea::create([
             'name'=>$this->name,
             'description'=>$this->description,
-            'area_id' => $this->areaid
+            'area_trabajo_id' => $this->areaid
         ]);
 
         $this->resetUI();
@@ -85,7 +85,7 @@ class FunctionAreaController extends Component
         $this->selected_id = $functionarea->id;
         $this->name = $functionarea->name;
         $this->description = $functionarea->description;
-        $this->areaid = $functionarea->area_id;
+        $this->areaid = $functionarea->area_trabajo_id;
 
         $this->emit('show-modal', 'show modal!');
     }
@@ -108,7 +108,7 @@ class FunctionAreaController extends Component
         $functionarea -> update([
             'name' => $this->name,
             'description' => $this->description,
-            'area_id' => $this->areaid
+            'area_trabajo_id' => $this->areaid
         ]);
 
         $this->resetUI();

@@ -69,34 +69,41 @@ class AreaTrabajoController extends Component
     // verificar 
     public function verificar($idarea)
     {
-        $consulta = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id')
+        $v1 = false;
+        $v2 = false;
+
+
+        $consulta1 = Employee::join('area_trabajos as c', 'c.id', 'employees.area_id')
         ->join('function_areas as fa', 'fa.area_id', 'employees.area_id')
         ->select('employees.id as id')
         ->where('c.id', $idarea)
         ->get();
 
-        if($consulta->count() > 0)
+        if($consulta1->count() > 0)
         {
-            return "no";
+            $v1 = true;
+        }
+
+        $consulta2 = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_id')
+        ->select('function_areas.id as id')
+        ->where('c.id', $idarea)
+        ->get();
+
+        if($consulta2->count() > 0)
+        {
+            $v2 = true;
+        }
+
+        if($v1 == true && $v2 == true)
+        {
+            return 'si';
         }
         else
         {
-            return "si";
+            return 'no';
         }
 
-        // $consulta = FunctionArea::join('area_trabajos as c', 'c.id', 'function_areas.area_id')
-        // ->select('function_areas.id as id')
-        // ->where('c.id', $idarea)
-        // ->get();
 
-        // if($consulta->count() > 0)
-        // {
-        //     return "no";
-        // }
-        // else
-        // {
-        //     return "si";
-        // }
     }
 
     // editar 

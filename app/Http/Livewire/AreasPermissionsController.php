@@ -27,6 +27,7 @@ class AreasPermissionsController extends Component
     }
     public function render()
     {
+        //buscador
         if (strlen($this->search) > 0) {
             $areas = Areaspermissions::where('name', 'like', '%' . $this->search . '%')->paginate($this->pagination);
         } else {

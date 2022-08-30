@@ -25,7 +25,9 @@
                                 <th class="table-th text-withe text-center">DIRECCION</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
                                 <th class="table-th text-withe text-center">FACHA DE ADMISION</th>
-                                {{--<th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>   fecha de admicion menos fecha actual y mostrar--}}
+
+                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar--}}
+
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
@@ -46,6 +48,8 @@
                                     <td><h6 class="text-center">{{ $employee->address }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->dateAdmission }}</h6></td>
+
+                                    <td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>
 
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
 

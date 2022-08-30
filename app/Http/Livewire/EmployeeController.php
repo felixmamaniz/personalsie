@@ -8,6 +8,8 @@ use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
 
+use Carbon\Carbon;
+
 use App\Models\AsignationFunction;
 
 class EmployeeController extends Component
@@ -34,6 +36,11 @@ class EmployeeController extends Component
     
     public function render()
     {
+        Carbon::setLocale('es');
+        setlocale(LC_TIME, 'es_ES.utf8'); 
+        //date_default_timezone_set('Bolivia/Sucre');
+        // $employ = Carbon::now(); 
+
         if(strlen($this->search) > 0)
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->select('employees.*','c.name as area')

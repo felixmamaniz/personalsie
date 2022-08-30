@@ -108,6 +108,11 @@
 											Roles </a>
 									</li>
 									@endcan
+									<li>
+										<a href="{{ url('areaspermissions') }}">
+											<i class="fa fas fa-minus"></i>
+											Areas De Permisos </a>
+									</li>
 									@can('Permission_Index')
 										<li>
 											<a href="{{ url('permisos') }}">
@@ -164,6 +169,11 @@
 												Empleados</a>
 										</li>
 									@endcan
+									<li>
+										<a href="{{ url('attendance') }}">
+											<i class="fa fas fa-minus"></i>
+											Horario </a>
+									</li>
 								</ul>
 							</div>
 						</li>

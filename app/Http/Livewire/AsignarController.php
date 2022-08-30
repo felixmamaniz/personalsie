@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
+use App\Models\Areaspermissions;
 use Livewire\WithPagination;
 
 
@@ -34,21 +35,23 @@ class AsignarController extends Component
     public function render()
     {
         //Listar Todas las areas de los permisos
-        $listaareas = Permission::select("permissions.area as area")
-        ->groupBy('permissions.area', "area")
+        $listaareas = Areaspermissions::select('id','name')
         ->get();
-
-
+        
         //listar Todos los Permisos
-        $permisos = Permission::select('name', 'id','area','descripcion', DB::raw('0 as checked'))
-            ->orderBy('name', 'asc')
+        $permisos = Permission::join('areaspermissions as a','a.id','permissions.areaspermissions_id')
+            ->select('permissions.name', 'permissions.id','a.name as area','permissions.descripcion', DB::raw('0 as checked'))
+            ->orderBy('permissions.name', 'asc')
             ->paginate($this->pagination);
+        
+        //Listar Todos los Permisos por Area       
+            //dd($this->permisosseleccionado);
+        $permisosarea = Permission::join('areaspermissions as a','a.id','permissions.areaspermissions_id')
+            ->select('permissions.name', 'permissions.id','a.name as area','permissions.descripcion', DB::raw('0 as checked2'))
+            ->where('a.id',$this->permisosseleccionado)
+            ->orderBy('permissions.name', 'asc')
+            ->paginate($this->pagination);    
 
-        //Listar Todos los Permisos por Area
-        $permisosarea =Permission::select('name', 'id','area','descripcion', DB::raw('0 as checked2'))
-        ->where('permissions.area',$this->permisosseleccionado)
-        ->orderBy('name', 'asc')
-        ->paginate($this->pagination);
 
         if ($this->role != 'Elegir')
         {
@@ -78,15 +81,8 @@ class AsignarController extends Component
                     $permiso2->checked2 = 1;
                 }
             }
+            
         }
-
-
-
-
-
-
-
-
 
 
         return view('livewire.asignar.component', [
@@ -130,11 +126,21 @@ class AsignarController extends Component
             $this->emit('sync-error', 'Selecciona un role válido');
             return;
         }
-
         $role = Role::find($this->role);
-        $permisos = Permission::where('permissions.area',$this->permisosseleccionado)->pluck('id')->toArray();
-        $role->syncPermissions($permisos);
-
+        //dd($this->permisosseleccionado);
+        //obtenemos todos los permisos sincronizados de un area
+        $permisos = Permission::join('areaspermissions as a','a.id','permissions.areaspermissions_id')
+        ->where('a.id',$this->permisosseleccionado)->pluck('permissions.id')->toArray();
+        //lista de rol de permisos anteriores
+        $list = Permission::join('role_has_permissions as rp', 'rp.permission_id', 'permissions.id')
+        ->where('role_id', $this->role)->pluck('permissions.id')->toArray();
+        $this->old_permissions = $list;
+        //juntamos los 2 arrays obtenidos
+        $permisosjuntados=[];
+        $permisosjuntados=array_merge($permisos,$this->old_permissions);
+        //dd($permisos,'br', $this->old_permissions);
+        //dd($permisosjuntados);
+        $role->syncPermissions($permisosjuntados);
         $this->emit('syncall', "Se sincronizaron todos los permisos al rol $role->name");
     }
 

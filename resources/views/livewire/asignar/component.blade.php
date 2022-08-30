@@ -21,7 +21,7 @@
                         <select wire:model="permisosseleccionado" class="form-control">
                             <option value="Todos"><b>Todos los Permisos</b></option>
                             @foreach ($listaareas as $u)
-                            <option value="{{$u->area}}">{{$u->area}}</option>
+                            <option value="{{$u->id}}">{{$u->name}}</option>
                             @endforeach
                         </select>
                     </div>

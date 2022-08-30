@@ -7,11 +7,12 @@ use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Livewire\WithPagination;
 use App\Models\User;
+use App\Models\Areaspermissions;
 
 class PermisosController extends Component
 {
     use WithPagination;
-    public $permissionName,$permissionArea,$permissionDescripcion, $search, $selected_id, $pageTitle, $componentName;
+    public $permissionName,$permissionArea,$permissionDescripcion, $search, $selected_id, $pageTitle, $componentName, $area, $componentNameArea,$name;
     private $pagination = 20;
 
     public function paginationView()
@@ -23,17 +24,28 @@ class PermisosController extends Component
     {
         $this->pageTitle = 'Listado';
         $this->componentName = 'Permisos';
+        $this->componentNameArea = 'Areas';
+        $this->area = 'Elegir';
     }
 
     public function render()
     {
+        $listaareas = Areaspermissions::select('id','name')
+        ->get();
         if (strlen($this->search) > 0) {
-            $permisos = Permission::where('name', 'like', '%' . $this->search . '%')->paginate($this->pagination);
+            $permisos = Permission::join('areaspermissions as a', 'a.id', 'permissions.areaspermissions_id')
+            ->select('permissions.*','a.name as area')
+            ->where('permissions.name', 'like', '%' . $this->search . '%')->paginate($this->pagination);
         } else {
-            $permisos = Permission::orderBy('name', 'asc')->paginate($this->pagination);
+            $permisos = Permission::join('areaspermissions as a', 'a.id', 'permissions.areaspermissions_id')
+            ->select('permissions.*','a.name as area')
+            ->orderBy('permissions.name', 'asc')->paginate($this->pagination);
+            //dd($permisos);
         }
+        
         return view('livewire.permisos.component', [
             'data' => $permisos,
+            'listaareas' => $listaareas,
         ])
             ->extends('layouts.theme.app')
             ->section('content');
@@ -45,19 +57,61 @@ class PermisosController extends Component
         $this->emit('show-modal', 'show modal!');
     }
 
+    public function AgregarArea()
+    {
+        
+        $this->resetUI();
+        $this->emit('modal-hide', 'show modal!');
+        $this->emit('show-modal-area', 'show modal!');
+    }
+//store agregar Area nueva
+public function StoreArea()
+{
+   
+    //validar los datos
+    $rules = [
+        'name' => 'required|unique:areaspermissions|min:3'
+    ];
+    //reglas de validacion
+    $messages = [
+        'name.required' => 'nombre de la Area de permisos es requerido',
+        'name.unique' => 'Ya existe el nombre de la Area de permisos',
+        'name.min' => 'El nombre de la Area de permisos debe tener al menos 3 caracteres' 
+    ];
+    //ejecutar las validaciones
+    $this-> validate($rules, $messages);
+    
+    //insertar en el Area nueva
+    Areaspermissions::create([
+        'name' => $this->name
+    ]);
+
+   
+    
+    $this->emit('area-added','Area Registrada');
+    $this->resetUI();
+    $this->emit('modal-hide-area', 'show modal!');
+    $this->emit('show-modal', 'show modal!');
+
+}
     public function CreatePermission()
     {
-        $rules = ['permissionName' => 'required|min:2|unique:permissions,name'];
+        $rules = [
+            'permissionName' => 'required|min:2|unique:permissions,name'
+    ];
 
         $messages = [
             'permissionName.required' => 'El nombre del permiso es requerido',
             'permissionName.unique' => 'El permiso ya existe',
             'permissionName.min' => 'El nombre del permiso debe tener al menos 2 caracteres'
         ];
-
+    
         $this->validate($rules, $messages);
-
-        Permission::create(['name' => $this->permissionName,'area' => $this->permissionArea,'descripcion' => $this->permissionDescripcion]);
+        //dd($this->area);
+        Permission::create([
+        'name' => $this->permissionName,
+        'areaspermissions_id' => $this->area,
+        'descripcion' => $this->permissionDescripcion]);
 
         $this->emit('item-added', 'Se registró el permiso con éxito');
         $this->resetUI();
@@ -75,12 +129,16 @@ class PermisosController extends Component
 
     public function UpdatePermission()
     {
-        $rules = ['permissionName' => "required|min:2|unique:permissions,name, {$this->selected_id}"];
+        $rules = [
+            'permissionName' => "required|min:2|unique:permissions,name, {$this->selected_id}",
+            'permissionArea' => 'required'
+                ];
 
         $messages = [
             'permissionName.required' => 'El nombre del permiso es requerido',
             'permissionName.unique' => 'El permiso ya existe',
-            'permissionName.min' => 'El nombre del permiso debe tener al menos 2 caracteres'
+            'permissionName.min' => 'El nombre del permiso debe tener al menos 2 caracteres',
+            'permissionArea.required' => 'El Area de permisos es requerido'
         ];
 
         $this->validate($rules, $messages);
@@ -129,10 +187,12 @@ class PermisosController extends Component
     public function resetUI()
     {
         $this->permissionName = '';
-        $this->permissionArea = '';
+        $this->area = 'Elegir';
         $this->permissionDescripcion = '';
         $this->search = '';
         $this->selected_id = 0;
+        $this->name= '';
+        $this->resetErrorBag();
         $this->resetValidation();
     }
 }

@@ -19,34 +19,30 @@
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
                                 <th class="table-th text-withe">ID</th>
-                                <th class="table-th text-withe text-center">NOMBRE</th>                                                         
-                                <th class="table-th text-withe text-center">AREA</th>                                                         
-                                <th class="table-th text-withe text-center">DESCRIPCION</th>                                                         
+                                <th class="table-th text-withe text-center">NOMBRE DEL AREA</th>                                                                                                                 
                                 <th class="table-th text-withe text-center">ACCIONES</th>    
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $permiso)
+                            @foreach ($data as $area)
                                 <tr>
                                     <td>
-                                        <h6>{{ $permiso->id }}</h6>
+                                        <h6>{{ $area->id }}</h6>
                                     </td>
                                     <td>
-                                        <h6 class="text-center">{{ ($permiso->name) }}</h6>
-                                    </td> 
-                                    <td>
-                                        <h6 class="text-center">{{ ($permiso->area) }}</h6>
-                                    </td> 
-                                    <td>
-                                        <h6 class="text-center">{{ ($permiso->descripcion) }}</h6>
-                                    </td>                           
+                                        <h6 class="text-center">{{ ($area->name) }}</h6>
+                                    </td>                          
                                     
                                     <td class="text-center">
-                                        <a href="javascript:void(0)" wire:click="Edit({{ $permiso->id }})"
+                                        <a href="javascript:void(0)" wire:click="Edit({{ $area->id }})"
                                             class="btn btn-warning mtmobile" title="Editar registro">
                                             <i class="fas fa-edit"></i>
                                         </a>
-                                        <a href="javascript:void(0)" onclick="Confirm('{{ $permiso->id }}','{{ $permiso->name }}')" 
+                                        <!--<a href="javascript:void(0)" onclick="Confirm('{/*{ $area->id }}','{/*{ $area->name }}')" 
+                                            class="btn btn-warning" title="Eliminar registro">
+                                            <i class="fas fa-trash"></i>
+                                        </a>-->
+                                        <a href="javascript:void(0)" onclick="Confirm('{{ $area->id }}','{{ $area->name }}')" 
                                             class="btn btn-warning" title="Eliminar registro">
                                             <i class="fas fa-trash"></i>
                                         </a>
@@ -60,14 +56,13 @@
             </div>
         </div>
     </div>
-    @include('livewire.permisos.form')
-    @include('livewire.permisos.form-area')
+    @include('livewire.areaspermissions.form')
 </div>
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        window.livewire.on('item-added', Msg => {
+        window.livewire.on('area-added', Msg => {
             $('#theModal').modal('hide')
             noty(Msg)
         })
@@ -87,21 +82,15 @@
         window.livewire.on('show-modal', Msg => {
             $('#theModal').modal('show')
         })
-        window.livewire.on('show-modal-area', Msg => {
-            $('#theModal-area').modal('show')
-        }) 
         window.livewire.on('modal-hide', Msg => {
             $('#theModal').modal('hide')
-        })   
-        window.livewire.on('modal-hide-area', Msg => {
-            $('#theModal-area').modal('hide')
-        })     
+        })      
               
 
     });
 
     function Confirm(id, name) {
-        
+        console.log('hola');
         swal.fire({
             title: 'CONFIRMAR',
             icon: 'warning',
@@ -113,6 +102,7 @@
             confirmButtonText: 'Aceptar'
         }).then(function(result) {
             if (result.value) {
+                
                 window.livewire.emit('deleteRow', id)
                 Swal.close()
             }

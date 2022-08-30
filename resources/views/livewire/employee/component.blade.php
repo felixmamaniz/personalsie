@@ -9,6 +9,8 @@
                     <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
                         data-target="#theModal">Agregar</a>
                 </ul>
+
+               {{-- <h6>{{ date('Y-m-d H:i:s') }}</h6>   muestra hora de sistema--}}
             </div>
             @include('common.searchbox')
 
@@ -49,7 +51,8 @@
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->dateAdmission }}</h6></td>
 
-                                    <td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>
+                                    {{--<td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>--}}
+                                    <td><h6 class="text-center">{{$tiempos}}</h6></td>
 
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
 

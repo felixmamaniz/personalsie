@@ -113,7 +113,7 @@ class AreasPermissionsController extends Component
 
     public function Destroy(Areaspermissions $area)
     {
-        
+        //hola
         $area->delete();
         $this->emit('item-deleted', 'Se eliminó el Area con exito');
     }

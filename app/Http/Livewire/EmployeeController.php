@@ -3,14 +3,12 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\AreaTrabajo; // Category = Area
+use App\Models\AreaTrabajo;
 use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
 
 use Carbon\Carbon;
-
-use App\Models\AsignationFunction;
 
 class EmployeeController extends Component
 {
@@ -21,6 +19,8 @@ class EmployeeController extends Component
     public $pageTitle, $componentName, $search;
     public $details, $sumDetails, $countDetails, $saleId;
     private $pagination = 5;
+
+    public $TiempoTranscurrido;
 
     public function paginationView()
     {
@@ -33,13 +33,25 @@ class EmployeeController extends Component
         $this->areaid = 'Elegir';
         $this->genero = 'Seleccionar';
     }
-    
+
     public function render()
     {
-        Carbon::setLocale('es');
-        setlocale(LC_TIME, 'es_ES.utf8'); 
-        //date_default_timezone_set('Bolivia/Sucre');
-        // $employ = Carbon::now(); 
+        //$from = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00 ';
+        //$to = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59 ';
+        //$from = Carbon::parse($dateFrom)->format('Y-m-d') . ' 00:00:00 ';
+        //$to = Carbon::parse($dateTo)->format('Y-m-d') . ' 23:59:59 ';
+
+        //Carbon::setLocale('es');
+        //setlocale(LC_TIME, 'es_ES.utf8'); 
+        $dateFrom = 
+        $date = Carbon::now();
+        Carbon::parse($dateFrom)->format('Y-m-d');
+        // tiempo transcurrido de año mes y dia
+        
+        $TiempoTranscurrido = $date->subYear(2021);
+        $TiempoTranscurrido = $date->subMonth(30);
+        $TiempoTranscurrido = $date->subDay(8);
+        //$TiempoTranscurrido = Carbon::createFromDate(2020,30,8)->age;
 
         if(strlen($this->search) > 0)
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
@@ -57,7 +69,8 @@ class EmployeeController extends Component
         
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
-            'areas' => AreaTrabajo::orderBy('name', 'asc')->get()
+            'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
+            'tiempos' => $TiempoTranscurrido
         ])
         ->extends('layouts.theme.app')
         ->section('content');

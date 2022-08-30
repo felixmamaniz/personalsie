@@ -85,3 +85,7 @@
 
 </div>
 @include('common.modalFooter')
+
+{{--  https://styde.net/componente-carbon-fechas-laravel-5/
+    https://www.anerbarrena.com/sumar-restar-fechas-php-5655/
+      --}}

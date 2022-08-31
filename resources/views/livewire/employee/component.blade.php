@@ -28,7 +28,7 @@
                                 <th class="table-th text-withe text-center">TELEFONO</th>
                                 <th class="table-th text-withe text-center">FACHA DE ADMISION</th>
 
-                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar--}}
+                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar --}}
 
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>

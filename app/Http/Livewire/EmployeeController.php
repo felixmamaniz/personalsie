@@ -9,6 +9,7 @@ use Livewire\withPagination;
 use Livewire\withFileUploads;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Component
 {
@@ -36,22 +37,39 @@ class EmployeeController extends Component
 
     public function render()
     {
-        //$from = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00 ';
-        //$to = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59 ';
-        //$from = Carbon::parse($dateFrom)->format('Y-m-d') . ' 00:00:00 ';
-        //$to = Carbon::parse($dateTo)->format('Y-m-d') . ' 23:59:59 ';
-
-        //Carbon::setLocale('es');
-        //setlocale(LC_TIME, 'es_ES.utf8'); 
-        $dateFrom = 
-        $date = Carbon::now();
-        Carbon::parse($dateFrom)->format('Y-m-d');
-        // tiempo transcurrido de año mes y dia
+        Carbon::setLocale('es');
+        $TiempoTranscurrido = setlocale(LC_TIME, 'es_ES.utf8');
         
-        $TiempoTranscurrido = $date->subYear(2021);
-        $TiempoTranscurrido = $date->subMonth(30);
-        $TiempoTranscurrido = $date->subDay(8);
-        //$TiempoTranscurrido = Carbon::createFromDate(2020,30,8)->age;
+        $fechaInicio = '$dateAdmission';
+        $fechaActual = Carbon::now();
+
+        $segundos = strtotime($fechaActual) - strtotime($fechaInicio);  // segundos
+        $segRedondeados = floor($segundos);
+
+        $minutos = $segRedondeados / 60;    // minutos
+        $minRedondeados = floor($minutos);
+
+        $horas = $minRedondeados / 60;  // horas
+        $horasRedondeados = floor($horas);
+
+        $dias = $horasRedondeados / 24;     // dias
+        $diasRedondeados = floor($dias);    // para redondeo de un dia mas ceil()
+
+        $meses = $diasRedondeados / 28;     // meses
+        $mesesRedondeados = floor($meses);
+
+        $años = $mesesRedondeados - 12;     // años
+        $añosRedondeados = floor($años);
+
+        if($añosRedondeados > 0){
+            $TiempoTranscurrido = $añosRedondeados . " Años ". $mesesRedondeados . " Meses y ". $diasRedondeados . " Dias";
+        }else{
+            if($añosRedondeados < 1){
+                $TiempoTranscurrido = $mesesRedondeados . " Meses y ". $diasRedondeados . " Dias";
+            }else{
+                $TiempoTranscurrido = $diasRedondeados . " Dias";
+            }
+        }
 
         if(strlen($this->search) > 0)
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
@@ -76,6 +94,7 @@ class EmployeeController extends Component
         ->section('content');
     }
 
+    // Registro de empleado nuevo
     public function Store(){
         
         $rules = [

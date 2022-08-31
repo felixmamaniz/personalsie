@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ExportController;
 use App\Http\Livewire\AsignarController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Livewire\RolesController;
@@ -34,6 +35,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('function_areas', FunctionAreaController::class);
     Route::get('attendance', AttendancesController::class);
     Route::get('areaspermissions', AreasPermissionsController::class);
+
+     //reporte horario Excel
+     Route::get('report/excel/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcel']);
+     Route::get('report/excel/{user}/{type}', [ExportController::class, 'reporteExcel']);
 });
 
 

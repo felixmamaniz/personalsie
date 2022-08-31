@@ -14,6 +14,8 @@ use Maatwebsite\Excel\Concerns\WithStyles;              //para dar formato a las
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Style\Color;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;              //para que funcionen los eventos enviados
 use Maatwebsite\Excel\Events\AfterSheet;
@@ -23,7 +25,9 @@ use Illuminate\Contracts\View\View;
 
 class AttendancesExport implements FromCollection, WithHeadings, WithCustomStartCell, WithTitle, WithStyles, WithDefaultStyles, WithEvents, WithColumnWidths
 {
+    
     protected $userId, $dateFrom, $dateTo, $reportType;
+    public $ALGO;
     
     function __construct($userId, $reportType, $f1, $f2)
     {
@@ -78,8 +82,8 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
             'B' => 20,
             'C' => 20,
             'D' => 20,
-            'E' => 20,
-            'F' => 20,          
+            'E' => 25,
+            'F' => 27,          
         ];
     }
     //Definiendo en que cel se imprimira el reporte
@@ -119,21 +123,68 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
     //PINTAR CELDAS AL COLOR QUE QUERAMOS
     public function registerEvents(): array
     {
+        $i=2;
+        $f=5;
+        $this->ALGO='A'.$i.':F'.$f;
+        //dd($ALGO);
+        //$ALGO='A2:F5';
         return [
             AfterSheet::class    => function(AfterSheet $event) {
-  
+                Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
+                    $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
+                });
+                //para el color de fondo de una celda o varias ejm:('A:C')
+                //PARA LAS FILAS PRINCIPALES DEL ENCABEZADO
                 $event->sheet->getDelegate()->getStyle('E2')
                         ->getFill()
                         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                         ->getStartColor()
                         ->setARGB('red');
+                        
                 $event->sheet->getDelegate()->getStyle('F2')
                         ->getFill()
                         ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                         ->getStartColor()
-                        ->setARGB('blue');
-  
+                        ->setARGB('yellow');
+                        
+                        $event->sheet->styleCells(
+                            $this->ALGO,
+                            [
+                                'borders' => [
+                                    'outline' => [
+                                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                    ],
+                                ]
+                            ]
+                        );
+                        $event->sheet->styleCells(
+                            'B2:B5',
+                            [
+                                'borders' => [
+                                    'outline' => [
+                                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                    ],
+                                ]
+                            ]
+                        );
+            
+                        $event->sheet->styleCells(
+                            'A2:F2',
+                            [
+                                'font' => [
+                                    'name'      =>  'Calibri',
+                                    'size'      =>  15,
+                                    'bold'      =>  true,
+                                    'color' => ['rgb' => 'black'],
+                                ],
+                            ]
+                        );
+                        
+
+                            
+                
             },
+
         ];
     }
 }

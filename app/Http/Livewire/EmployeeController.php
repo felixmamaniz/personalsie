@@ -49,6 +49,8 @@ class EmployeeController extends Component
         $fechaInicio = '$dateAdmission';
         $fechaActual = $TiempoC;
 
+        //pruebadbhvdg
+
         $segundos = strtotime($fechaActual) - strtotime($fechaInicio);  // segundos
         $segRedondeados = floor($segundos);
 

@@ -4,20 +4,23 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\AreaTrabajo;
+use App\Models\PuestoTrabajo;
 use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
 
+use Illuminate\Support\Facades\Storage;
+
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class EmployeeController extends Component
 {
     use withPagination;
     use withFileUploads;
 
-    public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $dateAdmission, $areaid, $selected_id;
-    public $pageTitle, $componentName, $search;
-    public $details, $sumDetails, $countDetails, $saleId;
+    public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $dateAdmission, $areaid, $puestoid, $image, $selected_id;
+    public $pageTitle, $componentName, $search, $employeeId;
     private $pagination = 5;
 
     public $TiempoTranscurrido;
@@ -31,30 +34,55 @@ class EmployeeController extends Component
         $this->pageTitle = 'Listado';
         $this->componentName = 'Empleados';
         $this->areaid = 'Elegir';
+        $this->puestoid = 'Elegir';
         $this->genero = 'Seleccionar';
     }
 
     public function render()
     {
-        //$from = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00 ';
-        //$to = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59 ';
-        //$from = Carbon::parse($dateFrom)->format('Y-m-d') . ' 00:00:00 ';
-        //$to = Carbon::parse($dateTo)->format('Y-m-d') . ' 23:59:59 ';
+        Carbon::setLocale('es');
+        $TiempoTranscurrido = setlocale(LC_TIME, 'es_ES.utf8');
 
-        //Carbon::setLocale('es');
-        //setlocale(LC_TIME, 'es_ES.utf8'); 
-        $dateFrom = 
         $date = Carbon::now();
-        Carbon::parse($dateFrom)->format('Y-m-d');
-        // tiempo transcurrido de año mes y dia
-        
-        $TiempoTranscurrido = $date->subYear(2021);
-        $TiempoTranscurrido = $date->subMonth(30);
-        $TiempoTranscurrido = $date->subDay(8);
-        //$TiempoTranscurrido = Carbon::createFromDate(2020,30,8)->age;
+        $TiempoC = Carbon::parse($date)->format('Y-m-d');
+
+        $fechaInicio = '$dateAdmission';
+        $fechaActual = $TiempoC;
+
+        //pruebadbhvdg
+
+        $segundos = strtotime($fechaActual) - strtotime($fechaInicio);  // segundos
+        $segRedondeados = floor($segundos);
+
+        $minutos = $segRedondeados / 60;    // minutos
+        $minRedondeados = floor($minutos);
+
+        $horas = $minRedondeados / 60;  // horas
+        $horasRedondeados = floor($horas);
+
+        $dias = $horasRedondeados / 24;     // dias
+        $diasRedondeados = floor($dias);    // para redondeo de un dia mas ceil()
+
+        $meses = $diasRedondeados / 28;     // meses
+        $mesesRedondeados = floor($meses);
+
+        $años = $mesesRedondeados - 12;     // años
+        $añosRedondeados = floor($años);
+
+        //dd( $TiempoTranscurrido);
+        if($añosRedondeados > 0){
+            $TiempoTranscurrido = $añosRedondeados . " Años ". $mesesRedondeados . " Meses y ". $diasRedondeados . " Dias";
+        }else{
+            if($añosRedondeados < 1){
+                $TiempoTranscurrido = $mesesRedondeados . " Meses y ". $diasRedondeados . " Dias";
+            }else{
+                $TiempoTranscurrido = $diasRedondeados . " Dias";
+            }
+        }
 
         if(strlen($this->search) > 0)
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
+            ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->select('employees.*','c.name as area')
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
@@ -63,6 +91,7 @@ class EmployeeController extends Component
             ->paginate($this->pagination);
         else
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
+            ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->select('employees.*','c.name as area')
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
@@ -70,12 +99,14 @@ class EmployeeController extends Component
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
+            'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
             'tiempos' => $TiempoTranscurrido
         ])
         ->extends('layouts.theme.app')
         ->section('content');
     }
 
+    // Registro de empleado nuevo
     public function Store(){
         
         $rules = [
@@ -87,7 +118,8 @@ class EmployeeController extends Component
             'address' => 'required',
             'phone' => 'required|unique:employees',
             'dateAdmission' => 'required',
-            'areaid' => 'required|not_in:Elegir'
+            'areaid' => 'required|not_in:Elegir',
+            'puestoid' => 'required|not_in:Elegir'
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -110,6 +142,8 @@ class EmployeeController extends Component
             'dateAdmission.required' => 'la fecha de admision es requerido',
 
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
+
+            'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
         ];
 
         $this->validate($rules, $messages);
@@ -123,8 +157,18 @@ class EmployeeController extends Component
             'address'=>$this->address,
             'phone'=>$this->phone,
             'dateAdmission'=>$this->dateAdmission,
-            'area_trabajo_id' => $this->areaid
+            'area_trabajo_id' => $this->areaid,
+            'puesto_trabajo_id' => $this->puestoid
         ]);
+
+        //$customFileName;
+        if($this->image)
+        {
+            $customFileName = uniqid() . '_.' . $this->image->extension();
+            $this->image->storeAs('public/employees', $customFileName);
+            $employ->image = $customFileName;
+            $employ->save();
+        }
 
         $this->resetUI();
         $this->emit('employee-added', 'Empleado Registrado');
@@ -142,7 +186,9 @@ class EmployeeController extends Component
         $this->phone = $employee->phone;
         $this->dateAdmission = $employee->dateAdmission;
         $this->areaid = $employee->area_trabajo_id;
+        $this->puestoid = $employee->puesto_trabajo_id;
         $this->selected_id = $employee->id;
+        $this->image = $employee->null;
 
         $this->emit('modal-show', 'Show modal!');
     }
@@ -158,7 +204,8 @@ class EmployeeController extends Component
             'address' => 'required',
             'phone' => 'required',
             'dateAdmission' => 'required',
-            'areaid' => 'required|not_in:Elegir'
+            'areaid' => 'required|not_in:Elegir',
+            'puestoid' => 'required|not_in:Elegir'
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -177,13 +224,13 @@ class EmployeeController extends Component
             'dateAdmission.required' => 'la fecha de admision es requerido',
 
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
+
+            'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir'
         ];
 
         $this->validate($rules, $messages);
 
         $employee = Employee::find($this->selected_id);
-
-
         $employee->update([
             'ci' => $this->ci,
             'name' => $this->name,
@@ -193,9 +240,26 @@ class EmployeeController extends Component
             'address' => $this->address,
             'phone' => $this->phone,
             'dateAdmission' => $this->dateAdmission,
-            'area_trabajo_id' => $this->areaid
+            'area_trabajo_id' => $this->areaid,
+            'puesto_trabajo_id' => $this->puestoid
         ]);
-        $employee->save();
+
+        if($this->image){
+            $customFileName = uniqid() . '_.' . $this->image->extension();
+            $this->image->storeAs('public/employees', $customFileName);
+            $imageName = $employee->image;
+
+            $employee->image = $customFileName;
+            $employee->save();
+
+            if($imageName !=null){
+                if(file_exists('storage/employees') . $imageName){
+                    unlink('storage/employees' . $imageName);
+                }
+            }
+        }
+
+        //$employee->save();
 
         $this->resetUI();
         $this->emit('employee-updated', 'Datos de Empleado Actualizado');
@@ -212,6 +276,8 @@ class EmployeeController extends Component
         $this->phone = '';
         $this->dateAdmission = '';
         $this->areaid = 'Elegir';
+        $this->puestoid = 'Elegir';
+        $this->image=null;
         $this->search = '';
         $this->selected_id = 0;
     }
@@ -223,8 +289,26 @@ class EmployeeController extends Component
     // eliminar informacion
     public function Destroy($id){
         $employee = Employee::find($id);
+        $imageName = $employee->image; //imagen temporal
         $employee->delete();
+
+        if($imageName !=null){
+            unlink('storage/employees/' . $imageName);
+        }
+
         $this->resetUI();
         $this->emit('employee-deleted','Empleado Eliminado');
+    }
+
+    // ver detalle de datos de empleados
+    public function viewDetails(Employee $employee)
+    {
+        $this->details = Employee::join('area_trabajos as at', 'at.id','employees.area_trabajo_id')
+        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->select('employees.*','at.name as area')
+        //->select('e.id','e.ci','e.name','e.lastname','e.genero','e.dateNac','e.address','e.phone','e.dateAdmission','area_trabajo_id','puesto_trabajo_id','image')
+        ->get();
+
+        $this->emit('show-modal2', 'open modal');
     }
 }

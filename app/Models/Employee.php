@@ -17,10 +17,16 @@ class Employee extends Model
         'address',
         'phone',
         'dateAdmission',
-        'area_trabajo_id'
+        'area_trabajo_id',
+        'puesto_trabajo_id',
+        'image'
     ];
 
     public function area(){
         return $this->belongsTo(AreaTrabajo::class);
+    }
+
+    public function puesto(){
+        return $this->belongsTo(PuestoTrabajo::class);
     }
 }

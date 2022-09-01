@@ -28,6 +28,11 @@ class CreateEmployeesTable extends Migration
             $table->unsignedBigInteger('area_trabajo_id');
             $table->foreign('area_trabajo_id')->references('id')->on('area_trabajos');
 
+            $table->unsignedBigInteger('puesto_trabajo_id');
+            $table->foreign('puesto_trabajo_id')->references('id')->on('puesto_trabajos');
+
+            $table->string('image',100)->nullable();
+
             $table->timestamps();
         });
     }

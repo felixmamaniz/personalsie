@@ -15,6 +15,7 @@ use App\Http\Livewire\AreasPermissionsController;
 use App\Http\Livewire\AttendancesController;
 use App\Http\Livewire\InicioController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Livewire\PuestoTrabajoController;
 
 Auth::routes();
 
@@ -35,6 +36,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('function_areas', FunctionAreaController::class);
     Route::get('attendance', AttendancesController::class);
     Route::get('areaspermissions', AreasPermissionsController::class);
+    Route::get('puesto_trabajos', PuestoTrabajoController::class);
 
      //reporte horario Excel
      Route::get('report/excel/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcel']);

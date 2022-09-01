@@ -169,6 +169,13 @@
 												Empleados</a>
 										</li>
 									@endcan
+									@can('Sucursal_Index')
+										<li>
+											<a href="{{ url('puesto_trabajos') }}">
+												<i class="fa fas fa-minus"></i>
+												Puestos de Trabajo</a>
+										</li>
+									@endcan
 									<li>
 										<a href="{{ url('attendance') }}">
 											<i class="fa fas fa-minus"></i>

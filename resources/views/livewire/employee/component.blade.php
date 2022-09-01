@@ -28,9 +28,11 @@
                                 <th class="table-th text-withe text-center">TELEFONO</th>
                                 <th class="table-th text-withe text-center">FACHA DE ADMISION</th>
 
-                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar--}}
+                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar --}}
 
                                 <th class="table-th text-withe text-center">AREA</th>
+                                <th class="table-th text-withe text-center">PUESTO</th>
+                                <th class="table-th text-white text-center">IMAGEN</th> 
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
                         </thead>
@@ -55,6 +57,14 @@
                                     <td><h6 class="text-center">{{$tiempos}}</h6></td>
 
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
+                                    <td><h6 class="text-center">{{ $employee->puesto }}</h6></td>
+
+                                    <td class="text-center">
+                                        <span>
+                                            <img src="{{asset('storage/employees/' .$employee->imagen)}}"
+                                             alt="imagen de ejemplo" height="70" width="80" class="rounded">
+                                        </span>
+                                    </td>
 
                                     <td class="text-center">
                                         <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"
@@ -66,6 +76,11 @@
                                             class="btn btn-dark" title="Destroy">
                                             <i class="fas fa-trash"></i>
                                         </a>
+
+                                        <button wire:click.prevent="viewDetails('{{ $employee->id }}')"
+                                            class="btn btn-dark">
+                                            <i class="fas fa-list"></i>
+                                        </button>
                                     </td>
                                 </tr>
                             @endforeach
@@ -100,6 +115,10 @@
         window.livewire.on('hidden.bs.modal', msg => {
             $('.er').css('display','none')
         });
+        //eventos vista de detalle de empleado
+        window.livewire.on('show-modal2', Msg => {
+            $('#modal-details').modal('show')
+        })
 
     });
 

@@ -83,9 +83,26 @@
         </div>
     </div>
 
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group">
+            <label>Puesto de Trabajo</label>
+            <select wire:model="puestoid" class="form-control">
+                <option value="Elegir" disabled>Elegir</option>
+                @foreach($puestos as $puesto)
+                <option value="{{$puesto->id}}">{{$puesto->name}}</option>
+                @endforeach
+            </select>
+            @error('puestoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+        </div>
+    </div>
+
+    <div class="col-sm-12 mt-3">
+        <div class="form-group custom-file">
+            <input type="file" class="custom-file-input form-control" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
+            <label for="" class="custom-file-label">Imagen {{$image}}</label>
+            @error('image') <span class="text-danger er"> {{ $message }}</span> @enderror
+        </div>
+    </div>
+
 </div>
 @include('common.modalFooter')
-
-{{--  https://styde.net/componente-carbon-fechas-laravel-5/
-    https://www.anerbarrena.com/sumar-restar-fechas-php-5655/
-      --}}

@@ -7,7 +7,7 @@
 
     //$dateFrom = 
     //$date = Carbon::now();
-    //$TiempoTranscurrido = Carbon::parse($date)->format('Y-m-d');
+    // $TiempoTranscurrido = Carbon::parse($date)->format('Y-m-d');
     // tiempo transcurrido de año mes y dia
         
     //$TiempoTranscurrido = $date->subYear(2021);
@@ -20,5 +20,43 @@
         	'dateAdmission',
     ];
 
+
+
+    // empleados
+
+    aumentar columna fotos
+    puesto de trabajo
+    estado civil
+
+    detalle del empleado
+    grupo de empleado
+    
+
+    formacion
+    titulacion
+    cursos
+    certificados
+    conocimientos
+    experiencias
+
+
+    tipo de contrato    
+        fcha inico
+        fecha fin
+        descripcion
+        tipo de contrato
+        notas
+
+        php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
+        php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
 --}}
+
+
+
+
+
+
+{{--  https://styde.net/componente-carbon-fechas-laravel-5/
+    https://www.anerbarrena.com/sumar-restar-fechas-php-5655/
+      --}}
         

@@ -43,6 +43,8 @@ class EmployeeController extends Component
         $fechaInicio = '$dateAdmission';
         $fechaActual = Carbon::now();
 
+        //pruebadbhvdg
+
         $segundos = strtotime($fechaActual) - strtotime($fechaInicio);  // segundos
         $segRedondeados = floor($segundos);
 

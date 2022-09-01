@@ -27,7 +27,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
 {
     
     protected $userId, $dateFrom, $dateTo, $reportType;
-    public $ALGO;
+    public $cell;
     
     function __construct($userId, $reportType, $f1, $f2)
     {
@@ -72,7 +72,27 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
     //CABECERAS DEL REPORTE
     public function headings(): array
     {
-        return ["FECHA", "NOMBRE", "ENTRADA", "SALIDA", "HORARIO NORMAL", "HORAS TRABAJADAS"];
+        
+        if($this->userId==0)
+        {
+            return ["FECHA", "NOMBRE", "ENTRADA", "SALIDA", "HORARIO NORMAL", "HORAS TRABAJADAS"];
+        }
+        else{
+            $employee = Attendance::join('employees as e','e.id','attendances.employee_id')
+            ->select('e.name')
+            ->where('employee_id', $this->userId)
+            ->first();
+            
+            return
+             
+            [
+                'A1'=> ["REPORTE DE ASISTENCIA DESDE ".$this->dateFrom. ' Al '. $this->dateTo],
+                'A2'=> ["EMPLEADO:", $employee->name],
+                ["FECHA", "NOMBRE", "ENTRADA", "SALIDA", "HORARIO NORMAL", "HORAS TRABAJADAS"]
+            ];
+        }
+
+        
     }
     //el ancho de una cell
     public function columnWidths(): array
@@ -89,7 +109,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
     //Definiendo en que cel se imprimira el reporte
     public function startCell(): string
     {
-        return 'A2';
+        return 'A1';
     }
 
     //Estilos para el excel
@@ -123,68 +143,253 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
     //PINTAR CELDAS AL COLOR QUE QUERAMOS
     public function registerEvents(): array
     {
-        $i=2;
-        $f=5;
-        $this->ALGO='A'.$i.':F'.$f;
-        //dd($ALGO);
-        //$ALGO='A2:F5';
-        return [
-            AfterSheet::class    => function(AfterSheet $event) {
-                Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
-                    $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
-                });
-                //para el color de fondo de una celda o varias ejm:('A:C')
-                //PARA LAS FILAS PRINCIPALES DEL ENCABEZADO
-                $event->sheet->getDelegate()->getStyle('E2')
-                        ->getFill()
-                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                        ->getStartColor()
-                        ->setARGB('red');
-                        
-                $event->sheet->getDelegate()->getStyle('F2')
-                        ->getFill()
-                        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
-                        ->getStartColor()
-                        ->setARGB('yellow');
-                        
-                        $event->sheet->styleCells(
-                            $this->ALGO,
-                            [
-                                'borders' => [
-                                    'outline' => [
-                                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
-                                    ],
-                                ]
-                            ]
-                        );
-                        $event->sheet->styleCells(
-                            'B2:B5',
-                            [
-                                'borders' => [
-                                    'outline' => [
-                                        'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
-                                    ],
-                                ]
-                            ]
-                        );
-            
-                        $event->sheet->styleCells(
-                            'A2:F2',
-                            [
-                                'font' => [
-                                    'name'      =>  'Calibri',
-                                    'size'      =>  15,
-                                    'bold'      =>  true,
-                                    'color' => ['rgb' => 'black'],
-                                ],
-                            ]
-                        );
-                        
+        //validar el tipo de reporte
+        if($this->reportType == 1)
+        {
+            $from = Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00';
+            $to = Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59';
+        } else {
+             //fecha de ahora 
+             $from = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00';
+             $to = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59';
+        }
 
+        //validar si es de un empleado o de todos
+        if($this->userId == 0)
+        {
+            $Allemployee = Attendance::join('employees as e','e.id','attendances.employee_id')
+            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida')
+            ->whereBetween('attendances.fecha', [$from,$to])
+            ->get()
+            ->count();
+            //dd($Allemployee);
+            //estilos para el excel para todos
+            $i=2;
+            $this->cell='A'.$i.':F'.($Allemployee+2);
+            //dd($cell);
+            return [ 
+                AfterSheet::class    => function(AfterSheet $event) {
+                    Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
+                        $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
+                    });
+                    //para el color de fondo de una celda o varias ejm:('A:C')
+                    //PARA LAS FILAS PRINCIPALES DEL ENCABEZADO
+                    
+                    $event->sheet->getDelegate()->getStyle('E2')
+                            ->getFill()
+                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('red');
                             
+                    $event->sheet->getDelegate()->getStyle('F2')
+                            ->getFill()
+                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('yellow');
+                            
+                            $event->sheet->styleCells(
+                                $this->cell,
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'B2:B6',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'D2:D6',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'F2:F6',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'A2:F2',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
                 
-            },
+                            $event->sheet->styleCells(
+                                'A2:F2',
+                                [
+                                    'font' => [
+                                        'name'      =>  'Calibri',
+                                        'size'      =>  15,
+                                        'bold'      =>  true,
+                                        'color' => ['rgb' => 'black'],
+                                    ],
+                                ]
+                            );
+                            
+    
+                                
+                    
+                },
+    
+            ];
+        }
+        else{
+            $Oneemployee = Attendance::join('employees as e','e.id','attendances.employee_id')
+            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida')
+            ->whereBetween('attendances.fecha', [$from,$to])
+            ->where('employee_id', $this->userId)
+            ->get()
+            ->count();
+            //dd($Oneemployee);
+            $i=3;
+            $this->cell='A'.$i.':F'.($Oneemployee+3);
+            return [ 
+             
+                AfterSheet::class    => function(AfterSheet $event) {
+                    Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
+                        $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
+                    });
+                    //centrear A1 hasta F1
+                    $event->sheet->mergeCells('A1:F1');
+                    $event->sheet->getDelegate()->getStyle('A1:F1')
+                                    ->getAlignment()
+                                    ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    //para el color de fondo de una celda o varias ejm:('A:C')
+                    //PARA LAS FILAS PRINCIPALES DEL ENCABEZADO
+                    $event->sheet->getDelegate()->getStyle('E3')
+                            ->getFill()
+                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('red');
+                            
+                    $event->sheet->getDelegate()->getStyle('F3')
+                            ->getFill()
+                            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                            ->getStartColor()
+                            ->setARGB('yellow');
+                            
+                            $event->sheet->styleCells(
+                                $this->cell,
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'B3:B6',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'D3:D6',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'F3:F6',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'A3:F3',
+                                [
+                                    'borders' => [
+                                        'outline' => [
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                        ],
+                                    ]
+                                ]
+                            );
+                
+                            $event->sheet->styleCells(
+                                'A3:F3',
+                                [
+                                    'font' => [
+                                        'name'      =>  'Calibri',
+                                        'size'      =>  15,
+                                        'bold'      =>  true,
+                                        'color' => ['rgb' => 'black'],
+                                    ],
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'A2:F2',
+                                [
+                                    'font' => [
+                                        'name'      =>  'Calibri',
+                                        'size'      =>  15,
+                                        'bold'      =>  true,
+                                        'color' => ['rgb' => 'black'],
+                                    ],
+                                ]
+                            );
+                            $event->sheet->styleCells(
+                                'A1:F1',
+                                [
+                                    'font' => [
+                                        'name'      =>  'Calibri',
+                                        'size'      =>  15,
+                                        'bold'      =>  true,
+                                        'text'      => 'center',
+                                        'color' => ['rgb' => 'black'],
+                                    ],
+                                ]
+                            );
+                            
+    
+                                
+                    
+                },
+    
+            ];
+        }
+        
 
-        ];
+       
+            
+        
+       
     }
 }

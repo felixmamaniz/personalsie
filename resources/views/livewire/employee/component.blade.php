@@ -91,7 +91,8 @@
             </div>
         </div>
     </div>
-     @include('livewire.employee.form')
+    @include('livewire.employee.form')
+    @include('livewire.employee.detailEmployee')
 </div>
 
 <script>

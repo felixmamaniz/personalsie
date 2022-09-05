@@ -69,7 +69,7 @@ class AttendancesController extends Component
             $xd=Attendance::select('attendances.*')->get();
             //dd($xd);
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.*','e.name as employee', DB::raw('0 as retraso'))
+            ->select('attendances.*','e.name as employee', DB::raw('0 as retraso'), DB::raw('0 as hcumplida') )
             ->whereBetween('attendances.fecha', [$from,$to])
             //->groupBy("e.id")
             ->orderBy('attendances.fecha','desc')
@@ -99,6 +99,25 @@ class AttendancesController extends Component
                                             }
                                     
                                 }
+            //agregar las horas cumplidas del usuario
+            foreach ($this->data as $os)
+            {
+                $timeacumleted= $this->horascumplidas($os->entrada, $os->salida);
+                if($os->employee=='Carlos')
+                {
+                    //dd($timeacumleted);
+                }
+                if($timeacumleted>'04:40:00')
+                {
+                    
+                    $os->hcumplida='Cumplio';
+                    
+                }
+                else{
+                    $os->hcumplida='No Cumplio';
+                }
+
+            }
                                 
             
         } else {
@@ -124,7 +143,61 @@ class AttendancesController extends Component
                                 }
         }
     }
+    //calcular el horario cumplido del empleado
+    public function horascumplidas($horaentrada, $horasalida)
+    {
+        $timeacumleted='';
+        //hora que entro el empleado
+        $horaE=(int)  substr($horaentrada,0,2);
+        $minutoE=(int)  substr($horaentrada,3,2);
+        $segundoE=(int)  substr($horaentrada,6,2);
+        //hora que salio el empleado
+        $horaS=(int)  substr($horasalida,0,2);
+        $minutoS=(int)  substr($horasalida,3,2);
+        $segundoS=(int)  substr($horasalida,6,2);
+        
+        $horaretraso=abs($horaS-$horaE);
+        $minutoretraso=abs($minutoS-$minutoE);
+        $segundosretraso=abs($segundoS-$segundoE);
 
+        if($minutoE > $minutoS)
+        {
+            $horaretraso= abs($horaretraso-1);
+        }
+        
+        //validar el time para que retorne valor ordenado
+        if($segundosretraso<10 && $minutoretraso<10 && $horaretraso<10){
+            $timeacumleted='0'.$horaretraso.':0'.$minutoretraso.':0'.$segundosretraso;
+        }
+        //para ver si funciona a o no
+        /*if($horaentrada=='14:25:17')
+        {
+            dd($minutoretraso);
+            dd($horataconformada.':'.$minutoconformada.':'.$segundoconformada);
+        }*/
+        if($segundosretraso>9 && $minutoretraso>9 && $horaretraso>9){
+            $timeacumleted=$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
+        }
+
+        if($segundosretraso<10 && $minutoretraso<10 && $horaretraso>9){
+            $timeacumleted=$horaretraso.':0'.$minutoretraso.':0'.$segundosretraso;
+        }
+
+        if($segundosretraso<10 && $minutoretraso>9 && $horaretraso<10){
+            $timeacumleted='0'.$horaretraso.':'.$minutoretraso.':0'.$segundosretraso;
+        }
+        if($segundosretraso>9 && $minutoretraso<10 && $horaretraso<10)
+        {
+            $timeacumleted='0'.$horaretraso.':0'.$minutoretraso.':'.$segundosretraso;
+        }
+        if($segundosretraso>9 && $minutoretraso>9 && $horaretraso<10)
+        {
+            $timeacumleted='0'.$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
+        }
+        
+        //dd($retraso);
+        return $timeacumleted;
+    }
     //calcular el tiempo del retraso del empleado
     public function strtotime($horaentrada,$horaconformada)
     {
@@ -135,20 +208,25 @@ class AttendancesController extends Component
         $minuto=(int)  substr($horaentrada,3,2);
         $segundo=(int)  substr($horaentrada,6,2);
         //horaconfomada asginada para entrar
-        $horaconformada=(int)  substr($horaconformada,0,2);
+        $horataconformada=(int)  substr($horaconformada,0,2);
         $minutoconformada=(int)  substr($horaconformada,3,2);
         $segundoconformada=(int)  substr($horaconformada,6,2);
         //calculamos el retrasa
-        $horaretraso=$hora-$horaconformada;
+        $horaretraso=$hora-$horataconformada;
         $minutoretraso=$minuto-$minutoconformada;
         $segundosretraso=$segundo-$segundoconformada;
         //validar el time para que retorne valor ordenado
         if($segundosretraso<10 && $minutoretraso<10 && $horaretraso<10){
             $timestamp='0'.$horaretraso.':0'.$minutoretraso.':0'.$segundosretraso;
         }
-
+        //para ver si funciona a o no
+        /*if($horaentrada=='14:25:17')
+        {
+            dd($minutoretraso);
+            dd($horataconformada.':'.$minutoconformada.':'.$segundoconformada);
+        }*/
         if($segundosretraso>9 && $minutoretraso>9 && $horaretraso>9){
-            $timestamp=''.$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
+            $timestamp=$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
         }
 
         if($segundosretraso<10 && $minutoretraso<10 && $horaretraso>9){
@@ -161,6 +239,10 @@ class AttendancesController extends Component
         if($segundosretraso>9 && $minutoretraso<10 && $horaretraso<10)
         {
             $timestamp='0'.$horaretraso.':0'.$minutoretraso.':'.$segundosretraso;
+        }
+        if($segundosretraso>9 && $minutoretraso>9 && $horaretraso<10)
+        {
+            $timestamp='0'.$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
         }
         
         //dd($retraso);

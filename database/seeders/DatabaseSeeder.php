@@ -24,8 +24,13 @@ class DatabaseSeeder extends Seeder
       $this->call(RoleSeeder::class);
       $this->call(ModelHasRolesSeeder::class);
       $this->call(RoleHasPermissionSeeder::class);
+<<<<<<< HEAD
       $this->call(AreaTrabajoSeeder::class);
       $this->call(PuestoTrabajoSeeder::class);
+=======
+      $this->call(PuestoTrabajoSeeder::class);
+      $this->call(AreaTrabajoSeeder::class);
+>>>>>>> 378abfa12ce224f98a5e7e866c2c7aa20762eee8
       $this->call(FunctionAreaSeeder::class);
     }
 }

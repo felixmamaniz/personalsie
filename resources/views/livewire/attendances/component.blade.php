@@ -57,18 +57,36 @@
                        
 
                         <div class="col-sm-2 mt-4">
-    
-                            
-
-                                <button wire:click.prevent="generarpdf({{$data}})" class="btn btn-primary">
-                                    GENERAR EXCEL
-                                </button>
-
                                 <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}" 
                                 href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
                                 target="_blank">Exportar a Excel</a>
 
                         </div>
+                        <div class="col-sm-5 mt-4">
+                            <div class="card-body">
+                                @if (isset($errors) && $errors->any())
+                                <div class="alert alert-danger" role="alert">
+                                    @foreach ($errors->all() as $error)
+                                    {{$error}}
+                                    @endforeach
+                                </div>
+                                @endif
+
+                                <form action="{{url('POST')}}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <input type="file" name="import_file">
+                                    <button type="submit" class="btn btn-primary">
+                                        IMPORTAR EXCEL
+                                    </button>
+                                </form>
+                            </div>
+                            
+
+                            
+
+                            
+
+                    </div>
     
                     </div>
     
@@ -84,6 +102,7 @@
                                 <th class="text-center">SALIDA</th>
                                 <th class="text-center">NOMBRE</th>
                                 <th class="text-center">RETRASO</th>
+                                <th class="text-center">HORAS CUMPLIDAS</th>
                               </tr>
                             </thead>
                             <tbody>
@@ -111,6 +130,9 @@
 
                                         <td class="text-center">
                                             {{ ($item->retraso) }}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ ($item->hcumplida) }}
                                         </td>
                                     </tr>
                                     @endforeach

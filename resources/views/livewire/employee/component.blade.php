@@ -26,10 +26,8 @@
                                 <th class="table-th text-withe text-center">FECHA DE NAC.</th>
                                 <th class="table-th text-withe text-center">DIRECCION</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
-                                <th class="table-th text-withe text-center">FACHA DE ADMISION</th>
-
+                                <th class="table-th text-withe text-center">ESTADO CIVIL</th>
                                 <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar --}}
-
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">PUESTO</th>
                                 <th class="table-th text-white text-center">IMAGEN</th> 
@@ -51,11 +49,17 @@
                                     <td><h6 class="text-center">{{ $employee->dateNac }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->address }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
-                                    <td><h6 class="text-center">{{ $employee->dateAdmission }}</h6></td>
+                                    
+                                    <td class="text-center">
+                                        <span class="badge {{$employee->estadoCivil == 'Soltero' ? 'badge-success' : 'badge-danger'}}
+                                            text-uppercase" style="background-color: #fff; color: black">
+                                            {{$employee->estadoCivil}}
+                                        </span>
+                                    </td>
 
-                                    {{--<td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>--}}
-                                    <td><h6 class="text-center">{{$tiempos}}</h6></td>
-
+                                    {{--<td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>
+                                    <td><h6 class="text-center">{{$tiempos}}</h6></td>--}}
+                                    <td><h6 class="text-center">No definido</h6></td>
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->puesto }}</h6></td>
 
@@ -65,22 +69,26 @@
                                              alt="imagen de ejemplo" height="70" width="80" class="rounded">
                                         </span>
                                     </td>
-
+                                    
                                     <td class="text-center">
+                                        
                                         <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"
                                             class="btn btn-dark mtmobile" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
+                                        
                                         <a href="javascript:void(0)"
                                             wire:click="Destroy({{$employee->id}})"
                                             class="btn btn-dark" title="Destroy">
                                             <i class="fas fa-trash"></i>
                                         </a>
 
-                                        <button wire:click.prevent="viewDetails('{{ $employee->id }}')"
-                                            class="btn btn-dark">
-                                            <i class="fas fa-list"></i>
-                                        </button>
+                                        <a href="javascript:void(0)" 
+                                            class="btn btn-dark" data-toggle="modal"
+                                            wire:click.prevent="getDetails({{$employee->id}})"
+                                            data-target="#theDetail">
+                                            <i class="fas fa-list-ul"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -92,6 +100,7 @@
         </div>
     </div>
      @include('livewire.employee.form')
+     @include('livewire.employee.detalleEmpleado')
 </div>
 
 <script>
@@ -119,7 +128,10 @@
         window.livewire.on('show-modal2', Msg => {
             $('#modal-details').modal('show')
         })
-
+        // ver detalle de empleados
+        window.livewire.on('detail-show', msg => {
+            $('#theDetail').modal('show')
+        });
     });
 
     function Confirm(id) {

@@ -16,9 +16,11 @@ class Employee extends Model
         'dateNac',
         'address',
         'phone',
-        'dateAdmission',
+        //'dateAdmission',
+        'estadoCivil',
         'area_trabajo_id',
         'puesto_trabajo_id',
+        //'contrato_id',
         'image'
     ];
 

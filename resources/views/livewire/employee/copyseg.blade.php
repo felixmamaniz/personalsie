@@ -20,43 +20,77 @@
         	'dateAdmission',
     ];
 
-
-
     // empleados
+
+    Completado
+
 
     aumentar columna fotos
     puesto de trabajo
     estado civil
 
     detalle del empleado
-    grupo de empleado
     
+    no aplica estos datos
+        formacion
+        titulacion
+        cursos
+        certificados
+        conocimientos
+        experiencias
 
-    formacion
-    titulacion
-    cursos
-    certificados
-    conocimientos
-    experiencias
-
-
-    tipo de contrato    
+    contrato
         fcha inico
         fecha fin
         descripcion
-        tipo de contrato
+        -> no requerido = tipo de contrato
         notas
+        -> agregar estado
 
         php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
-        php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
+        php artisan make:livewire nombre
+        php artisan make:seeder "nombreSeeder" -> de cada tabla o migracion
+
+
+        /*
+        Carbon::setLocale('es');
+        $TiempoTranscurrido = setlocale(LC_TIME, 'es_ES.utf8');
+
+        $date = Carbon::now();
+        $TiempoC = Carbon::parse($date)->format('Y-m-d');
+
+        $fechaInicio = '$dateAdmission';
+        $fechaActual = $TiempoC;
+
+        //pruebadbhvdg
+
+        $segundos = strtotime($fechaActual) - strtotime($fechaInicio);  // segundos
+        $segRedondeados = floor($segundos);
+
+        $minutos = $segRedondeados / 60;    // minutos
+        $minRedondeados = floor($minutos);
+
+        $horas = $minRedondeados / 60;  // horas
+        $horasRedondeados = floor($horas);
+
+        $dias = $horasRedondeados / 24;     // dias
+        $diasRedondeados = floor($dias);    // para redondeo de un dia mas ceil()
+
+        $meses = $diasRedondeados / 28;     // meses
+        $mesesRedondeados = floor($meses);
+
+        $años = $mesesRedondeados - 12;     // años
+        $añosRedondeados = floor($años);
+
+        //dd( $TiempoTranscurrido);
+        if($añosRedondeados > 0){
+            $TiempoTranscurrido = $añosRedondeados . " Años ". $mesesRedondeados . " Meses y ". $diasRedondeados . " Dias";
+        }else{
+            if($añosRedondeados < 1){
+                $TiempoTranscurrido = $mesesRedondeados . " Meses y ". $diasRedondeados . " Dias";
+            }else{
+                $TiempoTranscurrido = $diasRedondeados . " Dias";
+            }
+        }*/
 --}}
-
-
-
-
-
-
-{{--  https://styde.net/componente-carbon-fechas-laravel-5/
-    https://www.anerbarrena.com/sumar-restar-fechas-php-5655/
-      --}}
         

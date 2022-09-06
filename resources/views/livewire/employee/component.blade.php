@@ -61,11 +61,11 @@
                                     <td><h6 class="text-center">{{$tiempos}}</h6></td>--}}
                                     <td><h6 class="text-center">No definido</h6></td>
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
-                                    <td><h6 class="text-center">{{ $employee->puesto }}</h6></td>
+                                    <td><h6 class="text-center">{{$employee->puesto_trabajo_id}}</h6></td>
 
                                     <td class="text-center">
                                         <span>
-                                            <img src="{{asset('storage/employees/' .$employee->imagen)}}"
+                                            <img src="{{ asset('storage/employees/' .$employee->image)}}"
                                              alt="imagen de ejemplo" height="70" width="80" class="rounded">
                                         </span>
                                     </td>

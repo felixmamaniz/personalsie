@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Livewire;
+use Illuminate\Support\Facades\Storage;
 
 use Livewire\Component;
 use App\Models\AreaTrabajo;
@@ -10,7 +11,7 @@ use Livewire\withPagination;
 use Livewire\withFileUploads;
 use App\Models\Contrato;
 
-use Illuminate\Support\Facades\Storage;
+
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -185,10 +186,10 @@ class EmployeeController extends Component
         $this->image = $employee->null;
 
         // editar contrato
-        $this->fechaInicio = $contrato->fechaInicio;
+        /*$this->fechaInicio = $contrato->fechaInicio;
         $this->fechaFin = $contrato->fechaFin;
         $this->descripcion = $contrato->descripcion;
-        $this->nota = $contrato->nota;
+        $this->nota = $contrato->nota;*/
 
         $this->emit('modal-show', 'Show modal!');
     }
@@ -209,8 +210,8 @@ class EmployeeController extends Component
             'puestoid' => 'required|not_in:Elegir',
 
             // datos de contrato
-            'fechaInicio' => 'required',
-            'fechaFin' => 'required',
+            /*'fechaInicio' => 'required',
+            'fechaFin' => 'required',*/
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -235,19 +236,19 @@ class EmployeeController extends Component
             'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
 
             // datos de contrato
-            'fechaInicio.required' => 'la fecha de Inicio es requerido',
-            'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            /*'fechaInicio.required' => 'la fecha de Inicio es requerido',
+            'fechaFin.required' => 'la fecha Final de contrato es requerido',*/
         ];
 
         $this->validate($rules, $messages);
 
-        $contrato = Contrato::find($this->select_contrato_id);
+        /*$contrato = Contrato::find($this->select_contrato_id);
         $contrato -> update([
             'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota
-        ]);
+        ]);*/
 
         $employee = Employee::find($this->selected_id);
         $employee->update([
@@ -273,15 +274,15 @@ class EmployeeController extends Component
             $employee->save();
 
             if($imageName !=null){
-                if(file_exists('storage/employees') . $imageName){
+                if(file_exists('storage/employees' . $imageName)){
                     unlink('storage/employees' . $imageName);
                 }
             }
         }
 
-        //$employee->save();
+        $employee->save();
 
-        $this->resetUI();
+        $this->resetUI(); // limpia las cajas de texto
         $this->emit('employee-updated', 'Datos de Empleado Actualizado');
     }
 

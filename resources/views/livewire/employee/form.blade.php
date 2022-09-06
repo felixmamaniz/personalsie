@@ -121,7 +121,7 @@
             </div>
         </div>
     </div>
-    {{-- DATOS DE CONTRATO GFG--}}
+    {{-- DATOS DE CONTRATO --}}
     <div class="card-body" style="background: #e6e6e9" >
         <h5 class="card-title">Datos de Contrato</h5>
         <div class="row">

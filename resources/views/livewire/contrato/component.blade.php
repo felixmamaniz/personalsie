@@ -21,7 +21,6 @@
                                <th class="table-th text-white">FECHA FINAL</th>
                                <th class="table-th text-white">DESCRIPCION</th>
                                <th class="table-th text-white">NOTA</th>
-                               <th class="table-th text-white text-center">ACTIONS</th> 
                             </tr>
                         </thead>
                         <tbody>
@@ -32,7 +31,7 @@
                                 <td><h6>{{$datos->descripcion}}</h6></td>
                                 <td><h6>{{$datos->nota}}</h6></td>
                                 
-                                <td class="text-center">
+                                {{-- <td class="text-center">
                                     <a href="javascript:void(0)" 
                                         wire:click="Edit({{$datos->id}})"
                                         class="btn btn-dark mtmobile" title="Edit">
@@ -44,7 +43,7 @@
                                     class="btn btn-dark" title="Destroy">
                                     <i class="fas fa-trash"></i>
                                     </a>
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>

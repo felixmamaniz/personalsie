@@ -47,7 +47,7 @@ class EmployeeController extends Component
     public function render()
     {
         if(strlen($this->search) > 0){
-            $data = Contrato::where('descripcion','like','%' . $this->search . '%')->paginate($this->pagination);
+            //$data = Contrato::where('descripcion','like','%' . $this->search . '%')->paginate($this->pagination);
 
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
@@ -59,7 +59,7 @@ class EmployeeController extends Component
             ->paginate($this->pagination);
         }
         else
-            $data = Contrato::orderBy('id','desc')->paginate($this->pagination);
+            //$data = Contrato::orderBy('id','desc')->paginate($this->pagination);
 
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
@@ -68,7 +68,7 @@ class EmployeeController extends Component
             ->paginate($this->pagination);
         
         return view('livewire.employee.component', [
-            'contratos' => $data ,
+            //'contratos' => $data ,
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),

@@ -99,13 +99,8 @@
             </div>
         </div>
     </div>
-<<<<<<< HEAD
      @include('livewire.employee.form')
      @include('livewire.employee.detalleEmpleado')
-=======
-    @include('livewire.employee.form')
-    @include('livewire.employee.detailEmployee')
->>>>>>> 378abfa12ce224f98a5e7e866c2c7aa20762eee8
 </div>
 
 <script>

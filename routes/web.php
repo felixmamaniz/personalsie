@@ -16,6 +16,8 @@ use App\Http\Livewire\AttendancesController;
 use App\Http\Livewire\InicioController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Livewire\PuestoTrabajoController;
+//use App\Http\Livewire\TipoContratoController;
+use App\Http\Livewire\ContratoController;
 
 Auth::routes();
 
@@ -37,6 +39,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('attendance', AttendancesController::class);
     Route::get('areaspermissions', AreasPermissionsController::class);
     Route::get('puesto_trabajos', PuestoTrabajoController::class);
+    //Route::get('tipo_contratos', TipoContratoController::class);
+    Route::get('contratos', ContratoController::class);
+    
 
      //reporte horario Excel
      Route::get('report/excel/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcel']);

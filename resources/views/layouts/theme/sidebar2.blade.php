@@ -176,6 +176,13 @@
 												Empleados</a>
 										</li>
 									@endcan
+									@can('Sucursal_Index')
+										<li>
+											<a href="{{ url('contratos') }}">
+												<i class="fa fas fa-minus"></i>
+												Contrato</a>
+										</li>
+									@endcan
 									<li>
 										<a href="{{ url('attendance') }}">
 											<i class="fa fas fa-minus"></i>

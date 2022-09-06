@@ -14,13 +14,14 @@ class ContratoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $fechaInicio, $fechaFin, $descripcion, $nota, $selected_id;
+    public $fechaInicio, $fechaFin, $descripcion, $nota, $estado, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
     public function mount(){
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Contrato';
+        $this->estado = 'Elegir';
     }
 
     public function paginationView()
@@ -46,11 +47,12 @@ class ContratoController extends Component
 
     // editar 
     public function Edit($id){
-        $record = Contrato::find($id, ['id', 'fechaInicio', 'fechaFin', 'descripcion', 'nota']);
+        $record = Contrato::find($id, ['id', 'fechaInicio', 'fechaFin', 'descripcion', 'nota','estado']);
         $this->fechaInicio = $record->fechaInicio;
         $this->fechaFin = $record->fechaFin;
         $this->descripcion = $record->descripcion;
         $this->nota = $record->nota;
+        $this->estado = $record->estado;
         $this->selected_id = $record->id;
 
         $this->emit('show-modal', 'show modal!');
@@ -60,10 +62,12 @@ class ContratoController extends Component
         $rules = [
             'fechaInicio' => 'required',
             'fechaFin' => 'required',
+            'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
             'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            'estado.required' => 'seleccione estado de contrato',
         ];
 
         $this->validate($rules, $messages);
@@ -72,7 +76,8 @@ class ContratoController extends Component
             'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota
+            'nota'=>$this->nota,
+            'estado'=>$this->estado
         ]);
 
         $this->resetUI();
@@ -84,11 +89,13 @@ class ContratoController extends Component
         $rules = [
             'fechaInicio' => 'required',
             'fechaFin' => 'required',
+            'estado' => 'required|not_in:Elegir',
         ];
 
         $messages = [
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
             'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            'estado.required' => 'seleccione estado de contrato',
         ];
         $this->validate($rules,$messages);
 
@@ -97,7 +104,8 @@ class ContratoController extends Component
             'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota
+            'nota'=>$this->nota,
+            'estado'=>$this->estado
         ]);
 
         $this->resetUI();
@@ -109,6 +117,7 @@ class ContratoController extends Component
         $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
+        $this->estado = 'Elegir';
         $this->search='';
         $this->selected_id=0;
     }

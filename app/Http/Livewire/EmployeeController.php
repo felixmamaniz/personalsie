@@ -11,8 +11,6 @@ use Livewire\withPagination;
 use Livewire\withFileUploads;
 use App\Models\Contrato;
 
-
-
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +27,7 @@ class EmployeeController extends Component
     public $TiempoTranscurrido;
 
     // Datos de Contrato
-    public $fechaInicio, $fechaFin, $descripcion, $nota, $select_contrato_id;
+    public $fechaInicio, $fechaFin, $descripcion, $nota, $estado, $select_contrato_id;
     
     public function paginationView()
     {
@@ -43,10 +41,31 @@ class EmployeeController extends Component
         $this->puestoid = 'Elegir';
         $this->genero = 'Seleccionar';
         $this->estadoCivil = 'Seleccionar';
+
+        $this->estado = 'Elegir';
     }
 
     public function render()
     {
+        /*Carbon::setLocale('es');
+        $TiempoTranscurrido = setlocale(LC_TIME, 'es_ES.utf8');
+
+        $date = Carbon::now();
+        $TiempoC = Carbon::parse($date)->format('Y-m-d', '$fechaInicio');
+
+        $fechaInicio = '$dateAdmission';
+        $fechaActual = $TiempoC;
+
+        $currentDate = Carbon::createFromFormat('Y-m-d', '$fechaInicio');
+        $shippingDate = Carbon::createFromFormat('Y-m-d', '$fechaFin');
+
+        $diferencia_en_dias = $currentDate->diffInDays($shippingDate);
+
+        //$diferencia_en_dias = $shippingDate->diffInDays($currentDate);
+
+        $TiempoTranscurrido =  $diferencia_en_dias;
+        */
+
         if(strlen($this->search) > 0){
             //$data = Contrato::where('descripcion','like','%' . $this->search . '%')->paginate($this->pagination);
 
@@ -91,7 +110,6 @@ class EmployeeController extends Component
             'dateNac' => 'required',
             'address' => 'required',
             'phone' => 'required|unique:employees',
-            //'dateAdmission' => 'required',
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'puestoid' => 'required|not_in:Elegir',
@@ -99,6 +117,7 @@ class EmployeeController extends Component
             // datos de contrato
             'fechaInicio' => 'required',
             'fechaFin' => 'required',
+            'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             // datos de empleado
@@ -119,8 +138,6 @@ class EmployeeController extends Component
             'phone.required' => 'el numero de telefono es requerido',
             'phone.unique' => 'el numero de telefono ya existe en sistema',
 
-            //'dateAdmission.required' => 'la fecha de admision es requerido',
-
             'estadoCivil.required' => 'seleccione estado civil del empleado',
             'estadoCivil.not_in' => 'selecciona estado civil',
 
@@ -130,6 +147,8 @@ class EmployeeController extends Component
 
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
             'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            'estado.required' => 'el estado de contrato es requerido',
+            'estado.not_in' => 'selecciona estado de  contrato',
         ];
 
         $this->validate($rules, $messages);
@@ -138,7 +157,8 @@ class EmployeeController extends Component
             'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota
+            'nota'=>$this->nota,
+            'estado'=>$this->estado
         ]);
 
         $employ = Employee::create([
@@ -149,12 +169,10 @@ class EmployeeController extends Component
             'dateNac'=>$this->dateNac,
             'address'=>$this->address,
             'phone'=>$this->phone,
-            //'dateAdmission'=>$this->dateAdmission,
             'estadoCivil'=>$this->estadoCivil,
             'area_trabajo_id' => $this->areaid,
             'puesto_trabajo_id' => $this->puestoid
         ]);
-
         //$customFileName;
         if($this->image)
         {
@@ -178,7 +196,6 @@ class EmployeeController extends Component
         $this->dateNac = $employee->dateNac;
         $this->address = $employee->address;
         $this->phone = $employee->phone;
-        //$this->dateAdmission = $employee->dateAdmission;
         $this->estadoCivil = $employee->estadoCivil;
         $this->areaid = $employee->area_trabajo_id;
         $this->puestoid = $employee->puesto_trabajo_id;
@@ -189,7 +206,8 @@ class EmployeeController extends Component
         /*$this->fechaInicio = $contrato->fechaInicio;
         $this->fechaFin = $contrato->fechaFin;
         $this->descripcion = $contrato->descripcion;
-        $this->nota = $contrato->nota;*/
+        $this->nota = $contrato->nota;
+        $this->estado = $record->estado;*/
 
         $this->emit('modal-show', 'Show modal!');
     }
@@ -204,14 +222,15 @@ class EmployeeController extends Component
             'dateNac' => 'required',
             'address' => 'required',
             'phone' => 'required',
-            //'dateAdmission' => 'required',
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'puestoid' => 'required|not_in:Elegir',
 
             // datos de contrato
             /*'fechaInicio' => 'required',
-            'fechaFin' => 'required',*/
+            'fechaFin' => 'required',
+            'estado' => 'required|not_in:Elegir',
+            */
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -227,7 +246,7 @@ class EmployeeController extends Component
 
             'address.required' => 'la direccion es requerida',
             'phone.required' => 'el numero de telefono es requerido',
-            //'dateAdmission.required' => 'la fecha de admision es requerido',
+
             'estadoCivil.required' => 'seleccione estado civil del empleado',
             'estadoCivil.not_in' => 'selecciona estado civil',
 
@@ -237,7 +256,8 @@ class EmployeeController extends Component
 
             // datos de contrato
             /*'fechaInicio.required' => 'la fecha de Inicio es requerido',
-            'fechaFin.required' => 'la fecha Final de contrato es requerido',*/
+            'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            'estado.required' => 'seleccione estado de contrato',*/
         ];
 
         $this->validate($rules, $messages);
@@ -259,7 +279,6 @@ class EmployeeController extends Component
             'dateNac' => $this->dateNac,
             'address' => $this->address,
             'phone' => $this->phone,
-            //'dateAdmission' => $this->dateAdmission,
             'estadoCivil'=>$this->estadoCivil,
             'area_trabajo_id' => $this->areaid,
             'puesto_trabajo_id' => $this->puestoid
@@ -295,7 +314,6 @@ class EmployeeController extends Component
         $this->dateNac = '';
         $this->address = '';
         $this->phone = '';
-       // $this->dateAdmission = '';
         $this->estadoCivil = 'Seleccionar';
         $this->areaid = 'Elegir';
         $this->puestoid = 'Elegir';
@@ -308,6 +326,7 @@ class EmployeeController extends Component
         $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
+        $this->estado = 'Elegir';
     }
     //
     protected $listeners = [
@@ -330,9 +349,9 @@ class EmployeeController extends Component
 
     // $data = Employees::all(); devuelve toda la informacion de la tabla empleados
     // ver detalle de empleados 
-     public function getDetails($id)
-     {
-         $employee = Employee::find($this->selected_id);
-         $this->emit('detail-show','details loaded');
-     }
+    public function viewDetails(Employee $employee)
+    {
+        $employee = Employee::find($this->selected_id);
+        $this->emit('show-modal2', 'open modal');
+    }
 }

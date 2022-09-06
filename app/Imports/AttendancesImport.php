@@ -49,24 +49,27 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
         //si tengo una persona que tiene 2 entradas y salidas por dia guardarlas juntos
         foreach ($this->empleado as $row){
             
-            $sal=$this->empleado->where('fecha',$row['fecha'] and 'salida','==',null)->first();
-            dd($sal);
+            /*$sal=$this->empleado->where('id',$row['id'] );
+            $sal->all();
+            $otro=$sal->where('salida','!=',null);
+            dd($otro);*/
 
-            if($row['estado_de_trabajo'] == "Entrada" )
+            if($row['entrada'] != null )
             {
-                $sal=$rows->where(substr('tiempo',0,10),substr($row['tiempo'],0,10) && 'estado_de_trabajo','==','Salida')->first();
+                $sal=$this->empleado->where('id',$row['id'] );
                 $sal->all();
-                dd($sal);
+                $otro=$sal->where('salida','!=',null);
+                dd($otro);
                 //agregamos los datos
                 $this->entrada->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => 'null']);
                 
             }
 
             
-            if($row['estado_de_trabajo']=="Salida")
+            /*if($row['estado_de_trabajo']=="Salida")
             {
                 $this->entrada->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' => 'null', 'salida' =>substr( $row['tiempo'], 11, 9)]);
-            }
+            }*/
         }
         dd($this->entrada);
         //$unique = $this->entrada->unique('id');

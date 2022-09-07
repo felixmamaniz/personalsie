@@ -25,6 +25,8 @@ class CreateContratosTable extends Migration
 
             $table->string('nota',255)->nullable();
 
+            $table->enum('estado',['Activo','Finalizado'])->default('Activo');
+
             $table->timestamps();
         });
     }

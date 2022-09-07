@@ -92,7 +92,7 @@
                         <select wire:model="puestoid" class="form-control">
                             <option value="Elegir" disabled>Elegir</option>
                             @foreach($puestos as $puesto)
-                            <option value="{{$puesto->id}}">{{$puesto->name}}</option>
+                                <option value="{{$puesto->id}}">{{$puesto->name}}</option>
                             @endforeach
                         </select>
                         @error('puestoid') <span class="text-danger er"> {{ $message }}</span> @enderror
@@ -113,8 +113,9 @@
 
                 <div class="col-sm-12 mt-3">
                     <div class="form-group custom-file">
-                        <input type="file" class="custom-file-input form-control" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
+                        <input type="file" class="custom-file-input form-control img-thumbnail center-block" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
                         <label for="" class="custom-file-label">Imagen {{$image}}</label>
+                        <h6 style="color: red">Seleccione una Imagen con un peso menos de 2Mb</h6>
                         @error('image') <span class="text-danger er"> {{ $message }}</span> @enderror
                     </div>
                 </div>
@@ -122,6 +123,7 @@
         </div>
     </div>
     {{-- DATOS DE CONTRATO --}}
+    
     <div class="card-body" style="background: #e6e6e9" >
         <h5 class="card-title">Datos de Contrato</h5>
         <div class="row">
@@ -153,6 +155,17 @@
                     <textarea type="text" class="form-control" wire:model.lazy="nota"></textarea>
                 </div>
                 @error('nota') <span class="text-danger er">{{ $message }}</span> @enderror
+            </div>
+            <div class="col-sm-12 col-md-6">
+                <div class="form-group">
+                    <label>Estado de Contrato</label>
+                    <select wire:model="estado" class="form-control">
+                        <option value="Seleccionar" disabled>Elegir</option>
+                        <option value="Activo" selected>Activo</option>
+                        <option value="Finalizado" selected>Finalizado</option>
+                    </select>
+                    @error('estado') <span class="text-danger er">{{ $message }}</span> @enderror
+                </div>
             </div>
         </div>
     </div>

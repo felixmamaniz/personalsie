@@ -64,15 +64,6 @@
                     @error('phone') <span class="text-danger er">{{ $message }}</span> @enderror
                 </div>
 
-                {{-- anular fecha de admision 
-                <div class="col-sm-12 col-md-6">
-                    <div class="form-group">
-                        <label>Fecha de Admision</label>
-                        <input type="date" wire:model.lazy="dateAdmission" class="form-control">
-                    </div>
-                    @error('dateAdmission') <span class="text-danger er">{{ $message }}</span> @enderror
-                </div> --}}
-
                 <div class="col-sm-12 col-md-6">
                     <div class="form-group">
                         <label>Area de Trabajo</label>
@@ -111,6 +102,27 @@
                     </div>
                 </div>
 
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label>Contrato</label>
+                        <select wire:model="contratoid" class="form-control">
+                            <option value="Elegir" disabled>Elegir</option>
+                            @foreach($contratos as $contrato)
+                                <option value="{{$contrato->id}}">{{$contrato->descripcion}}</option>
+                            @endforeach
+                        </select>
+                        @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                    <div class="form-group">
+                        <label>Fecha de Inicio</label>
+                        <input type="date" wire:model.lazy="fechaInicio" class="form-control">
+                    </div>
+                    @error('fechaInicio') <span class="text-danger er">{{ $message }}</span> @enderror
+                </div>
+
                 <div class="col-sm-12 mt-3">
                     <div class="form-group custom-file">
                         <input type="file" class="custom-file-input form-control img-thumbnail center-block" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
@@ -127,14 +139,6 @@
     <div class="card-body" style="background: #e6e6e9" >
         <h5 class="card-title">Datos de Contrato</h5>
         <div class="row">
-            
-            <div class="col-sm-6 col-md-6">
-                <div class="form-group">
-                    <label>Fecha de Inicio</label>
-                    <input type="date" wire:model.lazy="fechaInicio" class="form-control">
-                </div>
-                @error('fechaInicio') <span class="text-danger er">{{ $message }}</span> @enderror
-            </div>
             <div class="col-sm-12 col-md-6">
                 <div class="form-group">
                     <label>Fecha de Final</label>
@@ -160,7 +164,7 @@
                 <div class="form-group">
                     <label>Estado de Contrato</label>
                     <select wire:model="estado" class="form-control">
-                        <option value="Seleccionar" disabled>Elegir</option>
+                        <option value="Elegir" disabled>Elegir</option>
                         <option value="Activo" selected>Activo</option>
                         <option value="Finalizado" selected>Finalizado</option>
                     </select>

@@ -14,7 +14,7 @@
               <div class="price-value">
                 <div class="value">
                   <img src="{{ asset('storage/employees/' .$d->image)}}"
-                  alt="imagen de ejemplo" height="90" width="70" class="img-fluid rounded-start">
+                  alt="imagen de ejemplo" height="90" width="100" class="img-fluid rounded-start">
                 </div>
               </div>
               <ul class="pricing-content">

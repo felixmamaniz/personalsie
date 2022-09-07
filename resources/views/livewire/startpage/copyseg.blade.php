@@ -5,6 +5,10 @@
 
     // empleados
 
+    contrato
+    fecha de inicio en tabla enpleado
+    fecha fin en contrato
+
     aumentar columna fotos
     puesto de trabajo
     estado civil

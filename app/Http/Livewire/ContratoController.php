@@ -4,6 +4,7 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Contrato;
+use App\Models\Employee;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
@@ -14,7 +15,7 @@ class ContratoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $fechaInicio, $fechaFin, $descripcion, $nota, $estado, $selected_id;
+    public $fechaFin, $descripcion, $nota, $estado, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
@@ -40,15 +41,14 @@ class ContratoController extends Component
             $data = Contrato::orderBy('id','desc')->paginate($this->pagination);
         }
 
-        return view('livewire.contrato.component', ['contratos' => $data ]) // se envia contratos
+        return view('livewire.contrato.component', ['contratos' => $data]) // se envia contratos
         ->extends('layouts.theme.app')
         ->section('content');
     }
 
     // editar 
     public function Edit($id){
-        $record = Contrato::find($id, ['id', 'fechaInicio', 'fechaFin', 'descripcion', 'nota','estado']);
-        $this->fechaInicio = $record->fechaInicio;
+        $record = Contrato::find($id, ['id', 'fechaFin', 'descripcion', 'nota','estado']);
         $this->fechaFin = $record->fechaFin;
         $this->descripcion = $record->descripcion;
         $this->nota = $record->nota;
@@ -60,20 +60,17 @@ class ContratoController extends Component
 
     public function Store(){
         $rules = [
-            'fechaInicio' => 'required',
-            'fechaFin' => 'required',
+            //'fechaFin' => 'required',
             'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
-            'fechaInicio.required' => 'la fecha de Inicio es requerido',
-            'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
             'estado.required' => 'seleccione estado de contrato',
         ];
 
         $this->validate($rules, $messages);
        
         $contrato = Contrato::create([
-            'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
@@ -87,21 +84,18 @@ class ContratoController extends Component
     // actualizar
     public function Update(){
         $rules = [
-            'fechaInicio' => 'required',
-            'fechaFin' => 'required',
+            //'fechaFin' => 'required',
             'estado' => 'required|not_in:Elegir',
         ];
 
         $messages = [
-            'fechaInicio.required' => 'la fecha de Inicio es requerido',
-            'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
             'estado.required' => 'seleccione estado de contrato',
         ];
         $this->validate($rules,$messages);
 
         $contrato = Contrato::find($this->selected_id);
         $contrato -> update([
-            'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
@@ -113,7 +107,6 @@ class ContratoController extends Component
     }
 
     public function resetUI(){
-        $this->fechaInicio='';
         $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';

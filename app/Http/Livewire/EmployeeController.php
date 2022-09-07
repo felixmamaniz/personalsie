@@ -21,14 +21,14 @@ class EmployeeController extends Component
     use withFileUploads;
 
     // Datos de Empleados
-    public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $image, $selected_id;
-    public $pageTitle, $componentName, $search, $employeeId;
+    public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $contratoid, $fechaInicio, $image, $selected_id;
+    public $pageTitle, $componentName, $search;
     private $pagination = 5;
 
     public $TiempoTranscurrido;
 
     // Datos de Contrato
-    public $fechaInicio, $fechaFin, $descripcion, $nota, $estado, $select_contrato_id;
+    public $fechaFin, $descripcion, $nota, $estado, $select_contrato_id;
     
     public function paginationView()
     {
@@ -42,6 +42,7 @@ class EmployeeController extends Component
         $this->puestoid = 'Elegir';
         $this->genero = 'Seleccionar';
         $this->estadoCivil = 'Seleccionar';
+        $this->contratoid = 'Elegir';
 
         $this->estado = 'Elegir';
     }
@@ -69,11 +70,10 @@ class EmployeeController extends Component
 
         $estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
-            //$data = Contrato::where('descripcion','like','%' . $this->search . '%')->paginate($this->pagination);
-
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
-            ->select('employees.*','c.name as area', 'pt.name as puesto')
+            ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
+            ->select('employees.*','c.name as area', 'pt.name as puesto', 'ct.descripcion as contrato')
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
             ->orWhere('c.name', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
@@ -81,11 +81,10 @@ class EmployeeController extends Component
             ->paginate($this->pagination);
         }
         else
-            //$data = Contrato::orderBy('id','desc')->paginate($this->pagination);
-
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
-            ->select('employees.*','c.name as area','pt.name as puesto')
+            ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
+            ->select('employees.*','c.name as area','pt.name as puesto', 'ct.descripcion as contrato')
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         
@@ -94,6 +93,7 @@ class EmployeeController extends Component
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
+            'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
             'estadocontrato' => $estadoContrato,
             //'tiempos' => $TiempoTranscurrido
         ])
@@ -116,9 +116,10 @@ class EmployeeController extends Component
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'puestoid' => 'required|not_in:Elegir',
+            'contratoid' => 'required|not_in:Elegir',
+            'fechaInicio' => 'required',
 
             // datos de contrato
-            'fechaInicio' => 'required',
             'fechaFin' => 'required',
             'estado' => 'required|not_in:Elegir',
         ];
@@ -147,17 +148,18 @@ class EmployeeController extends Component
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
 
             'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
-
+            'contratoid.not_in' => 'elije contrato de elegir',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
+
+            // datos de Contrato
             'fechaFin.required' => 'la fecha Final de contrato es requerido',
             'estado.required' => 'el estado de contrato es requerido',
             'estado.not_in' => 'selecciona estado de  contrato',
         ];
 
         $this->validate($rules, $messages);
-
+ 
         $contrato = Contrato::create([
-            'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
@@ -174,17 +176,21 @@ class EmployeeController extends Component
             'phone'=>$this->phone,
             'estadoCivil'=>$this->estadoCivil,
             'area_trabajo_id' => $this->areaid,
-            'puesto_trabajo_id' => $this->puestoid
+            'puesto_trabajo_id' => $this->puestoid,
+            'contrato_id' => $this->contratoid,
+            'fechaInicio'=>$this->fechaInicio,
         ]);
+        
         //$customFileName;
-        /*if($this->image)
+        if($this->image)
         {
             $customFileName = uniqid() . '_.' . $this->image->extension();
             $this->image->storeAs('public/employees', $customFileName);
             $employ->image = $customFileName;
             $employ->save();
-        }*/
-        $customFileName;
+        }
+
+        /*$customFileName;
         if($this->image)
         {
             $customFileName = uniqid() . '_.' . $this->image->extension();
@@ -195,7 +201,7 @@ class EmployeeController extends Component
                 $constraint->aspectRatio();
             })
             ->save($ruta);
-        }
+        }*/
         
 
         $this->resetUI();
@@ -215,11 +221,13 @@ class EmployeeController extends Component
         $this->estadoCivil = $employee->estadoCivil;
         $this->areaid = $employee->area_trabajo_id;
         $this->puestoid = $employee->puesto_trabajo_id;
-        $this->selected_id = $employee->id;
+        $this->contratoid = $employee->contrato_id;
+        $this->fechaInicio = $employee->fechaInicio;
         $this->image = $employee->null;
+        $this->selected_id = $employee->id;
 
         // editar contrato
-        /*$this->fechaInicio = $contrato->fechaInicio;
+        /*
         $this->fechaFin = $contrato->fechaFin;
         $this->descripcion = $contrato->descripcion;
         $this->nota = $contrato->nota;
@@ -241,9 +249,11 @@ class EmployeeController extends Component
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'puestoid' => 'required|not_in:Elegir',
+            'contratoid' => 'required|not_in:Elegir',
+            'fechaInicio' => 'required',
 
             // datos de contrato
-            /*'fechaInicio' => 'required',
+            /*
             'fechaFin' => 'required',
             'estado' => 'required|not_in:Elegir',
             */
@@ -269,9 +279,11 @@ class EmployeeController extends Component
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
 
             'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
+            'contratoid.not_in' => 'elije contrato de elegir',
+            'fechaInicio.required' => 'la fecha de Inicio es requerido',
 
             // datos de contrato
-            /*'fechaInicio.required' => 'la fecha de Inicio es requerido',
+            /*
             'fechaFin.required' => 'la fecha Final de contrato es requerido',
             'estado.required' => 'seleccione estado de contrato',*/
         ];
@@ -280,7 +292,6 @@ class EmployeeController extends Component
 
         /*$contrato = Contrato::find($this->select_contrato_id);
         $contrato -> update([
-            'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota
@@ -297,7 +308,9 @@ class EmployeeController extends Component
             'phone' => $this->phone,
             'estadoCivil'=>$this->estadoCivil,
             'area_trabajo_id' => $this->areaid,
-            'puesto_trabajo_id' => $this->puestoid
+            'puesto_trabajo_id' => $this->puestoid,
+            'contrato_id' => $this->contratoid,
+            'fechaInicio' => $this->fechaInicio,
         ]);
 
         if($this->image){
@@ -333,12 +346,13 @@ class EmployeeController extends Component
         $this->estadoCivil = 'Seleccionar';
         $this->areaid = 'Elegir';
         $this->puestoid = 'Elegir';
+        $this->contratoid = 'Elegir';
+        $this->fechaInicio = '';
         $this->image=null;
         $this->search = '';
         $this->selected_id = 0;
 
         // datos de contrato
-        $this->fechaInicio='';
         $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
@@ -351,6 +365,16 @@ class EmployeeController extends Component
 
     // eliminar informacion
     public function Destroy($id){
+
+        /*$employee = Employee::find($id);
+
+        $resultContrato = Contrato::find($employee->select_contrato_id);
+        $resultContrato->delete();
+
+        $imageName = $employee->image; //imagen temporal
+        $employee->delete();*/
+
+
         $employee = Employee::find($id);
         $imageName = $employee->image; //imagen temporal
         $employee->delete();

@@ -23,12 +23,11 @@
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
                                 <th class="table-th text-withe text-center">CI</th>
                                 <th class="table-th text-withe text-center">SEXO</th>
-                               
-                                
                                 <th class="table-th text-withe text-center">TELEFONO</th>
                                 <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar --}}
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">PUESTO</th>
+                                <th class="table-th text-withe text-center">CONTRATO</th>
                                 <th class="table-th text-white text-center">IMAGEN</th> 
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
@@ -52,6 +51,7 @@
                                     <td><h6 class="text-center">Sin Especificar</h6></td>
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->puesto}}</h6></td>
+                                    <td><h6 class="text-center">{{ $employee->contrato}}</h6></td>
 
                                     <td class="text-center">
                                         <span>

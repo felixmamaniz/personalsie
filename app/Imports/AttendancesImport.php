@@ -27,34 +27,96 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
         //dd($rows);
         //separamos entra y salida en otros collection  
         $this->empleado=collect([]);
+        $this->entrada=collect([]);
+        $this->salida=collect([]);
+        $e=0;
+        $s=0;
+        //nuevo registro donde si tengo una entrada busco si tiene una salida y si no marco no tiene salida
+        //si no tiene una entrar y solo salida la dejo como no tiene entrada
+        //si tengo una persona que tiene 2 entradas y salidas por dia guardarlas juntosa
         foreach ($rows as $row){
             if($row['estado_de_trabajo'] == "Entrada" )
             {
                 //agregamos los datos
-                $this->empleado->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => null]);
-                
+                $this->entrada->push(['id_entrada'=> $e,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => null]);
+                $e++;   
             }
 
             
             if($row['estado_de_trabajo']=="Salida")
             {
-                $this->empleado->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' => null, 'salida' =>substr( $row['tiempo'], 11, 9)]);
+                $this->salida->push(['id_salida'=> $s,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' => null, 'salida' =>substr( $row['tiempo'], 11, 9)]);
+                $s++;
             }
         }
-        //dd($this->empleado);
+        $s=0;
+        foreach ($this->entrada as $row){
+            $result=$this->salida->where('id',$row['id'])->where('fecha',$row['fecha'])->first();
+            //dd($shora);
+            if($result)
+            {
+                $shora=$result['salida'];
+                $this->empleado->push(['id_salida'=> $s,'id' => $row['id'], 'name' => $row['name'], 'fecha' => $row['fecha'], 'entrada' => $row['entrada'], 'salida' => $shora]);
+                $s++;
+                //removemos las salidas utilizadas
+                $this->salida->pull($result['id_salida']);
+                //dd($this->empleado);
+               
+            }else{
+                $shora='no marco salida';
+                $this->empleado->push(['id_salida'=> $s,'id' => $row['id'], 'name' => $row['name'], 'fecha' => $row['fecha'], 'entrada' => $row['entrada'], 'salida' => $shora]);
+                $s++;
+            }
+            
+        }
+        //dd($this->salida);
+        //sacar valores duplicados
+        $unique = $this->empleado->unique(function ($item) {
+            /*$algo=null;
+            //dd($item);
+            $algo=collect($item);
+            //dd($algo);
+            $vamo=$algo->whereBetween('entrada',['']);
+            $vamo->all();
+            dd($vamo);*/
+            //if($item['name']=='Yazmin')
+            if(($item['entrada']>'08:00:00' && $item['salida']<'12:50:00')){
+                
+                return $item['id'].$item['fecha'].$item['entrada'];
+            }
+            return $item['id'].$item['fecha'];
+        });
+         
+        $unique->values()->all(); 
+        dump($unique);
+        dd($this->empleado);
 
+        dump($this->entrada);
+        dd($this->salida);
+
+        
+
+        //esto es otra cosa
+        //dd($this->empleado);
+        $sal=null;
+        $otro=null;
         $this->entrada=collect([]);
         //nuevo registro donde si tengo una entrada busco si tiene una salida y si no marco no tiene salida
         //si no tiene una entrar y solo salida la dejo como no tiene entrada
         //si tengo una persona que tiene 2 entradas y salidas por dia guardarlas juntos
-        foreach ($this->empleado as $row){
-            
-            /*$sal=$this->empleado->where('id',$row['id'] );
+        foreach ($this->empleado as $row => $value){
+            if($value['name'] == 'Mauricio')
+            {
+                $sal=$row;
+                break;
+            }
+           /* $sal=$this->empleado->where('id',$row['id'] );
             $sal->all();
             $otro=$sal->where('salida','!=',null);
-            dd($otro);*/
+            break;*/
+            //dd($otro);
 
-            if($row['entrada'] != null )
+            /*if($row['entrada'] != null )
             {
                 $sal=$this->empleado->where('id',$row['id'] );
                 $sal->all();
@@ -63,14 +125,14 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
                 //agregamos los datos
                 $this->entrada->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => 'null']);
                 
-            }
-
-            
-            /*if($row['estado_de_trabajo']=="Salida")
-            {
-                $this->entrada->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' => 'null', 'salida' =>substr( $row['tiempo'], 11, 9)]);
             }*/
+
         }
+        //dd($sal);
+        $this->empleado->pull($sal);
+        
+        dd($this->empleado);
+
         dd($this->entrada);
         //$unique = $this->entrada->unique('id');
         $unique = $this->entrada->unique(function ($item) {

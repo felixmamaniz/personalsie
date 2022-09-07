@@ -13,6 +13,7 @@ use App\Models\Contrato;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Intervetion\Image\Facades\Image;
 
 class EmployeeController extends Component
 {
@@ -66,12 +67,13 @@ class EmployeeController extends Component
         $TiempoTranscurrido =  $diferencia_en_dias;
         */
 
+        $estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             //$data = Contrato::where('descripcion','like','%' . $this->search . '%')->paginate($this->pagination);
 
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
-            ->select('employees.*','c.name as area')
+            ->select('employees.*','c.name as area', 'pt.name as puesto')
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
             ->orWhere('c.name', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
@@ -83,7 +85,7 @@ class EmployeeController extends Component
 
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
-            ->select('employees.*','c.name as area')
+            ->select('employees.*','c.name as area','pt.name as puesto')
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         
@@ -92,6 +94,7 @@ class EmployeeController extends Component
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
+            'estadocontrato' => $estadoContrato,
             //'tiempos' => $TiempoTranscurrido
         ])
         ->extends('layouts.theme.app')
@@ -174,13 +177,26 @@ class EmployeeController extends Component
             'puesto_trabajo_id' => $this->puestoid
         ]);
         //$customFileName;
-        if($this->image)
+        /*if($this->image)
         {
             $customFileName = uniqid() . '_.' . $this->image->extension();
             $this->image->storeAs('public/employees', $customFileName);
             $employ->image = $customFileName;
             $employ->save();
+        }*/
+        $customFileName;
+        if($this->image)
+        {
+            $customFileName = uniqid() . '_.' . $this->image->extension();
+            $ruta = $this->image->storeAs('public/employees', $customFileName);
+
+            Image::make($customFileName)
+            ->resize(45, null, function($constraint){
+                $constraint->aspectRatio();
+            })
+            ->save($ruta);
         }
+        
 
         $this->resetUI();
         $this->emit('employee-added', 'Empleado Registrado');

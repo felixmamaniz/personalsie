@@ -22,7 +22,7 @@ class EmployeeController extends Component
 
     // Datos de Empleados
     public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $contratoid, $fechaInicio, $image, $selected_id;
-    public $pageTitle, $componentName, $search;
+    public $pageTitle, $componentName, $search, $componentNuevoContrato;
     private $pagination = 5;
 
     public $TiempoTranscurrido;
@@ -38,6 +38,7 @@ class EmployeeController extends Component
     public function mount(){
         $this->pageTitle = 'Listado';
         $this->componentName = 'Empleados';
+        $this->componentNuevoContrato = 'Nuevo Contrato';
         $this->areaid = 'Elegir';
         $this->puestoid = 'Elegir';
         $this->genero = 'Seleccionar';
@@ -49,25 +50,6 @@ class EmployeeController extends Component
 
     public function render()
     {
-        /*Carbon::setLocale('es');
-        $TiempoTranscurrido = setlocale(LC_TIME, 'es_ES.utf8');
-
-        $date = Carbon::now();
-        $TiempoC = Carbon::parse($date)->format('Y-m-d', '$fechaInicio');
-
-        $fechaInicio = '$dateAdmission';
-        $fechaActual = $TiempoC;
-
-        $currentDate = Carbon::createFromFormat('Y-m-d', '$fechaInicio');
-        $shippingDate = Carbon::createFromFormat('Y-m-d', '$fechaFin');
-
-        $diferencia_en_dias = $currentDate->diffInDays($shippingDate);
-
-        //$diferencia_en_dias = $shippingDate->diffInDays($currentDate);
-
-        $TiempoTranscurrido =  $diferencia_en_dias;
-        */
-
         $estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
@@ -101,11 +83,60 @@ class EmployeeController extends Component
         ->section('content');
     }
 
+    public function NuevoEmpleado()
+    {
+        $this->resetUI();
+        $this->emit('modal-show', 'show modal!');
+    }
+
+    public function NuevoContrato()
+    {
+        $this->resetUI();
+        $this->emit('modal-hide', 'show modal!');
+        $this->emit('show-modal-contrato', 'show modal!');
+    }
+
+    public function cancelar()
+    {
+        $this->resetPage(); // regresa la pagina
+        //$this->emit('modal-show', 'show modal!');
+    }
+
+    // Registro de nuevo Contrato
+    public function RegNuevoContrato(){
+        $rules = [
+            //'fechaFin' => 'required',
+            'estado' => 'required|not_in:Elegir',
+        ];
+        $messages =  [
+            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            'estado.required' => 'seleccione estado de contrato',
+            'estado.not_in' => 'selecciona estado de contrato',
+        ];
+
+        $this->validate($rules, $messages);
+       
+        $contrato = Contrato::create([
+            'fechaFin'=>$this->fechaFin,
+            'descripcion'=>$this->descripcion,
+            'nota'=>$this->nota,
+            'estado'=>$this->estado
+        ]);
+
+        
+
+        //$contrato->save();
+
+        $this->emit('tcontrato-added','Area Registrada');
+        $this->resetUI();
+        $this->emit('modal-hide-area', 'show modal!');
+        $this->emit('show-modal', 'show modal!');
+    }
+
     // Registro de empleado nuevo
     public function Store(){
         
         $rules = [
-            // datos de empleado
             'ci' => 'required|unique:employees',
             'name' => 'required',
             'lastname' => 'required',
@@ -118,53 +149,27 @@ class EmployeeController extends Component
             'puestoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
-
-            // datos de contrato
-            'fechaFin' => 'required',
-            'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
-            // datos de empleado
             'ci.required' => 'numero de cedula de identidad requerida',
             'ci.unique' => 'ya existe el numero de documento en el sistema',
-
             'name.required' => 'el nombre de empleado es requerida',
-
             'lastname.required' => 'los apellidos del empleado son requerida',
-            
             'genero.required' => 'seleccione el genero del empleado',
             'genero.not_in' => 'selecciona genero',
-
             'dateNac.required' => 'la fecha de nacimiento es requerido',
-
             'address.required' => 'la direccion es requerida',
-
             'phone.required' => 'el numero de telefono es requerido',
             'phone.unique' => 'el numero de telefono ya existe en sistema',
-
             'estadoCivil.required' => 'seleccione estado civil del empleado',
             'estadoCivil.not_in' => 'selecciona estado civil',
-
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
-
             'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
             'contratoid.not_in' => 'elije contrato de elegir',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
-
-            // datos de Contrato
-            'fechaFin.required' => 'la fecha Final de contrato es requerido',
-            'estado.required' => 'el estado de contrato es requerido',
-            'estado.not_in' => 'selecciona estado de  contrato',
         ];
 
         $this->validate($rules, $messages);
- 
-        $contrato = Contrato::create([
-            'fechaFin'=>$this->fechaFin,
-            'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota,
-            'estado'=>$this->estado
-        ]);
 
         $employ = Employee::create([
             'ci' =>$this->ci, 
@@ -203,9 +208,10 @@ class EmployeeController extends Component
             ->save($ruta);
         }*/
         
-
         $this->resetUI();
         $this->emit('employee-added', 'Empleado Registrado');
+        $this->emit('modal-hide-contrato', 'show modal!');
+        $this->emit('modal-show', 'show modal!');
     }
 
     // editar informacion
@@ -226,13 +232,6 @@ class EmployeeController extends Component
         $this->image = $employee->null;
         $this->selected_id = $employee->id;
 
-        // editar contrato
-        /*
-        $this->fechaFin = $contrato->fechaFin;
-        $this->descripcion = $contrato->descripcion;
-        $this->nota = $contrato->nota;
-        $this->estado = $record->estado;*/
-
         $this->emit('modal-show', 'Show modal!');
     }
 
@@ -251,12 +250,6 @@ class EmployeeController extends Component
             'puestoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
-
-            // datos de contrato
-            /*
-            'fechaFin' => 'required',
-            'estado' => 'required|not_in:Elegir',
-            */
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -282,20 +275,9 @@ class EmployeeController extends Component
             'contratoid.not_in' => 'elije contrato de elegir',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
 
-            // datos de contrato
-            /*
-            'fechaFin.required' => 'la fecha Final de contrato es requerido',
-            'estado.required' => 'seleccione estado de contrato',*/
         ];
 
         $this->validate($rules, $messages);
-
-        /*$contrato = Contrato::find($this->select_contrato_id);
-        $contrato -> update([
-            'fechaFin'=>$this->fechaFin,
-            'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota
-        ]);*/
 
         $employee = Employee::find($this->selected_id);
         $employee->update([
@@ -351,12 +333,9 @@ class EmployeeController extends Component
         $this->image=null;
         $this->search = '';
         $this->selected_id = 0;
+        $this->resetValidation(); // resetValidation para quitar los mensajes de validacion Rojos
 
-        // datos de contrato
-        $this->fechaFin='';
-        $this->descripcion='';
-        $this->nota='';
-        $this->estado = 'Elegir';
+        //$this->select_contrato_id = 0;
     }
     //
     protected $listeners = [
@@ -365,15 +344,6 @@ class EmployeeController extends Component
 
     // eliminar informacion
     public function Destroy($id){
-
-        /*$employee = Employee::find($id);
-
-        $resultContrato = Contrato::find($employee->select_contrato_id);
-        $resultContrato->delete();
-
-        $imageName = $employee->image; //imagen temporal
-        $employee->delete();*/
-
 
         $employee = Employee::find($id);
         $imageName = $employee->image; //imagen temporal
@@ -387,11 +357,9 @@ class EmployeeController extends Component
         $this->emit('employee-deleted','Empleado Eliminado');
     }
 
-    // $data = Employees::all(); devuelve toda la informacion de la tabla empleados
     // ver detalle de empleados 
     public function viewDetails(Employee $employee)
     {
-        $employee = Employee::find($this->selected_id);
         $this->emit('show-modal2', 'open modal');
     }
 }

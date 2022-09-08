@@ -6,8 +6,7 @@
                     <b>{{ $componentName }} | {{ $pageTitle }}</b>
                 </h4>
                 <ul class="tabs tab-pills">
-                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
-                        data-target="#theModal">Agregar</a>
+                    <a href="javascript:void(0)" class="btn btn-warning" wire:click="NuevoEmpleado()">Agregar</a>
                 </ul>
 
                {{-- <h6>{{ date('Y-m-d H:i:s') }}</h6>   muestra hora de sistema--}}
@@ -90,6 +89,7 @@
     </div>
      @include('livewire.employee.form')
      @include('livewire.employee.detalleEmpleado')
+     @include('livewire.employee.nuevoContrato')
 </div>
 
 <script>
@@ -97,6 +97,9 @@
 
         window.livewire.on('employee-added', msg => {
             $('#theModal').modal('hide')
+        });
+        window.livewire.on('tcontrato-added', msg => {
+            $('#theModal-contrato').modal('hide')
         });
         window.livewire.on('employee-updated', msg => {
             $('#theModal').modal('hide')
@@ -107,9 +110,16 @@
         window.livewire.on('modal-show', msg => {
             $('#theModal').modal('show')
         });
+        // formulario de Nuevo contrato
+        window.livewire.on('show-modal-contrato', Msg => {
+            $('#theModal-contrato').modal('show')
+        })
         window.livewire.on('modal-hide', msg => {
             $('#theModal').modal('hide')
         });
+        window.livewire.on('modal-hide-contrato', Msg => {
+            $('#theModal-contrato').modal('hide')
+        }) 
         window.livewire.on('hidden.bs.modal', msg => {
             $('.er').css('display','none')
         });
@@ -117,6 +127,8 @@
         window.livewire.on('show-modal2', Msg => {
             $('#modal-details').modal('show')
         })
+
+         
     });
 
     function Confirm(id) {

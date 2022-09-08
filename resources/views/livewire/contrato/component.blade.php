@@ -41,16 +41,16 @@
                                
                                 <td class="text-center">
                                     <a href="javascript:void(0)" 
-                                        wire:click="Edit({{$datos->id}})"
+                                        wire:click="Edit({{$datos->idContrato}})"
                                         class="btn btn-dark mtmobile" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
-                                    {{--<a href="javascript:void(0)"
-                                    onclick="Confirmar1('{{$datos->id}}')"
+                                    <a href="javascript:void(0)"
+                                    onclick="Confirmar1('{{$datos->idContrato}}','{{$datos->verificar}}')"
                                     class="btn btn-dark" title="Destroy">
                                     <i class="fas fa-trash"></i>
-                                    </a>--}}
+                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -74,6 +74,7 @@
 
         window.livewire.on('tcontrato-added', msg=>{
             $('#theModal').modal('hide')
+            noty(Msg)
         });
 
         window.livewire.on('tcontrato-updated', msg=>{

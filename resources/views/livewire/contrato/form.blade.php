@@ -23,7 +23,7 @@
         @error('nota') <span class="text-danger er">{{ $message }}</span> @enderror
     </div>
     
-    <div class="col-sm-12 col-md-6">
+    <div class="col-sm-12 col-md-5">
         <div class="form-group">
             <label>Estado de Contrato</label>
             <select id="seleccion" wire:model="estado" class="form-control">
@@ -34,7 +34,6 @@
             @error('estado') <span class="text-danger er">{{ $message }}</span> @enderror
         </div>
     </div>
-
 </div>
 
 @include('common.modalFooter')

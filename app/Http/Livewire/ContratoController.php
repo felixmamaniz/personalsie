@@ -34,16 +34,55 @@ class ContratoController extends Component
     {
         if(strlen($this->search) > 0)
         {
-            $data = Contrato::where('descripcion','like','%' . $this->search . '%')->paginate($this->pagination);
+            $data = Contrato::select('contratos.id as idContrato','contratos.fechaFin as fechaFin','contratos.descripcion as descripcion',
+            'contratos.nota as nota','contratos.estado as estado',
+            DB::raw('0 as verificar'))
+            ->orderBy('id','desc')
+            ->where('contratos.descripcion', 'like', '%' . $this->search . '%')
+            ->paginate($this->pagination);
+
+            foreach ($data as $os)
+            {
+                //Obtener los servicios de la orden de servicio
+                $os->verificar = $this->verificar($os->idContrato);
+            }
         }
         else
         {
-            $data = Contrato::orderBy('id','desc')->paginate($this->pagination);
+            $data = Contrato::select('contratos.id as idContrato','contratos.fechaFin as fechaFin','contratos.descripcion as descripcion',
+            'contratos.nota as nota','contratos.estado as estado',
+            DB::raw('0 as verificar'))
+            ->orderBy('id','desc')
+            ->paginate($this->pagination);
+
+            foreach ($data as $os)
+            {
+                //Obtener los servicios de la orden de servicio idContrato
+                $os->verificar = $this->verificar($os->idContrato);
+            }
         }
 
         return view('livewire.contrato.component', ['contratos' => $data]) // se envia contratos
         ->extends('layouts.theme.app')
         ->section('content');
+    }
+
+    // verificar 
+    public function verificar($idContrato)
+    {
+        $consulta = Contrato::join('employees as e', 'e.contrato_id', 'contratos.id')
+        ->select('contratos.*')
+        ->where('contratos.id', $idContrato)
+        ->get();
+       
+        if($consulta->count() > 0)
+        {
+            return "no";
+        }
+        else
+        {
+            return "si";
+        }
     }
 
     // editar 
@@ -66,6 +105,7 @@ class ContratoController extends Component
         $messages =  [
             //'fechaFin.required' => 'la fecha Final de contrato es requerido',
             'estado.required' => 'seleccione estado de contrato',
+            'estado.not_in' => 'selecciona estado de contrato',
         ];
 
         $this->validate($rules, $messages);
@@ -84,13 +124,12 @@ class ContratoController extends Component
     // actualizar
     public function Update(){
         $rules = [
-            //'fechaFin' => 'required',
             'estado' => 'required|not_in:Elegir',
         ];
 
         $messages = [
-            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
             'estado.required' => 'seleccione estado de contrato',
+            'estado.not_in' => 'selecciona estado de contrato',
         ];
         $this->validate($rules,$messages);
 
@@ -113,6 +152,7 @@ class ContratoController extends Component
         $this->estado = 'Elegir';
         $this->search='';
         $this->selected_id=0;
+        $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
 
     protected $listeners = [

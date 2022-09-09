@@ -23,6 +23,7 @@ class CreateEmployeesTable extends Migration
             $table->date('dateNac');    // fecha de nacimiento
             $table->string('address',255);
             $table->string('phone',10)->unique();
+            //$table->date('dateAdmission');
             $table->enum('estadoCivil',['Soltero','Casado'])->default('Soltero');
 
             $table->unsignedBigInteger('area_trabajo_id');
@@ -31,10 +32,9 @@ class CreateEmployeesTable extends Migration
             $table->unsignedBigInteger('puesto_trabajo_id');
             $table->foreign('puesto_trabajo_id')->references('id')->on('puesto_trabajos');
 
-            $table->unsignedBigInteger('contrato_id');
-            $table->foreign('contrato_id')->references('id')->on('contratos');
+            /*$table->unsignedBigInteger('contrato_id');
+            $table->foreign('contrato_id')->references('id')->on('contratos');*/
 
-            $table->date('fechaInicio');
             $table->string('image',100)->nullable();
 
             $table->timestamps();

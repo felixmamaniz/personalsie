@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContratosTable extends Migration
+class CreateShiftsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,10 @@ class CreateContratosTable extends Migration
      */
     public function up()
     {
-        Schema::create('contratos', function (Blueprint $table) {
+        Schema::create('shifts', function (Blueprint $table) {
             $table->id();
-
-            $table->date('fechaFin')->nullable();
-            $table->string('descripcion',255)->nullable();
-            $table->string('nota',255)->nullable();
-
-            $table->enum('estado',['Activo','Finalizado'])->default('Activo');
-
+            $table->string('name',255);
+            $table->string('horario');
             $table->timestamps();
         });
     }
@@ -33,6 +28,6 @@ class CreateContratosTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('contratos');
+        Schema::dropIfExists('shifts');
     }
 }

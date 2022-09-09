@@ -3,6 +3,7 @@
 namespace App\Imports;
 
 use App\Models\Attendance;
+use App\Models\Shift;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithBatchInserts;
@@ -50,6 +51,7 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
             }
         }
         $s=0;
+        //agrupar las entradas con las salidas de las misma fecha y eliminarlas
         foreach ($this->entrada as $row){
             $result=$this->salida->where('id',$row['id'])->where('fecha',$row['fecha'])->first();
             //dd($shora);
@@ -72,14 +74,16 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
         //dd($this->salida);
         //sacar valores duplicados
         $unique = $this->empleado->unique(function ($item) {
-            /*$algo=null;
-            //dd($item);
-            $algo=collect($item);
-            //dd($algo);
-            $vamo=$algo->whereBetween('entrada',['']);
-            $vamo->all();
-            dd($vamo);*/
+            $jc;
+
+            $jc=Shift::join('employees as e', 'e.id', 'shifts.employee_id')
+            ->select('shifts.name', 'e.name')
+            ->where('shifts.employee_id', $item['id'] && 'shifts.name', 'jornada completa')
+            ->first();
+            
             //if($item['name']=='Yazmin')
+            //si el usuario es del turno completo o jornada completa por definir aun
+
             if(($item['entrada']>'08:00:00' && $item['salida']<'12:50:00')){
                 
                 return $item['id'].$item['fecha'].$item['entrada'];
@@ -96,7 +100,7 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
 
         
 
-        //esto es otra cosa
+        //esto es otra cosa que se hizo al inicio
         //dd($this->empleado);
         $sal=null;
         $otro=null;

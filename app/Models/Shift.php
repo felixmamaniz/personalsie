@@ -5,8 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Contrato extends Model
+class Shift extends Model
 {
     use HasFactory;
-    protected $fillable = ['fechaInicio', 'fechaFin','descripcion','nota','estado']; /*,'tipo_contrato_id'*/
+
+    protected $fillable = ['name', 'horario'];
 }

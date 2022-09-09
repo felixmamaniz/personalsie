@@ -6,8 +6,8 @@
                     <b>{{$componentName}} | {{$pageTitle}}</b>
                 </h4>
                 <ul class="tabs tab-pills">
-                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
-                        data-target="#theModal">Agregar</a>
+                    {{--<a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
+                        data-target="#theModal">Agregar</a>--}}
                 </ul>
             </div>
             
@@ -18,16 +18,18 @@
                     <table class="table table-bordered table striped mt-1" >
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                                <th class="table-th text-white">FECHA FINAL</th>
-                                <th class="table-th text-white">DESCRIPCION</th>
-                                <th class="table-th text-white">NOTA</th>
-                                <th class="table-th text-white text-center">ESTADO</th>
-                                <th class="table-th text-white text-center">ACCION</th>
+                               <th class="table-th text-white">FECHA DE INICIO</th>
+                               <th class="table-th text-white">FECHA FINAL</th>
+                               <th class="table-th text-white">DESCRIPCION</th>
+                               <th class="table-th text-white">NOTA</th>
+                               <th class="table-th text-white text-center">ESTADO</th>
+                               <th class="table-th text-white text-center">ACCION</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($contratos as $datos)
                             <tr>
+                                <td><h6>{{$datos->fechaInicio}}</h6></td>
                                 <td><h6>{{$datos->fechaFin}}</h6></td>
                                 <td><h6>{{$datos->descripcion}}</h6></td>
                                 <td><h6>{{$datos->nota}}</h6></td>
@@ -38,16 +40,16 @@
                                         {{$datos->estado}}
                                     </span>
                                 </td>
-                               
+                                
                                 <td class="text-center">
                                     <a href="javascript:void(0)" 
-                                        wire:click="Edit({{$datos->idContrato}})"
+                                        wire:click="Edit({{$datos->id}})"
                                         class="btn btn-dark mtmobile" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                    onclick="Confirmar1('{{$datos->idContrato}}','{{$datos->verificar}}')"
+                                    onclick="Confirmar1('{{$datos->id}}')"
                                     class="btn btn-dark" title="Destroy">
                                     <i class="fas fa-trash"></i>
                                     </a>
@@ -74,7 +76,6 @@
 
         window.livewire.on('tcontrato-added', msg=>{
             $('#theModal').modal('hide')
-            noty(Msg)
         });
 
         window.livewire.on('tcontrato-updated', msg=>{

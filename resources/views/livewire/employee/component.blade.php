@@ -88,8 +88,15 @@
             </div>
         </div>
     </div>
+<<<<<<< HEAD
+    @include('livewire.employee.form')
+    @include('livewire.employee.nuevoContrato')
+    @include('livewire.employee.detalleEmpleado')
+     
+=======
      @include('livewire.employee.form')
      @include('livewire.employee.detalleEmpleado')
+>>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
 </div>
 
 <script>
@@ -98,6 +105,10 @@
         window.livewire.on('employee-added', msg => {
             $('#theModal').modal('hide')
         });
+<<<<<<< HEAD
+
+=======
+>>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
         window.livewire.on('employee-updated', msg => {
             $('#theModal').modal('hide')
         });
@@ -117,6 +128,37 @@
         window.livewire.on('show-modal2', Msg => {
             $('#modal-details').modal('show')
         })
+<<<<<<< HEAD
+
+        window.livewire.on('item-update', Msg => {
+            $('#theModal').modal('hide')
+            noty(Msg)
+        })
+        window.livewire.on('item-deleted', Msg => {
+            noty(Msg)
+        })
+        window.livewire.on('item-exists', Msg => {
+            noty(Msg)
+        })
+        window.livewire.on('item-error', Msg => {
+            noty(Msg)
+        })
+        window.livewire.on('show-modal', Msg => {
+            $('#theModal').modal('show')
+        })
+        window.livewire.on('show-modal-area', Msg => {
+            $('#theModal-area').modal('show')
+        }) 
+        window.livewire.on('modal-hide', Msg => {
+            $('#theModal').modal('hide')
+        })   
+        window.livewire.on('modal-hide-area', Msg => {
+            $('#theModal-area').modal('hide')
+        })    
+
+         
+=======
+>>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
     });
 
     function Confirm(id) {

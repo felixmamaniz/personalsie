@@ -105,6 +105,53 @@ class EmployeeController extends Component
         ->section('content');
     }
 
+    public function NuevoEmpleado()
+    {
+        $this->resetUI();
+        $this->emit('modal-show', 'show modal!');
+    }
+
+    public function NuevoContrato()
+    {
+        $this->resetUI();
+        $this->emit('modal-hide', 'show modal!');
+        $this->emit('show-modal-contrato', 'show modal!');
+    }
+
+    public function cancelar()
+    {
+        $this->resetPage(); // regresa la pagina
+        $this->emit('modal-show', 'show modal!');
+    }
+
+    // Registro de nuevo Contrato
+    public function RegNuevoContrato(){
+        $rules = [
+            //'fechaFin' => 'required',
+            'estado' => 'required|not_in:Elegir',
+        ];
+        $messages =  [
+            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
+            'estado.required' => 'seleccione estado de contrato',
+            'estado.not_in' => 'selecciona estado de contrato',
+        ];
+
+        $this->validate($rules, $messages);
+       
+        $contrato = Contrato::create([
+            'fechaFin'=>$this->fechaFin,
+            'descripcion'=>$this->descripcion,
+            'nota'=>$this->nota,
+            'estado'=>$this->estado
+        ]);
+
+        //$contrato->save();
+
+        $this->emit('tcontrato-added','Area Registrada');
+        $this->resetUI();
+        $this->emit('modal-hide-contrato', 'show modal!');
+        $this->emit('modal-show', 'show modal!');
+    }
     // Registro de empleado nuevo
     public function Store(){
         
@@ -349,12 +396,21 @@ class EmployeeController extends Component
         $this->search = '';
         $this->selected_id = 0;
 
+<<<<<<< HEAD
+        // Datos de contrato
+=======
         // datos de contrato
         $this->fechaInicio='';
+>>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
         $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
         $this->estado = 'Elegir';
+<<<<<<< HEAD
+        $this->select_contrato_id = 0;
+        $this->resetValidation(); // resetValidation para quitar los smg Rojos
+=======
+>>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
     }
     //
     protected $listeners = [

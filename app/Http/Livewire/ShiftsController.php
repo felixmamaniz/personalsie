@@ -111,7 +111,7 @@ class ShiftsController extends Component
         }*/
 
         Shift::find($id)->delete();
-        $this->emit('role-deleted', 'Se eliminó el Turno con exito');
+        $this->emit('role-deleted', 'Se elimino el Turno con exito');
     }
 
     public function resetUI()

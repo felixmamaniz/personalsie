@@ -122,6 +122,26 @@
             </div>
         </div>
     </div>
+
+    <!-- SALARIO -->
+    <div class="card">
+        <div class="card-body" style="background: #e6e6e9" >
+            <h5 class="card-title">Datos de Salario</h5>
+            <div class="row">
+                
+                <div class="col-sm-6 col-md-6">
+                    <div class="form-group">
+                        <label>Salario</label>
+                        <input type="number" wire:model.lazy="salario" class="form-control">
+                    </div>
+                    @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    
+
     {{-- DATOS DE CONTRATO --}}
     
     <div class="card-body" style="background: #e6e6e9" >

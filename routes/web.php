@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Livewire\PuestoTrabajoController;
 //use App\Http\Livewire\TipoContratoController;
 use App\Http\Livewire\ContratoController;
+use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\ShiftsController;
 
 Auth::routes();
@@ -44,6 +45,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('contratos', ContratoController::class);
 
     Route::get('shifts',ShiftsController::class);
+    Route::get('Salaries',SalariesController::class);
     
 
      //reporte horario Excel

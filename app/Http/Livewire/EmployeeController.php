@@ -10,6 +10,7 @@ use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
 use App\Models\Contrato;
+use App\Models\Salarie;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -29,6 +30,9 @@ class EmployeeController extends Component
 
     // Datos de Contrato
     public $fechaInicio, $fechaFin, $descripcion, $nota, $estado, $select_contrato_id;
+
+    //Salario
+    public $salario;
     
     public function paginationView()
     {
@@ -176,6 +180,14 @@ class EmployeeController extends Component
             'area_trabajo_id' => $this->areaid,
             'puesto_trabajo_id' => $this->puestoid
         ]);
+
+        //create salario
+        $salaries = Salarie::create([
+            'fechaInicio' => $this->fechaInicio,
+            'fechaFin' => $this->fechaFin,
+            'salarioMes' => $this->salario
+        ]);
+
         //$customFileName;
         /*if($this->image)
         {

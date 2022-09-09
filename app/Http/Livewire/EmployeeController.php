@@ -99,7 +99,7 @@ class EmployeeController extends Component
     public function cancelar()
     {
         $this->resetPage(); // regresa la pagina
-        //$this->emit('modal-show', 'show modal!');
+        $this->emit('modal-show', 'show modal!');
     }
 
     // Registro de nuevo Contrato
@@ -123,14 +123,12 @@ class EmployeeController extends Component
             'estado'=>$this->estado
         ]);
 
-        
-
         //$contrato->save();
 
         $this->emit('tcontrato-added','Area Registrada');
         $this->resetUI();
-        $this->emit('modal-hide-area', 'show modal!');
-        $this->emit('show-modal', 'show modal!');
+        $this->emit('modal-hide-contrato', 'show modal!');
+        $this->emit('modal-show', 'show modal!');
     }
 
     // Registro de empleado nuevo
@@ -333,9 +331,14 @@ class EmployeeController extends Component
         $this->image=null;
         $this->search = '';
         $this->selected_id = 0;
-        $this->resetValidation(); // resetValidation para quitar los mensajes de validacion Rojos
 
-        //$this->select_contrato_id = 0;
+        // Datos de contrato
+        $this->fechaFin='';
+        $this->descripcion='';
+        $this->nota='';
+        $this->estado = 'Elegir';
+        $this->select_contrato_id = 0;
+        $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
     //
     protected $listeners = [

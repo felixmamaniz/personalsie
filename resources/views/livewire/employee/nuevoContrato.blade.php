@@ -1,7 +1,7 @@
 <div wire:ignore.self class="modal fade" id="theModal-contrato" tabindex="-1" role="dialog">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
-            <div class="modal-header" style="background: #414141">
+            <div class="modal-header bg-dark">
               <h5 class="modal-title text-white">
                   <b>{{$componentNuevoContrato}}</b> | {{$selected_id > 0 ? 'EDITAR':'CREAR'}}
               </h5>
@@ -48,7 +48,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="button" wire:click.prevent="cancelar()" class="btn btn-dark close-btn text-info"
+                <button type="button" wire:click.prevent="cancelar()" class="btn btn-warning close-btn text-info"
                     data-dismiss="modal" style="background: #3b3f5c">CANCELAR
                 </button>
                 @if ($selected_id < 1)

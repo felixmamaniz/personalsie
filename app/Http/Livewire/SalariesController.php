@@ -14,11 +14,11 @@ use Illuminate\Support\Facades\DB;
 class SalariesController extends Component
 {
     use WithPagination;
-    public $shiftName, $search, $selected_id, $pageTitle, $componentName, $horaentrada, $horasalida, $minuto, $horario;
+    public $shiftName, $search, $selected_id, $pageTitle, $componentName, $horaentrada, $horasalida, $minuto, $horario, $detallempleado;
     private $pagination = 10;
+    //vista detalles de pago del empleado
+    public $sueldo, $Dtranscurridos,$pagarD, $Mtranscurridos, $pagarM;  
     //unimos las horas en un string
-    
-
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
@@ -26,6 +26,7 @@ class SalariesController extends Component
 
     public function mount()
     {
+        $this->detallempleado = [];
         $this->pageTitle = 'Listado';
         $this->componentName = 'Salarios';
     }
@@ -36,15 +37,23 @@ class SalariesController extends Component
         } else {
             $salaries = Salarie::select('salaries.*')->orderBy('id', 'asc')->paginate($this->pagination);
         }
-
+        //agregar el proximo pago del mes
+        foreach ($salaries as $salario) {
+            $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
+            $mergeAM=$mergeAM.substr($salario['fechaInicio'],7,3);
+            //dd($mergeAM);
+            $salario->fechaFin=$mergeAM;
+        }
         //calcular el salario por dias, por mes, por años
-        //calcular por dias donde se actua  lice cada mes la fecha de inicio
-       /* $fecha=Salarie::where('id',1)
+        //calcular por dias donde se actualice cada mes la fecha de inicio
+        $fecha=Salarie::where('id',1)
         ->first();
-        //$formatted_dt1=Carbon::parse($a->date);
-        $fechas1=carbon::parse($fecha['fechaInicio']);
+        //dd($fecha['fechaInicio']);
+        //agarrar la fecha de hoy y juntarla con el dia de inicio
+        $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
+        $mergeAM=$mergeAM.substr($fecha['fechaInicio'],7,3);
+        $fechas1=carbon::parse($mergeAM);
         $fechaf=carbon::parse(Carbon::now());
-        
         //calculamos la diferencia de dias
         $diasDiferencia = $fechaf->diffInDays($fechas1);
         
@@ -53,8 +62,12 @@ class SalariesController extends Component
         //calcular por año
         $añoDiferencia = $fechaf->diffInYears($fechas1);
 
-        dd($diasDiferencia.' '.$mesDiferencia.' '.$añoDiferencia);
-        */
+        //dd($diasDiferencia.' '.$mesDiferencia.' '.$añoDiferencia);
+
+        //sueldo a pagar x los dias transcurridos
+        $pagoDias=($fecha['salarioMes']/24) * $diasDiferencia;
+        //dd($pagoDias);
+        
         //dd($salaries);
         //$diasDiferencia = $fechaExpiracion->diffInDays($fechaEmision);
         /*$mes=Salarie::select('fechaInicio','fechaFin', DB::raw("'DATEDIFF(fechaInicio, fechaFin) AS DateDiff' as Total"))
@@ -66,7 +79,8 @@ class SalariesController extends Component
         dd($algo);*/
 
         //crear total de salarios x mes y x año
-        $pagototalmes;
+        $pagototalmes=Salarie::select('salaries.*')->orderBy('id', 'asc')->sum('salarioMes');
+        //dd($pagototalmes);
         $pagototalaño;
         //crear detalle de vista para mostrar cuando se le debe pagar pos los dias del mes trabajado y por todo el mes
         
@@ -75,5 +89,46 @@ class SalariesController extends Component
         ])
         ->extends('layouts.theme.app')
         ->section('content');
+    }
+
+    //vista del detalle de dias, meses pagados
+    public function Detailspago(Salarie $emplo)
+    {
+        
+        
+        //calcular el salario por dias, por mes, por años
+
+        //calcular por dias donde se actualice cada mes la fecha de inicio
+        //agarrar la fecha de hoy y juntarla con el dia de inicio
+        $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
+        $mergeAM=$mergeAM.substr($emplo['fechaInicio'],7,3);
+        $fechasD=carbon::parse($mergeAM);
+        $fechasM=carbon::parse($emplo['fechaInicio']);
+        $fechaf=carbon::parse(Carbon::now());
+        //calculamos la diferencia de dias
+        $diasDiferencia = $fechaf->diffInDays($fechasD);
+        //calcular por mes
+        $mesDiferencia = $fechaf->diffInMonths($fechasM);
+        //calcular por año
+        $añoDiferencia = $fechaf->diffInYears($fechasM);
+        //dd($diasDiferencia.' '.$mesDiferencia.' '.$añoDiferencia);
+        //sueldo a pagar x los dias transcurridos
+        $pagoDias=($emplo['salarioMes']/24) * $diasDiferencia;
+        //sueldo parago x los meses transcurridos
+        $pagoMes=($emplo['salarioMes'] * $mesDiferencia);
+
+        //dd($pagoMes);
+        //mandar datos
+        $this->sueldo=$emplo->salarioMes;
+        $this->Dtranscurridos=$diasDiferencia;
+        $this->pagarD=$pagoDias;
+        $this->Mtranscurridos=$mesDiferencia;
+        if($mesDiferencia < 1)
+        $this->pagarM=0;
+        else
+        $this->pagarM=$pagoMes;
+
+        //dd($this->detallempleado);
+        $this->emit('detalles', 'show modal!');
     }
 }

@@ -6,8 +6,7 @@
                     <b>{{ $componentName }} | {{ $pageTitle }}</b>
                 </h4>
                 <ul class="tabs tab-pills">
-                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
-                        data-target="#theModal">Agregar</a>
+                    <a href="javascript:void(0)" class="btn btn-warning" wire:click="NuevoEmpleado()">Agregar</a>
                 </ul>
 
                {{-- <h6>{{ date('Y-m-d H:i:s') }}</h6>   muestra hora de sistema--}}
@@ -23,12 +22,11 @@
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
                                 <th class="table-th text-withe text-center">CI</th>
                                 <th class="table-th text-withe text-center">SEXO</th>
-                               
-                                
                                 <th class="table-th text-withe text-center">TELEFONO</th>
                                 <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar --}}
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">PUESTO</th>
+                                <th class="table-th text-withe text-center">CONTRATO</th>
                                 <th class="table-th text-white text-center">IMAGEN</th> 
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
@@ -48,10 +46,11 @@
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
 
                                     {{--<td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>
-                                    <td><h6 class="text-center">{{$tiempos}}</h6></td>--}}
-                                    <td><h6 class="text-center">Sin Especificar</h6></td>
+                                    --}}
+                                    <td><h6 class="text-center">{{$tiempos}}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->puesto}}</h6></td>
+                                    <td><h6 class="text-center">{{ $employee->contrato}}</h6></td>
 
                                     <td class="text-center">
                                         <span>
@@ -62,7 +61,6 @@
                                     </td>
                                     
                                     <td class="text-center">
-                                        
                                         <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"
                                             class="btn btn-dark mtmobile" title="Edit">
                                             <i class="fas fa-edit"></i>
@@ -74,10 +72,9 @@
                                             <i class="fas fa-trash"></i>
                                         </a>
 
-                                        <button wire:click.prevent="viewDetails('{{ $employee->id }}')"
-                                            class="btn btn-dark">
+                                         <a class="btn btn-dark mtmobile" wire:click="DetalleEmpleado()">
                                             <i class="fas fa-list"></i>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             @endforeach
@@ -88,15 +85,9 @@
             </div>
         </div>
     </div>
-<<<<<<< HEAD
     @include('livewire.employee.form')
     @include('livewire.employee.nuevoContrato')
     @include('livewire.employee.detalleEmpleado')
-     
-=======
-     @include('livewire.employee.form')
-     @include('livewire.employee.detalleEmpleado')
->>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
 </div>
 
 <script>
@@ -105,10 +96,7 @@
         window.livewire.on('employee-added', msg => {
             $('#theModal').modal('hide')
         });
-<<<<<<< HEAD
 
-=======
->>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
         window.livewire.on('employee-updated', msg => {
             $('#theModal').modal('hide')
         });
@@ -118,60 +106,35 @@
         window.livewire.on('modal-show', msg => {
             $('#theModal').modal('show')
         });
+        // formulario de Nuevo contrato
+        window.livewire.on('show-modal-contrato', Msg => {
+            $('#theModal-contrato').modal('show')
+        })
         window.livewire.on('modal-hide', msg => {
             $('#theModal').modal('hide')
         });
+        window.livewire.on('modal-hide-contrato', Msg => {
+            $('#theModal-contrato').modal('hide')
+        }) 
         window.livewire.on('hidden.bs.modal', msg => {
             $('.er').css('display','none')
         });
         // ver detalle de empleados
-        window.livewire.on('show-modal2', Msg => {
+        window.livewire.on('show-modal-detalleE', Msg => {
             $('#modal-details').modal('show')
         })
-<<<<<<< HEAD
-
-        window.livewire.on('item-update', Msg => {
-            $('#theModal').modal('hide')
-            noty(Msg)
-        })
-        window.livewire.on('item-deleted', Msg => {
-            noty(Msg)
-        })
-        window.livewire.on('item-exists', Msg => {
-            noty(Msg)
-        })
-        window.livewire.on('item-error', Msg => {
-            noty(Msg)
-        })
-        window.livewire.on('show-modal', Msg => {
-            $('#theModal').modal('show')
-        })
-        window.livewire.on('show-modal-area', Msg => {
-            $('#theModal-area').modal('show')
-        }) 
-        window.livewire.on('modal-hide', Msg => {
-            $('#theModal').modal('hide')
-        })   
-        window.livewire.on('modal-hide-area', Msg => {
-            $('#theModal-area').modal('hide')
-        })    
-
-         
-=======
->>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
     });
 
     function Confirm(id) {
-        swal.fire({
-            title: 'CONFIRMAR',
-            icon: 'warning',
-            text: 'Confirmar eliminar el empleado',
-            showCancelButton: true,
-            cancelButtonText: 'Cerrar',
-            cancelButtonColor: '#383838',
-            confirmButtonColor: '#3B3F5C',
-            confirmButtonText: 'Aceptar'
-        }).then(function(result) {
+        Swal.fire({
+        title: 'CONFIRMAR',
+        text: "Confirmar eliminar el empleado",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar'
+        }).then((result) => {
             if (result.value) {
                 window.livewire.emit('deleteRow', id)
                 Swal.close()

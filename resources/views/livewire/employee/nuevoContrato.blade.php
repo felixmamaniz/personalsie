@@ -6,6 +6,7 @@
                   <b>{{$componentNuevoContrato}}</b> | {{$selected_id > 0 ? 'EDITAR':'CREAR'}}
               </h5>
               <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6>
+              <button wire:click.prevent="resetUI()" data-dismiss="modal" class="btn-warning">X</button>
             </div>
             <div class="modal-body">
 
@@ -31,6 +32,13 @@
                                 @error('nota') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                         </div>
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label>Salario</label>
+                                <input type="number" wire:model.lazy="salario" class="form-control">
+                            </div>
+                            @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
+                        </div>
 
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
@@ -54,9 +62,6 @@
                 @if ($selected_id < 1)
                     <button type="button" wire:click.prevent="RegNuevoContrato()"
                         class="btn btn-warning close-btn text-info">GUARDAR</button>
-                @else
-                    <button type="button" wire:click.prevent="Update()"
-                        class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
                 @endif
             </div>
         </div>

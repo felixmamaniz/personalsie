@@ -3,13 +3,6 @@
 <div class="row">
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <label>Fecha de Inicio</label>
-            <input type="date" wire:model.lazy="fechaInicio" class="form-control">
-        </div>
-        @error('fechaInicio') <span class="text-danger er">{{ $message }}</span> @enderror
-    </div>
-    <div class="col-sm-12 col-md-6">
-        <div class="form-group">
             <label>Fecha de Final</label>
             <input type="date" wire:model.lazy="fechaFin" class="form-control">
         </div>
@@ -31,8 +24,16 @@
     </div>
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
+            <label>Salario</label>
+            <input type="number" class="form-control" wire:model.lazy="salario">
+        </div>
+        @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
+    </div>
+    
+    <div class="col-sm-12 col-md-5">
+        <div class="form-group">
             <label>Estado de Contrato</label>
-            <select wire:model="estado" class="form-control">
+            <select id="seleccion" wire:model="estado" class="form-control">
                 <option value="Elegir" disabled>Elegir</option>
                 <option value="Activo" selected>Activo</option>
                 <option value="Finalizado" selected>Finalizado</option>
@@ -43,3 +44,5 @@
 </div>
 
 @include('common.modalFooter')
+
+

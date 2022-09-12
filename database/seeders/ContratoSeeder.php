@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Contrato;
 
 class ContratoSeeder extends Seeder
 {
@@ -13,6 +14,12 @@ class ContratoSeeder extends Seeder
      */
     public function run()
     {
-        //
+        Contrato::create([
+            'fechaFin' => '2022-09-11 14:33:34',
+            'descripcion' => 'Contrato de Prueba',
+            'nota' => 'Uno',
+            'salario' => '1000',
+            'estado' => 'Activo',
+        ]);
     }
 }

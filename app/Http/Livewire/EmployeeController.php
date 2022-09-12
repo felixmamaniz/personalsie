@@ -396,21 +396,17 @@ class EmployeeController extends Component
         $this->search = '';
         $this->selected_id = 0;
 
-<<<<<<< HEAD
+
         // Datos de contrato
-=======
         // datos de contrato
         $this->fechaInicio='';
->>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
+
         $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
         $this->estado = 'Elegir';
-<<<<<<< HEAD
         $this->select_contrato_id = 0;
         $this->resetValidation(); // resetValidation para quitar los smg Rojos
-=======
->>>>>>> 595659110c02315964210fe92b11cf6be0c3d3b9
     }
     //
     protected $listeners = [

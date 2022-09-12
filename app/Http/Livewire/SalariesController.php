@@ -65,6 +65,11 @@ class SalariesController extends Component
         ->get(['name','created_at']);
         dd($algo);*/
 
+        //crear total de salarios x mes y x año
+        $pagototalmes;
+        $pagototalaño;
+        //crear detalle de vista para mostrar cuando se le debe pagar pos los dias del mes trabajado y por todo el mes
+        
         return view('livewire.salaries.component',[
             'data' => $salaries,
         ])

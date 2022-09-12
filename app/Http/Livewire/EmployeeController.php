@@ -58,19 +58,22 @@ class EmployeeController extends Component
     public function render()
     {
         //obtener fechas especificadas por el Empleado
-        $Inicio = Carbon::parse('2022-09-01 01:01:59')->format('Y-m-d'); // 2022-09-01 00:00:00
+
+        /*$from = Carbon::parse($this->dateFrom)->format('Y-m-d');*/
+        /*$Inicio = Carbon::parse('2022-09-01 01:01:59')->format('Y-m-d'); // 2022-09-01 00:00:00
         $Final = Carbon::parse('2022-10-11 14:33:34')->format('Y-m-d');     // 2022-09-11 14:33:34
 
         $period = CarbonPeriod::create($Inicio, $Final);
         foreach ($period as $date) {
         //Insertar fechas en la matriz listOfDates
             $listOfDates[] = $date->format('y-m-d');
-        }
+        }*/
+        //dd($listOfDates);
+        
 
-       
-        dd($listOfDates);
+        
 
-        //$TiempoTranscurrido = $listOfDates;
+        //$TiempoTranscurrido = "sin datos";
         $estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
@@ -82,37 +85,79 @@ class EmployeeController extends Component
             ->orWhere('c.name', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
-
         }
         else
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.name as area','pt.name as puesto', 'ct.descripcion as contrato')
+            ->select('employees.*','c.name as area','pt.name as puesto', 'ct.descripcion as contrato', 
+                DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'))
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         
+
+            foreach ($employ as $e)
+            {
+                $e->year = $this->year($e->id);
+                $e->mouth = $this->mouth($e->id);
+                $e->day = $this->day($e->id);
+            }
+
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
             'estadocontrato' => $estadoContrato,
-            'tiempos' => $TiempoTranscurrido
+            //'tiempos' => $TiempoTranscurrido
         ])
         ->extends('layouts.theme.app')
         ->section('content');
     }
 
+    public function year($idUsuario)
+    {
+        $TiempoTranscurrido = 0;
+        $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('Y');
+
+        if($anioInicio != Carbon::parse(Carbon::now())->format('Y'))
+        {
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('Y') - $anioInicio;
+        }
+        return $TiempoTranscurrido;
+    }
+    public function mouth($idUsuario)
+    {
+        $TiempoTranscurrido = 0;
+        $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('m');
+
+        if($anioInicio != Carbon::parse(Carbon::now())->format('m'))
+        {
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('m') - $anioInicio;
+        }
+        return $TiempoTranscurrido;
+    }
+    public function day($idUsuario)
+    {
+        $TiempoTranscurrido = 0;
+        $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('d');
+
+        if($anioInicio != Carbon::parse(Carbon::now())->format('d'))
+        {
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('d') - $anioInicio;
+        }
+        return $TiempoTranscurrido;
+    }
+
     //Devuelve el tiempo en minutos de una venta reciente
-    public function ventareciente($idventa)
+    public function tiempoTranscurrido2($id)
     {
         //Variable donde se guardaran los minutos de diferencia entre el tiempo de una venta y el tiempo actual
         $minutos = -1;
         //Guardando el tiempo en la cual se realizo la venta
-        $date = Carbon::parse(Sale::find($idventa)->created_at)->format('Y-m-d');
+        $date = Carbon::parse(Employee::find($id)->created_at)->format('Y');
         //Comparando que el dia-mes-año de la venta sean iguales al tiempo actual
-        if($date == Carbon::parse(Carbon::now())->format('Y-m-d'))
+        if($date == Carbon::parse(Carbon::now())->format('Y'))
         {
             //Obteniendo la hora en la que se realizo la venta
             $hora = Carbon::parse(Sale::find($idventa)->created_at)->format('H');

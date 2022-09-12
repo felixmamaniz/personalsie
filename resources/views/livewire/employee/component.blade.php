@@ -47,7 +47,19 @@
 
                                     {{--<td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>
                                     --}}
-                                    <td><h6 class="text-center">{{$tiempos}}</h6></td>
+                                    <td>
+                                        <h6 class="text-center">
+                                            @if($employee->year != 0)
+                                                {{$employee->year}} años
+                                            @endif
+                                            @if($employee->mouth != 0)
+                                                {{$employee->mouth}} meses
+                                            @endif
+                                            @if($employee->day != 0)
+                                                {{$employee->day}} dias
+                                            @endif
+                                    </h6>
+                                    </td>
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->puesto}}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->contrato}}</h6></td>

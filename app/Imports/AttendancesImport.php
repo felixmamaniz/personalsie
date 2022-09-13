@@ -12,7 +12,7 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
 class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInserts, WithChunkReading
 {
-    public $col,$entrada,$salida,$empleado;
+    public $col, $entrada, $salida, $empleado, $empleadoAll;
     /**
     * @param array $row
     *
@@ -46,7 +46,7 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
             
             if($row['estado_de_trabajo']=="Salida")
             {
-                $this->salida->push(['id_salida'=> $s,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' => null, 'salida' =>substr( $row['tiempo'], 11, 9)]);
+                $this->salida->push(['id_salida'=> $s,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' => 'no marco entrada', 'salida' =>substr( $row['tiempo'], 11, 9)]);
                 $s++;
             }
         }
@@ -73,13 +73,13 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
         }
         //dd($this->salida);
         //sacar valores duplicados
-        $unique = $this->empleado->unique(function ($item) {
+        $uniqueE = $this->empleado->unique(function ($item) {
             $jc;
 
-            $jc=Shift::join('employees as e', 'e.id', 'shifts.employee_id')
+            /*$jc=Shift::join('employees as e', 'e.id', 'shifts.employee_id')
             ->select('shifts.name', 'e.name')
             ->where('shifts.employee_id', $item['id'] && 'shifts.name', 'jornada completa')
-            ->first();
+            ->first();*/
             
             //if($item['name']=='Yazmin')
             //si el usuario es del turno completo o jornada completa por definir aun
@@ -90,125 +90,30 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
             }
             return $item['id'].$item['fecha'];
         });
-         
-        $unique->values()->all(); 
-        dump($unique);
-        dd($this->empleado);
-
-        dump($this->entrada);
-        dd($this->salida);
-
-        
-
-        //esto es otra cosa que se hizo al inicio
-        //dd($this->empleado);
-        $sal=null;
-        $otro=null;
-        $this->entrada=collect([]);
-        //nuevo registro donde si tengo una entrada busco si tiene una salida y si no marco no tiene salida
-        //si no tiene una entrar y solo salida la dejo como no tiene entrada
-        //si tengo una persona que tiene 2 entradas y salidas por dia guardarlas juntos
-        foreach ($this->empleado as $row => $value){
-            if($value['name'] == 'Mauricio')
-            {
-                $sal=$row;
-                break;
-            }
-           /* $sal=$this->empleado->where('id',$row['id'] );
-            $sal->all();
-            $otro=$sal->where('salida','!=',null);
-            break;*/
-            //dd($otro);
-
-            /*if($row['entrada'] != null )
-            {
-                $sal=$this->empleado->where('id',$row['id'] );
-                $sal->all();
-                $otro=$sal->where('salida','!=',null);
-                dd($otro);
-                //agregamos los datos
-                $this->entrada->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => 'null']);
-                
-            }*/
-
-        }
-        //dd($sal);
-        $this->empleado->pull($sal);
-        
-        dd($this->empleado);
-
-        dd($this->entrada);
-        //$unique = $this->entrada->unique('id');
-        $unique = $this->entrada->unique(function ($item) {
+        $uniqueS= $this->salida->unique(function ($item){
             return $item['id'].$item['fecha'];
         });
          
-        $unique->values()->all(); 
-        //dump($unique);
-        //dd($this->entrada);
- 
-// [2 => 'a', 4 => 'b']
+        $uniqueE->values()->all();
+        $uniqueS->values()->all(); 
+        //dump($uniqueE);
+        //dump($uniqueS);
+        //dump($this->empleado);
+        $this->empleadoAll=$uniqueE->merge($uniqueS);
+        //dd($this->empleadoAll);
         
-        $this->salida=collect([]);
-        foreach ($rows as $row){
-            
-            if($row['estado_de_trabajo'] == "Salida")
-            {
-                $this->salida->push(['id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' =>substr($row['tiempo'],0,10), 'salida' =>substr($row['tiempo'],11,9)]);
-                
-            }
-        }
 
-        $unique2 = $this->salida->unique(function ($item) {
-            return $item['id'].$item['fecha'];
-        });
-         
-        $unique2->values()->all(); 
-        dump($unique2);
-        dd($this->salida);
-        //unir la entrada y salida en uno solo
-        $this->empleado=collect([]);
-        foreach ($this->entrada as $row){
-
-                $sal=$this->salida->where('id',$row['id'])->first();
-                if($sal==null)
-                {
-                    $aux=null;
-                }
-                else{
-                    $aux=$sal['salida'];
-                }
-                
-                //dd($aux);
-                
-                    $this->empleado->push(['id' => $row['id'], 'name' => $row['name'], 'fecha' => $row['fecha'], 'salida' =>$row['entrada'], 'entrada' =>$aux]);
-                //dd($this->empleado);
-                if($row['name'] == 'Gery' )
-                {
-                   // dd($this->empleado);
-                }
-                
-                    /*if($row['nombre']=="Crismar")
-                {dd($this->col);}*/
-        }
-
-
-        dd($this->empleado);
-
+        //agregar a la base de datos
         
-        //dd($salida);
-        $entrada=[];
-        $i=0;
         
-        foreach ($rows as $row) 
+        foreach ($this->empleadoAll as $row) 
         {
 
             Attendance::create([
-                'id' =>$row['id'],
                 'fecha' =>$row['fecha'],
                 'entrada' =>$row['entrada'],
                 'salida' =>$row['salida'],
-                'employee_id' =>$row['idempleado'],
+                'employee_id' =>$row['id'],
             ]);
         }
     }

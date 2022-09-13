@@ -27,7 +27,7 @@ class ExportController extends Controller
         $file = $request->file('import_file');
         //redirecciona a import para agregar los datos
        $aux= Excel::import(new AttendancesImport, $file);
-       dd($aux);
+       //dd($aux);
         //retorna a la vista attendances con el back
         //return redirect()->back();
                 

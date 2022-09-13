@@ -44,30 +44,7 @@ class SalariesController extends Component
             //dd($mergeAM);
             $salario->fechaFin=$mergeAM;
         }
-        //calcular el salario por dias, por mes, por años
-        //calcular por dias donde se actualice cada mes la fecha de inicio
-        $fecha=Salarie::where('id',1)
-        ->first();
-        //dd($fecha['fechaInicio']);
-        //agarrar la fecha de hoy y juntarla con el dia de inicio
-        $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
-        $mergeAM=$mergeAM.substr($fecha['fechaInicio'],7,3);
-        $fechas1=carbon::parse($mergeAM);
-        $fechaf=carbon::parse(Carbon::now());
-        //calculamos la diferencia de dias
-        $diasDiferencia = $fechaf->diffInDays($fechas1);
-        
-        //calcular por mes
-        $mesDiferencia = $fechaf->diffInMonths($fechas1);
-        //calcular por año
-        $añoDiferencia = $fechaf->diffInYears($fechas1);
-
-        //dd($diasDiferencia.' '.$mesDiferencia.' '.$añoDiferencia);
-
-        //sueldo a pagar x los dias transcurridos
-        $pagoDias=($fecha['salarioMes']/24) * $diasDiferencia;
-        //dd($pagoDias);
-        
+       
         //dd($salaries);
         //$diasDiferencia = $fechaExpiracion->diffInDays($fechaEmision);
         /*$mes=Salarie::select('fechaInicio','fechaFin', DB::raw("'DATEDIFF(fechaInicio, fechaFin) AS DateDiff' as Total"))

@@ -57,7 +57,7 @@
                        
 
                         <div class="col-sm-2 mt-4">
-                                <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}" 
+                                <a class="btn btn-primary 
                                 href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
                                 target="_blank">Exportar a Excel</a>
 
@@ -149,7 +149,7 @@
 
 
 
-
+                
 
 
             </div>

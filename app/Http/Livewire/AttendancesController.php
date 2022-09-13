@@ -8,21 +8,49 @@ use App\Models\Employee;
 use App\Models\Attendance;
 use Carbon\Carbon;
 use Livewire\WithPagination;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class AttendancesController extends Component
 {
     use WithPagination;
-    public $data, $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada;
-    public $pagination;
-   
+    public $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada;
+    protected $pagination;
+    public $collection, $data;
+    private $datas;
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
     }
+
+
+    public function paginate($perPage, $total = null, $page = null, $pageName = 'page')
+    {
+        $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
+        //dd($perPage.' '.$page);
+        return new LengthAwarePaginator(
+            $this->forPage($page, $perPage),
+            $total ?: $this->count(),
+            $perPage,
+            $page,
+            [
+                'path' => LengthAwarePaginator::resolveCurrentPath(),
+                'pageName' => $pageName,
+            ]
+            
+        );
+        
+    }
     //propiedades de las vistas
     public function mount(){
-        $this->pagination = 10;
+        $this->collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+            //$chunk = $this->collection->forPage(2, 3);
+         
+           // $chunk->all();
+        //$hola=$this->paginate(20);
+       //dd($hola);
         $this->data = [];
         $this->reportType = 0;
         $this->userId = 0;
@@ -32,6 +60,7 @@ class AttendancesController extends Component
 
     public function render()
     {
+        
         $this->SalesByDate();
         return view('livewire.attendances.component',[
             'employees' => Employee::orderBy('name','asc')->get()
@@ -39,7 +68,11 @@ class AttendancesController extends Component
         ->extends('layouts.theme.app')
         ->section('content');
     }
-
+    
+    public function mandarvista(){
+        $this->data = $this->datas;
+        return $this->data;
+    }
     //metodo retornar reporte de la fecha
     public function SalesByDate()
     {
@@ -68,13 +101,36 @@ class AttendancesController extends Component
             //consulta
             $xd=Attendance::select('attendances.*')->get();
             //dd($xd);
-            $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
+            $this->datas = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->select('attendances.*','e.name as employee', DB::raw('0 as retraso'), DB::raw('0 as hcumplida') )
             ->whereBetween('attendances.fecha', [$from,$to])
             //->groupBy("e.id")
             ->orderBy('attendances.fecha','desc')
-            //->paginate($this->pagination);
-            ->get();
+            ->get()
+            ->paginate(10);
+            //$this->data=$this->datas;
+            //$this->data=$this->algo->paginate(10);
+           // dd($this->data);
+            //dd($this->data);
+
+            
+            /*if($this->dateFrom=='2022-08-13')
+            {
+                
+            $collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
+ 
+            $chunk = $collection->forPage(2, 3);
+         
+            $chunk->all();
+        
+            $this->data->forpage(1,5);
+            
+            dd($this->data->forpage(1,5));
+            }*/
+            
+            //->get;
+            //if($fec)
+            //dd($this->data);
 
             //dd($this->data);
             //agregar el tiempo de retrasa del empleado
@@ -83,19 +139,33 @@ class AttendancesController extends Component
                                     //validar el horario conformado y enviarlo a unfuncion para calcular
                                     //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
                                     if($os->entrada>'14:00:00') {
-                                        
+                                        //dd('hola');
                                     $timestamp = $this->strtotime($os->entrada,"14:00:00");
                                     //dd($timestamp);
                                     $os->retraso = $timestamp;
                                     }
                                     //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
-                                        elseif($os->entrada>'08:00:00')
+                                        elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                                         {
+                                            
                                             $timestamp = $this->strtotime($os->entrada,"08:00:00");
                                             //dd($timestamp);
                                             $os->retraso = $timestamp;
                                         }   else{
-                                                $os->retraso = 'NO TRABAJO';
+                                                if($os->salida=='00:00:00')
+                                                {
+                                                    $os->retraso = 'No marco salida';
+                                                }
+                                                else
+                                                $os->retraso = 'Ninguno';
+                                                if($os->entrada == '00:00:00')
+                                                {
+                                                    $os->retraso = 'No marco entrada';
+                                                }
+                                                else
+                                                $os->retraso = 'Ninguno';
+
+                                               
                                             }
                                     
                                 }
@@ -107,7 +177,7 @@ class AttendancesController extends Component
                 {
                     //dd($timeacumleted);
                 }
-                if($timeacumleted>'04:40:00')
+                if($timeacumleted>'04:40:00' && $os->entrada > '08:00:00')
                 {
                     
                     $os->hcumplida='Cumplio';
@@ -201,7 +271,7 @@ class AttendancesController extends Component
     //calcular el tiempo del retraso del empleado
     public function strtotime($horaentrada,$horaconformada)
     {
-      
+       //dd($horaconformada.' '.$horaentrada);
         $timestamp='';
         //hora que entro el empleado
         $hora=(int)  substr($horaentrada,0,2);

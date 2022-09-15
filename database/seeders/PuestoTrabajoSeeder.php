@@ -15,6 +15,9 @@ class PuestoTrabajoSeeder extends Seeder
     public function run()
     {
         PuestoTrabajo::create([
+            'name' => 'No definido',
+        ]);
+        PuestoTrabajo::create([
             'name' => 'Puesto Uno',
         ]);
         PuestoTrabajo::create([

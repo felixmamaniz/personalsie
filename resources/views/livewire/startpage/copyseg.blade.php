@@ -1,4 +1,9 @@
 {{--
+    18 DE JULIO 2022
+    18 DE AGOSTO
+    18 DE SEP 
+    18 DE OCTUBRE
+
     REALIZAR
     REDUCIR TAMAÑO Y PESO DE IMAGEN
     https://codea.app/blog/reducir-el-tamano-de-una-imagen

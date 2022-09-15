@@ -39,7 +39,18 @@
                         {{$this->mouthEmployee}} meses
                       @endif
                       @if($dayEmployee != 0)
-                        {{$this->dayEmployee}} dias
+                        {{$this->dayEmployee}} dias 
+                      @endif
+                      <br>
+                       Tiempo Restante: 
+                      @if($anioRestante != 0)
+                        {{$this->anioRestante}} años
+                      @endif
+                      @if($mesesRestante != 0)
+                       {{$this->mesesRestante}} meses
+                      @endif
+                      @if($diasRestante != 0)
+                        {{$this->diasRestante}} dias
                       @endif
                     </a>
                   </div>
@@ -56,6 +67,7 @@
                     <div class="number">Fecha de Inicio</div>
                     <div class="number">Fecha de Final</div>
                     <div class="number">Salario</div>
+                    <div class="number">Tiempo Restante</div>
                   </div>
                   <div class="col">
                     <div class="number">{{ $address }}</div>

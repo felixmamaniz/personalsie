@@ -15,6 +15,10 @@ class AreaTrabajoSeeder extends Seeder
     public function run()
     {
         AreaTrabajo::create([
+            'name' => 'No definido',
+            'description' => 'null',
+        ]);
+        AreaTrabajo::create([
             'name' => 'Area Uno',
             'description' => 'Uno',
         ]);

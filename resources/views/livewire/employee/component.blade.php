@@ -21,14 +21,13 @@
                                 <th class="table-th text-withe">NOMBRE</th>
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
                                 <th class="table-th text-withe text-center">CI</th>
-                                <th class="table-th text-withe text-center">SEXO</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
-                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>  {{-- fecha de admicion menos fecha actual y mostrar --}}
+                                <th class="table-th text-withe text-center">FECHA DE INGRESO</th>
+                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">PUESTO</th>
                                 <th class="table-th text-withe text-center">CONTRATO</th>
                                 <th class="table-th text-white text-center">IMAGEN</th>
-                                <th class="table-th text-withe text-center">PRUEBA</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
                         </thead>
@@ -38,13 +37,14 @@
                                     <td><h6 class="text-center">{{ $employee->name }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->lastname }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->ci }}</h6></td>
-                                    <td class="text-center">
+                                    {{--<td class="text-center">
                                         <span class="badge {{$employee->genero == 'Masculino' ? 'badge-success' : 'badge-danger'}}
                                             text-uppercase" style="background-color: #fff; color: black">
                                             {{$employee->genero}}
                                         </span>
-                                    </td>
+                                    </td>--}}
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
+                                    <td><h6 class="text-center">{{ $employee->fechaInicio }}</h6></td>
 
                                     <td>
                                         <h6 class="text-center">
@@ -59,6 +59,7 @@
                                             @endif
                                         </h6>
                                     </td>
+
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->puesto}}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->contrato}}</h6></td>
@@ -71,8 +72,6 @@
 
                                     </td>
 
-                                    <td><h6 class="text-center">{{ $pruebas}}</h6></td>
-                                    
                                     <td class="text-center">
                                         <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"
                                             class="btn btn-dark mtmobile" title="Edit">

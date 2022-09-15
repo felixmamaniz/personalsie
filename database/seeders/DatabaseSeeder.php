@@ -27,6 +27,7 @@ class DatabaseSeeder extends Seeder
       $this->call(AreaTrabajoSeeder::class);
       $this->call(PuestoTrabajoSeeder::class);
       $this->call(FunctionAreaSeeder::class);
-	  $this->call(ContratoSeeder::class);
+	    $this->call(ContratoSeeder::class);
+      $this->call(EmployeeSeeder::class);
     }
 }

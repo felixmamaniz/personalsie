@@ -25,8 +25,7 @@ class EmployeeController extends Component
     public $pageTitle, $componentName, $search, $componentNuevoContrato;
     private $pagination = 5;
 
-    public $TiempoTranscurrido;
-    public $tiempoRestante;
+    public $anioRestante, $mesesRestante, $diasRestante;
 
     public $yearEmployee, $mouthEmployee, $dayEmployee;
 
@@ -55,12 +54,7 @@ class EmployeeController extends Component
 
     public function render()
     {
-
-        $pas = 3;
-        $nodefinido = 0;
-
         $tiempoRestante = "prueba";
-        //$TiempoTranscurrido = "sin datos";
         $estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
@@ -88,6 +82,10 @@ class EmployeeController extends Component
                 $e->year = $this->year($e->id);
                 $e->mouth = $this->mouth($e->id);
                 $e->day = $this->day($e->id);
+
+                $e->yearR = $this->yearR($e->id);
+                $e->mouthR = $this->yearR($e->id);
+                $e->dayR = $this->yearR($e->id);
             }
 
         return view('livewire.employee.component', [
@@ -97,12 +95,13 @@ class EmployeeController extends Component
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
             'estadocontrato' => $estadoContrato,
             'pruebas' => $tiempoRestante
-            //'tiempos' => $TiempoTranscurrido
         ])
         ->extends('layouts.theme.app')
         ->section('content');
     }
 
+    // TIEMPO TRASCURRIDO
+    // años transcurridos
     public function year($idUsuario)
     {
         $TiempoTranscurrido = 0;
@@ -114,27 +113,98 @@ class EmployeeController extends Component
         }
         return $TiempoTranscurrido;
     }
+
+    // meses transcurridos
     public function mouth($idUsuario)
     {
         $TiempoTranscurrido = 0;
-        $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('m');
+        $meses = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('m');
 
-        if($anioInicio != Carbon::parse(Carbon::now())->format('m'))
+        if($meses != Carbon::parse(Carbon::now())->format('m'))
         {
-            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('m') - $anioInicio;
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('m') - $meses;
+            if($TiempoTranscurrido < 0){
+                $TiempoTranscurrido = $TiempoTranscurrido * -1;
+            }
         }
         return $TiempoTranscurrido;
     }
+
+    // dias transcurridos
     public function day($idUsuario)
     {
         $TiempoTranscurrido = 0;
-        $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('d');
-
-        if($anioInicio != Carbon::parse(Carbon::now())->format('d'))
+        $diasInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('d');
+        
+        if($diasInicio != Carbon::parse(Carbon::now())->format('d'))
         {
-            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('d') - $anioInicio;
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('d') - $diasInicio;
+            if($TiempoTranscurrido < 0){
+                $TiempoTranscurrido = $TiempoTranscurrido * -1;
+            }
         }
         return $TiempoTranscurrido;
+    }
+
+    //  TIEMPO RESTANTE
+    // años restantes
+    public function yearR($idUsuario)
+    {
+        $tiempoRestante = 0;
+
+        $tiempoR = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+        ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
+        ->where('employees.id', $idUsuario)
+        ->get()
+        ->first();
+
+        $aniosR = Carbon::parse($tiempoR->fechafinal)->format('Y');
+ 
+        if($aniosR != Carbon::parse(Carbon::now())->format('Y'))
+        {
+            $tiempoRestante = $aniosR - Carbon::parse(Carbon::now())->format('Y');
+        }
+        return $tiempoRestante;
+    }
+    
+    // meses restantes
+    public function mouthR($idUsuario)
+    {
+        $tiempoRestante = 0;
+
+        $tiempoR = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+        ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
+        ->where('employees.id', $idUsuario)
+        ->get()
+        ->first();
+
+        $mesesR = Carbon::parse($tiempoR->fechafinal)->format('m');
+ 
+        if($mesesR != Carbon::parse(Carbon::now())->format('m'))
+        {
+            $tiempoRestante = $mesesR - Carbon::parse(Carbon::now())->format('m');
+        }
+        return $tiempoRestante;
+    }
+
+    // dias restantes
+    public function dayR($idUsuario)
+    {
+        $tiempoRestante = 0;
+
+        $tiempoR = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+        ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
+        ->where('employees.id', $idUsuario)
+        ->get()
+        ->first();      // permite tomar solo el primer dato
+
+        $diasR = Carbon::parse($tiempoR->fechafinal)->format('d');
+ 
+        if($diasR != Carbon::parse(Carbon::now())->format('d'))
+        {
+            $tiempoRestante = $diasR - Carbon::parse(Carbon::now())->format('d');
+        }
+        return $tiempoRestante;
     }
 
     // Abre el modal de Nuevo empleado
@@ -166,6 +236,7 @@ class EmployeeController extends Component
         $this->emit('show-modal-detalleE', 'open modal');
     }
 
+    // detalle de empleados
     public function ServicioDetalle($idEmpleado)
     {
         $detalle = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
@@ -210,14 +281,17 @@ class EmployeeController extends Component
         $this->image = $detalle->image;
 
 
-
+        // tiempo transcurrido
         $this->yearEmployee = $this->year($idEmpleado);
         $this->mouthEmployee = $this->mouth($idEmpleado);
         $this->dayEmployee = $this->day($idEmpleado);
 
-        //dd( $this->yearEmployee);
+        // tiempo restante
+        $this->anioRestante = $this->yearR($idEmpleado);
+        $this->mesesRestante = $this->mouthR($idEmpleado);
+        $this->diasRestante = $this->dayR($idEmpleado);
 
-
+       // dd($this->anioRestante);
     }
 
     // Registro de nuevo Contrato
@@ -260,7 +334,7 @@ class EmployeeController extends Component
             'genero' => 'required|not_in:Seleccionar',
             'dateNac' => 'required',
             'address' => 'required',
-            'phone' => 'required|unique:employees',
+            'phone' => 'required',
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'puestoid' => 'required|not_in:Elegir',
@@ -277,7 +351,6 @@ class EmployeeController extends Component
             'dateNac.required' => 'la fecha de nacimiento es requerido',
             'address.required' => 'la direccion es requerida',
             'phone.required' => 'el numero de telefono es requerido',
-            'phone.unique' => 'el numero de telefono ya existe en sistema',
             'estadoCivil.required' => 'seleccione estado civil del empleado',
             'estadoCivil.not_in' => 'selecciona estado civil',
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',

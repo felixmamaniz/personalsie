@@ -27,7 +27,8 @@
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">PUESTO</th>
                                 <th class="table-th text-withe text-center">CONTRATO</th>
-                                <th class="table-th text-white text-center">IMAGEN</th> 
+                                <th class="table-th text-white text-center">IMAGEN</th>
+                                <th class="table-th text-withe text-center">PRUEBA</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
                         </thead>
@@ -45,8 +46,6 @@
                                     </td>
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
 
-                                    {{--<td><h6 class="text-center">{{ $employee->created_at->diffForHumans() }}</h6></td>
-                                    --}}
                                     <td>
                                         <h6 class="text-center">
                                             @if($employee->year != 0)
@@ -58,7 +57,7 @@
                                             @if($employee->day != 0)
                                                 {{$employee->day}} dias
                                             @endif
-                                    </h6>
+                                        </h6>
                                     </td>
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->puesto}}</h6></td>
@@ -71,6 +70,8 @@
                                         </span>
 
                                     </td>
+
+                                    <td><h6 class="text-center">{{ $pruebas}}</h6></td>
                                     
                                     <td class="text-center">
                                         <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"
@@ -84,9 +85,15 @@
                                             <i class="fas fa-trash"></i>
                                         </a>
 
-                                         <a class="btn btn-dark mtmobile" wire:click="DetalleEmpleado()">
+                                        <a href="javascript:void(0)"
+                                            wire:click="DetalleEmpleado({{$employee->id}})"
+                                            class="btn btn-dark" title="DetalleEmpleado">
                                             <i class="fas fa-list"></i>
                                         </a>
+
+                                        {{--<a class="btn btn-dark mtmobile" wire:click="DetalleEmpleado()">
+                                            <i class="fas fa-list"></i>
+                                        </a>--}}
                                     </td>
                                 </tr>
                             @endforeach

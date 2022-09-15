@@ -14,9 +14,6 @@ use App\Models\Contrato;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Intervetion\Image\Facades\Image;
-use Illuminate\Http\Request;
-//use App\Http\Livewire\Reservation;
-use Carbon\CarbonPeriod;
 
 class EmployeeController extends Component
 {
@@ -24,11 +21,14 @@ class EmployeeController extends Component
     use withFileUploads;
 
     // Datos de Empleados
-    public $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $contratoid, $fechaInicio, $image, $selected_id;
+    public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $contratoid, $fechaInicio, $image, $selected_id;
     public $pageTitle, $componentName, $search, $componentNuevoContrato;
     private $pagination = 5;
 
     public $TiempoTranscurrido;
+    public $tiempoRestante;
+
+    public $yearEmployee, $mouthEmployee, $dayEmployee;
 
     // Datos de Contrato
     public $fechaFin, $descripcion, $nota, $salario, $estado, $select_contrato_id;
@@ -49,30 +49,17 @@ class EmployeeController extends Component
         $this->contratoid = 'Elegir';
 
         $this->estado = 'Elegir';
-
-        // fechas
-        //$this->inicioFecha = Carbon::parse(Carbon::now())->format('Y-m-d');
-        //$this->finalfecha = Carbon::parse(Carbon::now())->format('Y-m-d');
+        
+        $this->idEmpleado = 0;
     }
 
     public function render()
     {
-        //obtener fechas especificadas por el Empleado
 
-        /*$from = Carbon::parse($this->dateFrom)->format('Y-m-d');*/
-        /*$Inicio = Carbon::parse('2022-09-01 01:01:59')->format('Y-m-d'); // 2022-09-01 00:00:00
-        $Final = Carbon::parse('2022-10-11 14:33:34')->format('Y-m-d');     // 2022-09-11 14:33:34
+        $pas = 3;
+        $nodefinido = 0;
 
-        $period = CarbonPeriod::create($Inicio, $Final);
-        foreach ($period as $date) {
-        //Insertar fechas en la matriz listOfDates
-            $listOfDates[] = $date->format('y-m-d');
-        }*/
-        //dd($listOfDates);
-        
-
-        
-
+        $tiempoRestante = "prueba";
         //$TiempoTranscurrido = "sin datos";
         $estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
@@ -109,6 +96,7 @@ class EmployeeController extends Component
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
             'estadocontrato' => $estadoContrato,
+            'pruebas' => $tiempoRestante
             //'tiempos' => $TiempoTranscurrido
         ])
         ->extends('layouts.theme.app')
@@ -149,60 +137,6 @@ class EmployeeController extends Component
         return $TiempoTranscurrido;
     }
 
-    //Devuelve el tiempo en minutos de una venta reciente
-    public function tiempoTranscurrido2($id)
-    {
-        //Variable donde se guardaran los minutos de diferencia entre el tiempo de una venta y el tiempo actual
-        $minutos = -1;
-        //Guardando el tiempo en la cual se realizo la venta
-        $date = Carbon::parse(Employee::find($id)->created_at)->format('Y');
-        //Comparando que el dia-mes-año de la venta sean iguales al tiempo actual
-        if($date == Carbon::parse(Carbon::now())->format('Y'))
-        {
-            //Obteniendo la hora en la que se realizo la venta
-            $hora = Carbon::parse(Sale::find($idventa)->created_at)->format('H');
-            //Obteniendo la hora de la venta mas 1 para incluir horas diferentes entre una hora venta y la hora actual en el else
-            $hora_mas = $hora + 1;
-            //Si la hora de la venta coincide con la hora actual
-            if($hora == Carbon::parse(Carbon::now())->format('H'))
-            {
-                //Obtenemmos el minuto de la venta
-                $minutos_venta = Carbon::parse(Sale::find($idventa)->created_at)->format('i');
-                //Obtenemos el minuto actual
-                $minutos_actual = Carbon::parse(Carbon::now())->format('i');
-                //Calculamos la diferencia
-                $diferenca = $minutos_actual - $minutos_venta;
-                //Actualizamos la variable $minutos por los minutos de diferencia si la venta fue hace 1 hora antes que la hora actual
-                if($diferenca <= 60)
-                {
-                    $minutos = $diferenca;
-                }
-            }
-            else
-            {
-                //Ejemplo: Si la hora de la venta es 14:59 y la hora actual es 15:01
-                //Usamos la variable $hora_mas para comparar con la hora actual, esto para obtener solo a las ventas que sean una hora antes que la hora actual
-                if($hora_mas == Carbon::parse(Carbon::now())->format('H'))
-                {
-                    //Obtenemmos el minuto de la venta con una hora antes que la hora actual
-                    $minutos_venta = Carbon::parse(Sale::find($idventa)->created_at)->format('i');
-                    //Obtenemos el minuto actual
-                    $minutos_actual = Carbon::parse(Carbon::now())->format('i');
-                    //Restamos el minuto de la venta con el minuto actual y despues le restamos 60 minutos por la hora antes añadida ($hora_mas)
-                    $mv = (($minutos_venta - $minutos_actual) - 60) * -1;
-                    //Actualizamos la variable $minutos por los minutos de diferencia si la venta fue hace 1 hora antes que la hora actual
-                    if($mv <= 60)
-                    {
-                        $minutos = $mv;
-                    }
-                }
-            }
-        }
-
-        
-        return $minutos;
-    }
-
     // Abre el modal de Nuevo empleado
     public function NuevoEmpleado()
     {
@@ -226,9 +160,64 @@ class EmployeeController extends Component
     }
 
     // modal de Detalle de empleados
-    public function DetalleEmpleado()
+    public function DetalleEmpleado($idEmpleado)
     {
+        $this->ServicioDetalle($idEmpleado);
         $this->emit('show-modal-detalleE', 'open modal');
+    }
+
+    public function ServicioDetalle($idEmpleado)
+    {
+        $detalle = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
+        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
+        ->select('employees.id as idEmpleado',
+            'employees.ci',
+            'employees.name',
+            'employees.lastname',
+            'employees.genero',
+            'employees.dateNac',
+            'employees.address',
+            'employees.phone',
+            'employees.estadoCivil',
+            'at.name as nombrearea',
+            'pt.name as nombrepuesto',
+            'employees.contrato_id',
+            'employees.fechaInicio',
+            'ct.fechaFin as fechafinal',
+            'ct.salario',
+            'employees.image',
+            )
+        ->where('employees.id', $idEmpleado)    // selecciona al empleado
+        ->get()
+        ->first();
+
+        //dd($detalle->name);
+        $this->idEmpleado = $detalle->idEmpleado;
+        $this->ci = $detalle->ci;
+        $this->name = $detalle->name;
+        $this->lastname = $detalle->lastname;
+        $this->genero = $detalle->genero;
+        $this->dateNac = $detalle->dateNac;
+        $this->address = $detalle->address;
+        $this->phone = $detalle->phone;
+        $this->estadoCivil = $detalle->estadoCivil;
+        $this->areaid = $detalle->nombrearea;
+        $this->puestoid = $detalle->nombrepuesto;
+        $this->fechaInicio = $detalle->fechaInicio;
+        $this->contratoid = $detalle->fechafinal;
+        $this->salario = $detalle->salario;
+        $this->image = $detalle->image;
+
+
+
+        $this->yearEmployee = $this->year($idEmpleado);
+        $this->mouthEmployee = $this->mouth($idEmpleado);
+        $this->dayEmployee = $this->day($idEmpleado);
+
+        //dd( $this->yearEmployee);
+
+
     }
 
     // Registro de nuevo Contrato

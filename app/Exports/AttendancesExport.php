@@ -75,7 +75,12 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
         
         if($this->userId==0)
         {
-            return ["FECHA", "NOMBRE", "ENTRADA", "SALIDA", "HORARIO NORMAL", "HORAS TRABAJADAS"];
+           
+
+            return [
+                'A1'=> ["REPORTE DE ASISTENCIA DESDE ".$this->dateFrom. ' Al '. $this->dateTo],
+                'A2'=>["FECHA", "NOMBRE", "ENTRADA", "SALIDA", "HORARIO NORMAL", "HORAS TRABAJADAS"]
+            ];
         }
         else{
             $employee = Attendance::join('employees as e','e.id','attendances.employee_id')
@@ -166,12 +171,23 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
             //estilos para el excel para todos
             $i=2;
             $this->cell='A'.$i.':F'.($Allemployee+2);
+            $this->B='B2:B'.($Allemployee+2);
+            $this->C='C2:C'.($Allemployee+2);
+            $this->D='D2:D'.($Allemployee+2);
+            $this->E='E2:E'.($Allemployee+2);
+            $this->F='F2:F'.($Allemployee+2);
             //dd($cell);
             return [ 
                 AfterSheet::class    => function(AfterSheet $event) {
                     Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
                         $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
                     });
+
+                     //centrear A1 hasta F1
+                     $event->sheet->mergeCells('A1:F1');
+                     $event->sheet->getDelegate()->getStyle('A1:F1')
+                            ->getAlignment()
+                            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     //para el color de fondo de una celda o varias ejm:('A:C')
                     //PARA LAS FILAS PRINCIPALES DEL ENCABEZADO
                     
@@ -179,7 +195,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
                             ->getFill()
                             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                             ->getStartColor()
-                            ->setARGB('red');
+                            ->setARGB('FFDBE2F1');
                             
                     $event->sheet->getDelegate()->getStyle('F2')
                             ->getFill()
@@ -192,37 +208,37 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
                             );
                             $event->sheet->styleCells(
-                                'B2:B6',
+                                $this->B,
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
                             );
                             $event->sheet->styleCells(
-                                'D2:D6',
+                                $this->D,
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
                             );
                             $event->sheet->styleCells(
-                                'F2:F6',
+                                $this->F,
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
@@ -232,7 +248,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
@@ -262,11 +278,16 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
             ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida')
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $this->userId)
-            ->get()
+            ->get() 
             ->count();
             //dd($Oneemployee);
             $i=3;
             $this->cell='A'.$i.':F'.($Oneemployee+3);
+            $this->B='B3:B'.($Oneemployee+3);
+            $this->C='C3:C'.($Oneemployee+3);
+            $this->D='D3:D'.($Oneemployee+3);
+            $this->E='E3:E'.($Oneemployee+3);
+            $this->F='F3:F'.($Oneemployee+3);
             return [ 
              
                 AfterSheet::class    => function(AfterSheet $event) {
@@ -284,7 +305,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
                             ->getFill()
                             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
                             ->getStartColor()
-                            ->setARGB('red');
+                            ->setARGB('FFDBE2F1');
                             
                     $event->sheet->getDelegate()->getStyle('F3')
                             ->getFill()
@@ -297,37 +318,37 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
                             );
                             $event->sheet->styleCells(
-                                'B3:B6',
+                                $this->B,
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
                             );
                             $event->sheet->styleCells(
-                                'D3:D6',
+                                $this->D,
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
                             );
                             $event->sheet->styleCells(
-                                'F3:F6',
+                                $this->F,
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]
@@ -337,7 +358,7 @@ class AttendancesExport implements FromCollection, WithHeadings, WithCustomStart
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THICK
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
                                         ],
                                     ]
                                 ]

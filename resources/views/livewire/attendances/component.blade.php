@@ -57,7 +57,7 @@
                        
 
                         <div class="col-sm-2 mt-4">
-                                <a class="btn btn-primary 
+                                <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
                                 href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
                                 target="_blank">Exportar a Excel</a>
 
@@ -106,7 +106,7 @@
                               </tr>
                             </thead>
                             <tbody>
-                                @foreach ($data as $item)
+                                @foreach ($datos as $item)
                                     <tr class="seleccionar">
                                         <td class="text-center">
                                             {{$loop->iteration}}
@@ -144,6 +144,7 @@
 
                             </tbody>
                         </table>
+                        {{ $datos->links() }}
                     </div>
                 </div>
 

@@ -18,40 +18,29 @@ class AttendancesController extends Component
     use WithPagination;
     public $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada;
     protected $pagination;
-    public $collection, $data;
-    private $datas;
+
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
     }
 
 
-    public function paginate($perPage, $total = null, $page = null, $pageName = 'page')
+    //paginador de collections
+    public function paginate($items, $perPage = 15, $page = null, $options = [])
     {
-        $page = $page ?: LengthAwarePaginator::resolveCurrentPage($pageName);
-        //dd($perPage.' '.$page);
-        return new LengthAwarePaginator(
-            $this->forPage($page, $perPage),
-            $total ?: $this->count(),
-            $perPage,
-            $page,
-            [
-                'path' => LengthAwarePaginator::resolveCurrentPath(),
-                'pageName' => $pageName,
-            ]
-            
-        );
+        //dd('hola');
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
+
+        $items = $items instanceof Collection ? $items : Collection::make($items);
         
+        $pg= new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
+        //dd($this->data);
+        //retornamos lo obtenido en el pg que manda los datos para el paginador
+        return $pg;
     }
     //propiedades de las vistas
     public function mount(){
-        $this->collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
-            //$chunk = $this->collection->forPage(2, 3);
-         
-           // $chunk->all();
-        //$hola=$this->paginate(20);
-       //dd($hola);
-        $this->data = [];
+    
         $this->reportType = 0;
         $this->userId = 0;
         $this->dateFrom = Carbon::parse(Carbon::now())->format('Y-m-d');
@@ -60,19 +49,19 @@ class AttendancesController extends Component
 
     public function render()
     {
-        
-        $this->SalesByDate();
+        //hacemos el llamando a la funcion SalesByDate y luego usamos la funcion paginate para obtener 
+        //el total de paginas para la vista
+        $paginador=$this->paginate($this->SalesByDate());
+
         return view('livewire.attendances.component',[
-            'employees' => Employee::orderBy('name','asc')->get()
+            'employees' => Employee::orderBy('name','asc')->get(),
+            'datos' => $paginador,
         ])
         ->extends('layouts.theme.app')
         ->section('content');
     }
     
-    public function mandarvista(){
-        $this->data = $this->datas;
-        return $this->data;
-    }
+    
     //metodo retornar reporte de la fecha
     public function SalesByDate()
     {
@@ -101,41 +90,18 @@ class AttendancesController extends Component
             //consulta
             $xd=Attendance::select('attendances.*')->get();
             //dd($xd);
-            $this->datas = Attendance::join('employees as e','e.id','attendances.employee_id')
+            $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->select('attendances.*','e.name as employee', DB::raw('0 as retraso'), DB::raw('0 as hcumplida') )
             ->whereBetween('attendances.fecha', [$from,$to])
             //->groupBy("e.id")
-            ->orderBy('attendances.fecha','desc')
-            ->get()
-            ->paginate(10);
-            //$this->data=$this->datas;
-            //$this->data=$this->algo->paginate(10);
-           // dd($this->data);
-            //dd($this->data);
-
+            ->orderBy('attendances.fecha','asc')
+            ->get();
             
-            /*if($this->dateFrom=='2022-08-13')
-            {
-                
-            $collection = collect([1, 2, 3, 4, 5, 6, 7, 8, 9]);
- 
-            $chunk = $collection->forPage(2, 3);
-         
-            $chunk->all();
-        
-            $this->data->forpage(1,5);
-            
-            dd($this->data->forpage(1,5));
-            }*/
-            
-            //->get;
-            //if($fec)
-            //dd($this->data);
-
-            //dd($this->data);
+           
             //agregar el tiempo de retrasa del empleado
             foreach ($this->data as $os)
                                 {   
+                                    
                                     //validar el horario conformado y enviarlo a unfuncion para calcular
                                     //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
                                     if($os->entrada>'14:00:00') {
@@ -196,22 +162,66 @@ class AttendancesController extends Component
             ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'))
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $this->userId)
+            ->orderBy('attendances.fecha','asc')
             ->get();
-            //agregar el tiempo de retrasa del empleado
-            foreach ($this->data as $os)
-                                {   
-                                     //validar el horario conformado y enviarlo a unfuncion para calcular
-                                    if($os->entrada>'14:00:00') {
-                                        
-                                    $timestamp = $this->strtotime($os->entrada,"14:00:00");
-                                    //dd($timestamp);
-                                    $os->retraso = $timestamp;
-                                    }
-                                    
-                                    else
-                                    $os->retraso = 'NO TRABAJO';
-                                }
+             //agregar el tiempo de retrasa del empleado
+             foreach ($this->data as $os)
+             {   
+                 
+                 //validar el horario conformado y enviarlo a unfuncion para calcular
+                 //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
+                 if($os->entrada>'14:00:00') {
+                     //dd('hola');
+                 $timestamp = $this->strtotime($os->entrada,"14:00:00");
+                 //dd($timestamp);
+                 $os->retraso = $timestamp;
+                 }
+                 //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
+                     elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
+                     {
+                         
+                         $timestamp = $this->strtotime($os->entrada,"08:00:00");
+                         //dd($timestamp);
+                         $os->retraso = $timestamp;
+                     }   else{
+                             if($os->salida=='00:00:00')
+                             {
+                                 $os->retraso = 'No marco salida';
+                             }
+                             else
+                             $os->retraso = 'Ninguno';
+                             if($os->entrada == '00:00:00')
+                             {
+                                 $os->retraso = 'No marco entrada';
+                             }
+                             else
+                             $os->retraso = 'Ninguno';
+
+                            
+                         }
+                 
+             }
+//agregar las horas cumplidas del usuario
+foreach ($this->data as $os)
+{
+$timeacumleted= $this->horascumplidas($os->entrada, $os->salida);
+if($os->employee=='Carlos')
+{
+ //dd($timeacumleted);
+}
+if($timeacumleted>'04:40:00' && $os->entrada > '08:00:00')
+{
+ 
+ $os->hcumplida='Cumplio';
+ 
+}
+else{
+ $os->hcumplida='No Cumplio';
+}
+
+}
         }
+        return $this->data;
     }
     //calcular el horario cumplido del empleado
     public function horascumplidas($horaentrada, $horasalida)

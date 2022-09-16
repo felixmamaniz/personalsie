@@ -15,7 +15,7 @@ class ContratoSeeder extends Seeder
     public function run()
     {
         Contrato::create([
-            'fechaFin' => '0000-00-00 00:00:00',
+            'fechaFin' => '2022-12-31 00:00:00',
             'descripcion' => 'null',
             'nota' => 'null',
             'salario' => 'null',

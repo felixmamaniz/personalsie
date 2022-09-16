@@ -14,9 +14,9 @@
             <div class="card card-profile">
               <div class="card-header" style="background: #d9dadf">
                 <div class="profile-picture">
-                  <div class="avatar avatar-xl">
+                  <div class="avatar">
                     <img src="{{ asset('storage/employees/' .$image)}}"
-                    alt="imagen de ejemplo" height="90" width="100" class="img-fluid rounded-start">
+                    alt="imagen de ejemplo"  class="img-fluid rounded-start">
                   </div>
                 </div>
               </div>

@@ -6,7 +6,7 @@
                     <b>{{$componentName}} | {{$pageTitle}}</b>
                 </h4>
                 <ul class="tabs tab-pills">
-                    <a href="javascript:void(0)" class="d-none d-sm-inline-block btn btn-sm btn-warning shadow-sm" data-toggle="modal"
+                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
                     data-target="#theModal">Agregar</a>
                 </ul>
             </div>
@@ -39,7 +39,7 @@
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                    wire:click="Destroy({{$area->id}})"
+                                    onclick="Confirm({{$area->id}})"
                                     class="btn btn-danger mtmobile" title="Destroy">
                                     <i class="fas fa-trash"></i>
                                     </a>

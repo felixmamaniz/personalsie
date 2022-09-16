@@ -1,4 +1,25 @@
 {{--
+    contratos independientes
+    aumentra pagos adelantados en contratos
+
+    crear tabla de asistencias 
+
+    nombre
+    fecha
+    estado (presente falta licencia otros)
+
+
+    revisar nloque de imagen segun tamaño o peso mb
+
+        php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
+        php artisan make:livewire nombre
+        php artisan make:seeder "nombreSeeder" -> de cada tabla o migracion
+
+--}}
+
+
+
+{{--
     18 DE JULIO 2022
     18 DE AGOSTO
     18 DE SEP 

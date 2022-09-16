@@ -56,12 +56,27 @@
                         
                        
 
-                        <div class="col-sm-2 mt-4">
+                        <div class="col-sm-4 mt-4">
                                 <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
                                 href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
                                 target="_blank">Exportar a Excel</a>
 
                         </div>
+
+                        <div class="col-sm-4 mt-4">
+                            <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
+                            href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
+                            target="_blank">Exportar a Excel Administrativo</a>
+
+                        </div>
+
+                        <div class="col-sm-2 mt-4">
+                            <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
+                            href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
+                            target="_blank">Exportar a Excel Tecnico</a>
+
+                        </div>
+
                         <div class="col-sm-5 mt-4">
                             <div class="card-body">
                                 @if (isset($errors) && $errors->any())

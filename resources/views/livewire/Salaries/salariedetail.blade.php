@@ -28,7 +28,7 @@
                                 1
                             </td>
                             <td class="table-th text-withe text-left" style="font-size: 20px">
-                                pedro <br> marcos 
+                                {{ $nombre}}
                             </td>
                             <td class="table-th text-withe text-right" style="font-size: 20px">
                                 {{ number_format($sueldo, 2) }}  BS.

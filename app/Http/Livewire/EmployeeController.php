@@ -23,7 +23,7 @@ class EmployeeController extends Component
     // Datos de Empleados
     public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $contratoid, $fechaInicio, $image, $selected_id;
     public $pageTitle, $componentName, $search, $componentNuevoContrato;
-    private $pagination = 5;
+    private $pagination = 6;
 
     public $anioRestante, $mesesRestante, $diasRestante;
 

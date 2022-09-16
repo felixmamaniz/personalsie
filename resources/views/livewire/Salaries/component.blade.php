@@ -19,6 +19,7 @@
                     <table class="table table-hover table table-bordered table-bordered-bd-warning mt-4">
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
+                                <th class="table-th text-withe">NOMBRE</th>
                                 <th class="table-th text-withe">FECHA INICIO</th>
                                 <th class="table-th text-withe text-center">PROXIMO PAGO</th>
                                 <th class="table-th text-withe text-center">DESCRIPCION</th>
@@ -31,6 +32,9 @@
                         <tbody>
                             @foreach ($data as $salaries)
                                 <tr>
+                                    <td>
+                                        <h6 class="text-center">{{ $salaries->name }}</h6>
+                                    </td>
                                     <td>
                                         <h6 class="text-center">{{ $salaries->fechaInicio }}</h6>
                                     </td>
@@ -47,8 +51,12 @@
                                         </h6>
                                     </td>
                                     <td>
+                                        @if($salaries->salarioMes == 'null')
+                                        <h6 class="text-center">null</h6>
+                                        @else
                                         <h6 class="text-center">{{ number_format($salaries->salarioMes, 2) }} Bs.
                                         </h6>
+                                        @endif
                                     </td>
                                     <td>
                                         <h6 class="text-center">{{ $salaries->salarioAño }}     
@@ -57,7 +65,7 @@
 
                                     <td class="text-center">
                        
-                                        <a href="javascript:void(0)"  wire:click="Detailspago({{$salaries->id}})"
+                                        <a href="javascript:void(0)"  wire:click="Detailspago({{ $salaries->id }})"
                                             class="btn mtmobile" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
                                             <i class="fas fa-bars"></i>
                                         </a>
@@ -77,19 +85,23 @@
                         <tfoot>
                             <td colspan="4"><h6 class="text-center" style="font-size: 20px">TOTALES:</h6></td>
                             <td class="text-center">
-                                @if($data)
-                                    <h6 class="" style="font-size: 20px">{{ number_format($data->sum('salarioMes'),2)}} Bs.</h6>
+                                @if($pagototalmes != 'null' )
+                                    <h6 class="" style="font-size: 20px">{{ number_format($pagototalmes,2)}} Bs.</h6>
+                                @else
+                                <h6 class="" style="font-size: 20px">0 Bs.</h6>
                                 @endif
                             </td>
                             <td class="text-center">
-                                @if($data)
-                                    <h6 class="" style="font-size: 20px">{{ number_format($data->sum('salarioAño'),2)}} Bs.</h6>
+                                @if($pagototalaño != 'null' )
+                                    <h6 class="" style="font-size: 20px">{{ number_format($pagototalaño,2)}} Bs.</h6>
+                                @else
+                                <h6 class="" style="font-size: 20px"> 0 Bs.</h6>
                                 @endif
                             </td>
                             
                         </tfoot>
                     </table>
-                    {{ $data->links() }}
+                    
                 </div>
             </div>
         </div>

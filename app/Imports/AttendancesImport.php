@@ -32,12 +32,15 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
         $this->salida=collect([]);
         $e=0;
         $s=0;
+        //dd($rows);
         //nuevo registro donde si tengo una entrada busco si tiene una salida y si no marco no tiene salida
         //si no tiene una entrar y solo salida la dejo como no tiene entrada
         //si tengo una persona que tiene 2 entradas y salidas por dia guardarlas juntosa
         foreach ($rows as $row){
+            
             if($row['estado_de_trabajo'] == "Entrada" )
             {
+                
                 //agregamos los datos
                 $this->entrada->push(['id_entrada'=> $e,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => null]);
                 $e++;   
@@ -105,16 +108,18 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
 
         //agregar a la base de datos
         
+        //dd($this->empleadoAll);
         
         foreach ($this->empleadoAll as $row) 
         {
-
+            //dd($row);
             Attendance::create([
                 'fecha' =>$row['fecha'],
                 'entrada' =>$row['entrada'],
                 'salida' =>$row['salida'],
                 'employee_id' =>$row['id'],
             ]);
+            //dd($row);
         }
     }
     public function dupli($rows){
@@ -144,10 +149,10 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
     }*/
     public function batchSize(): int
     {
-        return 1000;
+        return 5000;
     }
     public function chunkSize(): int
     {
-        return 1000;
+        return 5000;
     }
 }

@@ -6,6 +6,8 @@ use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 use App\Models\Salarie;
+use App\Models\Contrato;
+use App\Models\Employee;
 use Carbon\Carbon;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -15,9 +17,11 @@ class SalariesController extends Component
 {
     use WithPagination;
     public $shiftName, $search, $selected_id, $pageTitle, $componentName, $horaentrada, $horasalida, $minuto, $horario, $detallempleado;
+    //pagos mensual y año
+    public $pagototalmes, $pagototalaño;
     private $pagination = 10;
     //vista detalles de pago del empleado
-    public $sueldo, $Dtranscurridos,$pagarD, $Mtranscurridos, $pagarM;  
+    public $sueldo, $Dtranscurridos,$pagarD, $Mtranscurridos, $pagarM, $nombre;  
     //unimos las horas en un string
     public function paginationView()
     {
@@ -33,32 +37,62 @@ class SalariesController extends Component
     public function render()
     {
         if (strlen($this->search) > 0) {
-            $salaries = Salarie::where('id', 'like', '%' . $this->search . '%')->paginate($this->pagination);
+            
+            $salaries = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+            ->select('employees.name', 'employees.fechaInicio', 'ct.descripcion', 'ct.salario as salarioMes', 'ct.fechaFin', DB::raw('0 as salarioAño') )
+            ->where('id', 'like', '%' . $this->search . '%')->get();
         } else {
-            $salaries = Salarie::select('salaries.*')->orderBy('id', 'asc')->paginate($this->pagination);
+            $salaries = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+            ->select('employees.id', 'employees.name', 'employees.fechaInicio', 'ct.descripcion', 'ct.salario as salarioMes', DB::raw('0 as salarioAño')  )->orderBy('id', 'asc')->get();
         }
+       
+        
         //agregar el proximo pago del mes
         foreach ($salaries as $salario) {
             $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
             $mergeAM=$mergeAM.substr($salario['fechaInicio'],7,3);
             //dd($mergeAM);
+            //dd($salario->salarioMes);
+            $addAño=$salario->salarioMes;
+            
+            if($addAño != 'null')
+            {
+                
+                $salario->salarioAño= $salario->salarioMes * 12;
+            }
             $salario->fechaFin=$mergeAM;
         }
-       
-        //dd($salaries);
-        //$diasDiferencia = $fechaExpiracion->diffInDays($fechaEmision);
-        /*$mes=Salarie::select('fechaInicio','fechaFin', DB::raw("'DATEDIFF(fechaInicio, fechaFin) AS DateDiff' as Total"))
-        ->get();
-        dd($mes);*/
-        /*$algo=User::whereMonth('created_at', date('m'))
-        ->whereYear('created_at', date('Y'))
-        ->get(['name','created_at']);
-        dd($algo);*/
 
-        //crear total de salarios x mes y x año
-        $pagototalmes=Salarie::select('salaries.*')->orderBy('id', 'asc')->sum('salarioMes');
+         //pagos total
+         foreach ($salaries as $salario) {
+            $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
+            $mergeAM=$mergeAM.substr($salario['fechaInicio'],7,3);
+            //dd($mergeAM);
+            //dd($salario->salarioMes);
+            $addAño=$salario->salarioMes;
+            
+            if($addAño != 'null')
+            {
+                
+                $salario->salarioAño= $salario->salarioMes * 12;
+            }
+            $salario->fechaFin=$mergeAM;
+        }
+        //crear total de salarios x mes y x año            
+        foreach ($salaries as $mes) {
+            if($mes->salarioMes != 'null')
+            {
+                $this->pagototalmes = $this->pagototalmes + $mes->salarioMes;
+                $this->pagototalaño = $this->pagototalaño + $mes->salarioAño;
+                
+            }
+        }
+        
+        
+        
+        //dd($this->pagototalmes);
         //dd($pagototalmes);
-        $pagototalaño;
+        
         //crear detalle de vista para mostrar cuando se le debe pagar pos los dias del mes trabajado y por todo el mes
         
         return view('livewire.salaries.component',[
@@ -67,12 +101,46 @@ class SalariesController extends Component
         ->extends('layouts.theme.app')
         ->section('content');
     }
-
-    //vista del detalle de dias, meses pagados
-    public function Detailspago(Salarie $emplo)
+    //total del mes y el año
+    public function Total()
     {
+        $pagototal = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+                    ->select('employees.id', 'employees.name', 'employees.fechaInicio', 'ct.descripcion', 'ct.salario as salarioMes', DB::raw('0 as salarioAño')  )->orderBy('id', 'asc')->get();
         
-        
+        //pagos total
+        foreach ($pagototal as $salario) {
+            $mergeAM=Carbon::parse(Carbon::now())->format('Y-m');
+            $mergeAM=$mergeAM.substr($salario['fechaInicio'],7,3);
+            //dd($mergeAM);
+            //dd($salario->salarioMes);
+            $addAño=$salario->salarioMes;
+            
+            if($addAño != 'null')
+            {
+                
+                $salario->salarioAño= $salario->salarioMes * 12;
+            }
+            $salario->fechaFin=$mergeAM;
+        }
+        //crear total de salarios x mes y x año            
+        foreach ($pagototal as $mes) {
+            if($mes->salarioMes != 'null')
+            {
+                $this->pagototalmes = $this->pagototalmes + $mes->salarioMes;
+                $this->pagototalaño = $this->pagototalaño + $mes->salarioAño;
+                
+            }
+        }
+
+    }
+    //vista del detalle de dias, meses pagados
+    public function Detailspago( $id)
+    {
+        //$category = Category::find($id);
+        $emplo = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+            ->select('employees.id', 'employees.name', 'employees.fechaInicio', 'ct.descripcion', 'ct.salario as salarioMes', DB::raw('0 as salarioAño'))
+            ->find($id);
+        //dd($emplo);
         //calcular el salario por dias, por mes, por años
 
         //calcular por dias donde se actualice cada mes la fecha de inicio
@@ -104,7 +172,7 @@ class SalariesController extends Component
         $this->pagarM=0;
         else
         $this->pagarM=$pagoMes;
-
+        //$this->nombre=$ejemplo['name'];
         //dd($this->detallempleado);
         $this->emit('detalles', 'show modal!');
     }

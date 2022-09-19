@@ -29,5 +29,6 @@ class DatabaseSeeder extends Seeder
       $this->call(FunctionAreaSeeder::class);
 	    $this->call(ContratoSeeder::class);
       $this->call(EmployeeSeeder::class);
+      $this->call(AssistanceSeeder::class);
     }
 }

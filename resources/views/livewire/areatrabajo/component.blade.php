@@ -32,12 +32,12 @@
                                 <td class="text-center">
                                     <a href="javascript:void(0)"
                                         wire:click="Edit({{$area->idarea}})"
-                                        class="btn btn-dark mtmobile" title="Edit">
+                                        class="btn btn-dark" title="Edit">
                                         <i class="fas fa-edit"></i>
                                     </a>
                                     
                                     <a onclick="Confirmar1({{$area->idarea}},'{{$area->verificar}}')" 
-                                        class="btn btn-dark mtmobile" title="Destroy">
+                                        class="btn btn-dark" title="Destroy">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>

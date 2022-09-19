@@ -54,28 +54,39 @@ class EmployeeController extends Component
 
     public function render()
     {
-        $tiempoRestante = "prueba";
-        $estadoContrato = 'Activo';
+        //$tiempoRestante = "prueba";
+        //$estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.name as area', 'pt.name as puesto', 'ct.descripcion as contrato')
+            ->select('employees.*','c.name as area', 'pt.name as puesto', 'ct.descripcion as contrato', 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
             ->orWhere('c.name', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
+
+            foreach ($employ as $os)
+            {
+                //Obtener los servicios de la orden de servicio
+                $os->verificar = $this->verificar($os->idEmpleado);
+            }
         }
         else
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
             ->select('employees.*','c.name as area','pt.name as puesto', 'ct.descripcion as contrato', 
-                DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'))
+                DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'), 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
         
+            foreach ($employ as $os)
+            {
+                //Obtener los servicios de la orden de servicio
+                $os->verificar = $this->verificar($os->idEmpleado);
+            }
 
             foreach ($employ as $e)
             {
@@ -93,11 +104,29 @@ class EmployeeController extends Component
             'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
-            'estadocontrato' => $estadoContrato,
-            'pruebas' => $tiempoRestante
+            //'estadocontrato' => $estadoContrato,
+            //'pruebas' => $tiempoRestante
         ])
         ->extends('layouts.theme.app')
         ->section('content');
+    }
+
+    // verificar empleado
+    public function verificar($idEmpleado)
+    {
+        $consulta = Employee::join('assistances as a', 'a.empleado_id', 'employees.id')
+        ->select('employees.*')
+        ->where('employees.id', $idEmpleado)
+        ->get();
+
+        if($consulta->count() > 0)
+        {
+            return "no";
+        }
+        else
+        {
+            return "si";
+        }
     }
 
     // TIEMPO TRASCURRIDO
@@ -257,6 +286,7 @@ class EmployeeController extends Component
             'employees.fechaInicio',
             'ct.fechaFin as fechafinal',
             'ct.salario',
+            'ct.estado',
             'employees.image',
             )
         ->where('employees.id', $idEmpleado)    // selecciona al empleado
@@ -278,6 +308,7 @@ class EmployeeController extends Component
         $this->fechaInicio = $detalle->fechaInicio;
         $this->contratoid = $detalle->fechafinal;
         $this->salario = $detalle->salario;
+        $this->estado = $detalle->estado;
         $this->image = $detalle->image;
 
 

@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Livewire\PuestoTrabajoController;
 //use App\Http\Livewire\TipoContratoController;
 use App\Http\Livewire\ContratoController;
+use App\Http\Livewire\AssistanceController;
 use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\ShiftsController;
 
@@ -43,6 +44,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('puesto_trabajos', PuestoTrabajoController::class);
     //Route::get('tipo_contratos', TipoContratoController::class);
     Route::get('contratos', ContratoController::class);
+    Route::get('assistances', AssistanceController::class);
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);

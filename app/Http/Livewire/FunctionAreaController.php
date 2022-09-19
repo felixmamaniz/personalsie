@@ -8,6 +8,8 @@ use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 use App\Models\AreaTrabajo;
+use App\Models\Employee;
+use Illuminate\Support\Facades\DB;
 
 class FunctionAreaController extends Component
 {
@@ -33,25 +35,54 @@ class FunctionAreaController extends Component
     public function render()
     {
         if(strlen($this->search) > 0)
+        {
             $data = FunctionArea::join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id') // se uno amabas tablas
-            ->select('function_areas.*','at.name as area')
+            ->select('function_areas.*','at.name as area', 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
             ->where('function_areas.name', 'like', '%' . $this->search . '%')   
             ->orWhere('at.name', 'like', '%' . $this->search . '%')         
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
+
+            foreach ($data as $os)
+            {
+                //Obtener los servicios de la orden de servicio
+                $os->verificar = $this->verificar($os->idFuncion);
+            }
+        }
         else
             $data = FunctionArea::join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id')
-            ->select('function_areas.*','at.name as area')
+            ->select('function_areas.*','at.name as area', 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
 
+            foreach ($data as $os)
+            {
+                //Obtener los servicios de la orden de servicio
+                $os->verificar = $this->verificar($os->idFuncion);
+            }
 
-            return view('livewire.functionArea.component', [
-                'functionarea' => $data,        // se envia functionarea
-                'area_trabajos' => AreaTrabajo::orderBy('name', 'asc')->get()
-                ])
-            ->extends('layouts.theme.app')
-            ->section('content');
+
+        return view('livewire.functionArea.component', [
+            'functionarea' => $data,        // se envia functionarea
+            'area_trabajos' => AreaTrabajo::orderBy('name', 'asc')->get()
+            ])
+        ->extends('layouts.theme.app')
+        ->section('content');
+    }
+
+    // verificar 
+    public function verificar($idFuncion)
+    {
+        $consulta = FunctionArea::where('function_areas.id', $idFuncion);
+        
+        if($consulta->count() > 0)
+        {
+            return "si";
+        }
+        else
+        {
+            return "no";
+        }
     }
 
     // crear y guardar

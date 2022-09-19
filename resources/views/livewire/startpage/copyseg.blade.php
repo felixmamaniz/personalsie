@@ -1,6 +1,8 @@
 {{--
-    contratos independientes
-    aumentra pagos adelantados en contratos
+    volver contratos a contratos independientes quitar el comboBox mantener el btn como crear nuevo contrato
+        
+       pagos adelantados no va en contratos porque son datos de contrato
+       los anticipos o pagos de adelanto van en el formulario salarios o en el formulario donde se registra a quienes ya se relizo el pago correspondiente
 
     crear tabla de asistencias 
 

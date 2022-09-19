@@ -67,22 +67,6 @@ class AreaTrabajoController extends Component
         ->section('content');
     }
 
-    public function asd()
-    {
-        $aa = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
-            DB::raw('0 as verificar'))
-            ->orderBy('id','desc')
-            ->paginate($this->pagination);
-
-            foreach ($aa as $os)
-            {
-                //Obtener los servicios de la orden de servicio idcategoria
-                $os->verificar = $this->verificar($os->idarea);
-            }
-
-            dd($aa);
-    }
-
     // verificar 
     public function verificar($idarea)
     {

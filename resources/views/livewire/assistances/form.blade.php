@@ -6,9 +6,9 @@
         <div class="form-group">
             <label>Empleados</label>
             <select wire:model="empleadoid" class="form-control">
-                <option value="Elegir" disabled>Elegir</option>
-                @foreach($employees as $employ)
-                <option value="{{$employ->id}}">{{$employ->name}}</option>
+                <option value="Elegir"disabled>Elegir</option>
+                @foreach($empleados as $empleado)
+                    <option value="{{$empleado->id}}">{{$empleado->name}}</option>
                 @endforeach
             </select>
             @error('empleadoid') <span class="text-danger er"> {{ $message }}</span> @enderror
@@ -28,7 +28,7 @@
         <div class="form-group">
             <label>Estado</label>
             <select wire:model.lazy="estado" class="form-control">
-                <option value="Elegir" selected>Elegir</option>
+                <option value="Elegir" disabled>Elegir</option>
                 <option value="Presente" selected>Presente</option>
                 <option value="Falta" selected>Falta</option>
                 <option value="Licencia" selected>Licencia</option>

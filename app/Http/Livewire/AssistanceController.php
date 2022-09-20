@@ -12,70 +12,67 @@ use Illuminate\Support\Facades\DB;
 
 class AssistanceController extends Component
 {
-    use WithPagination;
     use WithFileUploads;
+    use WithPagination;
 
     public $empleadoid, $fecha, $estado, $selected_id;
-
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
+
+    public function mount(){
+        $this -> pageTitle = 'Listado';
+        $this -> componentName = 'Asistencias';
+
+        $this->empleadoid = 'Elegir';
+    }
 
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
     }
 
-    public function mount()
-    {
-        $this->pageTitle = 'Lista';
-        $this->componentName = 'Asistencia';
-        $this->estado = 'Elegir';
-    }
-
     public function render()
     {
         if(strlen($this->search) > 0)
         {
-            $data = Assistance::join('employees as e', 'e.id', 'assistances.empleado_id')
-            ->select('assistances.*', 'assistances.id as idAsist', DB::raw('0 as verificar'))
-            ->orderBy('assistances.id','desc')
-            ->where('assistances.estado', 'like', '%' . $this->search . '%')  
-            ->orWhere('e.name', 'like', '%' . $this->search . '%')
+            $data = Assistance::join('employees as at', 'at.id', 'assistances.empleado_id') // se uno amabas tablas
+            ->select('assistances.*','at.name as empleado', 'assistances.id as idAsistencia', DB::raw('0 as verificar'))
+            ->where('assistances.estado', 'like', '%' . $this->search . '%')   
+            ->orWhere('at.name', 'like', '%' . $this->search . '%')         
+            ->orderBy('assistances.fecha', 'asc')
             ->paginate($this->pagination);
 
             foreach ($data as $os)
             {
                 //Obtener los servicios de la orden de servicio
-                $os->verificar = $this->verificar($os->idAsist);
+                $os->verificar = $this->verificar($os->idAsistencia);
             }
         }
         else
-        {
-            $data = Assistance::join('employees as e', 'e.id', 'assistances.empleado_id')
-            ->select('assistances.*', 'assistances.id as idAsist', DB::raw('0 as verificar'))
-            ->orderBy('assistances.id','desc')
+            $data = Assistance::join('employees as at', 'at.id', 'assistances.empleado_id')
+            ->select('assistances.*','at.name as empleado', 'assistances.id as idAsistencia', DB::raw('0 as verificar'))
+            ->orderBy('assistances.fecha', 'asc')
             ->paginate($this->pagination);
-    
+
             foreach ($data as $os)
             {
-                //Obtener los servicios de la orden de servicio idcategoria
-                $os->verificar = $this->verificar($os->idAsist);
+                //Obtener los servicios de la orden de servicio
+                $os->verificar = $this->verificar($os->idAsistencia);
             }
-        }
 
-        return view('livewire.assistances.component',[
-            'asistencias' => $data,  // se envia asistencias
+        return view('livewire.assistances.component', [
+            'asistencias' => $data,        // se envia functionarea
             'empleados' => Employee::orderBy('name', 'asc')->get()
-        ])
+            ])
         ->extends('layouts.theme.app')
         ->section('content');
     }
 
     // verificar 
-    public function verificar($idAsist)
+    public function verificar($idAsistencia)
     {
-        $consulta = Assistance::where('assistances.id', $idAsist);
-
+        $consulta = Assistance::where('assistances.id', $idAsistencia);
+        
         if($consulta->count() > 0)
         {
             return "si";
@@ -86,93 +83,84 @@ class AssistanceController extends Component
         }
     }
 
-    // editar 
-    public function Edit($id){
-        $record = Assistance::find($id, ['id', 'empleado_id', 'fecha', 'estado']);
-        $this->empleadoid = $record->empleado_id;
-        $this->fecha = $record->fecha;
-        $this->estado = $record->estado;
-        $this->selected_id = $record->id;
+    // crear y guardar
+    public function Store(){
+        $rules = [
+            'fecha' => 'required',
+            'empleadoid' => 'required|not_in:Elegir',
+            'estado' => 'required',
+        ];
+        $messages =  [
+            'fecha.required' => 'La fecha es requerida',
+            'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
+            'estado.required' => 'El estado de la sistencia es requerida',
+        ];
+
+        $this->validate($rules, $messages);
+
+        $assistance = Assistance::create([
+            'fecha'=>$this->fecha,
+            'estado'=>$this->estado,
+            'empleado_id' => $this->empleadoid
+        ]);
+
+        $this->resetUI();
+        $this->emit('asist-added', 'Categoria Registrada');
+    }
+
+    // editar datos
+    public function Edit(Assistance $assistance){
+        $this->selected_id = $assistance->id;
+        $this->fecha = $assistance->fecha;
+        $this->estado = $assistance->estado;
+        $this->empleadoid = $assistance->empleado_id;
 
         $this->emit('show-modal', 'show modal!');
     }
 
-    // registrar nuevos datos
-    public function Store(){
-        $rules = [
-            'empleadoid' => 'required|not_in:Elegir',
-            'fecha' => 'required',
-            'estado' => 'required|not_in:Elegir'
-        ];
-        $messages =  [
-            'empleadoid.required' => 'Seleccione Nombre de Empleado',
-            'empleadoid.not_in' => 'elije un nombre de Empleado diferente de elegir',
-            'fecha.required' => 'Seleccione una fecha',
-            'estado.not_in' => 'Selcciona el status',
-            'estado.required' => 'Seleccione un estado de asistencia',
-        ];
-
-        $this->validate($rules, $messages);
-       
-        $assistance = Assistance::create([
-            'empleado_id' => $this->empleadoid,
-            'fecha' => $this->fecha,
-            'estado' => $this->estado,
-        ]);
-
-        $this->resetUI();
-        $this->emit('asist-added', 'Datos Registrados');
-    }
-
-    // actualizar datos
+    // Actualizar datos
     public function Update(){
         $rules = [
-            'empleadoid' => "required|not_in:Elegir,empleadoid,{$this->selected_id}",
-            'fecha' => 'required',
-            'estado' => 'required|not_in:Elegir'
+            'fecha' => "required,fecha,{$this->selected_id}",
+            'empleadoid' => 'required|not_in:Elegir',
+            'estado' => 'required',
         ];
-
-        $messages = [
-            'empleadoid.required' => 'Seleccione Nombre de Empleado',
-            'empleadoid.not_in' => 'elije un nombre de Empleado diferente de elegir',
-            'fecha.required' => 'Seleccione una fecha',
-            'estado.not_in' => 'Selcciona el status',
-            'estado.required' => 'Seleccione un estado de asistencia',
+        $messages =  [
+            'fecha.required' => 'La fecha es requerida',
+            'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
+            'estado.required' => 'El estado de la sistencia es requerida',
         ];
         $this->validate($rules,$messages);
 
         $assistance = Assistance::find($this->selected_id);
         $assistance -> update([
-            'empleado_id' => $this->empleadoid,
-            'fecha' => $this->fecha,
-            'estado' => $this->estado,
+            'fecha'=>$this->fecha,
+            'estado'=>$this->estado,
+            'empleado_id' => $this->empleadoid
         ]);
 
         $this->resetUI();
-        $this->emit('asist-updated','Datos Actualizados');
+        $this->emit('asist-updated','Categoria Actualizar');
     }
 
-    public function resetUI()
-    {
-        $this->empleadoid='Elegir';
+    // vaciar formulario
+    public function resetUI(){
         $this->fecha='';
-        $this->estado = 'Elegir';
+        $this->estado='';
+        $this->empleadoid = 'Elegir';
         $this->search='';
         $this->selected_id=0;
         $this->resetValidation(); // resetValidation para quitar los smg Rojos
-        $this->resetPage(); // regresa la pagina
     }
 
     protected $listeners = [
         'deleteRow' => 'Destroy'
     ];
 
-    // eliminar Datos
-    public function Destroy($id)
-    {
-        $assistance = Assistance::find($id);
+    // eliminar
+    public function Destroy(Assistance $assistance){
         $assistance->delete();
         $this->resetUI();
-        $this->emit('asist-deleted','Datos Eliminados');
+        $this->emit('asist-deleted','Producto Eliminada');
     }
 }

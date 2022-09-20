@@ -19,6 +19,10 @@
         php artisan make:livewire nombre
         php artisan make:seeder "nombreSeeder" -> de cada tabla o migracion
 
+
+    Ejemplo
+    http://programacionparacompartir.com/sis_recursoshh/index.php/login
+    
 --}}
 
 

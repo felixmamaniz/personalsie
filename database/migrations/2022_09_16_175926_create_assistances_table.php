@@ -16,11 +16,15 @@ class CreateAssistancesTable extends Migration
         Schema::create('assistances', function (Blueprint $table) {
             $table->id();
 
+            /*$table->unsignedBigInteger('area_id');
+            $table->foreign('area_id')->references('id')->on('area_trabajos');*/
+
             $table->unsignedBigInteger('empleado_id');
             $table->foreign('empleado_id')->references('id')->on('employees');
 
             $table->dateTime('fecha');
             $table->enum('estado',['Presente','Falta','Licencia'])->default('Presente');
+            //$table->string('motivo',500)->nullable();
             
             $table->timestamps();
         });

@@ -1,17 +1,19 @@
 {{--
+
+    cambia combobox por un buscador en asistencias
     volver contratos a contratos independientes quitar el comboBox mantener el btn como crear nuevo contrato
         
        pagos adelantados no va en contratos porque son datos de contrato
        los anticipos o pagos de adelanto van en el formulario salarios o en el formulario donde se registra a quienes ya se relizo el pago correspondiente
 
-    crear tabla de asistencias 
 
+    crear tabla de asistencias 
     nombre
     fecha
     estado (presente falta licencia otros)
 
 
-    revisar nloque de imagen segun tamaño o peso mb
+    revisar loque de imagen segun tamaño o peso mb
 
         php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
         php artisan make:livewire nombre

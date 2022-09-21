@@ -59,7 +59,7 @@
 @section('javascript')
 <script>
     document.addEventListener('DOMContentLoaded', function(){
-        // Eventos crud
+        // Eventos
         window.livewire.on('asist-added', msg=>{
             $('#theModal').modal('hide')
         });

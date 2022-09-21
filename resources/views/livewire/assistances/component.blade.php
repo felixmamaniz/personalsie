@@ -3,58 +3,51 @@
         <div class="widget widget-chart-one">
             <div class="widget-heading">
                 <h4 class="card-title">
-                    <b>{{$componentName}} {{$pageTitle}}</b>
+                    <b>{{$componentName}} | {{$pageTitle}}</b>
                 </h4>
                 <ul class="tabs tab-pills">
-                    <li>
-                        <a href="javascript:void(0)" class="tabmenu bg-dark" data-toggle="modal" 
-                        data-target="#theModal">Agregar</a>
-                    </li>
+                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
+                    data-target="#theModal">Agregar</a>
                 </ul>
             </div>
 
-            @Include('common.searchbox')
+            @include('common.searchbox')
 
             <div class="widget-content">
                 <div class="table-responsive">
-                    <table class="table table-bordered table striped mt-1" >
-                        <thead class="text-white" style="background: #3b3f5c">
+                    <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
+                        <thead class="text-white" style="background: #ee761c">
                             <tr>
-                               <th class="table-th text-white">EMPLEADO</th> 
-                               <th class="table-th text-white text-center">FECHA</th> 
-                               <th class="table-th text-white text-center">ESTADO</th>
-                               <th class="table-th text-white text-center">ACTIONS</th> 
+                               <th class="table-th text-white">EMPLEADO</th>
+                               <th class="table-th text-white text-center">FECHA</th>
+                               <th class="table-th text-withe text-center">ESTADO</th>
+                               <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($asistencias as $asitencia)
+                            @foreach($asistencias as $a)
                             <tr>
-                                <td><h6>{{$asitencia->empleado_id}}</h6></td>
-                                <td class="text-center"><h6>{{$asitencia->fecha}}</h6></td>
-                                <td class="text-center">
-                                    <span class="badge {{$asitencia->estado == 'Presente' ? 'badge-success' : 'badge-danger'}}
-                                        text-uppercase">
-                                        {{$asitencia->estado}}
-                                    </span>
-                                </td>
+                                <td><h6>{{ $a->empleado }}</h6></td>
+                                <td><h6 class="text-center">{{$a->fecha}}</h6></td>
+                                <td><h6 class="text-center">{{$a->estado}}</h6></td>
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"
-                                        wire:click="edit({{$estado->id}})"
-                                        class="btn btn-dark mtmobile" title="Edit">
-                                        <i class="fas fa-edit"></i>
+                                    wire:click="Edit({{$a->idAsistencia}})"
+                                    class="btn btn-dark mtmobile" title="Edit">
+                                    <i class="fas fa-edit"></i>
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                        onclick="Confirm('{{$estado->id}}')"
-                                        class="btn btn-dark" title="Delete">
+                                        onclick="Confirm({{$a->idAsistencia}},'{{$a->verificar}}')"
+                                        class="btn btn-dark mtmobile" title="Destroy">
                                         <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
-                    </table> 
+                    </table>
                     {{$asistencias->links()}}
                 </div>
             </div>
@@ -63,50 +56,59 @@
     @include('livewire.assistances.form')
 </div>
 
+@section('javascript')
 <script>
     document.addEventListener('DOMContentLoaded', function(){
-        window.livewire.on('asist-added', Msg => {
-           $('#theModal').modal('hide')
-           noty(Msg)
-        })
-
-        window.livewire.on('asist-updated', Msg => {
-           $('#theModal').modal('hide')
-           noty(Msg)
-        })
-
-        window.livewire.on('asist-deleted', Msg => {
-           noty(Msg)
-        })
-
-        window.livewire.on('hide-modal', Msg => {
+        // Eventos crud
+        window.livewire.on('asist-added', msg=>{
             $('#theModal').modal('hide')
-        })
-
-        window.livewire.on('show-modal', Msg => {
-           $('#theModal').modal('show')
-        })
-
-        window.livewire.on('asist-withsales', Msg => {
-           noty(Msg)
-        })
+        });
+        window.livewire.on('asist-updated', msg=>{
+            $('#theModal').modal('hide')
+        });
+        window.livewire.on('asist-deleted', msg=>{
+            // mostrar notificacion de que el producto se a eliminado
+        });
+        window.livewire.on('show-modal', msg=>{
+            $('#theModal').modal('show')
+        });
+        window.livewire.on('modal-hide', msg=>{
+            $('#theModal').modal('hide')
+        });
+        window.livewire.on('hidden.bs.modal', msg=>{
+            $('.er').css('display','none')
+        });
     });
 
-    function Confirm(id){
-        swal({
-            title: 'CONFIRMAR',
-            text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
-            type: 'WARNING',
-            showCancelButton: true,
-            cancelButtonText: 'cerrar',
-            cancelButtonColor: '#fff',
-            confirmButtonColor: '#3b3f5c',
-            confirmButtonText: 'Aceptar'
-        }).then(function(result){
-            if(result.value){
-                window.livewire.emit('deleteRow',id)
-                swal.close()
-            }
-        })
+    function Confirm(id, verificar){
+        if(verificar == 'si')
+        {
+            swal({
+                title: 'CONFIRMAR',
+                text: '¿CONFIRMAS ELIMINAR EL REGISTRO',
+                type: 'WARNING',
+                showCancelButton: true,
+                cancelButtonText: 'cerrar',
+                cancelButtonColor: '#fff',
+                confirmButtonColor: '#3b3f5c',
+                confirmButtonText: 'Aceptar'
+            }).then(function(result){
+                if(result.value){
+                    window.livewire.emit('deleteRow',id)
+                    swal.close()
+                }
+            })
+        }
+        else
+        {
+            swal('no es posible eliminar porque tiene datos relacionados')
+            return;
+        }
+        
     }
 </script>
+<!-- Scripts para el mensaje de confirmacion arriba a la derecha Categoría Creada con Éxito y Alerta de Eliminacion -->
+<script src="{{ asset('plugins/sweetalerts/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('plugins/sweetalerts/custom-sweetalert.js') }}"></script>
+<!-- Fin Scripts -->
+@endsection

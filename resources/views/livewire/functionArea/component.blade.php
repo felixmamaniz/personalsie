@@ -39,9 +39,9 @@
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                    onclick="Confirm({{$area->id}})"
-                                    class="btn btn-danger mtmobile" title="Destroy">
-                                    <i class="fas fa-trash"></i>
+                                        onclick="Confirm({{$area->id}},'{{$area->verificar}}')"
+                                        class="btn btn-dark mtmobile" title="Destroy">
+                                        <i class="fas fa-trash"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -56,6 +56,7 @@
     @include('livewire.functionArea.form')
 </div>
 
+@section('javascript')
 <script>
     document.addEventListener('DOMContentLoaded', function(){
         // Eventos crud
@@ -79,21 +80,35 @@
         });
     });
 
-    function Confirm(id){
-        swal({
-            title: 'CONFIRMAR',
-            text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
-            type: 'WARNING',
-            showCancelButton: true,
-            cancelButtonText: 'cerrar',
-            cancelButtonColor: '#fff',
-            confirmButtonColor: '#3b3f5c',
-            confirmButtonText: 'Aceptar'
-        }).then(function(result){
-            if(result.value){
-                window.livewire.emit('deleteRow',id)
-                swal.close()
-            }
-        })
+    function Confirm(id, verificar){
+        if(verificar == 'si')
+        {
+            swal({
+                title: 'CONFIRMAR',
+                text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
+                type: 'WARNING',
+                showCancelButton: true,
+                cancelButtonText: 'cerrar',
+                cancelButtonColor: '#fff',
+                confirmButtonColor: '#3b3f5c',
+                confirmButtonText: 'Aceptar'
+            }).then(function(result){
+                if(result.value){
+                    window.livewire.emit('deleteRow',id)
+                    swal.close()
+                }
+            })
+        }
+        else
+        {
+            swal('no es posible eliminar porque tiene datos relacionados')
+            return;
+        }
+        
     }
 </script>
+<!-- Scripts para el mensaje de confirmacion arriba a la derecha Categoría Creada con Éxito y Alerta de Eliminacion -->
+<script src="{{ asset('plugins/sweetalerts/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('plugins/sweetalerts/custom-sweetalert.js') }}"></script>
+<!-- Fin Scripts -->
+@endsection

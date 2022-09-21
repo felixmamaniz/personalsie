@@ -73,19 +73,19 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="javascript:void(0)" wire:click="Edit({{ $employee->id }})"
+                                        <a href="javascript:void(0)" wire:click="Edit({{ $employee->idEmpleado }})"
                                             class="btn btn-dark mtmobile" title="Edit">
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         
                                         <a href="javascript:void(0)"
-                                            wire:click="Destroy({{$employee->id}})"
+                                            onclick="Confirm({{$employee->idEmpleado}},'{{$employee->verificar}}')"
                                             class="btn btn-dark" title="Destroy">
                                             <i class="fas fa-trash"></i>
                                         </a>
 
                                         <a href="javascript:void(0)"
-                                            wire:click="DetalleEmpleado({{$employee->id}})"
+                                            wire:click="DetalleEmpleado({{$employee->idEmpleado}})"
                                             class="btn btn-dark" title="DetalleEmpleado">
                                             <i class="fas fa-list"></i>
                                         </a>
@@ -108,6 +108,7 @@
     @include('livewire.employee.detalleEmpleado')
 </div>
 
+@section('javascript')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
@@ -143,20 +144,32 @@
         })
     });
 
-    function Confirm(id) {
-        Swal.fire({
-        title: 'CONFIRMAR',
-        text: "Confirmar eliminar el empleado",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Aceptar'
-        }).then((result) => {
-            if (result.value) {
-                window.livewire.emit('deleteRow', id)
-                Swal.close()
-            }
-        })
+    function Confirm(id, verificar) {
+        if(verificar == 'no')
+        {
+            swal('no es posible eliminar porque tiene datos relacionados')
+            return;
+        }else
+        {
+            Swal.fire({
+            title: 'CONFIRMAR',
+            text: "Confirmar eliminar el empleado",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar'
+            }).then((result) => {
+                if (result.value) {
+                    window.livewire.emit('deleteRow', id)
+                    Swal.close()
+                }
+            })
+        }
     }
 </script>
+<!-- Scripts para el mensaje de confirmacion arriba a la derecha Categoría Creada con Éxito y Alerta de Eliminacion -->
+<script src="{{ asset('plugins/sweetalerts/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('plugins/sweetalerts/custom-sweetalert.js') }}"></script>
+<!-- Fin Scripts -->
+@endsection

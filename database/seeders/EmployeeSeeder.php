@@ -27,7 +27,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 5173226,
@@ -42,7 +42,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8037861,
@@ -57,7 +57,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 9326584,
@@ -72,7 +72,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7993972,
@@ -87,7 +87,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 12552162,
@@ -102,7 +102,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 14263548,
@@ -117,7 +117,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8697768,
@@ -132,7 +132,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8770492,
@@ -147,7 +147,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 11267379,
@@ -162,7 +162,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7046351,
@@ -177,7 +177,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7952877,
@@ -192,7 +192,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 5913978,
@@ -207,7 +207,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7928401,
@@ -222,7 +222,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 5733161,
@@ -237,7 +237,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 9399947,
@@ -252,7 +252,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8693177,
@@ -267,7 +267,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7861796,
@@ -282,7 +282,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8710140,
@@ -297,7 +297,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 1,
@@ -312,7 +312,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7861830,
@@ -327,7 +327,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 11066520,
@@ -342,7 +342,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7979938,
@@ -357,7 +357,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 13750109,
@@ -372,7 +372,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7964268,
@@ -387,7 +387,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7238748,
@@ -402,7 +402,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 12681711,
@@ -417,7 +417,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 13749839,
@@ -432,7 +432,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8848153,
@@ -447,7 +447,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7603856,
@@ -462,7 +462,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 9395042,
@@ -477,7 +477,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 14419459,
@@ -492,7 +492,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7962772,
@@ -507,7 +507,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 5224381,
@@ -522,7 +522,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8709868,
@@ -537,7 +537,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 13895986,
@@ -552,7 +552,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7936142,
@@ -567,7 +567,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 7330292,
@@ -582,7 +582,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 4386719,
@@ -597,7 +597,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 8694359,
@@ -612,7 +612,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 4527202,
@@ -627,7 +627,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
             'ci' => 2,
@@ -642,7 +642,7 @@ class EmployeeSeeder extends Seeder
             'puesto_trabajo_id' => 1,
             'contrato_id' => 1,
             'fechaInicio' => '2022-01-01 01:01:01',
-            'image' => 'null',
+            'image' => '6328d2231e599_.webp',
         ]);
     }
 }

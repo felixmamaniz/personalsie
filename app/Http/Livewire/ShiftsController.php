@@ -12,6 +12,39 @@ class ShiftsController extends Component
     use WithPagination;
     public $shiftName, $search, $selected_id, $pageTitle, $componentName, $horaentrada, $horasalida, $minuto, $horario;
     private $pagination = 10;
+    //horarios de lunes hasta el domingo
+    public $horalunes, $horamartes, $horamiercoles, $horaviernes, $horajueves, $horasabado, $horadomingo
+           ,$minutolunes, $minutomartes, $minutomiercoles, $minutojueves, $minutoviernes, $minutosabado, $minutodomingo;
+    //horas y minutos para los dias de la semana
+    public $horas=[] ,$minutos;
+    public function cargaroption()
+    {
+        $c = 0;
+        for ($i=0; $i <= 20; $i++) { 
+            if($c<10)
+            {
+                $this->horas[$i]='0'.$c;
+            }
+            else
+            {
+                $this->horas[$i]=$c;
+            }
+            $c++;
+        }
+        $c = 0;
+        for ($i=0; $i <= 60; $i++) { 
+            if($c<10)
+            {
+                $this->minutos[$i]='0'.$c;
+            }
+            else
+            {
+                $this->minutos[$i]=$c;
+            }
+            $c++;
+        }
+       // dd($this->horas);
+    }
     //unimos las horas en un string
     
 
@@ -35,7 +68,7 @@ class ShiftsController extends Component
         }
 
         
-
+        $this->cargaroption();
         return view('livewire.shifts.component', [
             'data' => $shifts,
         ])

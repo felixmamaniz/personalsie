@@ -65,7 +65,11 @@ class AttendancesController extends Component
     //metodo retornar reporte de la fecha
     public function SalesByDate()
     {
+        //mostrar el dia de la fecha en letras
+        /*$date = new Carbon('today');
         
+        $date = $date->format('l jS \\of F Y h:i:s A');
+        dd($date);*/
         //obtener las entradas del dia
         if($this->reportType == 0)// entradas del dia
         {
@@ -114,7 +118,7 @@ class AttendancesController extends Component
                                         elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                                         {
                                             
-                                            $timestamp = $this->strtotime($os->entrada,"08:00:00");
+                                            $timestamp = $this->strtotime($os->entrada,"08:05:00");
                                             //dd($timestamp);
                                             $os->retraso = $timestamp;
                                         }   else{
@@ -180,7 +184,7 @@ class AttendancesController extends Component
                      elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                      {
                          
-                         $timestamp = $this->strtotime($os->entrada,"08:00:00");
+                         $timestamp = $this->strtotime($os->entrada,"08:05:00");
                          //dd($timestamp);
                          $os->retraso = $timestamp;
                      }   else{
@@ -189,7 +193,10 @@ class AttendancesController extends Component
                                  $os->retraso = 'No marco salida';
                              }
                              else
-                             $os->retraso = 'Ninguno';
+                                $os->retraso = 'Ninguno';
+                                
+                            
+                             
                              if($os->entrada == '00:00:00')
                              {
                                  $os->retraso = 'No marco entrada';
@@ -281,6 +288,11 @@ else{
     //calcular el tiempo del retraso del empleado
     public function strtotime($horaentrada,$horaconformada)
     {
+        if($horaentrada<=$horaconformada)
+        {
+            $timestamp = 'Ninguno';
+            return $timestamp;
+        }
        //dd($horaconformada.' '.$horaentrada);
         $timestamp='';
         //hora que entro el empleado

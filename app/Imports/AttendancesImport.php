@@ -65,6 +65,8 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
                 $s++;
                 //removemos las salidas utilizadas
                 $this->salida->pull($result['id_salida']);
+                //probar
+                //$this->entrada->pull($result['id_salida']);
                 //dd($this->empleado);
                
             }else{

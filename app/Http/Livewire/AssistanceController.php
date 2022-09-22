@@ -23,6 +23,7 @@ class AssistanceController extends Component
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Asistencias';
 
+        $this->estado = 'Elegir';
         $this->empleadoid = 'Elegir';
     }
 
@@ -88,12 +89,13 @@ class AssistanceController extends Component
         $rules = [
             'fecha' => 'required',
             'empleadoid' => 'required|not_in:Elegir',
-            'estado' => 'required',
+            'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'fecha.required' => 'La fecha es requerida',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
-            'estado.required' => 'El estado de la sistencia es requerida',
+            'estado.required' => 'seleccione estado de asistencia',
+            'estado.not_in' => 'selecciona estado de asistencia diferente a elegir',
         ];
 
         $this->validate($rules, $messages);
@@ -121,14 +123,15 @@ class AssistanceController extends Component
     // Actualizar datos
     public function Update(){
         $rules = [
-            'fecha' => "required,fecha,{$this->selected_id}",
+            'fecha' => "required",
             'empleadoid' => 'required|not_in:Elegir',
-            'estado' => 'required',
+            'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'fecha.required' => 'La fecha es requerida',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
-            'estado.required' => 'El estado de la sistencia es requerida',
+            'estado.required' => 'seleccione estado de asistencia',
+            'estado.not_in' => 'selecciona estado de asistencia diferente a elegir',
         ];
         $this->validate($rules,$messages);
 
@@ -146,7 +149,7 @@ class AssistanceController extends Component
     // vaciar formulario
     public function resetUI(){
         $this->fecha='';
-        $this->estado='';
+        $this->estado='Elegir';
         $this->empleadoid = 'Elegir';
         $this->search='';
         $this->selected_id=0;

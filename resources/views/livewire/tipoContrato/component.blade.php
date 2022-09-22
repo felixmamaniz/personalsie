@@ -6,7 +6,7 @@
                     <b>{{$componentName}} | {{$pageTitle}}</b>
                 </h4>
                 <ul class="tabs tab-pills">
-                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal" 
+                    <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
                     data-target="#theModal">Agregar</a>
                 </ul>
             </div>
@@ -18,34 +18,46 @@
                     <table class="table table-bordered table striped mt-1" >
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                               <th class="table-th text-white">ID</th>
-                               <th class="table-th text-white">NOMBRE</th>
+                               <th class="table-th text-white">NOMBRE</th> 
+                               <th class="table-th text-white text-center">IMAGEN</th> 
                                <th class="table-th text-white text-center">ACTIONS</th> 
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($contrato as $tipoContrato)
+                            @foreach($tipos as $tipo)
                             <tr>
-                                <td><h6>{{$tipoContrato->idTipoContrato}}</h6></td>
-                                <td><h6>{{$tipoContrato->name}}</h6></td>
-                                
+                                <td><h6>{{$tipo->name}}</h6></td>
                                 <td class="text-center">
-                                    <a href="javascript:void(0)" 
-                                        wire:click="Edit({{$tipoContrato->idTipoContrato}})"
+                                    <span>
+                                        <img src="{{asset('storage/tipoContrato/' .$tipo->image)}}"
+                                         alt="imagen de ejemplo" height="70" width="80" class="rounded">
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                        <a href="javascript:void(0)" 
+                                        wire:click="Edit({{$tipo->id}})"
                                         class="btn btn-dark mtmobile" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                                            class="feather feather-edit"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7">
+                                            </path><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+                                        </a>
 
-                                    <a onclick="Confirmar1({{$tipoContrato->idTipoContrato}},'{{$tipoContrato->verificar}}')" 
-                                        class="btn btn-dark mtmobile" title="Destroy">
-                                        <i class="fas fa-trash"></i>
-                                    </a>
+                                        <a href="javascript:void(0)"
+                                        wire:click="Delete({{$tipo->id}})"
+                                        class="btn btn-dark" title="Delete">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" 
+                                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" 
+                                            class="feather feather-trash"><polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
+                                        </a>
+
                                 </td>
                             </tr>
                             @endforeach
                         </tbody>
                     </table> 
-                    {{$contrato->links()}}
+                    {{$tipos->links()}}
                 </div>
             </div>
         </div>
@@ -53,52 +65,38 @@
     @include('livewire.tipoContrato.form')
 </div>
 
-@section('javascript')
 <script>
     document.addEventListener('DOMContentLoaded', function(){
-
+    
         window.livewire.on('show-modal', msg=>{
             $('#theModal').modal('show')
         });
 
-        window.livewire.on('tcontrato-added', msg=>{
+        window.livewire.on('tipocont-added', msg=>{
             $('#theModal').modal('hide')
         });
 
-        window.livewire.on('tcontrato-updated', msg=>{
+        window.livewire.on('tipocont-updated', msg=>{
             $('#theModal').modal('hide')
         });
     });
 
-    function Confirmar1(id, verificar)
-    {
-        if(verificar == 'no')
-        {
-            swal('no es posible eliminar porque tiene datos relacionados')
-            return;
-        }
-        else
-        {
-            swal({
-                title: 'CONFIRMAR',
-                text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
-                type: 'WARNING',
-                showCancelButton: true,
-                cancelButtonText: 'cerrar',
-                cancelButtonColor: '#fff',
-                confirmButtonColor: '#3b3f5c',
-                confirmButtonText: 'Aceptar'
-            }).then(function(result){
-                if(result.value){
-                    window.livewire.emit('deleteRow',id)
-                    swal.close()
-                }
-            })
-        }
+    function Confirm(id){
+        swal({
+            title: 'CONFIRMAR',
+            text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
+            type: 'WARNING',
+            showCancelButton: true,
+            cancelButtonText: 'cerrar',
+            cancelButtonColor: '#fff',
+            confirmButtonColor: '#3b3f5c',
+            confirmButtonText: 'Aceptar'
+        }).then(function(result){
+            if(result.value){
+                window.livewire.emit('deleteRow',id)
+                swal.close()
+            }
+        })
     }
+
 </script>
-<!-- Scripts para el mensaje de confirmacion arriba a la derecha Categoría Creada con Éxito y Alerta de Eliminacion -->
-<script src="{{ asset('plugins/sweetalerts/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('plugins/sweetalerts/custom-sweetalert.js') }}"></script>
-<!-- Fin Scripts -->
-@endsection

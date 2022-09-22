@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class TipoContrato extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+    protected $fillable = ['name','image'];
 }

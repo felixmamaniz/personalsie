@@ -29,7 +29,12 @@
                             <tr>
                                 <td><h6>{{ $a->empleado }}</h6></td>
                                 <td><h6 class="text-center">{{$a->fecha}}</h6></td>
-                                <td><h6 class="text-center">{{$a->estado}}</h6></td>
+                                <td class="text-center">
+                                    <span class="badge {{$a->estado == 'Presente' ? 'badge-success' : 'badge-danger'}}
+                                        text-uppercase">
+                                        {{$a->estado}}
+                                    </span>
+                                </td>
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"

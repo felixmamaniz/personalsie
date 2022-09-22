@@ -69,7 +69,6 @@
                                             <img src="{{ asset('storage/employees/' .$employee->image)}}"
                                              alt="imagen de ejemplo" height="70" width="80" class="rounded">
                                         </span>
-
                                     </td>
 
                                     <td class="text-center">

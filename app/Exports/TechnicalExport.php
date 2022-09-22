@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;          // para trabajar con colecciones y obtener la data
 use Maatwebsite\Excel\Concerns\WithHeadings;          //para definir los titulos de encabezado
@@ -11,29 +12,35 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;       //para interactuar con e
 use Maatwebsite\Excel\Concerns\WithCustomStartCell;     //para definir la celda donde inicia el reporte
 use Maatwebsite\Excel\Concerns\WithTitle;               //para colocar el nombre a las hojas del libro
 use Maatwebsite\Excel\Concerns\WithStyles;              //para dar formato a las celdas
-use PhpOffice\PhpSpreadsheet\Style\Fill;
+use PhpOffice\PhpSpreadsheet\Style\Fill;                //desde aca hasta eventos son lo que usaremos
 use PhpOffice\PhpSpreadsheet\Style\Style;
 use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Border;
-use Maatwebsite\Excel\Concerns\WithHeadingRow; 
 use Maatwebsite\Excel\Sheet;
 use Maatwebsite\Excel\Concerns\WithDefaultStyles;
 use Maatwebsite\Excel\Concerns\WithEvents;              //para que funcionen los eventos enviados
 use Maatwebsite\Excel\Events\AfterSheet;
 use Maatwebsite\Excel\Events\BeforeSheet;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;    // el ancho de celdas
-use Maatwebsite\Excel\Concerns\WithDrawings;
+use Maatwebsite\Excel\Concerns\WithDrawings;        //agregar imagenes
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use Maatwebsite\Excel\Concerns\WithColumnFormatting;
+use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;  //todos los eventos
 use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Contracts\View\View;
 
-class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCell, WithTitle, WithStyles, WithDefaultStyles, WithEvents, WithColumnWidths, WithDrawings, WithHeadingRow
+class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCell, WithTitle, WithStyles, WithDefaultStyles, WithEvents, WithColumnWidths, WithDrawings, WithColumnFormatting
 {
     use  Exportable, RegistersEventListeners;
     protected $userId, $dateFrom, $dateTo, $reportType;
     public $cell;
-    public $data2;
+    //calcular cuantas filas se tiene
+    public $data2, $Allemployee;
+    //para agregar los tatales
+    public $horitas, $Dtrabajados;
+    //Mes
+    public $mes;
     
     function __construct($userId, $reportType, $f1, $f2)
     {
@@ -41,6 +48,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         $this->reportType = $reportType;
         $this->dateFrom = $f1;
         $this->dateTo = $f2;
+        
     }
 
 
@@ -55,8 +63,19 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
 
         return $drawing;
     }
+    public function Mes($m)
+    {
+        switch ($m) {
+            case 'August':
+                return 'AGOSTO';
+                break;
+            default:
+                return "no se encontro resultado";
+        }
+    }
     public function collection()
     {
+        
         $data = [];
         //validar el tipo de reporte
         if($this->reportType == 1)
@@ -68,6 +87,14 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
              $from = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00';
              $to = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59';
         }
+        //mostrar el dia de la fecha en letras
+        
+        //$date = Carbon::parse($this->dateFrom)->format('F');
+        $date = new Carbon('today');
+        $date = $date->format('F');
+        //dd($date);
+        $this->mes=$this->Mes($date);
+        //dd($this->mes);
 
         //validar si seleccionamos algun usuario
         if($this-> userId == 0){
@@ -76,13 +103,206 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida')
             ->whereBetween('attendances.fecha', [$from,$to])
             ->get();
+            
+            //agregar el tiempo de retrasa del empleado
+            foreach ($data as $os)
+                                {   
+                                    
+                                    //validar el horario conformado y enviarlo a unfuncion para calcular
+                                    //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
+                                    if($os->entrada>'14:00:00') {
+                                        //dd('hola');
+                                    $timestamp = $this->strtotime($os->entrada,"14:00:00");
+                                    //dd($timestamp);
+                                    $os->retraso = $timestamp;
+                                    }
+                                    //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
+                                        elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
+                                        {
+                                            
+                                            $timestamp = $this->strtotime($os->entrada,"08:05:00");
+                                            //dd($timestamp);
+                                            $os->retraso = $timestamp;
+                                        }   else{
+                                                if($os->salida=='00:00:00')
+                                                {
+                                                    $os->retraso = 'No marco salida';
+                                                }
+                                                else
+                                                $os->retraso = 'Ninguno';
+                                                if($os->entrada == '00:00:00')
+                                                {
+                                                    $os->retraso = 'No marco entrada';
+                                                }
+                                                else
+                                                $os->retraso = 'Ninguno';
+
+                                               
+                                            }
+                                    
+                                }
         } else {
             $data = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'))
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $this->userId)
+            ->orderBy('attendances.fecha','asc')
             ->get();
+             //agregar el tiempo de retrasa del empleado
+             foreach ($data as $os)
+             {   
+                 
+                 //validar el horario conformado y enviarlo a unfuncion para calcular
+                 //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
+                 if($os->entrada>'14:00:00') {
+                     //dd('hola');
+                 $timestamp = $this->strtotime($os->entrada,"14:00:00");
+                 //dd($timestamp);
+                 $os->retraso = $timestamp;
+                 }
+                 //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
+                     elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
+                     {
+                         
+                         $timestamp = $this->strtotime($os->entrada,"08:05:00");
+                         //dd($timestamp);
+                         $os->retraso = $timestamp;
+                     }   else{
+                             if($os->salida=='00:00:00')
+                             {
+                                 $os->retraso = 'No marco salida';
+                             }
+                             else
+                                $os->retraso = 'Ninguno';
+                                
+                            
+                             
+                             if($os->entrada == '00:00:00')
+                             {
+                                 $os->retraso = 'No marco entrada';
+                             }
+                             else
+                             $os->retraso = 'Ninguno';
+
+                            
+                         }
+                 
+             }
         }
+
+        //dd($data);
+        //esto tendria que ser los datos que mandaremos para el excel
+
+        $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
+        ->select('employees.id', 'employees.name', 'at.name as area', DB::raw('0 as Horas') , DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
+        ->where('at.id',2)
+        ->get();
+
+        //calcular las horas totateles, retrasdos, dias de cada empleado
+        foreach ($reporte as $h) {
+            $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
+            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
+            ->whereBetween('attendances.fecha', [$from,$to])
+            ->where('employee_id', $h->id)
+            ->get();
+            foreach ($data3 as $os)
+             {   
+                 
+                 //validar el horario conformado y enviarlo a unfuncion para calcular
+                 //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
+                 if($os->entrada>'14:00:00') {
+                     //dd('hola');
+                 $timestamp = $this->strtotime($os->entrada,"14:00:00");
+                 //dd($timestamp);
+                 $os->retraso = $timestamp;
+                 }
+                 //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
+                     elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
+                     {
+                         
+                         $timestamp = $this->restar_horas($os->entrada,"08:05:00");
+                         //dd($timestamp);
+                         $os->retraso = $timestamp;
+                     }   else{
+                             if($os->salida=='00:00:00')
+                             {
+                                 $os->retraso = 'No marco salida';
+                             }
+                             else
+                                $os->retraso = 'Ninguno';
+                                
+                            
+                             
+                             if($os->entrada == '00:00:00')
+                             {
+                                 $os->retraso = 'No marco entrada';
+                             }
+                             else
+                             $os->retraso = 'Ninguno';
+
+                            
+                         }
+                 
+             }
+             //dd($data3);
+            $horasum='00:00:00';
+            if($h->id == 9399947)
+            {
+                /*foreach ($data3 as $x) {
+                    //$fechasD=carbon::parse($mergeAM);
+                    $e = Carbon::parse($x->entrada);
+                    $s = Carbon::parse($x->salida);
+                    $diferencia = $e->diff($s)->format('%H:%I:%S');
+                  
+                    //dump($e);
+                    //dump($s);
+    
+                    dump($diferencia);
+                    $horasum=$this->suma_horas($horasum,$diferencia);
+                    //dump($horasum);
+                }
+                dd($horasum);*/
+                //dd($data3);
+            }
+            //dd($data3);
+            $horasum='00:00:00';
+            $retrasomin = '00:00:00';
+            $dias = 0;
+            foreach ($data3 as $x) {
+                //$fechasD=carbon::parse($mergeAM);
+                $e = Carbon::parse($x->entrada);
+                $s = Carbon::parse($x->salida);
+                $diferencia = $e->diff($s)->format('%H:%I:%S');
+               //$hora= $diferencia->format('%H:%I:%S');
+                //dump($e);
+                //dump($s);
+
+                //dd($diferencia);
+                $horasum=$this->suma_horas($horasum,$diferencia);
+                if($x->retraso != "Ninguno" && $x->retraso != "No marco entrada")
+                {
+                    //dd($x->retraso);
+                    $retrasomin=$this->suma_horas($retrasomin,$x->retraso);
+                }
+                
+                $dias++;
+                //dd($retrasomin);
+                //dd($horasum);
+            }
+            $h->retrasos=$retrasomin;
+            $h->Horas=$horasum;
+            $h->Dias_trabajados=$dias;
+        }
+
+
+        //sumar columnas para agregar a los totales
+        $this->horitas = '00:00:00';
+        foreach ($reporte as $hora) {
+                $this->horitas = $this->suma_horas($this->horitas,$hora->Horas);
+            
+        }
+        //dd($horitas);
+        //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->select('employees.id', 'employees.name', 'at.name as area')
@@ -91,53 +311,231 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //dd($data2);
         //dd($data);
         //retornar datos para el exel
-        return $data2;
+        return $reporte;
     }
+    ##Función que resta horas Ahi que tenerla por si a caso
+ 
+    function restar_horas($hora1,$hora2){
+ 
+        $temp1 = explode(":",$hora1);
+        $temp_h1 = (int)$temp1[0];
+        $temp_m1 = (int)$temp1[1];
+        $temp_s1 = (int)$temp1[2];
+        $temp2 = explode(":",$hora2);
+        $temp_h2 = (int)$temp2[0];
+        $temp_m2 = (int)$temp2[1];
+        $temp_s2 = (int)$temp2[2];
+     
+        // si $hora2 es mayor que la $hora1, invierto 
+        if( $temp_h1 < $temp_h2 ){
+            $temp  = $hora1;
+            $hora1 = $hora2;
+            $hora2 = $temp;
+        }
+        /* si $hora2 es igual $hora1 y los minutos de 
+           $hora2 son mayor que los de $hora1, invierto*/
+        elseif( $temp_h1 == $temp_h2 && $temp_m1 < $temp_m2){
+            $temp  = $hora1;
+            $hora1 = $hora2;
+            $hora2 = $temp;
+        }
+        /* horas y minutos iguales, si los segundos de  
+           $hora2 son mayores que los de $hora1,invierto*/
+        elseif( $temp_h1 == $temp_h2 && $temp_m1 == $temp_m2 && $temp_s1 < $temp_s2){
+            $temp  = $hora1;
+            $hora1 = $hora2;
+            $hora2 = $temp;
+        }
+     
+        $hora1=explode(":",$hora1);
+        $hora2=explode(":",$hora2);
+        $temp_horas = 0;
+        $temp_minutos = 0;
+     
+        //resto segundos 
+        $segundos;
+        if( (int)$hora1[2] < (int)$hora2[2] ){
+            $temp_minutos = -1;
+            $segundos = ( (int)$hora1[2] + 60 ) - (int)$hora2[2];
+        }
+        else
+            $segundos = (int)$hora1[2] - (int)$hora2[2];
+     
+        //resto minutos 
+        $minutos;
+        if( (int)$hora1[1] < (int)$hora2[1] ){
+            $temp_horas = -1;
+            $minutos = ( (int)$hora1[1] + 60 ) - (int)$hora2[1] + $temp_minutos;
+        }
+        else
+            $minutos =  (int)$hora1[1] - (int)$hora2[1] + $temp_minutos;
+     
+        //resto horas     
+        $horas = (int)$hora1[0]  - (int)$hora2[0] + $temp_horas;
+     
+        if($horas<10)
+            $horas= '0'.$horas;
+     
+        if($minutos<10)
+            $minutos= '0'.$minutos;
+     
+        if($segundos<10)
+            $segundos= '0'.$segundos;
+     
+        $rst_hrs = $horas.':'.$minutos.':'.$segundos;
+     
+        return ($rst_hrs);
+     
+        }
+     //calcular el tiempo del retraso del empleado
+     public function strtotime($horaentrada,$horaconformada)
+     {
+         if($horaentrada<=$horaconformada)
+         {
+             $timestamp = 'Ninguno';
+             return $timestamp;
+         }
+        //dd($horaconformada.' '.$horaentrada);
+         $timestamp='';
+         //hora que entro el empleado
+         $hora=(int)  substr($horaentrada,0,2);
+         $minuto=(int)  substr($horaentrada,3,2);
+         $segundo=(int)  substr($horaentrada,6,2);
+         //horaconfomada asginada para entrar
+         $horataconformada=(int)  substr($horaconformada,0,2);
+         $minutoconformada=(int)  substr($horaconformada,3,2);
+         $segundoconformada=(int)  substr($horaconformada,6,2);
+         //calculamos el retrasa
+         $horaretraso=$hora-$horataconformada;
+         $minutoretraso=$minuto-$minutoconformada;
+         $segundosretraso=$segundo-$segundoconformada;
+         //validar el time para que retorne valor ordenado
+         if($segundosretraso<10 && $minutoretraso<10 && $horaretraso<10){
+             $timestamp='0'.$horaretraso.':0'.$minutoretraso.':0'.$segundosretraso;
+         }
+         //para ver si funciona a o no
+         /*if($horaentrada=='14:25:17')
+         {
+             dd($minutoretraso);
+             dd($horataconformada.':'.$minutoconformada.':'.$segundoconformada);
+         }*/
+         if($segundosretraso>9 && $minutoretraso>9 && $horaretraso>9){
+             $timestamp=$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
+         }
+ 
+         if($segundosretraso<10 && $minutoretraso<10 && $horaretraso>9){
+             $timestamp=$horaretraso.':0'.$minutoretraso.':0'.$segundosretraso;
+         }
+ 
+         if($segundosretraso<10 && $minutoretraso>9 && $horaretraso<10){
+             $timestamp='0'.$horaretraso.':'.$minutoretraso.':0'.$segundosretraso;
+         }
+         if($segundosretraso>9 && $minutoretraso<10 && $horaretraso<10)
+         {
+             $timestamp='0'.$horaretraso.':0'.$minutoretraso.':'.$segundosretraso;
+         }
+         if($segundosretraso>9 && $minutoretraso>9 && $horaretraso<10)
+         {
+             $timestamp='0'.$horaretraso.':'.$minutoretraso.':'.$segundosretraso;
+         }
+         
+         //dd($retraso);
+         return $timestamp;
+         
+     }
+    //sumar horas
+    function suma_horas($hora1,$hora2){
+        
+        $hora1=explode(":",$hora1);
+        $hora2=explode(":",$hora2);
+        $temp=0;
+        //sumo segundos 
+        $segundos=(int)$hora1[2]+(int)$hora2[2];
+        while($segundos>=60){
+            $segundos=$segundos-60;
+            $temp++;
+        }
+     
+        //sumo minutos 
+        $minutos=(int)$hora1[1]+(int)$hora2[1]+$temp;
+        $temp=0;
+        while($minutos>=60){
+            $minutos=$minutos-60;
+            $temp++;
+        }
+     
+        //sumo horas 
+        $horas=(int)$hora1[0]+(int)$hora2[0]+$temp;
+     
+        if($horas<10)
+            $horas= '0'.$horas;
+     
+        if($minutos<10)
+            $minutos= '0'.$minutos;
+     
+        if($segundos<10)
+            $segundos= '0'.$segundos;
+     
+        $sum_hrs = $horas.':'.$minutos.':'.$segundos;
+     
+        return ($sum_hrs);
+     
+        }
 
     //CABECERAS DEL REPORTE
     public function headings(): array
     {
+        $date = Carbon::parse($this->dateFrom)->format('F');
+        //$date = new Carbon('today');
+        //$date = $date->format('F');
+        //dd($date);
+        $this->mes=$this->Mes($date);
+        //dd($this->mes);
         
-        
-           
+           //dd($this->mes);
 
             return [
                  ["SOLUCIONES INFORMATICAS EMANUEL"],
                  ["PLANILLA DE SUELDOS Y SALARIOS PERSONAL TECNICO"],
-                 ["MES DE AGOSTO"], //AGREGAR MES DE EMEISION
+                 ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  [""],
                  [""],
                 ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO"],
-                
-                20 => ["Total"]
             ];
         
 
         
     }
-    public function headingRow(): int
+    /*public function headingRow(): int
     {
         return 3;
-    }
+    }*/
     //el ancho de una cell
     public function columnWidths(): array
     {
         return [
-            'A' => 5,
+            'A' => 3,
             'B' => 25,
             'C' => 10,
             'D' => 10,
-            'E' => 12,
+            'E' => 7,
             'F' => 10,
             'G' => 10,
-            'H' => 10,
+            'H' => 7,
             'I' => 10,
             'J' => 10,
             'K' => 10,
             'L' => 10,          
         ];
     }
-    
+    //WithColumnFormatting
+    //formato que se mostraran los datos
+    public function columnFormats(): array
+    {
+        return [
+            'A' => NumberFormat::FORMAT_NUMBER,
+        ];
+    }
     
     //Definiendo en que cel se imprimira el reporte
     public function startCell(): string
@@ -175,13 +573,6 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         
     }
     
-    public static function beforeSheet(BeforeSheet $event){
-        $event->sheet->appendRows(array(
-            array('test1', 'test2'),
-            array('test3', 'test4'),
-            //....
-        ), $event);
-    }
 
     public static function afterSheet(AfterSheet $event){
         $event->sheet->appendRows(array(
@@ -196,7 +587,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         
         
         //contar los resultados existentes para el bordeado del excel
-        $Allemployee = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
+        $this->Allemployee = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->select('employees.id', 'employees.name', 'at.name as area')
         ->where('at.id',2)
         ->get()
@@ -206,12 +597,12 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             //dd($Allemployee);
             //estilos para el excel para todos
             $i=8;
-            $this->cell='A'.$i.':L'.($Allemployee+8);
-            $this->B='B8:B'.($Allemployee+8);
-            $this->C='C8:C'.($Allemployee+8);
-            $this->D='D8:D'.($Allemployee+8);
-            $this->E='E8:E'.($Allemployee+8);
-            $this->F='F8:F'.($Allemployee+8);
+            $this->cell='A'.$i.':L'.($this->Allemployee+8);
+            $this->B='B8:B'.($this->Allemployee+8);
+            $this->C='C8:C'.($this->Allemployee+8);
+            $this->D='D8:D'.($this->Allemployee+8);
+            $this->E='E8:E'.($this->Allemployee+8);
+            $this->F='F8:F'.($this->Allemployee+8);
             //dd($this->B);
             //dd($cell);
             return [ 
@@ -220,11 +611,17 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
                         $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
                     });
+                    //footer total y suma de totales
+                    
                     $event->sheet->appendRows(array(
-                        array('Total'),
+                        array('Total','','',$this->horitas,'5000'),
                         
                         //....
                     ), $event);
+                    $event->sheet->mergeCells('A20:C20');
+                     $event->sheet->getDelegate()->getStyle('A20:C20')
+                            ->getAlignment()
+                            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     /*$event->sheet->appendRows(1, array(
                         'prepended', 'prepended'
                     ));*/
@@ -266,7 +663,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                                         ],
                                     ]
                                 ]
@@ -276,7 +673,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                                         ],
                                     ]
                                 ]
@@ -286,7 +683,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                                         ],
                                     ]
                                 ]
@@ -296,17 +693,32 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                                         ],
                                     ]
                                 ]
                             );
+                            for ($i=9; $i < $this->Allemployee+8 ; $i++) { 
+                                $this->pintar='A'.$i.':L'.$i;
+                                //dd($this->pintar);
+                                $event->sheet->styleCells(
+                                    $this->pintar,
+                                    [
+                                        'borders' => [
+                                            'outline' => [
+                                                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
+                                            ],
+                                        ]
+                                    ]
+                                );
+                            }
+                            
                             $event->sheet->styleCells(
                                 'A8:l8',
                                 [
                                     'borders' => [
                                         'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_MEDIUM
+                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
                                         ],
                                     ]
                                 ]

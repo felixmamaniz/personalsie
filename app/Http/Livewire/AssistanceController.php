@@ -62,7 +62,7 @@ class AssistanceController extends Component
             }
 
         return view('livewire.assistances.component', [
-            'asistencias' => $data,        // se envia functionarea
+            'asistencias' => $data,        // se envia asistencias
             'empleados' => Employee::orderBy('name', 'asc')->get()
             ])
         ->extends('layouts.theme.app')

@@ -188,8 +188,10 @@ class AttendancesController extends Component
                          //dd($timestamp);
                          $os->retraso = $timestamp;
                      }   else{
-                             if($os->salida=='00:00:00')
+                        
+                             if($os->salida == '00:00:00')
                              {
+                                
                                  $os->retraso = 'No marco salida';
                              }
                              else

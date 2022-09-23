@@ -18,8 +18,15 @@
                     <table class="table table-hover table table-bordered table-bordered-bd-warning mt-4">
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                                <th class="table-th text-withe">TURNO</th>
-                                <th class="table-th text-withe text-center">HORARIO</th>
+                                <th class="table-th text-withe">ID</th>
+                                <th class="table-th text-withe">Nombre</th>
+                                <th class="table-th text-withe text-center">Lunes</th>
+                                <th class="table-th text-withe text-center">Martes</th>
+                                <th class="table-th text-withe text-center">Miercoles</th>
+                                <th class="table-th text-withe text-center">Jueves</th>
+                                <th class="table-th text-withe text-center">Viernes</th>
+                                <th class="table-th text-withe text-center">Sabado</th>
+                                <th class="table-th text-withe text-center">Domingo</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
                         </thead>

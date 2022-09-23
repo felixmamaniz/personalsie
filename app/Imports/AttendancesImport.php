@@ -42,7 +42,7 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
             {
                 
                 //agregamos los datos
-                $this->entrada->push(['id_entrada'=> $e,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => null]);
+                $this->entrada->push(['id_entrada'=> $e,'id' => $row['id_de_usuario'], 'name' => $row['nombre'], 'fecha' => substr($row['tiempo'],0,10), 'entrada' =>substr( $row['tiempo'], 11, 9), 'salida' => 'no marco salida']);
                 $e++;   
             }
 
@@ -53,11 +53,13 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
                 $s++;
             }
         }
+        //dd($this->entrada);
+        //dd($this->salida);
         $s=0;
         //agrupar las entradas con las salidas de las misma fecha y eliminarlas
         foreach ($this->entrada as $row){
             $result=$this->salida->where('id',$row['id'])->where('fecha',$row['fecha'])->first();
-            //dd($shora);
+            //dd($result);
             if($result)
             {
                 $shora=$result['salida'];
@@ -73,12 +75,17 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
                 $shora='no marco salida';
                 $this->empleado->push(['id_salida'=> $s,'id' => $row['id'], 'name' => $row['name'], 'fecha' => $row['fecha'], 'entrada' => $row['entrada'], 'salida' => $shora]);
                 $s++;
+                //dd($this->empleado);
             }
             
         }
+        //dd($this->empleado);
         //dd($this->salida);
+
+        $this->uniqueE=$this->empleado->merge($this->salida);
+        dd($this->uniqueE);
         //sacar valores duplicados
-        $uniqueE = $this->empleado->unique(function ($item) {
+        $this->empleadoAll = $this->uniqueE->unique(function ($item) {
             $jc;
 
             /*$jc=Shift::join('employees as e', 'e.id', 'shifts.employee_id')
@@ -95,16 +102,20 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
             }
             return $item['id'].$item['fecha'];
         });
-        $uniqueS= $this->salida->unique(function ($item){
+        $this->empleadoAll->values()->all();
+        dd($this->empleadoAll);
+        //dd($this->empleadoAll);
+       /* $uniqueS= $this->salida->unique(function ($item){
             return $item['id'].$item['fecha'];
         });
-         
+        
         $uniqueE->values()->all();
-        $uniqueS->values()->all(); 
+        $uniqueS->values()->all(); */
         //dump($uniqueE);
-        //dump($uniqueS);
+        //dump($this->salida);
+        //dd($uniqueS);
         //dump($this->empleado);
-        $this->empleadoAll=$uniqueE->merge($uniqueS);
+        //$this->empleadoAll=$uniqueE->merge($uniqueS);
         //dd($this->empleadoAll);
         
 

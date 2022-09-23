@@ -27,11 +27,14 @@
 
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <h6>Estado</h6>
-            <input type="text" wire:model.lazy="estado" class="form-control">
-            @error('estado')
-                <span class="text-danger er">{{ $message }}</span>
-            @enderror
+            <label>Estado</label>
+            <select id="seleccion" wire:model="estado" class="form-control">
+                <option value="Elegir" disabled>Elegir</option>
+                <option value="Presente" selected>Presente</option>
+                <option value="Falta" selected>Falta</option>
+                <option value="Licencia" selected>Licencia</option>
+            </select>
+            @error('estado') <span class="text-danger er">{{ $message }}</span> @enderror
         </div>
     </div>
 

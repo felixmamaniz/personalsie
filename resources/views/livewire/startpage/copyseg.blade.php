@@ -22,9 +22,37 @@
 
     Ejemplo
     http://programacionparacompartir.com/sis_recursoshh/index.php/login
+
+    https://www.youtube.com/watch?v=H601HZ5nZd0
     
 --}}
 
+{{--
+
+use Intervetion\Image\Facades\Image;
+
+use Illuminate\Http\Request;
+
+    public function imageUploadResize(Request $request)
+    {
+        $this->validate($request,[
+            'image' => 'required|image|mimes:jpeg,png,gif|max:2048'
+        ]);
+        $image = $request->file('image');
+        $input['imagename']=time().'.'.$image->extends;
+
+        $destinationPath = public_path('images');
+        $img=Image::make($image->path());
+        $img->resize(100, 100,function($constraint){
+            $constraint->aspectRatio();
+        })->save($destinationPath.'/'.$input['imagename']);
+
+        return back()
+        ->with('success','Image Umploaded Successfull')
+        ->with('image',$input['imagename']);
+    }
+    
+    --}}
 
 
 {{--

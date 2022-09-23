@@ -13,7 +13,6 @@ use App\Models\Contrato;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Intervetion\Image\Facades\Image;
 
 class EmployeeController extends Component
 {
@@ -416,6 +415,7 @@ class EmployeeController extends Component
             $employ->save();
         }
 
+        
         /*$customFileName;
         if($this->image)
         {

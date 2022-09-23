@@ -16,13 +16,13 @@
                 <div class="profile-picture">
                   <div class="avatar">
                     <img src="{{ asset('storage/employees/' .$image)}}"
-                    alt="imagen de ejemplo"  class="img-fluid rounded-start">
+                     height="90" width="100" class="rounded">
                   </div>
                 </div>
               </div>
               
               <div class="card-body">
-                <div class="user-profile text-center">
+                <div class="user-profile" style="text-align: center">
                   <br>
                   <div class="name">{{ $name }} {{ $lastname }}</div>
                   <div class="name">{{ $ci }}</div>

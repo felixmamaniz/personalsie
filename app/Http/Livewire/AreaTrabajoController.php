@@ -16,7 +16,7 @@ class AreaTrabajoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $name, $description, $selected_id;
+    public $nameArea, $descriptionArea, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
@@ -35,10 +35,10 @@ class AreaTrabajoController extends Component
         if(strlen($this->search) > 0)
         {
             //$data = Area::where('name','like','%' . $this->search . '%')->paginate($this->pagination);
-            $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
+            $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.nameArea as name','area_trabajos.descriptionArea as description',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
-            ->where('area_trabajos.name', 'like', '%' . $this->search . '%')
+            ->where('area_trabajos.nameArea', 'like', '%' . $this->search . '%')
             ->paginate($this->pagination);
 
             foreach ($data as $os)
@@ -50,7 +50,7 @@ class AreaTrabajoController extends Component
         else
         {
             // $data = Area::orderBy('id','desc')->paginate($this->pagination);
-            $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.name as name','area_trabajos.description as description',
+            $data = AreaTrabajo::select('area_trabajos.id as idarea','area_trabajos.nameArea as name','area_trabajos.descriptionArea as description',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
@@ -91,9 +91,9 @@ class AreaTrabajoController extends Component
 
     // editar 
     public function Edit($id){
-        $record = AreaTrabajo::find($id, ['id', 'name', 'description']);
-        $this->name = $record->name;
-        $this->description = $record->description;
+        $record = AreaTrabajo::find($id, ['id', 'nameArea', 'descriptionArea']);
+        $this->nameArea = $record->nameArea;
+        $this->descriptionArea = $record->descriptionArea;
         $this->selected_id = $record->id;
 
         $this->emit('show-modal', 'show modal!');
@@ -101,19 +101,19 @@ class AreaTrabajoController extends Component
 
     public function Store(){
         $rules = [
-            'name' => 'required|unique:area_trabajos|min:3',
+            'nameArea' => 'required|unique:area_trabajos|min:3',
         ];
         $messages =  [
-            'name.required' => 'Nombre del area es requerida',
-            'name.unique' => 'ya existe el nombre del area',
-            'name.min' => 'el nombre del area debe tener al menos 3 caracteres',
+            'nameArea.required' => 'Nombre del area es requerida',
+            'nameArea.unique' => 'ya existe el nombre del area',
+            'nameArea.min' => 'el nombre del area debe tener al menos 3 caracteres',
         ];
 
         $this->validate($rules, $messages);
        
         $area = AreaTrabajo::create([
-            'name'=>$this->name, 
-            'description'=>$this->description
+            'nameArea'=>$this->nameArea, 
+            'descriptionArea'=>$this->descriptionArea
         ]);
 
         $this->resetUI();
@@ -123,20 +123,20 @@ class AreaTrabajoController extends Component
     // actualizar
     public function Update(){
         $rules = [
-            'name' => "required|min:3|unique:area_trabajos,name,{$this->selected_id}",
+            'nameArea' => "required|min:3|unique:area_trabajos,nameArea,{$this->selected_id}",
         ];
 
         $messages = [
-            'name.required' => 'nombre de la categoria requerida',
-            'name.min' => 'el nombre de la categoria debe tener al menos 3 caracteres',
-            'name.unique' =>  'el nombre de la categoria ya existe',
+            'nameArea.required' => 'nombre de la categoria requerida',
+            'nameArea.min' => 'el nombre de la categoria debe tener al menos 3 caracteres',
+            'nameArea.unique' =>  'el nombre de la categoria ya existe',
         ];
         $this->validate($rules,$messages);
 
         $area = AreaTrabajo::find($this->selected_id);
         $area -> update([
-            'name' => $this->name,
-            'description' => $this->description,
+            'nameArea' => $this->nameArea,
+            'descriptionArea' => $this->descriptionArea,
         ]);
 
         $this->resetUI();
@@ -144,8 +144,8 @@ class AreaTrabajoController extends Component
     }
 
     public function resetUI(){
-        $this->name='';
-        $this->description='';
+        $this->nameArea='';
+        $this->descriptionArea='';
         $this->search='';
         $this->selected_id=0;
     }

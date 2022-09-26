@@ -17,6 +17,8 @@ class CreatePuestoTrabajosTable extends Migration
             $table->id();
 
             $table->string('name',255);
+            $table->string('nrovacantes',255);
+            $table->enum('estado',['Disponible','No Disponible'])->default('Disponible');
 
             $table->timestamps();
         });

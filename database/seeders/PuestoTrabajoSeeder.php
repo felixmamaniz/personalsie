@@ -16,18 +16,28 @@ class PuestoTrabajoSeeder extends Seeder
     {
         PuestoTrabajo::create([
             'name' => 'No definido',
+            'nrovacantes' => '2',
+            'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
             'name' => 'Puesto Uno',
+            'nrovacantes' => '2',
+            'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
             'name' => 'Puesto Dos',
+            'nrovacantes' => '2',
+            'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
             'name' => 'Puesto Tres',
+            'nrovacantes' => '2',
+            'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
             'name' => 'Puesto Cuatro',
+            'nrovacantes' => '2',
+            'estado' => 'Disponible',
         ]);
     }
 }

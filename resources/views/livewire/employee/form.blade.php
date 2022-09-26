@@ -77,7 +77,7 @@
                             <select wire:model="areaid" class="form-control">
                                 <option value="Elegir" disabled>Elegir</option>
                                 @foreach($areas as $area)
-                                <option value="{{$area->id}}">{{$area->name}}</option>
+                                <option value="{{$area->id}}">{{$area->nameArea}}</option>
                                 @endforeach
                             </select>
                             @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror

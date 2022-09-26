@@ -59,10 +59,10 @@ class EmployeeController extends Component
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.name as area', 'pt.name as puesto', 'ct.descripcion as contrato', 'employees.id as idEmpleado', DB::raw('0 as verificar'))
+            ->select('employees.*','c.nameArea as area', 'pt.name as puesto', 'ct.descripcion as contrato', 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
-            ->orWhere('c.name', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
+            ->orWhere('c.nameArea', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
 
@@ -76,7 +76,7 @@ class EmployeeController extends Component
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.name as area','pt.name as puesto', 'ct.descripcion as contrato', 
+            ->select('employees.*','c.nameArea as area','pt.name as puesto', 'ct.descripcion as contrato', 
                 DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'), 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
@@ -100,7 +100,7 @@ class EmployeeController extends Component
 
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
-            'areas' => AreaTrabajo::orderBy('name', 'asc')->get(),
+            'areas' => AreaTrabajo::orderBy('nameArea', 'asc')->get(),
             'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
             //'estadocontrato' => $estadoContrato,
@@ -279,7 +279,7 @@ class EmployeeController extends Component
             'employees.address',
             'employees.phone',
             'employees.estadoCivil',
-            'at.name as nombrearea',
+            'at.nameArea as nombrearea',
             'pt.name as nombrepuesto',
             'employees.contrato_id',
             'employees.fechaInicio',

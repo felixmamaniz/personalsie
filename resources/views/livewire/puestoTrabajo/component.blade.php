@@ -18,17 +18,27 @@
                     <table class="table table-bordered table striped mt-1" >
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                               <th class="table-th text-white">ID</th>
+                               {{--<th class="table-th text-white">ID</th>--}}
                                <th class="table-th text-white">NOMBRE</th>
+                               <th class="table-th text-white text-center">NRO VACANTES</th>
+                               <th class="table-th text-white text-center">ESTADO</th>
                                <th class="table-th text-white text-center">ACTIONS</th> 
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($puestos as $puesto)
                             <tr>
-                                <td><h6>{{$puesto->idpuesto}}</h6></td>
+                                {{--<td><h6>{{$puesto->idpuesto}}</h6></td>--}}
                                 <td><h6>{{$puesto->name}}</h6></td>
+                                <td><h6 class="text-center">{{$puesto->nrovacantes}}</h6></td>
                                 
+                                <td class="text-center">
+                                    <span class="badge {{$puesto->estado == 'Disponible' ? 'badge-success' : 'badge-danger'}}
+                                        text-uppercase">
+                                        {{$puesto->estado}}
+                                    </span>
+                                </td>
+
                                 <td class="text-center">
                                     <a href="javascript:void(0)" 
                                         wire:click="Edit({{$puesto->idpuesto}})"
@@ -39,6 +49,12 @@
                                     <a onclick="Confirmar1({{$puesto->idpuesto}},'{{$puesto->verificar}}')" 
                                         class="btn btn-dark mtmobile" title="Destroy">
                                         <i class="fas fa-trash"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0)"
+                                        wire:click="DetallePuesto({{$puesto->idpuesto}})"
+                                        class="btn btn-dark" title="DetallePuesto">
+                                        <i class="fas fa-list"></i>
                                     </a>
                                 </td>
                             </tr>
@@ -51,6 +67,7 @@
         </div>
     </div>
     @include('livewire.puestoTrabajo.form')
+    @include('livewire.puestoTrabajo.detallePuesto')
 </div>
 
 @section('javascript')
@@ -68,6 +85,11 @@
         window.livewire.on('puesto-updated', msg=>{
             $('#theModal').modal('hide')
         });
+
+        // ver detalle de puesto
+        window.livewire.on('show-modal-detalle', Msg => {
+            $('#modal-details').modal('show')
+        })
     });
 
     function Confirmar1(id, verificar)

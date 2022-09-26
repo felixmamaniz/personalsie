@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;          // para trabajar con colecciones y obtener la data
@@ -31,15 +32,15 @@ use Maatwebsite\Excel\Concerns\RegistersEventListeners;  //todos los eventos
 use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Contracts\View\View;
 
-class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCell, WithTitle, WithStyles, WithDefaultStyles, WithEvents, WithColumnWidths, WithDrawings, WithColumnFormatting
+class AdministrationExport implements FromCollection, WithHeadings, WithCustomStartCell, WithTitle, WithStyles, WithDefaultStyles, WithEvents, WithColumnWidths, WithDrawings, WithColumnFormatting
 {
-    use  Exportable, RegistersEventListeners;
+    
     protected $userId, $dateFrom, $dateTo, $reportType;
     public $cell;
     //calcular cuantas filas se tiene
     public $data2, $Allemployee;
     //para agregar los tatales
-    public $horitas, $Dtrabajados, $tganado;
+    public $horitas, $Dtrabajados,$tganado;
     //Mes
     public $mes;
     
@@ -67,13 +68,12 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         $drawing2->setDescription('This is my direccion');
         $drawing2->setPath(public_path('assets/img/direccion.png'));
         $drawing2->setHeight(90);
-        $drawing2->setCoordinates('K1');
+        $drawing2->setCoordinates('H1');
 
         return [$drawing, $drawing2];
     }
     public function Mes($m)
     {
-       
         switch ($m) {
             case 'January':
                 return 'ENERO';
@@ -145,7 +145,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->select('employees.id', 'employees.name', 'at.name as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
-        ->where('at.id',2)
+        ->where('at.id',3)
         ->get();
         
         //calcular las horas totateles, retrasdos, dias de cada empleado
@@ -209,6 +209,10 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     $diferencia = $e->diff($s)->format('%H:%I:%S');
                 }
                 
+                if($x->name == "Yazmin")
+                {
+                    //dump($diferencia);
+                }
                //$hora= $diferencia->format('%H:%I:%S');
                 //dump($e);
                 //dump($s);
@@ -227,24 +231,27 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             }
             //$h->retrasos=$retrasomin;
             $h->Horas=$horasum;
-            $h->Dias_trabajados=$dias;
             $h->id=$num;
             $num++;
+            //$h->Dias_trabajados=$dias;
         }
 
 
         //sumar columnas para agregar a los totales
         $this->horitas = '00:00:00';
+        $this->tganado = 0;
+       
         foreach ($reporte as $x) {
                 $this->horitas = $this->suma_horas($this->horitas,$x->Horas);
                 $this->tganado = $this->tganado + $x->salario;
+            
         }
         //dd($horitas);
         //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->select('employees.id', 'employees.name', 'at.name as area')
-        ->where('at.id',2)
+        ->where('at.id',3)
         ->get();
         //dd($data2);
         //dd($data);
@@ -267,11 +274,11 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
 
             return [
                  ["SOLUCIONES INFORMATICAS EMANUEL"],
-                 ["PLANILLA DE SUELDOS Y SALARIOS PERSONAL TECNICO"],
+                 ["PLANILLA DE SUELDOS Y SALARIOS PERSONAL ADMINISTRATIVO"],
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  [""],
                  [""],
-                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO"],
+                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "ADELANTOS", "DESCUENTOS", "BONIFICACION", "TOTAL PAGADO"],
             ];
         
 
@@ -287,25 +294,21 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         return [
             'A' => 3,
             'B' => 25,
-            'C' => 16,
+            'C' => 15,
             'D' => 10,
-            'E' => 8,
-            'F' => 10,
-            'G' => 9,
-            'H' => 7,
-            'I' => 8,
-            'J' => 10,
-            'K' => 8,
-            'L' => 10,          
+            'E' => 11,
+            'F' => 11,
+            'G' => 12,
+            'H' => 10,
+            'I' => 11,         
         ];
     }
     //WithColumnFormatting
     //formato que se mostraran los datos
     public function columnFormats(): array
     {
-        
         return [
-            'E' => '0.00',
+            'A' => NumberFormat::FORMAT_NUMBER,
         ];
     }
     
@@ -324,6 +327,9 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 'color'=>  array('rgb' => 'red')
             ]
             ],*/
+
+            
+
             3    => ['font' => [
                 'size' => 14,
                 'bold' => true],
@@ -336,7 +342,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
     //Titulo del Excel
     public function title(): string
     {
-        return 'Reporte de Salarios Tecnico';
+        return 'Reporte de Salarios Administracion';
     }
     
 
@@ -363,25 +369,24 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //contar los resultados existentes para el bordeado del excel
         $this->Allemployee = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->select('employees.id', 'employees.name', 'at.name as area')
-        ->where('at.id',2)
+        ->where('at.id',3)
         ->get()
         ->count();
-           // dd($Allemployee);
+            //dd($this->Allemployee);
 
             //dd($Allemployee);
             //estilos para el excel para todos
-            //bcdefhjl
             $i=8;
-            $this->cell='A'.$i.':L'.($this->Allemployee+9);
+            $this->cell='A'.$i.':I'.($this->Allemployee+9);
             $this->B='B8:B'.($this->Allemployee+9);
             $this->C='C8:C'.($this->Allemployee+9);
             $this->D='D8:D'.($this->Allemployee+9);
             $this->E='E8:E'.($this->Allemployee+9);
             $this->F='F8:F'.($this->Allemployee+9);
             $this->H='H8:H'.($this->Allemployee+9);
-            $this->J='J8:J'.($this->Allemployee+9);
-            $this->L='L8:L'.($this->Allemployee+9);
-            //dd($this->B);
+
+            $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
+            //dd($this->total);
             //dd($cell);
             return [ 
                 
@@ -392,42 +397,48 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     //footer total y suma de totales
                     
                     $event->sheet->appendRows(array(
-                        array('Total','','',$this->horitas,$this->tganado.',00'),
+                        array('Total','','',$this->horitas,$this->tganado),
                         
                         //....
                     ), $event);
-                    $event->sheet->mergeCells('A20:C20');
-                     $event->sheet->getDelegate()->getStyle('A20:C20')
+                    $event->sheet->mergeCells($this->total);
+                     $event->sheet->getDelegate()->getStyle($this->total)
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     /*$event->sheet->appendRows(1, array(
                         'prepended', 'prepended'
                     ));*/
                     //alto de las columnas
-                    $event->sheet->getDelegate()->getRowDimension('8')->setRowHeight(50);
+                    $event->sheet->getDelegate()->getRowDimension('8')->setRowHeight(40);
                     /*$event->sheet->setHeight(array(
                         1     =>  50
                     ));*/
                     //ajustar el texto al tamaño de la columna
                     //$event->sheet->getStyle('A6:B' . $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
-                    $event->sheet->getStyle('A8:L8')->getAlignment()->setWrapText(true);
+                    $event->sheet->getStyle('A8:I12')->getAlignment()->setWrapText(true);
                      //centrear A3 hasta l3
-                     $event->sheet->mergeCells('A3:l3');
-                     $event->sheet->getDelegate()->getStyle('A3:l3')
+                     $event->sheet->mergeCells('A3:I3');
+                     $event->sheet->getDelegate()->getStyle('A3:I3')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                             //centrear A3 hasta l3
-                     $event->sheet->mergeCells('A4:l4');
-                     $event->sheet->getDelegate()->getStyle('A4:l4')
+                     $event->sheet->mergeCells('A4:I4');
+                     $event->sheet->getDelegate()->getStyle('A4:I4')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                             //centrear A3 hasta l3
-                     $event->sheet->mergeCells('A5:l5');
-                     $event->sheet->getDelegate()->getStyle('A5:l5')
+                     $event->sheet->mergeCells('A5:I5');
+                     $event->sheet->getDelegate()->getStyle('A5:I5')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     
-                            $event->sheet->getDelegate()->getStyle('A8:l8')
+                            
+
+                            $event->sheet->getDelegate()->getStyle('B8:B12')
+                            ->getAlignment()
+                            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_TOP);
+
+                            $event->sheet->getDelegate()->getStyle('A8:I8')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
                             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
@@ -486,28 +497,8 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                     ]
                                 ]
                             );
-                            $event->sheet->styleCells(
-                                $this->J,
-                                [
-                                    'borders' => [
-                                        'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                                        ],
-                                    ]
-                                ]
-                            );
-                            $event->sheet->styleCells(
-                                $this->L,
-                                [
-                                    'borders' => [
-                                        'outline' => [
-                                            'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN
-                                        ],
-                                    ]
-                                ]
-                            );
                             for ($i=9; $i < $this->Allemployee+9 ; $i++) { 
-                                $this->pintar='A'.$i.':L'.$i;
+                                $this->pintar='A'.$i.':I'.$i;
                                 //dd($this->pintar);
                                 $event->sheet->styleCells(
                                     $this->pintar,
@@ -522,7 +513,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                             }
                             
                             $event->sheet->styleCells(
-                                'A8:l8',
+                                'A8:I8',
                                 [
                                     'borders' => [
                                         'outline' => [
@@ -533,18 +524,18 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                             );
                 
                             $event->sheet->styleCells(
-                                'A8:L8',
+                                'A8:I8',
                                 [
                                     'font' => [
                                         'name'      =>  'Times New Roman',
-                                        'size'      =>  6,
+                                        'size'      =>  8,
                                         'bold'      =>  true,
                                         'color' => ['rgb' => 'black'],
                                     ],
                                 ]
                             );
 
-                            
+                           
                             
     
                                 

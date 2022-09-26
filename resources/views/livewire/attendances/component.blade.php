@@ -65,19 +65,19 @@
 
                         <div class="col-sm-4 mt-4">
                             <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
-                            href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
-                            target="_blank">Exportar a Excel Administrativo</a>
+                            href="{{ url('report/excelAdministrativo' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
+                            target="_blank">Reporte Sueldos Administrativo</a>
 
                         </div>
 
                         <div class="col-sm-2 mt-4">
                             <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
-                            href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
-                            target="_blank">Exportar a Excel Tecnico</a>
+                            href="{{ url('report/excelTecnico' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
+                            target="_blank">Reporte Sueldos Tecnico</a>
 
                         </div>
 
-                        <div class="col-sm-5 mt-4">
+                        <div class="col-sm-5 mt-2">
                             <div class="card-body">
                                 @if (isset($errors) && $errors->any())
                                 <div class="alert alert-danger" role="alert">
@@ -96,12 +96,7 @@
                                 </form>
                             </div>
                             
-
-                            
-
-                            
-
-                    </div>
+                         </div>
     
                     </div>
     

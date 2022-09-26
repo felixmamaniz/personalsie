@@ -163,20 +163,31 @@ class AttendancesController extends Component
         } else {
 
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'))
+            ->join('shifts as s', 's.id', 'attendances.employee_id')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $this->userId)
             ->orderBy('attendances.fecha','asc')
             ->get();
+
+            $this->data2 = Attendance::join('employees as e','e.id','attendances.employee_id')
+            ->join('shifts as s', 's.id', 'attendances.employee_id')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'),'s.monday','s.tuesday')
+            ->whereBetween('attendances.fecha', [$from,$to])
+            ->where('employee_id', $this->userId)
+            ->orderBy('attendances.fecha','asc')
+            ->get();
+            //dd($this->data2);
              //agregar el tiempo de retrasa del empleado
              foreach ($this->data as $os)
              {   
-                 
+               
                  //validar el horario conformado y enviarlo a unfuncion para calcular
                  //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
                  if($os->entrada>'14:00:00') {
                      //dd('hola');
-                 $timestamp = $this->strtotime($os->entrada,"14:00:00");
+
+                 $timestamp = $this->restar_horas($os->entrada,$this->dia());
                  //dd($timestamp);
                  $os->retraso = $timestamp;
                  }
@@ -184,7 +195,7 @@ class AttendancesController extends Component
                      elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                      {
                          
-                         $timestamp = $this->strtotime($os->entrada,"08:05:00");
+                         $timestamp = $this->restar_horas($os->entrada,$this->dia());
                          //dd($timestamp);
                          $os->retraso = $timestamp;
                      }   else{
@@ -287,6 +298,82 @@ else{
         //dd($retraso);
         return $timeacumleted;
     }
+
+    //Función que resta horas Ahi que tenerla por si a caso
+ 
+    function restar_horas($hora1,$hora2){
+ 
+        $temp1 = explode(":",$hora1);
+        $temp_h1 = (int)$temp1[0];
+        $temp_m1 = (int)$temp1[1];
+        $temp_s1 = (int)$temp1[2];
+        $temp2 = explode(":",$hora2);
+        $temp_h2 = (int)$temp2[0];
+        $temp_m2 = (int)$temp2[1];
+        $temp_s2 = (int)$temp2[2];
+     
+        // si $hora2 es mayor que la $hora1, invierto 
+        if( $temp_h1 < $temp_h2 ){
+            $temp  = $hora1;
+            $hora1 = $hora2;
+            $hora2 = $temp;
+        }
+        /* si $hora2 es igual $hora1 y los minutos de 
+           $hora2 son mayor que los de $hora1, invierto*/
+        elseif( $temp_h1 == $temp_h2 && $temp_m1 < $temp_m2){
+            $temp  = $hora1;
+            $hora1 = $hora2;
+            $hora2 = $temp;
+        }
+        /* horas y minutos iguales, si los segundos de  
+           $hora2 son mayores que los de $hora1,invierto*/
+        elseif( $temp_h1 == $temp_h2 && $temp_m1 == $temp_m2 && $temp_s1 < $temp_s2){
+            $temp  = $hora1;
+            $hora1 = $hora2;
+            $hora2 = $temp;
+        }
+     
+        $hora1=explode(":",$hora1);
+        $hora2=explode(":",$hora2);
+        $temp_horas = 0;
+        $temp_minutos = 0;
+     
+        //resto segundos 
+        $segundos;
+        if( (int)$hora1[2] < (int)$hora2[2] ){
+            $temp_minutos = -1;
+            $segundos = ( (int)$hora1[2] + 60 ) - (int)$hora2[2];
+        }
+        else
+            $segundos = (int)$hora1[2] - (int)$hora2[2];
+     
+        //resto minutos 
+        $minutos;
+        if( (int)$hora1[1] < (int)$hora2[1] ){
+            $temp_horas = -1;
+            $minutos = ( (int)$hora1[1] + 60 ) - (int)$hora2[1] + $temp_minutos;
+        }
+        else
+            $minutos =  (int)$hora1[1] - (int)$hora2[1] + $temp_minutos;
+     
+        //resto horas     
+        $horas = (int)$hora1[0]  - (int)$hora2[0] + $temp_horas;
+     
+        if($horas<10)
+            $horas= '0'.$horas;
+     
+        if($minutos<10)
+            $minutos= '0'.$minutos;
+     
+        if($segundos<10)
+            $segundos= '0'.$segundos;
+     
+        $rst_hrs = $horas.':'.$minutos.':'.$segundos;
+     
+        return ($rst_hrs);
+     
+        }
+
     //calcular el tiempo del retraso del empleado
     public function strtotime($horaentrada,$horaconformada)
     {
@@ -303,7 +390,7 @@ else{
         $segundo=(int)  substr($horaentrada,6,2);
         //horaconfomada asginada para entrar
         $horataconformada=(int)  substr($horaconformada,0,2);
-        $minutoconformada=(int)  substr($horaconformada,3,2);
+        $minutoconformada=(int)  substr($horaconformada,3,2)+5;
         $segundoconformada=(int)  substr($horaconformada,6,2);
         //calculamos el retrasa
         $horaretraso=$hora-$horataconformada;
@@ -342,5 +429,49 @@ else{
         //dd($retraso);
         return $timestamp;
         
+    }
+
+    public function dia()
+    {
+        $dia = new Carbon('today');
+        $dia = $dia->format('l');
+            $from = Carbon::parse($this->dateFrom)->format('Y-m-d');
+            $to = Carbon::parse($this->dateTo)->format('Y-m-d');
+
+                $this->data2 = Attendance::join('employees as e','e.id','attendances.employee_id')
+            ->join('shifts as s', 's.id', 'attendances.employee_id')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'),'s.monday','s.tuesday')
+            ->whereBetween('attendances.fecha', [$from,$to])
+            ->where('employee_id', $this->userId)
+            ->orderBy('attendances.fecha','asc')
+            ->get();
+                foreach ($this->data2 as $os) {
+                    # code...
+                
+                switch ($dia) {
+                    case 'Monday':
+                        $minuto=(int)  substr($os->monday,3,2)+5;
+                        
+                        return $os->monday;
+                        break;
+                    case 'Tuesday':
+                        return $os->tuesday;
+                        break;
+                    case 'Wednesday':
+                        return $os->wednesday;
+                        break;
+                    case 'Thursday':
+                        return $os->thursday;
+                        break;
+                    case 'Friday':
+                        return $os->friday;
+                        break;
+                    case 'Saturday':
+                        return $os->saturday;
+                        break;
+                    default:
+                        return "no se encontro resultado";
+                }
+            }
     }
 }

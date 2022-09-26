@@ -53,8 +53,12 @@ Route::middleware(['auth'])->group(function () {
      //reporte horario Excel
      Route::get('report/excel/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcel']);
      Route::get('report/excel/{user}/{type}', [ExportController::class, 'reporteExcel']);
-     Route::get('report/excel/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcelTecnico']);
-     Route::get('report/excel/{user}/{type}', [ExportController::class, 'reporteExcelTecnico']);
+     //tecnico
+     Route::get('report/excelTecnico/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcelTecnico']);
+     Route::get('report/excelTecnico/{user}/{type}', [ExportController::class, 'reporteExcelTecnico']);
+     //administrativo
+     Route::get('report/excelAdministrativo/{user}/{type}/{fi}/{f2}', [ExportController::class, 'reporteExcelAdministrativo']);
+     Route::get('report/excelAdministrativo/{user}/{type}', [ExportController::class, 'reporteExcelAdministrativo']);
      //mandar un evento post de la vista attendance
      Route::post('POST', [ExportController::class, 'store']);
 

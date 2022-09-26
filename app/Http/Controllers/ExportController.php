@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\AdministrationExport;
 use App\Exports\AttendancesExport;
 use App\Exports\TechnicalExport;
 use App\Imports\AttendancesImport;
@@ -23,8 +24,14 @@ class ExportController extends Controller
     //exportar en excel del area tecnica
     public function reporteExcelTecnico($userId, $reportType, $dateFrom = null, $dateTo = null)
     {
-        $reportName = 'Reporte de Ventas_' . uniqid() . '.xlsx';
+        $reportName = 'Reporte de Sueldos_' . uniqid() . '.xlsx';
         return Excel::download(new TechnicalExport($userId, $reportType, $dateFrom, $dateTo),$reportName );
+    }
+    //exportar en excel del area administrativo
+    public function reporteExcelAdministrativo($userId, $reportType, $dateFrom = null, $dateTo = null)
+    {
+        $reportName = 'Reporte de Sueldos_' . uniqid() . '.xlsx';
+        return Excel::download(new AdministrationExport($userId, $reportType, $dateFrom, $dateTo),$reportName );
     }
     
 

@@ -2,21 +2,21 @@
 
 <div class="row">
 
-    <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <h6>Nombre</h6>
-            <input type="text" wire:model.lazy="name" class="form-control">
-            @error('name')
+            <input type="text" wire:model.lazy="nameArea" class="form-control">
+            @error('nameArea')
                 <span class="text-danger er">{{ $message }}</span>
             @enderror
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-12">
+    <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <h6>Descripcion</h6>
-            <input type="text" wire:model.lazy="description" class="form-control">
-            @error('description')
+            <input type="text" wire:model.lazy="descriptionArea" class="form-control">
+            @error('descriptionArea')
                 <span class="text-danger er">{{ $message }}</span>
             @enderror
         </div>

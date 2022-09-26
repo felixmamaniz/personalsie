@@ -8,7 +8,6 @@ use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
 use App\Models\AreaTrabajo;
-use App\Models\Employee;
 use Illuminate\Support\Facades\DB;
 
 class FunctionAreaController extends Component
@@ -16,15 +15,20 @@ class FunctionAreaController extends Component
     use WithFileUploads;
     use WithPagination;
 
+    // Datos de Funciones
     public $name, $description, $areaid, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
+
+    // Datos de Areas
+    public $nameArea, $descriptionArea, $select_area_id, $componentNuevArea;
 
     public function mount(){
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Funciones';
 
-        $this->areaid = 'Elegir';
+        $this -> componentNuevArea = 'Areas';
+        $this -> areaid = 'Elegir';
     }
 
     public function paginationView()
@@ -37,9 +41,9 @@ class FunctionAreaController extends Component
         if(strlen($this->search) > 0)
         {
             $data = FunctionArea::join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id') // se uno amabas tablas
-            ->select('function_areas.*','at.name as area', 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
+            ->select('function_areas.*','at.nameArea as area', 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
             ->where('function_areas.name', 'like', '%' . $this->search . '%')   
-            ->orWhere('at.name', 'like', '%' . $this->search . '%')         
+            ->orWhere('at.nameArea', 'like', '%' . $this->search . '%')         
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
 
@@ -51,7 +55,7 @@ class FunctionAreaController extends Component
         }
         else
             $data = FunctionArea::join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id')
-            ->select('function_areas.*','at.name as area', 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
+            ->select('function_areas.*','at.nameArea as area', 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
 
@@ -64,7 +68,7 @@ class FunctionAreaController extends Component
 
         return view('livewire.functionArea.component', [
             'functionarea' => $data,        // se envia functionarea
-            'area_trabajos' => AreaTrabajo::orderBy('name', 'asc')->get()
+            'area_trabajos' => AreaTrabajo::orderBy('nameArea', 'asc')->get()
             ])
         ->extends('layouts.theme.app')
         ->section('content');
@@ -85,7 +89,46 @@ class FunctionAreaController extends Component
         }
     }
 
-    // crear y guardar
+    // Abre el modal de Nuevo contrato
+    public function NuevArea()
+    {
+        //$this->resetUI();
+        $this->emit('modal-hide', 'show modal!');
+        $this->emit('show-modal-area', 'show modal!');
+    }
+
+    // Cierra el modal y abre el modal de Registro de empleados
+    public function cancelar()
+    {
+        $this->resetPage(); // regresa la pagina
+        $this->emit('show-modal', 'show modal!');
+    }
+
+    // Registrar nueva Area
+    public function RegNuevArea(){
+        $rules = [
+            'nameArea' => 'required|unique:area_trabajos|min:3',
+        ];
+        $messages =  [
+            'nameArea.required' => 'Nombre del area es requerida',
+            'nameArea.unique' => 'ya existe el nombre del area',
+            'nameArea.min' => 'el nombre del area debe tener al menos 3 caracteres',
+        ];
+
+        $this->validate($rules, $messages);
+       
+        $area = AreaTrabajo::create([
+            'nameArea'=>$this->nameArea, 
+            'descriptionArea'=>$this->descriptionArea
+        ]);
+
+        $this->emit('area-added', 'Area Registrada');
+        $this->resetUI();
+        $this->emit('modal-hide-area', 'show modal!');
+        $this->emit('show-modal', 'show modal!');
+    }
+
+    // Registrar nueva funcion
     public function Store(){
         $rules = [
             'name' => 'required|unique:function_areas|min:3',
@@ -107,7 +150,9 @@ class FunctionAreaController extends Component
         ]);
 
         $this->resetUI();
-        $this->emit('area-added', 'Categoria Registrada');
+        $this->emit('fun-added', 'Funcion Registrada');
+        $this->emit('modal-hide-area', 'show modal!');
+        $this->emit('show-modal', 'show modal!');
     }
 
     // editar datos
@@ -142,7 +187,7 @@ class FunctionAreaController extends Component
         ]);
 
         $this->resetUI();
-        $this->emit('area-updated','Categoria Actualizar');
+        $this->emit('fun-updated','Categoria Actualizar');
     }
 
     // vaciar formulario
@@ -152,6 +197,12 @@ class FunctionAreaController extends Component
         $this->areaid = 'Elegir';
         $this->search='';
         $this->selected_id=0;
+
+         // Datos de Area
+         $this->nameArea='';
+         $this->descriptionArea='';
+         $this->select_area_id = 0;
+         $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
 
     protected $listeners = [
@@ -162,6 +213,6 @@ class FunctionAreaController extends Component
     public function Destroy(FunctionArea $functionarea){
         $functionarea->delete();
         $this->resetUI();
-        $this->emit('area-deleted','Producto Eliminada');
+        $this->emit('fun-deleted','Producto Eliminada');
     }
 }

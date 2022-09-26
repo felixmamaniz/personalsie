@@ -16,8 +16,8 @@ class CreateAreaTrabajosTable extends Migration
         Schema::create('area_trabajos', function (Blueprint $table) {
             $table->id();
 
-            $table->string('name',255);
-            $table->string('description',500)->nullable();
+            $table->string('nameArea',255);
+            $table->string('descriptionArea',500)->nullable();
 
             $table->timestamps();
         });

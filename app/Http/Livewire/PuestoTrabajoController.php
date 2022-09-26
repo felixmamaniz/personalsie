@@ -6,6 +6,7 @@ use Livewire\Component;
 use App\Models\PuestoTrabajo;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use App\Models\Employee;
 
 use Illuminate\Support\Facades\DB;
 
@@ -14,13 +15,15 @@ class PuestoTrabajoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $name, $selected_id;
+    public $name, $nrovacantes, $estado, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
     public function mount(){
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Puestos de Trabajo';
+
+        $this->estado = 'Elegir';
     }
 
     public function paginationView()
@@ -32,7 +35,10 @@ class PuestoTrabajoController extends Component
     {
         if(strlen($this->search) > 0)
         {
-            $data = PuestoTrabajo::select('puesto_trabajos.id as idpuesto','puesto_trabajos.name as name',
+            $data = PuestoTrabajo::select('puesto_trabajos.id as idpuesto',
+            'puesto_trabajos.name as name',
+            'puesto_trabajos.nrovacantes as nrovacantes',
+            'puesto_trabajos.estado as estado',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->where('puesto_trabajos.name', 'like', '%' . $this->search . '%')
@@ -46,7 +52,10 @@ class PuestoTrabajoController extends Component
         }
         else
         {
-            $data = PuestoTrabajo::select('puesto_trabajos.id as idpuesto','puesto_trabajos.name as name',
+            $data = PuestoTrabajo::select('puesto_trabajos.id as idpuesto',
+            'puesto_trabajos.name as name',
+            'puesto_trabajos.nrovacantes as nrovacantes',
+            'puesto_trabajos.estado as estado',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
@@ -81,10 +90,49 @@ class PuestoTrabajoController extends Component
         }
     }
 
+    // modal de Detalle de empleados
+    public function DetallePuesto($idpuesto)
+    {
+        $this->ServicioDetalle($idpuesto);
+        $this->emit('show-modal-detalle', 'open modal');
+    }
+
+    // detalle de empleados
+    public function ServicioDetalle($idpuesto)
+    {
+        //if($idpuesto == Employee::select('employees.puesto_trabajo_id')){
+        /*$detalle = Employee::join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->select('employees.id as idEmpleado',
+            'employees.name',
+            'pt.name as nombrepuesto',
+        )
+        ->where('puesto_trabajos.id', $idpuesto)    // selecciona al empleado
+        ->get()
+        ->first();
+
+        //dd($detalle->name);
+        $this->idpuesto = $detalle->idpuesto;
+        $this->name = $detalle->name;*/
+
+
+        $detalle = PuestoTrabajo::select('puesto_trabajos.id as idpuesto',
+            'puesto_trabajos.name',
+        )
+        ->where('puesto_trabajos.id', $idpuesto)    // selecciona al empleado
+        ->get()
+        ->first();
+
+        //dd($detalle->name);
+        $this->idpuesto = $detalle->idpuesto;
+        $this->name = $detalle->name;
+    }
+
     // editar 
     public function Edit($id){
-        $record = PuestoTrabajo::find($id, ['id', 'name']);
+        $record = PuestoTrabajo::find($id, ['id', 'name', 'nrovacantes', 'estado']);
         $this->name = $record->name;
+        $this->nrovacantes = $record->nrovacantes;
+        $this->estado = $record->estado;
         $this->selected_id = $record->id;
 
         $this->emit('show-modal', 'show modal!');
@@ -93,17 +141,26 @@ class PuestoTrabajoController extends Component
     public function Store(){
         $rules = [
             'name' => 'required|unique:puesto_trabajos|min:5',
+            'nrovacantes.required' => 'Nombre del area es requerida',
+            'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'name.required' => 'Nombre de puesto de trabajo es requerida',
             'name.unique' => 'ya existe el nombre del puesto de trabajo',
             'name.min' => 'el nombre de puesto de trabajo debe tener al menos 5 caracteres',
+
+            'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el puesto',
+
+            'estado.required' => 'seleccione estado de contrato',
+            'estado.not_in' => 'selecciona estado de contrato',
         ];
 
         $this->validate($rules, $messages);
        
         $puesto = PuestoTrabajo::create([
-            'name'=>$this->name
+            'name'=>$this->name,
+            'nrovacantes'=>$this->nrovacantes,
+            'estado'=>$this->estado
         ]);
 
         $this->resetUI();
@@ -114,18 +171,27 @@ class PuestoTrabajoController extends Component
     public function Update(){
         $rules = [
             'name' => "required|min:5|unique:puesto_trabajos,name,{$this->selected_id}",
+            'nrovacantes.required' => 'Nombre del area es requerida',
+            'estado' => 'required|not_in:Elegir',
         ];
 
         $messages = [
             'name.required' => 'Nombre de puesto de trabajo es requerida',
             'name.unique' => 'ya existe el nombre del puesto de trabajo',
             'name.min' => 'el nombre de puesto de trabajo debe tener al menos 5 caracteres',
+
+            'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el puesto',
+
+            'estado.required' => 'seleccione estado de contrato',
+            'estado.not_in' => 'selecciona estado de contrato',
         ];
         $this->validate($rules,$messages);
 
         $puesto = PuestoTrabajo::find($this->selected_id);
         $puesto -> update([
             'name' => $this->name,
+            'nrovacantes'=>$this->nrovacantes,
+            'estado'=>$this->estado
         ]);
 
         $this->resetUI();
@@ -134,6 +200,8 @@ class PuestoTrabajoController extends Component
 
     public function resetUI(){
         $this->name='';
+        $this->nrovacantes='';
+        $this->estado = 'Elegir';
         $this->search='';
         $this->selected_id=0;
     }

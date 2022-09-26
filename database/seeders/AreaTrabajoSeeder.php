@@ -15,24 +15,24 @@ class AreaTrabajoSeeder extends Seeder
     public function run()
     {
         AreaTrabajo::create([
-            'name' => 'No definido',
-            'description' => 'null',
+            'nameArea' => 'No definido',
+            'descriptionArea' => 'null',
         ]);
         AreaTrabajo::create([
-            'name' => 'Area Uno',
-            'description' => 'Uno',
+            'nameArea' => 'Area Uno',
+            'descriptionArea' => 'Uno',
         ]);
         AreaTrabajo::create([
-            'name' => 'Area Dos',
-            'description' => 'Dos',
+            'nameArea' => 'Area Dos',
+            'descriptionArea' => 'Dos',
         ]);
         AreaTrabajo::create([
-            'name' => 'Area Tres',
-            'description' => 'Tres',
+            'nameArea' => 'Area Tres',
+            'descriptionArea' => 'Tres',
         ]);
         AreaTrabajo::create([
-            'name' => 'Area Cuatro',
-            'description' => 'Cuatro',
+            'nameArea' => 'Area Cuatro',
+            'descriptionArea' => 'Cuatro',
         ]);
     }
 }

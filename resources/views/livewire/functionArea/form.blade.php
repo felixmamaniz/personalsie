@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-6">
+    {{--<div class="col-sm-12 col-md-6">
         <div class="form-group">
             <label>Areas</label>
             <select wire:model="areaid" class="form-control">
@@ -23,6 +23,23 @@
             </select>
             @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
         </div>
+    </div>--}}
+
+    <div class="col-sm-12 col-md-6">
+        <div class="form-group">
+            <label>Areas</label>
+            <br>
+            <div class="btn-group">
+                <select wire:model="areaid" class="form-control col-md-12">
+                    <option value="Elegir" disabled>Elegir</option>
+                    @foreach($area_trabajos as $area)
+                        <option value="{{$area->id}}">{{$area->nameArea}}</option>
+                    @endforeach
+                </select>
+                <a type="button" wire:click="NuevArea()" class="btn btn-warning close-btn text-info">Nuevo</a>
+            </div>
+        </div>
+        @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
     </div>
 
     <div class="col-sm-12 col-md-6">

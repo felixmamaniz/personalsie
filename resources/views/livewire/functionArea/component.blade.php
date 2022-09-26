@@ -25,21 +25,21 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($functionarea as $area)
+                            @foreach($functionarea as $func)
                             <tr>
-                                <td><h6>{{$area->name}}</h6></td>
-                                <td><h6 class="text-center">{{$area->description}}</h6></td>
-                                <td><h6 class="text-center">{{ $area->area }}</h6></td>
+                                <td><h6>{{$func->name}}</h6></td>
+                                <td><h6 class="text-center">{{$func->description}}</h6></td>
+                                <td><h6 class="text-center">{{ $func->area }}</h6></td>
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"
-                                    wire:click="Edit({{$area->id}})"
+                                    wire:click="Edit({{$func->id}})"
                                     class="btn btn-dark mtmobile" title="Edit">
                                     <i class="fas fa-edit"></i>
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                        onclick="Confirm({{$area->id}},'{{$area->verificar}}')"
+                                        onclick="Confirm({{$func->id}},'{{$func->verificar}}')"
                                         class="btn btn-dark mtmobile" title="Destroy">
                                         <i class="fas fa-trash"></i>
                                     </a>
@@ -54,19 +54,20 @@
         </div>
     </div>
     @include('livewire.functionArea.form')
+    @include('livewire.functionArea.nuevArea')
 </div>
 
 @section('javascript')
 <script>
     document.addEventListener('DOMContentLoaded', function(){
         // Eventos crud
-        window.livewire.on('area-added', msg=>{
+        window.livewire.on('fun-added', msg=>{
             $('#theModal').modal('hide')
         });
-        window.livewire.on('area-updated', msg=>{
+        window.livewire.on('fun-updated', msg=>{
             $('#theModal').modal('hide')
         });
-        window.livewire.on('area-deleted', msg=>{
+        window.livewire.on('fun-deleted', msg=>{
             // mostrar notificacion de que el producto se a eliminado
         });
         window.livewire.on('show-modal', msg=>{
@@ -78,6 +79,14 @@
         window.livewire.on('hidden.bs.modal', msg=>{
             $('.er').css('display','none')
         });
+
+        // formulario de Nueva Area
+        window.livewire.on('show-modal-area', Msg => {
+            $('#theModal-area').modal('show')
+        })
+        window.livewire.on('modal-hide-area', Msg => {
+            $('#theModal-area').modal('hide')
+        }) 
     });
 
     function Confirm(id, verificar){

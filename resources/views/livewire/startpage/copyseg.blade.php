@@ -1,5 +1,11 @@
 {{--
 
+    integracion de numero de cantidad de vacantes en puesto de trabajo
+
+--}}
+
+{{--
+
     cambia combobox por un buscador en asistencias
     volver contratos a contratos independientes quitar el comboBox mantener el btn como crear nuevo contrato
         
@@ -29,9 +35,9 @@
 
 {{--
 
-use Intervetion\Image\Facades\Image;
+    use Intervetion\Image\Facades\Image;
 
-use Illuminate\Http\Request;
+    use Illuminate\Http\Request;
 
     public function imageUploadResize(Request $request)
     {
@@ -53,7 +59,6 @@ use Illuminate\Http\Request;
     }
     
     --}}
-
 
 {{--
     18 DE JULIO 2022

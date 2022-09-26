@@ -6,6 +6,13 @@ use Illuminate\Support\Facades\Schema;
 
 class CreateShiftsTable extends Migration
 {
+   // Lunes – Monday (Mondei)
+//Martes – Tuesday (Tusdei)
+//Miércoles – Wednesday (Güensdei)
+//Jueves – Thursday (Tursdei)
+//Viernes – Friday (Fraidei)
+//Sábado – Saturday (Saturdei)
+//Domingo – Sunday (Sondei)
     /**
      * Run the migrations.
      *
@@ -15,8 +22,14 @@ class CreateShiftsTable extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
+            $table->time('monday');
+            $table->time('tuesday');
+            $table->time('wednesday');
+            $table->time('thursday');
+            $table->time('friday');
+            $table->time('saturday');
+            $table->time('Sunday');
             $table->string('name',255);
-            $table->string('horario');
             $table->timestamps();
         });
     }

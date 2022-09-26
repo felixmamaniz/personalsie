@@ -15,17 +15,17 @@ class AssistanceSeeder extends Seeder
     public function run()
     {
         Assistance::create([
-            'empleado_id' => 23,
+            'empleado_id' => 9406795,
             'fecha' => '2022-08-10 00:00:00',
             'estado' => 'Presente',
         ]);
         Assistance::create([
-            'empleado_id' => 24,
+            'empleado_id' => 9326584,
             'fecha' => '2022-08-20 00:00:00',
             'estado' => 'Falta',
         ]);
         Assistance::create([
-            'empleado_id' => 37,
+            'empleado_id' => 14263548,
             'fecha' => '2022-08-30 00:00:00',
             'estado' => 'Licencia',
         ]);

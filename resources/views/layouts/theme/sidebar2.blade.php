@@ -190,6 +190,13 @@
 												Asistencias</a>
 										</li>
 									@endcan
+									@can('Sucursal_Index')
+										<li>
+											<a href="{{ url('anticipos') }}">
+												<i class="fa fas fa-minus"></i>
+												Adelantos ò Anticipos</a>
+										</li>
+									@endcan
 									<li>
 										<a href="{{ url('attendance') }}">
 											<i class="fa fas fa-minus"></i>

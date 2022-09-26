@@ -8,7 +8,7 @@
             <select wire:model="empleadoid" class="form-control">
                 <option value="Elegir" disabled>Elegir</option>
                 @foreach($empleados as $a)
-                <option value="{{$a->id}}">{{$a->name}}</option>
+                <option value="{{$a->id}}">{{$a->name}} {{$a->lastname}}</option>
                 @endforeach
             </select>
             @error('empleadoid') <span class="text-danger er"> {{ $message }}</span> @enderror

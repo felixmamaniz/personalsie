@@ -19,6 +19,7 @@ use App\Http\Livewire\PuestoTrabajoController;
 //use App\Http\Livewire\TipoContratoController; // pruebas de compresion
 use App\Http\Livewire\ContratoController;
 use App\Http\Livewire\AssistanceController;
+use App\Http\Livewire\AnticipoController;
 use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\ShiftsController;
 
@@ -45,6 +46,7 @@ Route::middleware(['auth'])->group(function () {
     //Route::get('tipo_contratos', TipoContratoController::class); // prueba de compression
     Route::get('contratos', ContratoController::class);
     Route::get('assistances', AssistanceController::class);
+    Route::get('anticipos', AnticipoController::class);
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);

@@ -52,7 +52,7 @@
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                        wire:click="DetallePuesto({{$puesto->idpuesto}})"
+                                        wire:click="DetallePuesto('{{$puesto->idpuesto}}')"
                                         class="btn btn-dark" title="DetallePuesto">
                                         <i class="fas fa-list"></i>
                                     </a>

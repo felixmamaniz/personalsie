@@ -24,6 +24,7 @@ class PuestoTrabajoController extends Component
         $this -> componentName = 'Puestos de Trabajo';
 
         $this->estado = 'Elegir';
+        $this->idEmpleado = 0;
     }
 
     public function paginationView()
@@ -100,23 +101,10 @@ class PuestoTrabajoController extends Component
     // detalle de empleados
     public function ServicioDetalle($idpuesto)
     {
-        //if($idpuesto == Employee::select('employees.puesto_trabajo_id')){
-        /*$detalle = Employee::join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
-        ->select('employees.id as idEmpleado',
-            'employees.name',
-            'pt.name as nombrepuesto',
-        )
-        ->where('puesto_trabajos.id', $idpuesto)    // selecciona al empleado
-        ->get()
-        ->first();
-
-        //dd($detalle->name);
-        $this->idpuesto = $detalle->idpuesto;
-        $this->name = $detalle->name;*/
-
-
         $detalle = PuestoTrabajo::select('puesto_trabajos.id as idpuesto',
+            'puesto_trabajos.id as idpuesto',
             'puesto_trabajos.name',
+            'puesto_trabajos.estado',
         )
         ->where('puesto_trabajos.id', $idpuesto)    // selecciona al empleado
         ->get()
@@ -125,6 +113,7 @@ class PuestoTrabajoController extends Component
         //dd($detalle->name);
         $this->idpuesto = $detalle->idpuesto;
         $this->name = $detalle->name;
+        $this->estado = $detalle->estado;
     }
 
     // editar 

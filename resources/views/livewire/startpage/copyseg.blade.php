@@ -2,6 +2,8 @@
 
     integracion de numero de cantidad de vacantes en puesto de trabajo
 
+    selecionar sueldo de emppleado DB
+
 --}}
 
 {{--
@@ -94,10 +96,6 @@
         notas
         -> agregar estado
 
-        php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
-        php artisan make:livewire nombre
-        php artisan make:seeder "nombreSeeder" -> de cada tabla o migracion
-
     //$fechaInicio =   '$dateAdmission';//'2020-8-30 00:00:00';
     //$fechaActual = Carbon::now();//'2022-12-31 00:00:00';//'date("Y-m-d")'; //Carbon::now();
 
@@ -161,7 +159,7 @@
 
 
         https://es.stackoverflow.com/questions/348757/diferencia-de-d%C3%ADas-entre-dos-fechas
---}}
+    --}}
 
 {{--
     
@@ -218,9 +216,11 @@
         
         return $minutos;
     }
---}}
+    --}}
 
-{{-- Tiempo Restante 
+{{-- 
+    
+    Tiempo Restante 
     tt = tiempo trascurrido = tiempo que esta hasta el momento
     tr = tiempo restante
     estadia = fehaInicio + fechaFinal
@@ -232,5 +232,5 @@
     tr = 3 - 2
     tiempo restante = tr = 1
 
---}}
+    --}}
         

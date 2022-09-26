@@ -3,7 +3,7 @@
         <div class="modal-content">
             <div class="modal-header bg-dark">
                 <h5 class="modal-title text-white">
-                    <b>Detalle del puesto de: {{$name}}</b>
+                    <b>Detalle del puesto</b>
                 </h5>
                 <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6>
             </div>
@@ -19,8 +19,8 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><h6>Mostrar nombre de los empleados con este puesto</h6></td>
-                                <td><h6>Estado del empleado</h6></td>
+                                <td><h6>{{$name}}</h6></td>
+                                <td><h6>{{$estado}}</h6></td>
                             </tr>
                         </tbody>
                     </table>

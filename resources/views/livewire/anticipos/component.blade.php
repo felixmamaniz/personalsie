@@ -19,9 +19,9 @@
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
                                <th class="table-th text-white">EMPLEADO</th>
-                               <th class="table-th text-white text-center">SALARIO ACTUAL</th>
-                               <th class="table-th text-white text-center">NUEVO SALARIO</th>
+                               <th class="table-th text-white text-center">CONTRATO</th>
                                <th class="table-th text-withe text-center">ADELANTO</th>
+                               <th class="table-th text-white text-center">NUEVO SALARIO</th>
                                <th class="table-th text-withe text-center">FECHA</th>
                                <th class="table-th text-withe text-center">MOTIVO</th>
                                <th class="table-th text-white text-center">ACTIONS</th>
@@ -31,10 +31,10 @@
                             @foreach($anticipos as $a)
                             <tr>
                                 <td><h6>{{$a->empleado}}</h6></td>
-                                <td><h6 class="text-center">{{$sueldoActual}}</h6></td>
-                                <td><h6 class="text-center">{{$a->nuevoSalario}}</h6></td>
-                                <td><h6 class="text-center">{{$a->anticipo}}</h6></td>
-                                <td><h6 class="text-center">{{$a->fechaSolicitud}}</h6></td>
+                                <td><h6 class="text-center">{{$a->salario}}</h6></td>
+                                <td><h6 class="text-center">{{$a->anticipo}} Bs</h6></td>
+                                <td><h6 class="text-center">Nuevo Salario{{--number_format($a->anticipo - $a->salario,2)--}}</h6></td>
+                                <td><h6 class="text-center">{{$a->created_at}}</h6></td> {{--{{ $employee->created_at->diffForHumans() }}--}}
                                 <td><h6 class="text-center">{{$a->motivo}}</h6></td>
 
                                 <td class="text-center">

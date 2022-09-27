@@ -20,6 +20,7 @@ use App\Http\Livewire\PuestoTrabajoController;
 use App\Http\Livewire\ContratoController;
 use App\Http\Livewire\AssistanceController;
 use App\Http\Livewire\AnticipoController;
+use App\Http\Livewire\DiscountsvController;
 use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\ShiftsController;
 
@@ -47,6 +48,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('contratos', ContratoController::class);
     Route::get('assistances', AssistanceController::class);
     Route::get('anticipos', AnticipoController::class);
+    Route::get('descuentos', DiscountsvController::class);
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);

@@ -144,7 +144,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //esto tendria que ser los datos que mandaremos para el excel
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id', 'employees.name', 'at.name as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
+        ->select('employees.id', 'employees.name', 'at.nameArea as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
         ->where('at.id',2)
         ->get();
         
@@ -209,11 +209,6 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     $diferencia = $e->diff($s)->format('%H:%I:%S');
                 }
                 
-               //$hora= $diferencia->format('%H:%I:%S');
-                //dump($e);
-                //dump($s);
-
-                //dd($diferencia);
                 $horasum=$this->suma_horas($horasum,$diferencia);
                 if($x->retraso != "Ninguno" && $x->retraso != "No marco entrada")
                 {
@@ -230,6 +225,9 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->Dias_trabajados=$dias;
             $h->id=$num;
             $num++;
+            
+            //Descuento varios
+
         }
 
 
@@ -239,11 +237,13 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 $this->horitas = $this->suma_horas($this->horitas,$x->Horas);
                 $this->tganado = $this->tganado + $x->salario;
         }
+        
+
         //dd($horitas);
         //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->select('employees.id', 'employees.name', 'at.name as area')
+        ->select('employees.id', 'employees.name', 'at.nameArea as area')
         ->where('at.id',2)
         ->get();
         //dd($data2);
@@ -362,7 +362,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         
         //contar los resultados existentes para el bordeado del excel
         $this->Allemployee = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->select('employees.id', 'employees.name', 'at.name as area')
+        ->select('employees.id', 'employees.name', 'at.nameArea as area')
         ->where('at.id',2)
         ->get()
         ->count();
@@ -381,6 +381,8 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $this->H='H8:H'.($this->Allemployee+9);
             $this->J='J8:J'.($this->Allemployee+9);
             $this->L='L8:L'.($this->Allemployee+9);
+
+            $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
             //dd($this->B);
             //dd($cell);
             return [ 
@@ -396,8 +398,8 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                         
                         //....
                     ), $event);
-                    $event->sheet->mergeCells('A20:C20');
-                     $event->sheet->getDelegate()->getStyle('A20:C20')
+                    $event->sheet->mergeCells($this->total);
+                     $event->sheet->getDelegate()->getStyle($this->total)
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     /*$event->sheet->appendRows(1, array(

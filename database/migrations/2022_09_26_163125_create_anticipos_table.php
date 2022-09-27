@@ -19,9 +19,7 @@ class CreateAnticiposTable extends Migration
             $table->unsignedBigInteger('empleado_id');
             $table->foreign('empleado_id')->references('id')->on('employees');
 
-            $table->string('nuevoSalario',255);
             $table->string('anticipo',255);
-            $table->date('fechaSolicitud');
             $table->string('motivo',500)->nullable();
 
             $table->timestamps();

@@ -91,31 +91,6 @@ class PuestoTrabajoController extends Component
         }
     }
 
-    // modal de Detalle de empleados
-    public function DetallePuesto($idpuesto)
-    {
-        $this->ServicioDetalle($idpuesto);
-        $this->emit('show-modal-detalle', 'open modal');
-    }
-
-    // detalle de empleados
-    public function ServicioDetalle($idpuesto)
-    {
-        $detalle = PuestoTrabajo::select('puesto_trabajos.id as idpuesto',
-            'puesto_trabajos.id as idpuesto',
-            'puesto_trabajos.name',
-            'puesto_trabajos.estado',
-        )
-        ->where('puesto_trabajos.id', $idpuesto)    // selecciona al empleado
-        ->get()
-        ->first();
-
-        //dd($detalle->name);
-        $this->idpuesto = $detalle->idpuesto;
-        $this->name = $detalle->name;
-        $this->estado = $detalle->estado;
-    }
-
     // editar 
     public function Edit($id){
         $record = PuestoTrabajo::find($id, ['id', 'name', 'nrovacantes', 'estado']);

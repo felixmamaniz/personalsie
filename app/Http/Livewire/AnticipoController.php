@@ -52,9 +52,10 @@ class AnticipoController extends Component
             }
         }
         else
+            
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id')
             ->join('contratos as ct', 'ct.id', 'at.contrato_id')
-            ->select('anticipos.*', 'at.name as empleado', 'ct.salario', 'anticipos.id as idAnticipo',
+            ->select('anticipos.*', 'at.name as empleado', 'ct.salario as salario', 'anticipos.id as idAnticipo',
                 DB::raw('0 as verificar'))
             ->orderBy('at.name', 'asc')
             ->paginate($this->pagination);

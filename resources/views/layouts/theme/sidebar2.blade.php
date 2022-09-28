@@ -166,7 +166,7 @@
 										<li>
 											<a href="{{ url('puesto_trabajos') }}">
 												<i class="fa fas fa-minus"></i>
-												Puestos de Trabajo</a>
+												Cargos de Trabajo</a>
 										</li>
 									@endcan
 									@can('Sucursal_Index')

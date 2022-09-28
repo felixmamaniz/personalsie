@@ -435,7 +435,7 @@ class EmployeeController extends Component
         $this->emit('modal-show', 'show modal!');
     }
 
-    // editar informacion
+    // Abrir modal con la informacion
     public function Edit(Employee $employee){
 
         $this->ci = $employee->ci;

@@ -15,28 +15,74 @@ class PuestoTrabajoSeeder extends Seeder
     public function run()
     {
         PuestoTrabajo::create([
-            'name' => 'No definido',
-            'nrovacantes' => '2',
+            'name' => 'Gerente',
+            'nrovacantes' => 'No definido',
             'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
-            'name' => 'Puesto Uno',
-            'nrovacantes' => '2',
+            'name' => 'Contador',
+            'nrovacantes' => 'No definido',
             'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
-            'name' => 'Puesto Dos',
-            'nrovacantes' => '2',
+            'name' => 'Encargado de Ventas',
+            'nrovacantes' => 'No definido',
             'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
-            'name' => 'Puesto Tres',
-            'nrovacantes' => '2',
+            'name' => 'Cajero Sucursal',
+            'nrovacantes' => 'No definido',
             'estado' => 'Disponible',
         ]);
         PuestoTrabajo::create([
-            'name' => 'Puesto Cuatro',
-            'nrovacantes' => '2',
+            'name' => 'Encargada de Plataformas',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Cajero',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+
+        PuestoTrabajo::create([
+            'name' => 'Supervisor',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Tecnico',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Encargado de Area de Impresoras',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Tecnico en Electronica',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Desarrollador de Sistemas',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Mensajeria',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'Programador',
+            'nrovacantes' => 'No definido',
+            'estado' => 'Disponible',
+        ]);
+        PuestoTrabajo::create([
+            'name' => 'No Definido',
+            'nrovacantes' => 'No definido',
             'estado' => 'Disponible',
         ]);
     }

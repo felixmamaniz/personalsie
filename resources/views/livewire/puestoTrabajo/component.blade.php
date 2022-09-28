@@ -51,11 +51,6 @@
                                         <i class="fas fa-trash"></i>
                                     </a>
 
-                                    <a href="javascript:void(0)"
-                                        wire:click="DetallePuesto('{{$puesto->idpuesto}}')"
-                                        class="btn btn-dark" title="DetallePuesto">
-                                        <i class="fas fa-list"></i>
-                                    </a>
                                 </td>
                             </tr>
                             @endforeach
@@ -67,7 +62,6 @@
         </div>
     </div>
     @include('livewire.puestoTrabajo.form')
-    @include('livewire.puestoTrabajo.detallePuesto')
 </div>
 
 @section('javascript')
@@ -85,11 +79,6 @@
         window.livewire.on('puesto-updated', msg=>{
             $('#theModal').modal('hide')
         });
-
-        // ver detalle de puesto
-        window.livewire.on('show-modal-detalle', Msg => {
-            $('#modal-details').modal('show')
-        })
     });
 
     function Confirmar1(id, verificar)

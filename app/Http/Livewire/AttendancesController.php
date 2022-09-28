@@ -95,7 +95,8 @@ class AttendancesController extends Component
             $xd=Attendance::select('attendances.*')->get();
             //dd($xd);
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.*','e.name as employee', DB::raw('0 as retraso'), DB::raw('0 as hcumplida') )
+            ->join('shifts as s', 's.ci', 'attendances.employee_id')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
             ->whereBetween('attendances.fecha', [$from,$to])
             //->groupBy("e.id")
             ->orderBy('attendances.fecha','asc')
@@ -104,21 +105,38 @@ class AttendancesController extends Component
            
             //agregar el tiempo de retrasa del empleado
             foreach ($this->data as $os)
-                                {   
+                                {   //dd($os);
                                     
                                     //validar el horario conformado y enviarlo a unfuncion para calcular
                                     //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
                                     if($os->entrada>'14:00:00') {
-                                        //dd('hola');
-                                    $timestamp = $this->strtotime($os->entrada,"14:00:00");
-                                    //dd($timestamp);
-                                    $os->retraso = $timestamp;
+                                        //validar si su entrada fue en otro turno
+                                        if($this->dia($os->employee_id,$os->fecha)<$os->entrada && $os->entrada>'13:00:00')
+                                        {
+                                            
+                                            $timestamp = $this->restar_horas($os->entrada,'14:05:00');
+                                        }else
+                                        {
+                                            $timestamp = $this->restar_horas($os->entrada,$this->dia($os->employee_id,$os->fecha));
+                                        }
+                                           // $timestamp = $this->strtotime($os->entrada,'14:00:00');
+                                        
+                                    //dump($timestamp);
+                                        $os->retraso = $timestamp;
                                     }
                                     //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
                                         elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                                         {
+                                            //validar si su entrada fue en otro turno
+                                            if($this->dia($os->employee_id,$os->fecha)>$os->entrada && $os->entrada<'13:00:00')
+                                            {
                                             
-                                            $timestamp = $this->strtotime($os->entrada,"08:05:00");
+                                                $timestamp = $this->restar_horas($os->entrada,'08:05:00');
+                                            }else
+                                            {
+                                                $timestamp = $this->restar_horas($os->entrada,$this->dia($os->employee_id,$os->fecha));
+                                            }
+                                           // $timestamp = $this->strtotime($os->entrada,'08:00:00');
                                             //dd($timestamp);
                                             $os->retraso = $timestamp;
                                         }   else{
@@ -163,13 +181,13 @@ class AttendancesController extends Component
         } else {
 
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->join('shifts as s', 's.id', 'attendances.employee_id')
+            ->join('shifts as s', 's.ci', 'attendances.employee_id')
             ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $this->userId)
             ->orderBy('attendances.fecha','asc')
             ->get();
-
+            //dd($this->data);
             $this->data2 = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->join('shifts as s', 's.id', 'attendances.employee_id')
             ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'),'s.monday','s.tuesday')
@@ -177,32 +195,55 @@ class AttendancesController extends Component
             ->where('employee_id', $this->userId)
             ->orderBy('attendances.fecha','asc')
             ->get();
-            //dd($this->data2);
+            //dd($this->data);
              //agregar el tiempo de retrasa del empleado
              foreach ($this->data as $os)
              {   
+                
                
                  //validar el horario conformado y enviarlo a unfuncion para calcular
                  //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
-                 if($os->entrada>'14:00:00') {
-                     //dd('hola');
-
-                 $timestamp = $this->restar_horas($os->entrada,$this->dia());
+                if($os->entrada>'14:00:00') {
+                   
+                     //validar si su entrada fue en otro turno
+                        if($this->dia($os->employee_id,$os->fecha)<$os->entrada && $os->entrada>'13:00:00')
+                        {
+                            
+                            $timestamp = $this->restar_horas($os->entrada,'14:05:00');
+                        }else
+                        {
+                            $timestamp = $this->restar_horas($os->entrada,$this->dia($os->employee_id,$os->fecha));
+                        }
+                    
                  //dd($timestamp);
-                 $os->retraso = $timestamp;
+                    $os->retraso = $timestamp;
                  }
                  //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
                      elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                      {
-                         
-                         $timestamp = $this->restar_horas($os->entrada,$this->dia());
+                        
+                        //validar si su entrada fue en otro turno
+                        if($this->dia($os->employee_id,$os->fecha)>'13:00:00' && $this->dia($os->employee_id,$os->fecha)>$os->entrada && $os->entrada<'13:00:00')
+                        {
+                            /*if($os->employee_id==8693177){
+                                dd($os);
+                            }*/
+                           
+                            $timestamp = $this->restar_horas($os->entrada,'08:05:00');
+                        }else
+                        {
+                            /*if($os->employee_id==11267379 && $os->fecha=='2022-08-02'){
+                                dd($os);
+                            }*/
+                            $timestamp = $this->restar_horas($os->entrada,$this->dia($os->employee_id,$os->fecha));
+                        }
+                        
                          //dd($timestamp);
                          $os->retraso = $timestamp;
                      }   else{
-                        
+                            
                              if($os->salida == '00:00:00')
                              {
-                                
                                  $os->retraso = 'No marco salida';
                              }
                              else
@@ -212,6 +253,7 @@ class AttendancesController extends Component
                              
                              if($os->entrada == '00:00:00')
                              {
+                                //dd('hola');
                                  $os->retraso = 'No marco entrada';
                              }
                              else
@@ -303,6 +345,11 @@ else{
  
     function restar_horas($hora1,$hora2){
  
+        if($hora1<=$hora2)
+        {
+            $timestamp = 'Ninguno';
+            return $timestamp;
+        }
         $temp1 = explode(":",$hora1);
         $temp_h1 = (int)$temp1[0];
         $temp_m1 = (int)$temp1[1];
@@ -431,42 +478,117 @@ else{
         
     }
 
-    public function dia()
+    //metodo que mandara el horario del dia 
+    public function dia($id, $fecha)
     {
+        //dd($id);
+        
         $dia = new Carbon('today');
         $dia = $dia->format('l');
+        $fec=Carbon::parse($fecha)->format('l');
+        //dd($fec);
             $from = Carbon::parse($this->dateFrom)->format('Y-m-d');
             $to = Carbon::parse($this->dateTo)->format('Y-m-d');
 
                 $this->data2 = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->join('shifts as s', 's.id', 'attendances.employee_id')
-            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'),'s.monday','s.tuesday')
-            ->whereBetween('attendances.fecha', [$from,$to])
-            ->where('employee_id', $this->userId)
-            ->orderBy('attendances.fecha','asc')
+            ->join('shifts as s', 's.ci', 'attendances.employee_id')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
+            ->where('employee_id', $id)
+            ->where('attendances.fecha' , $fecha)
             ->get();
+            
+            //dd($this->data2);
                 foreach ($this->data2 as $os) {
                     # code...
-                
-                switch ($dia) {
+                    if($os->employee_id==11267379 && $os->fecha=='2022/08/02'){
+                        dd($os);
+                    }
+                switch ($fec) {
                     case 'Monday':
                         $minuto=(int)  substr($os->monday,3,2)+5;
+                        $hora=substr($os->monday,0,2);
+                        $segundo=substr($os->monday,6,2);
+                        if($minuto<10)
+                        {
+                            $os->monday=$hora.':0'.$minuto.':'.$segundo;
+                        }else
+                        {
+                            $os->monday=$hora.':'.$minuto.':'.$segundo;
+                        }
                         
                         return $os->monday;
                         break;
                     case 'Tuesday':
+                        $minuto=(int)  substr($os->tuesday,3,2)+5;
+                        $hora=substr($os->tuesday,0,2);
+                        $segundo=substr($os->tuesday,6,2);
+                        if($minuto<10)
+                        {
+                            $os->tuesday=$hora.':0'.$minuto.':'.$segundo;
+                        }else
+                        {
+                            $os->tuesday=$hora.':'.$minuto.':'.$segundo;
+                        }
+                        
                         return $os->tuesday;
                         break;
                     case 'Wednesday':
+                        $minuto=(int)  substr($os->wednesday,3,2)+5;
+                        $hora=substr($os->wednesday,0,2);
+                        $segundo=substr($os->wednesday,6,2);
+                        if($minuto<10)
+                        {
+                            $os->wednesday=$hora.':0'.$minuto.':'.$segundo;
+                        }else
+                        {
+                            $os->wednesday=$hora.':'.$minuto.':'.$segundo;
+                        }
+                        
                         return $os->wednesday;
                         break;
                     case 'Thursday':
+
+                        $minuto=(int)  substr($os->thursday,3,2)+5;
+                        $hora=substr($os->thursday,0,2);
+                        $segundo=substr($os->thursday,6,2);
+                        if($minuto<10)
+                        {
+                            $os->thursday=$hora.':0'.$minuto.':'.$segundo;
+                        }else
+                        {
+                            $os->thursday=$hora.':'.$minuto.':'.$segundo;
+                        }
+
                         return $os->thursday;
                         break;
                     case 'Friday':
+
+                        $minuto=(int)  substr($os->friday,3,2)+5;
+                        $hora=substr($os->friday,0,2);
+                        $segundo=substr($os->friday,6,2);
+                        if($minuto<10)
+                        {
+                            $os->friday=$hora.':0'.$minuto.':'.$segundo;
+                        }else
+                        {
+                            $os->friday=$hora.':'.$minuto.':'.$segundo;
+                        }
+
                         return $os->friday;
                         break;
                     case 'Saturday':
+
+                        $minuto=(int)  substr($os->saturday,3,2)+5;
+                        $hora=substr($os->saturday,0,2);
+                        $segundo=substr($os->saturday,6,2);
+                        if($minuto<10)
+                        {
+                            $os->saturday=$hora.':0'.$minuto.':'.$segundo;
+                        }else
+                        {
+                            $os->saturday=$hora.':'.$minuto.':'.$segundo;
+                        }
+
                         return $os->saturday;
                         break;
                     default:

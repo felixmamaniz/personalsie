@@ -34,11 +34,31 @@
                             @foreach ($data as $shift)
                                 <tr>
                                     <td>
+                                        <h6 class="text-center">{{ $loop->iteration }}</h6>
+                                    </td>
+                                    <td>
                                         <h6 class="text-center">{{ $shift->name }}</h6>
                                     </td>
                                     <td>
-                                        <h6 class="text-center">{{ $shift->horario }}
-                                        </h6>
+                                        <h6 class="text-center">{{ $shift->monday }}</h6>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-center">{{ $shift->tuesday }}</h6>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-center">{{ $shift->wednesday }}</h6>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-center">{{ $shift->thursday }}</h6>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-center">{{ $shift->friday }}</h6>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-center">{{ $shift->saturday }}</h6>
+                                    </td>
+                                    <td>
+                                        <h6 class="text-center">{{ $shift->sunday }}</h6>
                                     </td>
                                     <td class="text-center">
                                         <a href="javascript:void(0)" wire:click="Edit({{ $shift->id }})"

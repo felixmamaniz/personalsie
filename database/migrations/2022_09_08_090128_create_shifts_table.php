@@ -22,6 +22,7 @@ class CreateShiftsTable extends Migration
     {
         Schema::create('shifts', function (Blueprint $table) {
             $table->id();
+            $table->integer('ci');
             $table->time('monday');
             $table->time('tuesday');
             $table->time('wednesday');

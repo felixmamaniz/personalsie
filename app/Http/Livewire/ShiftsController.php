@@ -107,6 +107,25 @@ class ShiftsController extends Component
     {
         $this->selected_id = $shift->id;
         $this->shiftName = $shift->name;
+        //horas
+        //dd($shift);
+        $this->horalunes = substr($shift->monday,0,2);
+        $this->horamartes = substr($shift->tuesday,0,2);
+        $this->horamiercoles = substr($shift->wednesday,0,2);
+        //dd($this->horamiercoles);
+        $this->horajueves = substr($shift->thursday,0,2);
+        $this->horaviernes = substr($shift->friday,0,2);
+        $this->horasabado = substr($shift->saturday,0,2);
+        $this->horadomingo = substr($shift->Sunday,0,2);
+        //minutos
+        $this->minutolunes = substr($shift->monday,3,2);
+        $this->minutomartes = substr($shift->tuesday,3,2);
+        $this->minutomiercoles = substr($shift->wednesday,3,2);
+        //dd($this->minutomiercoles);
+        $this->minutojueves = substr($shift->thursday,3,2);
+        $this->minutoviernes = substr($shift->friday,3,2);
+        $this->minutosabado = substr($shift->saturday,3,2);
+        $this->minutodomingo = substr($shift->sunday,3,2);
 
         $this->emit('show-modal', 'Show modal ');
     }

@@ -83,7 +83,7 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
         //dd($this->salida);
 
         $this->uniqueE=$this->empleado->merge($this->salida);
-        dd($this->uniqueE);
+        //dd($this->uniqueE);
         //sacar valores duplicados
         $this->empleadoAll = $this->uniqueE->unique(function ($item) {
             $jc;
@@ -103,7 +103,7 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
             return $item['id'].$item['fecha'];
         });
         $this->empleadoAll->values()->all();
-        dd($this->empleadoAll);
+        //dd($this->empleadoAll);
         //dd($this->empleadoAll);
        /* $uniqueS= $this->salida->unique(function ($item){
             return $item['id'].$item['fecha'];

@@ -202,6 +202,12 @@
 											<i class="fa fas fa-minus"></i>
 											Horario </a>
 									</li>
+
+									<li>
+										<a href="{{ url('descuentos') }}">
+											<i class="fa fas fa-minus"></i>
+											Descuentos o Varios</a>
+									</li>
 								</ul>
 							</div>
 						</li>

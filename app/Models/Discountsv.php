@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class Discountsv extends Model
 {
     use HasFactory;
-    protected $fillable = ['ci', 'descuento', 'motivo'];
+    protected $fillable = ['ci', 'descuento', 'motivo', 'fecha'];
 }

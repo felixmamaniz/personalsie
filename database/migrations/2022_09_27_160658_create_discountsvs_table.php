@@ -18,7 +18,7 @@ class CreateDiscountsvsTable extends Migration
             $table->string('ci');
             $table->decimal('descuento',0,00);
             $table->string('motivo',500)->nullable();
-            
+            $table->date('fecha');
             $table->timestamps();
         });
     }

@@ -125,7 +125,7 @@
                         <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
                             <div class="input-group">
                                 <h3>Miercoles: h: </h3>
-                                <select name="horae" wire:model.lazy="horaentrada"  style="margin-left: 10px; padding: 5px">
+                                <select name="horae" wire:model.lazy="horamiercoles"  style="margin-left: 10px; padding: 5px">
                                    
                                     @foreach($horas as $h)
                                         <option value="{{$h}}">{{$h}}</option>
@@ -141,7 +141,7 @@
                         <div class="col-sm-12 col-md-6 " >
                             <div class="input-group" >
                                 <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="horasalida"style="margin-left: 10px; padding: 5px">
+                                <select name="horas" wire:model.lazy="minutomiercoles"style="margin-left: 10px; padding: 5px">
                                     
                                     @foreach($minutos as $m)
                                         <option value="{{$m}}">{{$m}}</option>
@@ -166,7 +166,7 @@
                         <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
                             <div class="input-group">
                                 <h3>Jueves: h: </h3>
-                                <select name="horae" wire:model.lazy="horaentrada"  style="margin-left: 10px; padding: 5px">
+                                <select name="horae" wire:model.lazy="horajueves"  style="margin-left: 10px; padding: 5px">
                                    
                                     @foreach($horas as $h)
                                         <option value="{{$h}}">{{$h}}</option>
@@ -182,7 +182,7 @@
                         <div class="col-sm-12 col-md-6 " >
                             <div class="input-group" >
                                 <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="horasalida"style="margin-left: 10px; padding: 5px">
+                                <select name="horas" wire:model.lazy="minutojueves"style="margin-left: 10px; padding: 5px">
                                     
                                     @foreach($minutos as $m)
                                         <option value="{{$m}}">{{$m}}</option>
@@ -208,7 +208,7 @@
                         <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
                             <div class="input-group">
                                 <h3>Viernes: h: </h3>
-                                <select name="horae" wire:model.lazy="horaentrada"  style="margin-left: 10px; padding: 5px">
+                                <select name="horae" wire:model.lazy="horaviernes"  style="margin-left: 10px; padding: 5px">
                                    
                                     @foreach($horas as $h)
                                         <option value="{{$h}}">{{$h}}</option>
@@ -224,7 +224,7 @@
                         <div class="col-sm-12 col-md-6 " >
                             <div class="input-group" >
                                 <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="horasalida"style="margin-left: 10px; padding: 5px">
+                                <select name="horas" wire:model.lazy="minutoviernes"style="margin-left: 10px; padding: 5px">
                                     
                                     @foreach($minutos as $m)
                                         <option value="{{$m}}">{{$m}}</option>
@@ -249,7 +249,7 @@
                         <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
                             <div class="input-group">
                                 <h3>Sabado: h: </h3>
-                                <select name="horae" wire:model.lazy="horaentrada"  style="margin-left: 10px; padding: 5px">
+                                <select name="horae" wire:model.lazy="horasabado"  style="margin-left: 10px; padding: 5px">
                                    
                                     @foreach($horas as $h)
                                         <option value="{{$h}}">{{$h}}</option>
@@ -265,7 +265,7 @@
                         <div class="col-sm-12 col-md-6 " >
                             <div class="input-group" >
                                 <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="horasalida"style="margin-left: 10px; padding: 5px">
+                                <select name="horas" wire:model.lazy="minutosabado"style="margin-left: 10px; padding: 5px">
                                     
                                     @foreach($minutos as $m)
                                         <option value="{{$m}}">{{$m}}</option>

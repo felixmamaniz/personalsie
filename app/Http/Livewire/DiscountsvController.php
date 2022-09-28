@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\Contrato;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use Carbon\Carbon;
 
 use Illuminate\Support\Facades\DB;
 
@@ -18,7 +19,7 @@ class DiscountsvController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $empleadoid, $nuevoSalario, $anticipo, $fechaSolicitud, $motivo, $selected_id, $descuentoc;
+    public $empleadoid, $nuevoSalario, $anticipo, $fechaSolicitud, $motivo, $selected_id, $descuentoc, $fecha;
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
 
@@ -76,12 +77,13 @@ class DiscountsvController extends Component
         ];
 
         $this->validate($rules, $messages);
-
+        $this->fecha = Carbon::parse(Carbon::now())->format('Y-m-d');
         $anticipo = Discountsv::create([
             'id' => $this->empleadoid,
             'ci' => $this->empleadoid,
             'descuento'=>$this->descuentoc,
             'motivo'=>$this->motivo,
+            'fecha' => $this->fecha,
         ]);
 
         $this->resetUI();

@@ -195,14 +195,16 @@ class AttendancesController extends Component
             ->where('employee_id', $this->userId)
             ->orderBy('attendances.fecha','asc')
             ->get();
-            //dd($this->data2);
+            //dd($this->data);
              //agregar el tiempo de retrasa del empleado
              foreach ($this->data as $os)
              {   
+                
                
                  //validar el horario conformado y enviarlo a unfuncion para calcular
                  //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
                 if($os->entrada>'14:00:00') {
+                   
                      //validar si su entrada fue en otro turno
                         if($this->dia($os->employee_id,$os->fecha)<$os->entrada && $os->entrada>'13:00:00')
                         {
@@ -219,22 +221,29 @@ class AttendancesController extends Component
                  //if($os->turno=='medio turno mañana' || $os->permiso =='mañana')
                      elseif($os->entrada >'08:00:00' && $os->entrada < '13:00:00')
                      {
+                        
                         //validar si su entrada fue en otro turno
-                        if($this->dia($os->employee_id,$os->fecha)>$os->entrada && $os->entrada<'13:00:00')
+                        if($this->dia($os->employee_id,$os->fecha)>'13:00:00' && $this->dia($os->employee_id,$os->fecha)>$os->entrada && $os->entrada<'13:00:00')
                         {
+                            /*if($os->employee_id==8693177){
+                                dd($os);
+                            }*/
                            
                             $timestamp = $this->restar_horas($os->entrada,'08:05:00');
                         }else
                         {
+                            /*if($os->employee_id==11267379 && $os->fecha=='2022-08-02'){
+                                dd($os);
+                            }*/
                             $timestamp = $this->restar_horas($os->entrada,$this->dia($os->employee_id,$os->fecha));
                         }
+                        
                          //dd($timestamp);
                          $os->retraso = $timestamp;
                      }   else{
-                        
+                            
                              if($os->salida == '00:00:00')
                              {
-                                
                                  $os->retraso = 'No marco salida';
                              }
                              else
@@ -244,6 +253,7 @@ class AttendancesController extends Component
                              
                              if($os->entrada == '00:00:00')
                              {
+                                //dd('hola');
                                  $os->retraso = 'No marco entrada';
                              }
                              else
@@ -486,10 +496,13 @@ else{
             ->where('employee_id', $id)
             ->where('attendances.fecha' , $fecha)
             ->get();
+            
             //dd($this->data2);
                 foreach ($this->data2 as $os) {
                     # code...
-                
+                    if($os->employee_id==11267379 && $os->fecha=='2022/08/02'){
+                        dd($os);
+                    }
                 switch ($fec) {
                     case 'Monday':
                         $minuto=(int)  substr($os->monday,3,2)+5;

@@ -4,6 +4,8 @@ namespace App\Exports;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\Discountsv;
+use App\Models\Anticipo;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;          // para trabajar con colecciones y obtener la data
@@ -144,7 +146,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //esto tendria que ser los datos que mandaremos para el excel
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id', 'employees.name', 'at.nameArea as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
+        ->select('employees.id', 'employees.name', 'at.nameArea as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as Total_ganado' ), DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
         ->where('at.id',2)
         ->get();
         
@@ -223,11 +225,37 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             //$h->retrasos=$retrasomin;
             $h->Horas=$horasum;
             $h->Dias_trabajados=$dias;
-            $h->id=$num;
-            $num++;
             
+            //dd($reporte);
+            //$h->descuento='0';
             //Descuento varios
-
+                $fecfrom = Carbon::parse($this->dateFrom)->format('Y-m-d');
+                $fecto = Carbon::parse($this->dateTo)->format('Y-m-d');
+                $descuento = Discountsv::select('discountsvs.*')
+                ->where('discountsvs.ci',$h->id)
+                ->whereBetween('discountsvs.fecha', [$fecfrom,'2022-09-30'])
+                ->get(); 
+                //dd($descuento);
+                $desctotal=0;
+                foreach ($descuento as $d) {
+                    $desctotal=$desctotal+$d->descuento;
+                }
+            $h->Descuento=$desctotal;
+            //Adelantos o Anticipos
+                $adelantos = Anticipo::select('anticipos.*')
+                ->where('anticipos.empleado_id',$h->id)
+                ->get();
+                //dd($adelantos);
+                $adelantototal=0;
+                foreach ($adelantos as $d) {
+                    $adelantototal=$adelantototal+$d->anticipo;
+                }
+            $h->Adelantos=$adelantototal;
+            
+          /* $descuento=Discountsv::where('id',$h->id)->sum('descuento')
+           ->groupBy('discountsvs.id');*/
+           $h->id=$num;
+           $num++;
         }
 
 
@@ -540,6 +568,18 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                     'font' => [
                                         'name'      =>  'Times New Roman',
                                         'size'      =>  6,
+                                        'bold'      =>  true,
+                                        'color' => ['rgb' => 'black'],
+                                    ],
+                                ]
+                            );
+
+                            $event->sheet->styleCells(
+                                'B',
+                                [
+                                    'font' => [
+                                        'name'      =>  'Times New Roman',
+                                        'size'      =>  12,
                                         'bold'      =>  true,
                                         'color' => ['rgb' => 'black'],
                                     ],

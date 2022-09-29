@@ -5,7 +5,7 @@
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <h6>Nombre</h6>
-            <input type="text" wire:model.lazy="name" class="form-control">
+            <input type="text" wire:model.lazy="name" class="form-control" placeholder="Ingrese nombre de funcion">
             @error('name')
                 <span class="text-danger er">{{ $message }}</span>
             @enderror
@@ -45,7 +45,7 @@
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <h6>Descripcion</h6>
-            <input type="text" wire:model.lazy="description" class="form-control">
+            <input type="text" wire:model.lazy="description" class="form-control" placeholder="Ingrese descripcion de funcion">
             @error('description')
                 <span class="text-danger er">{{ $message }}</span>
             @enderror

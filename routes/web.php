@@ -15,7 +15,7 @@ use App\Http\Livewire\AreasPermissionsController;
 use App\Http\Livewire\AttendancesController;
 use App\Http\Livewire\InicioController;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Livewire\PuestoTrabajoController;
+use App\Http\Livewire\CargoController;
 //use App\Http\Livewire\TipoContratoController; // pruebas de compresion
 use App\Http\Livewire\ContratoController;
 use App\Http\Livewire\AssistanceController;
@@ -43,7 +43,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('function_areas', FunctionAreaController::class);
     Route::get('attendance', AttendancesController::class);
     Route::get('areaspermissions', AreasPermissionsController::class);
-    Route::get('puesto_trabajos', PuestoTrabajoController::class);
+    Route::get('cargos', CargoController::class);
     //Route::get('tipo_contratos', TipoContratoController::class); // prueba de compression
     Route::get('contratos', ContratoController::class);
     Route::get('assistances', AssistanceController::class);

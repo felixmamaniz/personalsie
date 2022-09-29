@@ -25,11 +25,12 @@ class DatabaseSeeder extends Seeder
       $this->call(ModelHasRolesSeeder::class);
       $this->call(RoleHasPermissionSeeder::class);
       $this->call(AreaTrabajoSeeder::class);
-      $this->call(PuestoTrabajoSeeder::class);
+      $this->call(CargoSeeder::class);
       $this->call(FunctionAreaSeeder::class);
 	    $this->call(ContratoSeeder::class);
       $this->call(EmployeeSeeder::class);
       $this->call(AssistanceSeeder::class);
       $this->call(ShiftSeeder::class);
+      $this->call(AnticipoSeeder::class);
     }
 }

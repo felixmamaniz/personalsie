@@ -1,4 +1,4 @@
-    
+
     if(strlen($this->search) > 0)
         {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id') // se uno amabas tablas
@@ -36,41 +36,6 @@
             ])
         ->extends('layouts.theme.app')
         ->section('content');
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
     
     integracion de numero de cantidad de vacantes en puesto de trabajo
     selecionar sueldo de emppleado DB

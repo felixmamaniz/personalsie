@@ -59,10 +59,10 @@
                 <button type="button" wire:click.prevent="cancelar()" class="btn btn-warning close-btn text-info"
                     data-dismiss="modal" style="background: #3b3f5c">CANCELAR
                 </button>
-                @if ($selected_id < 1)
+                
                     <button type="button" wire:click.prevent="RegNuevoContrato()"
                         class="btn btn-warning close-btn text-info">GUARDAR</button>
-                @endif
+                
             </div>
         </div>
     </div>

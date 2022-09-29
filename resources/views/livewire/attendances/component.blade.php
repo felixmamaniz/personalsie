@@ -99,6 +99,13 @@
                          </div>
     
                     </div>
+
+                    <div class="col-sm-2 mt-4">
+                        <a class="btn btn-danger" style="color: white" data-toggle="modal"
+                        data-target="#theModal"
+                        target="_blank">Asistencia Por Fallo Biometrico</a>
+
+                    </div>
     
                     <br>
     
@@ -167,10 +174,24 @@
 
 
     </div>
-
+    @include('livewire.attendances.form_fallo')
 </div>
 
 
+
 <script>
-   
+   document.addEventListener('DOMContentLoaded', function(){
+
+        window.livewire.on('show-modal', msg=>{
+            $('#theModal').modal('show')
+        });
+        window.livewire.on('modal-hide', msg=>{
+            $('#theModal').modal('hide')
+        });
+        window.livewire.on('asist-fallo', Msg => {
+            //llamar a la funcion del backend
+            $('#theModal').modal('hide')
+        })
+
+    });
 </script>

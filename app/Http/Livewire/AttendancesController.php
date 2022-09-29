@@ -16,7 +16,11 @@ use Illuminate\Support\Facades\DB;
 class AttendancesController extends Component
 {
     use WithPagination;
-    public $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada;
+    public $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada, $componentName, $title, $fechahoy, $total;
+    //datos para fallo
+
+    public $fechaf, $empleadoid, $entradaf, $salidaf, $prueba;
+
     protected $pagination;
 
     public function paginationView()
@@ -45,6 +49,10 @@ class AttendancesController extends Component
         $this->userId = 0;
         $this->dateFrom = Carbon::parse(Carbon::now())->format('Y-m-d');
         $this->dateTo = Carbon::parse(Carbon::now())->format('Y-m-d');
+        $this->componentName = "Fallo de Sistema";
+        $this->title = "algo";
+        $this->fechahoy = Carbon::parse(Carbon::now())->format('Y-m-d');
+       
     }
 
     public function render()
@@ -52,7 +60,6 @@ class AttendancesController extends Component
         //hacemos el llamando a la funcion SalesByDate y luego usamos la funcion paginate para obtener 
         //el total de paginas para la vista
         $paginador=$this->paginate($this->SalesByDate());
-
         return view('livewire.attendances.component',[
             'employees' => Employee::orderBy('name','asc')->get(),
             'datos' => $paginador,
@@ -263,27 +270,27 @@ class AttendancesController extends Component
                          }
                  
              }
-//agregar las horas cumplidas del usuario
-foreach ($this->data as $os)
-{
-$timeacumleted= $this->horascumplidas($os->entrada, $os->salida);
-if($os->employee=='Carlos')
-{
- //dd($timeacumleted);
-}
-if($timeacumleted>'04:40:00' && $os->entrada > '08:00:00')
-{
- 
- $os->hcumplida='Cumplio';
- 
-}
-else{
- $os->hcumplida='No Cumplio';
-}
-
-}
+        //agregar las horas cumplidas del usuario
+        foreach ($this->data as $os)
+        {
+        $timeacumleted= $this->horascumplidas($os->entrada, $os->salida);
+        if($os->employee=='Carlos')
+        {
+        //dd($timeacumleted);
         }
-        return $this->data;
+        if($timeacumleted>'04:40:00' && $os->entrada > '08:00:00')
+        {
+        
+        $os->hcumplida='Cumplio';
+        
+        }
+        else{
+        $os->hcumplida='No Cumplio';
+        }
+
+        }
+            }
+            return $this->data;
     }
     //calcular el horario cumplido del empleado
     public function horascumplidas($horaentrada, $horasalida)
@@ -343,7 +350,8 @@ else{
 
     //Función que resta horas Ahi que tenerla por si a caso
  
-    function restar_horas($hora1,$hora2){
+    function restar_horas($hora1,$hora2)
+    {
  
         if($hora1<=$hora2)
         {
@@ -419,7 +427,7 @@ else{
      
         return ($rst_hrs);
      
-        }
+    }
 
     //calcular el tiempo del retraso del empleado
     public function strtotime($horaentrada,$horaconformada)
@@ -476,6 +484,59 @@ else{
         //dd($retraso);
         return $timestamp;
         
+    }
+
+    //fallo de sistema agregar manualmente
+    public function fallo()
+    {
+       //validar la fecha dentro del empleado
+       $fechap=Attendance::select('attendances.*')
+       ->where('attendances.employee_id', $this->empleadoid)
+       ->where('fecha','=', $this->fechaf)
+       ->get();
+       $fechav=$fechap->first();
+       //validar para el msg de error
+        if($fechav==null){
+            $this->prueba=1;
+        }
+        else{
+            $this->prueba=null;
+        }
+        
+        //required_if verifica 
+        $rules = [
+            'empleadoid' => 'required|not_in:Elegir',
+            'fechaf' => "required",
+            'prueba' => "required_if:prueba,null"
+        
+        ];
+        $messages =  [
+            'empleadoid.required' => 'Elija un Empleado',
+            'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
+            'prueba.required_if' => 'Elija una fecha no asignada',
+            'fechaf.required' => 'Este espacio es requerida'
+        ];
+        $this->validate($rules,$messages);
+       // dd($this->entradaf);
+        $anticipo = Attendance::create([
+            'fecha' => $this->fechaf,
+            'entrada' => $this->entradaf.':00',
+            'salida'=>$this->salidaf.':00',
+            'employee_id'=>$this->empleadoid
+        ]);
+
+        $this->resetUI();
+        $this->emit('asist-fallo','Actualizar Fallo');
+    }
+
+    // vaciar formulario
+    public function resetUI(){
+        
+        $this->empleadoid = 'Elegir';
+        $this->fechaf = '';
+        $this->entradaf='';
+        $this->salidaf='';
+        $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
 
     //metodo que mandara el horario del dia 

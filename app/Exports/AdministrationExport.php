@@ -144,8 +144,8 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         //esto tendria que ser los datos que mandaremos para el excel
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id', 'employees.name', 'at.name as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
-        ->where('at.id',3)
+        ->select('employees.id', 'employees.name', 'at.nameArea as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
+        ->where('at.id',1)
         ->get();
         
         //calcular las horas totateles, retrasdos, dias de cada empleado
@@ -250,8 +250,8 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->select('employees.id', 'employees.name', 'at.name as area')
-        ->where('at.id',3)
+        ->select('employees.id', 'employees.name', 'at.nameArea as area')
+        ->where('at.id',1)
         ->get();
         //dd($data2);
         //dd($data);
@@ -368,8 +368,8 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         
         //contar los resultados existentes para el bordeado del excel
         $this->Allemployee = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->select('employees.id', 'employees.name', 'at.name as area')
-        ->where('at.id',3)
+        ->select('employees.id', 'employees.name', 'at.nameArea as area')
+        ->where('at.id',1)
         ->get()
         ->count();
             //dd($this->Allemployee);

@@ -16,7 +16,7 @@ class CreateDiscountsvsTable extends Migration
         Schema::create('discountsvs', function (Blueprint $table) {
             $table->id();
             $table->string('ci');
-            $table->decimal('descuento',0,00);
+            $table->decimal('descuento',10,2);
             $table->string('motivo',500)->nullable();
             $table->date('fecha');
             $table->timestamps();

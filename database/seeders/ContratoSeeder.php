@@ -15,6 +15,7 @@ class ContratoSeeder extends Seeder
     public function run()
     {
         Contrato::create([
+            //1
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Sin Contrato',
             'nota' => 'null',
@@ -22,6 +23,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //2
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato GE',
             'nota' => 'null',
@@ -29,6 +31,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //3
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato BR',
             'nota' => 'null',
@@ -36,6 +39,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //4
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato EM',
             'nota' => 'null',
@@ -43,6 +47,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //5
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato J',
             'nota' => 'null',
@@ -50,6 +55,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //6
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato G',
             'nota' => 'null',
@@ -57,6 +63,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //7
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato N',
             'nota' => 'null',
@@ -64,6 +71,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //8
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato R',
             'nota' => 'null',
@@ -71,6 +79,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //9
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato F',
             'nota' => 'null',
@@ -78,6 +87,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //10
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato ER',
             'nota' => 'null',
@@ -85,6 +95,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //11
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato ED',
             'nota' => 'null',
@@ -92,6 +103,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //12
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Y',
             'nota' => 'null',
@@ -99,6 +111,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //13
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato AR',
             'nota' => 'null',
@@ -106,6 +119,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
         Contrato::create([
+            //14
             'fechaFin' => '2022-09-11 14:33:34',
             'descripcion' => 'Contrato de Prueba',
             'nota' => 'Uno',

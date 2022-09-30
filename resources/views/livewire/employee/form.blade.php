@@ -14,7 +14,7 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Nombre</label>
-                            <input type="text" wire:model.lazy="name" class="form-control" placeholder="ej. Juan">
+                            <input type="text" wire:model.lazy="name" class="form-control" placeholder="Ingrese nombre">
                             @error('name') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -22,7 +22,7 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Apellidos</label>
-                            <input type="text" wire:model.lazy="lastname" class="form-control" placeholder="ej. Perez">
+                            <input type="text" wire:model.lazy="lastname" class="form-control" placeholder="Ingrese apellidos">
                             @error('lastname') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -30,7 +30,7 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>CI</label>
-                            <input type="text" wire:model.lazy="ci" class="form-control" placeholder="ej. 6869334">
+                            <input type="text" wire:model.lazy="ci" class="form-control" placeholder="Ingrese nro de Cedula de Indentidad">
                             @error('ci') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -58,7 +58,7 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Direccion</label>
-                            <input type="text" wire:model.lazy="address" class="form-control" placeholder="ej. Av. America">
+                            <input type="text" wire:model.lazy="address" class="form-control" placeholder="Ingrese direccion">
                             @error('address') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -66,7 +66,7 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Telefono</label>
-                            <input type="number" wire:model.lazy="phone" class="form-control" placeholder="ej. 44444444">
+                            <input type="number" wire:model.lazy="phone" class="form-control" placeholder="Ingrese nro de telefono">
                             @error('phone') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -86,14 +86,14 @@
 
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
-                            <label>Puesto de Trabajo</label>
-                            <select wire:model="puestoid" class="form-control">
+                            <label>Cargo</label>
+                            <select wire:model="cargoid" class="form-control">
                                 <option value="Elegir" disabled>Elegir</option>
-                                @foreach($puestos as $puesto)
-                                    <option value="{{$puesto->id}}">{{$puesto->name}}</option>
+                                @foreach($cargos as $cargo)
+                                    <option value="{{$cargo->id}}">{{$cargo->name}}</option>
                                 @endforeach
                             </select>
-                            @error('puestoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                            @error('cargoid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -138,7 +138,7 @@
                         <div class="form-group custom-file">
                             <input type="file" class="custom-file-input form-control img-thumbnail center-block" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
                             <label for="" class="custom-file-label">Imagen {{$image}}</label>
-                            <h6 style="color: red">Seleccione una Imagen de 2Mb</h6>
+                            {{--<h6 style="color: red">Seleccione una Imagen de 2Mb</h6>--}}
                             @error('image') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
                     </div>

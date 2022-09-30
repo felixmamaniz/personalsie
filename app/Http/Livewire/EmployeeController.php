@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Storage;
 
 use Livewire\Component;
 use App\Models\AreaTrabajo;
-use App\Models\PuestoTrabajo;
+use App\Models\Cargo;
 use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
@@ -14,13 +14,15 @@ use App\Models\Contrato;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
+use Intervention\Image\ImageManagerStatic as Image;
+
 class EmployeeController extends Component
 {
     use withPagination;
     use withFileUploads;
 
     // Datos de Empleados
-    public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $puestoid, $contratoid, $fechaInicio, $image, $selected_id;
+    public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $cargoid, $contratoid, $fechaInicio, $image, $selected_id;
     public $pageTitle, $componentName, $search, $componentNuevoContrato;
     private $pagination = 6;
 
@@ -41,7 +43,7 @@ class EmployeeController extends Component
         $this->componentName = 'Empleados';
         $this->componentNuevoContrato = 'Nuevo Contrato';
         $this->areaid = 'Elegir';
-        $this->puestoid = 'Elegir';
+        $this->cargoid = 'Elegir';
         $this->genero = 'Seleccionar';
         $this->estadoCivil = 'Seleccionar';
         $this->contratoid = 'Elegir';
@@ -57,9 +59,9 @@ class EmployeeController extends Component
         //$estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
-            ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+            ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.nameArea as area', 'pt.name as puesto', 'ct.descripcion as contrato', 'employees.id as idEmpleado', DB::raw('0 as verificar'))
+            ->select('employees.*','c.nameArea as area', 'pt.name as cargo', 'ct.descripcion as contrato', 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
             ->orWhere('c.nameArea', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
@@ -74,9 +76,9 @@ class EmployeeController extends Component
         }
         else
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
-            ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+            ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.nameArea as area','pt.name as puesto', 'ct.descripcion as contrato', 
+            ->select('employees.*','c.nameArea as area','pt.name as cargo', 'ct.descripcion as contrato', 
                 DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'), 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
@@ -101,7 +103,7 @@ class EmployeeController extends Component
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('nameArea', 'asc')->get(),
-            'puestos' => PuestoTrabajo::orderBy('name', 'asc')->get(),
+            'cargos' => Cargo::orderBy('name', 'asc')->get(), // Cargo
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
             //'estadocontrato' => $estadoContrato,
             //'pruebas' => $tiempoRestante
@@ -268,7 +270,7 @@ class EmployeeController extends Component
     public function ServicioDetalle($idEmpleado)
     {
         $detalle = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->select('employees.id as idEmpleado',
             'employees.ci',
@@ -280,7 +282,7 @@ class EmployeeController extends Component
             'employees.phone',
             'employees.estadoCivil',
             'at.nameArea as nombrearea',
-            'pt.name as nombrepuesto',
+            'pt.name as nombrecargo',
             'employees.contrato_id',
             'employees.fechaInicio',
             'ct.fechaFin as fechafinal',
@@ -303,7 +305,7 @@ class EmployeeController extends Component
         $this->phone = $detalle->phone;
         $this->estadoCivil = $detalle->estadoCivil;
         $this->areaid = $detalle->nombrearea;
-        $this->puestoid = $detalle->nombrepuesto;
+        $this->cargoid = $detalle->nombrecargo;
         $this->fechaInicio = $detalle->fechaInicio;
         $this->contratoid = $detalle->fechafinal;
         $this->salario = $detalle->salario;
@@ -356,7 +358,6 @@ class EmployeeController extends Component
 
     // Registro de empleado nuevo
     public function Store(){
-        
         $rules = [
             'ci' => 'required|unique:employees',
             'name' => 'required',
@@ -367,9 +368,10 @@ class EmployeeController extends Component
             'phone' => 'required',
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
-            'puestoid' => 'required|not_in:Elegir',
+            'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
+            'image' => 'max:2048',
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -384,9 +386,11 @@ class EmployeeController extends Component
             'estadoCivil.required' => 'seleccione estado civil del empleado',
             'estadoCivil.not_in' => 'selecciona estado civil',
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
-            'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
+            'cargoid.not_in' => 'elije un nombre del cargo diferente de elegir',
             'contratoid.not_in' => 'seleccione un contrato',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
+            //'image.required' => 'Seleccione una imagen no superior a 2048 kilobytes',
+            'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
         ];
 
         $this->validate($rules, $messages);
@@ -401,7 +405,7 @@ class EmployeeController extends Component
             'phone'=>$this->phone,
             'estadoCivil'=>$this->estadoCivil,
             'area_trabajo_id' => $this->areaid,
-            'puesto_trabajo_id' => $this->puestoid,
+            'cargo_id' => $this->cargoid,
             'contrato_id' => $this->contratoid,
             'fechaInicio'=>$this->fechaInicio,
         ]);
@@ -415,18 +419,20 @@ class EmployeeController extends Component
             $employ->save();
         }
 
-        
-        /*$customFileName;
-        if($this->image)
-        {
-            $customFileName = uniqid() . '_.' . $this->image->extension();
-            $ruta = $this->image->storeAs('public/employees', $customFileName);
+        /*
 
-            Image::make($customFileName)
-            ->resize(45, null, function($constraint){
-                $constraint->aspectRatio();
-            })
-            ->save($ruta);
+        https://codea.app/blog/reducir-el-tamano-de-una-imagen
+        https://hcastillaq.medium.com/comprimiendo-im%C3%A1genes-con-laravel-ccc92a0d45e5
+        
+        if ($request->hasFile('urlfoto')){
+            $urlfoto    = $request->file('urlfoto');
+            $nombre     = 'nuevonombre'.$urlfoto->guessExtension();
+            $ruta=public_path('/img/'.$nombre);
+            Image::make($urlfoto->getRealPath())
+                ->resize(600,400, function ($constraint){ 
+                    $constraint->aspectRatio();
+                })
+                ->save($ruta,72);
         }*/
         
         $this->resetUI();
@@ -447,7 +453,7 @@ class EmployeeController extends Component
         $this->phone = $employee->phone;
         $this->estadoCivil = $employee->estadoCivil;
         $this->areaid = $employee->area_trabajo_id;
-        $this->puestoid = $employee->puesto_trabajo_id;
+        $this->cargoid = $employee->cargo_id;
         $this->contratoid = $employee->contrato_id;
         $this->fechaInicio = $employee->fechaInicio;
         $this->image = $employee->null;
@@ -468,9 +474,10 @@ class EmployeeController extends Component
             'phone' => 'required',
             'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
-            'puestoid' => 'required|not_in:Elegir',
+            'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
+            'image' => 'max:2048',
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -492,10 +499,11 @@ class EmployeeController extends Component
 
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
 
-            'puestoid.not_in' => 'elije un nombre del puesto diferente de elegir',
+            'cargoid.not_in' => 'elije un nombre del cargo diferente de elegir',
             'contratoid.not_in' => 'elije contrato de elegir',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
-
+            //'image.required' => 'Seleccione una imagen no superior a 2048 kilobytes',
+            'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
         ];
 
         $this->validate($rules, $messages);
@@ -511,7 +519,7 @@ class EmployeeController extends Component
             'phone' => $this->phone,
             'estadoCivil'=>$this->estadoCivil,
             'area_trabajo_id' => $this->areaid,
-            'puesto_trabajo_id' => $this->puestoid,
+            'cargo_id' => $this->cargoid,
             'contrato_id' => $this->contratoid,
             'fechaInicio' => $this->fechaInicio,
         ]);
@@ -548,7 +556,7 @@ class EmployeeController extends Component
         $this->phone = '';
         $this->estadoCivil = 'Seleccionar';
         $this->areaid = 'Elegir';
-        $this->puestoid = 'Elegir';
+        $this->cargoid = 'Elegir';
         $this->contratoid = 'Elegir';
         $this->fechaInicio = '';
         $this->image=null;

@@ -18,7 +18,7 @@ class Employee extends Model
         'phone',
         'estadoCivil',
         'area_trabajo_id',
-        'puesto_trabajo_id',
+        'cargo_id',
         'contrato_id',
         'fechaInicio',
         'image'

@@ -5,7 +5,7 @@
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <h6>Nombre</h6>
-            <input type="text" wire:model.lazy="nameArea" class="form-control">
+            <input type="text" wire:model.lazy="nameArea" class="form-control" placeholder="Ingrese nombre">
             @error('nameArea')
                 <span class="text-danger er">{{ $message }}</span>
             @enderror
@@ -15,7 +15,7 @@
     <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <h6>Descripcion</h6>
-            <input type="text" wire:model.lazy="descriptionArea" class="form-control">
+            <input type="text" wire:model.lazy="descriptionArea" class="form-control" placeholder="Ingrese descripcion">
             @error('descriptionArea')
                 <span class="text-danger er">{{ $message }}</span>
             @enderror

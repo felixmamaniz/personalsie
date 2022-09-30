@@ -15,14 +15,17 @@ class AreaTrabajoSeeder extends Seeder
     public function run()
     {
         AreaTrabajo::create([
+            //1
             'nameArea' => 'Area Administrativa',
             'descriptionArea' => 'Admin',
         ]);
         AreaTrabajo::create([
+            //2
             'nameArea' => 'Area Tecnica',
             'descriptionArea' => 'Tec',
         ]);
         AreaTrabajo::create([
+            //3
             'nameArea' => 'No Definido',
             'descriptionArea' => 'null',
         ]);

@@ -63,7 +63,7 @@
                     <div class="number">Telefono</div>
                     <div class="number">Estado Civil</div>
                     <div class="number">Area de Trabajo</div>
-                    <div class="number">Puesto de Trabajo</div>
+                    <div class="number">Cargo</div>
                     <div class="number">Fecha de Inicio</div>
                     <div class="number">Fecha de Final</div>
                     <div class="number">Salario</div>
@@ -74,7 +74,7 @@
                     <div class="number">{{ $phone }}</div>
                     <div class="number">{{ $estadoCivil }}</div>
                     <div class="number">{{ $areaid }}</div>
-                    <div class="number">{{ $puestoid }}</div>
+                    <div class="number">{{ $cargoid }}</div>
                     <div class="number">{{ $fechaInicio }}</div>
                     <div class="number">{{ $contratoid }}</div>
                     <div class="number">{{ $salario }} Bs</div>
@@ -126,7 +126,7 @@
                   <li>TELEFONO: {{ $phone }}</li>
                   <li>ESTADO CIVIL: {{ $estadoCivil }}</li>
                   <li>AREA: {{ $areaid }}</li>
-                  <li>PUESTO: {{ $puestoid }}</li>
+                  <li>CARGO: {{ $cargoid }}</li>
                   <li>FECHA DE INICIO: {{ $fechaInicio }}</li>
                   <li>FECHA FINAL: {{ $contratoid }}</li>
                   <li>SALARIO: {{ $salario }} Bs.</li>

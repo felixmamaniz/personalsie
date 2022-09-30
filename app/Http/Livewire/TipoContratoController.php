@@ -10,6 +10,8 @@ use Livewire\WithPagination;
 
 use Illuminate\Support\Facades\DB;
 
+use App\Http\Livewire\TipoContratoImport;
+
 use Intervetion\Image\Facades\Image;
 use Illuminate\Http\Request;
 
@@ -43,6 +45,24 @@ class TipoContratoController extends Component
         ->extends('layouts.theme.app')
         ->section('content');
     }
+
+    // prueba de importacion de datos de excel a BD
+
+    //https://codedrinks.com/importar-un-archivo-de-excel-a-base-de-datos-en-laravel/
+
+    // https://coder-solution-es.com/solution-es-blog/1149981
+
+    /*public function importForm(){
+        return view('import');
+    }
+ 
+    public function import(Request $request)
+    {
+        $import = new TipoContratoImport();
+        Excel::import($import, request()->file('tipo_contratos'));
+        return view('import', ['numRows'=>$import->getRowCount()]);
+    }*/
+
 
     public function Edit($id){
         $record = TipoContrato::find($id, ['id', 'name', 'image']);

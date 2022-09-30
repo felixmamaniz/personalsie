@@ -1,4 +1,74 @@
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*$customFileName = uniqid() . '_.' . $this->image->extension();
+            $this->image->storeAs('public/employees', $customFileName);
+            /*Image::make($request->image('image'))
+                ->resize(1200, null, function ($constraint){ 
+                    $constraint->aspectRatio();
+                })
+                ->save($this->image);
+
+            */
+
+            //$nombre = Str::random(3) . '633608bc7af64_.jpg'; // nuevo nombre de la imagen
+            /*$ruta = storage_path() . '\app\public\employees/' . $customFileName; // ruta de la imagen
+            //dd($ruta);
+            Image::make($request->file('image'))
+                    ->resize(1200, null, function ($constraint){ 
+                        $constraint->aspectRatio();
+                    })
+                    ->save($ruta);
+
+           
+        
+            //$employ->image = $customFileName;
+            //$employ->save();*/
+
+
+    /*if($this->image)
+        {
+            $customFileName = uniqid() . '_.' . $this->image->extension();
+            $this->image->storeAs('public/products', $customFileName);
+            $imageTemp = $product->image;  // imagen temporal
+            $product->image = $customFileName;
+            $product->save();
+
+            if($imageTemp != null){
+                if(file_exists('storage/products/' . $imageTemp )){
+                    unlink('storage/products/' . $imageTemp);
+                }
+            }
+        }*/
+
+
+if ($request->hasFile('urlfoto')){
+            $urlfoto    = $request->file('urlfoto');
+            $nombre     = 'nuevonombre'.$urlfoto->guessExtension();
+            $ruta=public_path('/img/'.$nombre);
+            Image::make($urlfoto->getRealPath())
+                ->resize(600,400, function ($constraint){ 
+                    $constraint->aspectRatio();
+                })
+                ->save($ruta,72);
+        }*/
+
+
+
     if(strlen($this->search) > 0)
         {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id') // se uno amabas tablas

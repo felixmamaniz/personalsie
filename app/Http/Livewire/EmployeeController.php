@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Http\Livewire;
-use Illuminate\Support\Facades\Storage;
 
 use Livewire\Component;
 use App\Models\AreaTrabajo;
@@ -13,8 +12,10 @@ use App\Models\Contrato;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
-use Intervention\Image\ImageManagerStatic as Image;
+//use Intervention\Image\ImageManagerStatic as Image;
+use Intervention\Image\Facades\Image;
 
 class EmployeeController extends Component
 {
@@ -55,8 +56,6 @@ class EmployeeController extends Component
 
     public function render()
     {
-        //$tiempoRestante = "prueba";
-        //$estadoContrato = 'Activo';
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
@@ -105,8 +104,6 @@ class EmployeeController extends Component
             'areas' => AreaTrabajo::orderBy('nameArea', 'asc')->get(),
             'cargos' => Cargo::orderBy('name', 'asc')->get(), // Cargo
             'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
-            //'estadocontrato' => $estadoContrato,
-            //'pruebas' => $tiempoRestante
         ])
         ->extends('layouts.theme.app')
         ->section('content');
@@ -371,7 +368,7 @@ class EmployeeController extends Component
             'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
-            'image' => 'max:2048',
+            //'image' => 'max:2048',
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -389,8 +386,7 @@ class EmployeeController extends Component
             'cargoid.not_in' => 'elije un nombre del cargo diferente de elegir',
             'contratoid.not_in' => 'seleccione un contrato',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
-            //'image.required' => 'Seleccione una imagen no superior a 2048 kilobytes',
-            'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
+            //'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
         ];
 
         $this->validate($rules, $messages);
@@ -408,33 +404,38 @@ class EmployeeController extends Component
             'cargo_id' => $this->cargoid,
             'contrato_id' => $this->contratoid,
             'fechaInicio'=>$this->fechaInicio,
+            //'image'=>  $customFileName
         ]);
-        
         //$customFileName;
         if($this->image)
         {
+            // https://image.intervention.io/v2
+            // revisar verificacion de Resolucion de Imagen al comprimir
+
             $customFileName = uniqid() . '_.' . $this->image->extension();
-            $this->image->storeAs('public/employees', $customFileName);
+            $path = $this->image->storeAs('public/employees', $customFileName);
             $employ->image = $customFileName;
             $employ->save();
         }
 
-        /*
+        $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
+        $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
 
-        https://codea.app/blog/reducir-el-tamano-de-una-imagen
-        https://hcastillaq.medium.com/comprimiendo-im%C3%A1genes-con-laravel-ccc92a0d45e5
+        // reducimos la calidad y cambiamos la dimensiones de la nueva instancia.
+        $imagex->resize(1280, null, function ($constraint) {
+            $constraint->aspectRatio();
+            $constraint->upsize();
+          });
+
+        // por ultimo solo guardamos esta nueva instancia, reemplazando la imagen anterior.
+        Storage::put($path, (string) $imagex->encode('jpg', 30));
         
-        if ($request->hasFile('urlfoto')){
-            $urlfoto    = $request->file('urlfoto');
-            $nombre     = 'nuevonombre'.$urlfoto->guessExtension();
-            $ruta=public_path('/img/'.$nombre);
-            Image::make($urlfoto->getRealPath())
-                ->resize(600,400, function ($constraint){ 
-                    $constraint->aspectRatio();
-                })
-                ->save($ruta,72);
-        }*/
+        //$employ->save();
         
+        //https://codea.app/blog/reducir-el-tamano-de-una-imagen
+        //https://hcastillaq.medium.com/comprimiendo-im%C3%A1genes-con-laravel-ccc92a0d45e5
+        
+
         $this->resetUI();
         $this->emit('employee-added', 'Empleado Registrado');
         $this->emit('modal-hide-contrato', 'show modal!');
@@ -526,17 +527,29 @@ class EmployeeController extends Component
 
         if($this->image){
             $customFileName = uniqid() . '_.' . $this->image->extension();
-            $this->image->storeAs('public/employees', $customFileName);
-            $imageName = $employee->image;
+            $path = $this->image->storeAs('public/employees', $customFileName);
+            $imageTemp = $employee->image;  // imagen temporal
 
             $employee->image = $customFileName;
             $employee->save();
 
-            if($imageName !=null){
-                if(file_exists('storage/employees' . $imageName)){
-                    unlink('storage/employees' . $imageName);
+            if($imageTemp !=null){
+                if(file_exists('storage/employees/' . $imageTemp)){
+                    unlink('storage/employees/' . $imageTemp);
                 }
             }
+
+            $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
+            $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
+
+            // reducimos la calidad y cambiamos la dimensiones de la nueva instancia.
+            $imagex->resize(1280, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            // por ultimo solo guardamos esta nueva instancia, reemplazando la imagen anterior.
+            Storage::put($path, (string) $imagex->encode('jpg', 30));
         }
 
         $employee->save();

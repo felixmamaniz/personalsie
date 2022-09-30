@@ -9,6 +9,39 @@
                     <a href="javascript:void(0)" class="btn btn-warning" data-toggle="modal"
                     data-target="#theModal">Agregar</a>
                 </ul>
+
+                {{--<div class="container mt-5">
+                    <h3>Importar Datos</h3>
+             
+                    @if ( $errors->any() )
+             
+                        <div class="alert alert-danger">
+                            @foreach( $errors->all() as $error )<li>{{ $error }}</li>@endforeach
+                        </div>
+                    @endif
+             
+                    @if(isset($numRows))
+                        <div class="alert alert-sucess">
+                            Se importaron {{$numRows}} registros.
+                        </div>
+                    @endif
+             
+                    <form action="{{route('tipo_contratos.import')}}" method="post" enctype="multipart/form-data">
+                        {{csrf_field()}}
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="custom-file">
+                                    <input type="file" name="alumnos" class="custom-file-input" id="alumnos">
+                                    <label class="custom-file-label" for="alumnos">Seleccionar archivo</label>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Importar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>--}}
+
             </div>
             
             @include('common.searchbox')

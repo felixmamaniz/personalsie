@@ -66,6 +66,11 @@ Route::middleware(['auth'])->group(function () {
      //mandar un evento post de la vista attendance
      Route::post('POST', [ExportController::class, 'store']);
 
+
+    // prueba de importacion
+    //Route::get('tipo_contratos/import','TipoContratoController@importForm')->name('tipo_contratos.importForm');
+    //Route::post('tipo_contratos/import','TipoContratoController@import')->name('tipo_contratos.import');
+
 });
 
 

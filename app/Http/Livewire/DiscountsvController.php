@@ -75,7 +75,7 @@ class DiscountsvController extends Component
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'descuentoc.required' => 'Este espacio es requerida'
         ];
-
+        //dd($this->descuentoc);
         $this->validate($rules, $messages);
         $this->fecha = Carbon::parse(Carbon::now())->format('Y-m-d');
         $anticipo = Discountsv::create([

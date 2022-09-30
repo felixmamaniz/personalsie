@@ -59,23 +59,11 @@
                         <div class="col-sm-4 mt-4">
                                 <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
                                 href="{{ url('report/excel' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
-                                target="_blank">Exportar a Excel</a>
+                                target="_blank">Exportar a Excel Salarios</a>
 
                         </div>
 
-                        <div class="col-sm-4 mt-4">
-                            <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
-                            href="{{ url('report/excelAdministrativo' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
-                            target="_blank">Reporte Sueldos Administrativo</a>
-
-                        </div>
-
-                        <div class="col-sm-2 mt-4">
-                            <a class="btn btn-primary {{count($data) < 1? 'disabled' : ''}}"
-                            href="{{ url('report/excelTecnico' . '/' . $userId . '/' . $reportType. '/' . $dateFrom. '/' . $dateTo) }}"
-                            target="_blank">Reporte Sueldos Tecnico</a>
-
-                        </div>
+                        
 
                         <div class="col-sm-5 mt-2">
                             <div class="card-body">
@@ -89,10 +77,12 @@
 
                                 <form action="{{url('POST')}}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <input type="file" name="import_file">
-                                    <button type="submit" class="btn btn-primary">
+                                    <input type="file" name="import_file" wire:change="archivo">
+                                    @if($verfiarchivo!=null)
+                                    <button type="submit" class="btn btn-primary" >
                                         IMPORTAR EXCEL
                                     </button>
+                                    @endif
                                 </form>
                             </div>
                             
@@ -114,11 +104,13 @@
                             <thead class="text-white" style="background: #ee761c">
                               <tr class="tablehead">
                                 <th class="text-center">N°</th>
+                                <th class="text-center">Dia</th>
                                 <th>FECHA</th>
                                 <th class="text-center">ENTREDA</th>
                                 <th class="text-center">SALIDA</th>
                                 <th class="text-center">NOMBRE</th>
                                 <th class="text-center">RETRASO</th>
+                                <th class="text-center">SALIDA</th>
                                 <th class="text-center">HORAS CUMPLIDAS</th>
                               </tr>
                             </thead>
@@ -127,6 +119,9 @@
                                     <tr class="seleccionar">
                                         <td class="text-center">
                                             {{$loop->iteration}}
+                                        </td>
+                                        <td class="text-center">
+                                            {{ ($item->dia) }}
                                         </td>
                                         <td>
                                             
@@ -149,6 +144,9 @@
                                             {{ ($item->retraso) }}
                                         </td>
                                         <td class="text-center">
+                                            {{ ($item->Salida_Normal) }}
+                                        </td>
+                                        <td class="text-center">
                                             {{ ($item->hcumplida) }}
                                         </td>
                                     </tr>
@@ -156,7 +154,7 @@
                                     
 
                                     <tr>
-                                        <td colspan="8"></td>
+                                        <td colspan="9"></td>
                                     </tr>
 
                             </tbody>

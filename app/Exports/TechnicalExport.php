@@ -41,7 +41,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
     //calcular cuantas filas se tiene
     public $data2, $Allemployee;
     //para agregar los tatales
-    public $horitas, $Dtrabajados, $tganado;
+    public $horitas, $Dtrabajados, $tganado, $tDias, $tAdelanto, $Tdescuentos, $Tpagado;
     //Mes
     public $mes;
     
@@ -69,7 +69,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         $drawing2->setDescription('This is my direccion');
         $drawing2->setPath(public_path('assets/img/direccion.png'));
         $drawing2->setHeight(90);
-        $drawing2->setCoordinates('K1');
+        $drawing2->setCoordinates('J1');
 
         return [$drawing, $drawing2];
     }
@@ -141,12 +141,12 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //dd($this->mes);
 
         
-
         $num=1;
         //esto tendria que ser los datos que mandaremos para el excel
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id', 'employees.name', 'at.nameArea as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as Total_ganado' ), DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
+        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), 'ct.salario as Total_ganado', DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as Total_pagado') ,DB::raw('0 as retrasos'),DB::raw('0 as no_marco_entrada'),DB::raw('0 as no_marco_salida'))
         ->where('at.id',2)
         ->get();
         
@@ -201,6 +201,9 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $horasum='00:00:00';
             $retrasomin = '00:00:00';
             $dias = 0;
+            //contar entras y salidas no marcadas
+            $countE=0;
+            $countS=0;
             foreach ($data3 as $x) {
                 //$fechasD=carbon::parse($mergeAM);
                 $e = Carbon::parse($x->entrada);
@@ -210,7 +213,14 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 {  
                     $diferencia = $e->diff($s)->format('%H:%I:%S');
                 }
-                
+                if($x->entrada == "00:00:00")
+                {
+                    $countE++;
+                }
+                if($x->salida == "00:00:00")
+                {
+                    $countS++;
+                }
                 $horasum=$this->suma_horas($horasum,$diferencia);
                 if($x->retraso != "Ninguno" && $x->retraso != "No marco entrada")
                 {
@@ -219,12 +229,13 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 }
                 
                 $dias++;
-                //dd($retrasomin);
-                //dd($horasum);
+
             }
             //$h->retrasos=$retrasomin;
             $h->Horas=$horasum;
             $h->Dias_trabajados=$dias;
+            $h->no_marco_entrada=$countE;
+            $h->no_marco_salida=$countS;
             
             //dd($reporte);
             //$h->descuento='0';
@@ -240,7 +251,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 foreach ($descuento as $d) {
                     $desctotal=$desctotal+$d->descuento;
                 }
-            $h->Descuento=$desctotal;
+            $h->Descuento= number_format($desctotal,2) ;
             //Adelantos o Anticipos
                 $adelantos = Anticipo::select('anticipos.*')
                 ->where('anticipos.empleado_id',$h->id)
@@ -250,28 +261,36 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 foreach ($adelantos as $d) {
                     $adelantototal=$adelantototal+$d->anticipo;
                 }
-            $h->Adelantos=$adelantototal;
-            
+            $h->Adelantos= number_format($adelantototal,2);
+            $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos);
+            //$h->Total_pagado=number_format($tpagando,2);
+            //dd($h->Total_pagado);
           /* $descuento=Discountsv::where('id',$h->id)->sum('descuento')
            ->groupBy('discountsvs.id');*/
+           
            $h->id=$num;
            $num++;
         }
 
-
+        //dd($reporte);
         //sumar columnas para agregar a los totales
         $this->horitas = '00:00:00';
         foreach ($reporte as $x) {
                 $this->horitas = $this->suma_horas($this->horitas,$x->Horas);
                 $this->tganado = $this->tganado + $x->salario;
+                $this->tDias = $this->tDias + $x->Dias_trabajados;
+                $this->tAdelanto = number_format( ($this->tAdelanto + $x->Adelantos),2);
+                $this->Tdescuentos = number_format( ($this->Tdescuentos + $x->Descuento),2);
+                $this->Tpagado = $this->Tpagado + $x->Total_pagado; 
         }
         
-
+        //dd($this->tAdelanto);
         //dd($horitas);
         //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->select('employees.id', 'employees.name', 'at.nameArea as area')
+        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->select('employees.id', 'employees.name', 'pt.name as cargo')
         ->where('at.id',2)
         ->get();
         //dd($data2);
@@ -299,7 +318,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  [""],
                  [""],
-                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO"],
+                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA"],
             ];
         
 
@@ -315,16 +334,16 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         return [
             'A' => 3,
             'B' => 25,
-            'C' => 16,
+            'C' => 18,
             'D' => 10,
-            'E' => 8,
-            'F' => 10,
+            'E' => 9,
+            'F' => 6,
             'G' => 9,
             'H' => 7,
-            'I' => 8,
+            'I' => 7,
             'J' => 10,
-            'K' => 8,
-            'L' => 10,          
+            'K' => 7,
+            'L' => 8,          
         ];
     }
     //WithColumnFormatting
@@ -334,6 +353,9 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         
         return [
             'E' => '0.00',
+            'I' => '0.00',
+            'K' => '0.00',
+            'L'=> '0.00',
         ];
     }
     
@@ -409,8 +431,8 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $this->H='H8:H'.($this->Allemployee+9);
             $this->J='J8:J'.($this->Allemployee+9);
             $this->L='L8:L'.($this->Allemployee+9);
-
             $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
+            $this->wrap='A8:'.'L'.($this->Allemployee+8);
             //dd($this->B);
             //dd($cell);
             return [ 
@@ -422,7 +444,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     //footer total y suma de totales
                     
                     $event->sheet->appendRows(array(
-                        array('Total','','',$this->horitas,$this->tganado.',00'),
+                        array('Total','','', $this->horitas, $this->tganado.',00', $this->tDias, $this->tganado, '', $this->tAdelanto, '', $this->Tdescuentos, $this->Tpagado),
                         
                         //....
                     ), $event);
@@ -440,7 +462,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     ));*/
                     //ajustar el texto al tamaño de la columna
                     //$event->sheet->getStyle('A6:B' . $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
-                    $event->sheet->getStyle('A8:L8')->getAlignment()->setWrapText(true);
+                    $event->sheet->getStyle($this->wrap)->getAlignment()->setWrapText(true);
                      //centrear A3 hasta l3
                      $event->sheet->mergeCells('A3:l3');
                      $event->sheet->getDelegate()->getStyle('A3:l3')
@@ -460,6 +482,11 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                             $event->sheet->getDelegate()->getStyle('A8:l8')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
+                            ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+
+                            $event->sheet->getDelegate()->getStyle('A8:L19')
+                            ->getAlignment()
+                            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
                             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
                     //para el color de fondo de una celda o varias ejm:('A:C')
                     //PARA LAS FILAS PRINCIPALES DEL ENCABEZADO
@@ -579,7 +606,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                 [
                                     'font' => [
                                         'name'      =>  'Times New Roman',
-                                        'size'      =>  12,
+                                        'size'      =>  11,
                                         'bold'      =>  true,
                                         'color' => ['rgb' => 'black'],
                                     ],

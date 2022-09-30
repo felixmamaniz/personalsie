@@ -16,7 +16,7 @@ use Illuminate\Support\Facades\DB;
 class AttendancesController extends Component
 {
     use WithPagination;
-    public $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada, $componentName, $title, $fechahoy, $total;
+    public $reportType, $userId, $dateFrom, $dateTo, $horaentrada,$horaconformada, $componentName, $title, $fechahoy, $total, $archivo ,$verfiarchivo;
     //datos para fallo
 
     public $fechaf, $empleadoid, $entradaf, $salidaf, $prueba;
@@ -52,7 +52,7 @@ class AttendancesController extends Component
         $this->componentName = "Fallo de Sistema";
         $this->title = "algo";
         $this->fechahoy = Carbon::parse(Carbon::now())->format('Y-m-d');
-       
+      // 
     }
 
     public function render()
@@ -68,7 +68,10 @@ class AttendancesController extends Component
         ->section('content');
     }
     
-    
+    public function archivo()
+    {
+        $this->verfiarchivo=1;
+    }
     //metodo retornar reporte de la fecha
     public function SalesByDate()
     {
@@ -87,8 +90,12 @@ class AttendancesController extends Component
             //obtener fechas especificadas por el usuario
             $from = Carbon::parse($this->dateFrom)->format('Y-m-d');
             $to = Carbon::parse($this->dateTo)->format('Y-m-d');
+            //dd($this->archivo);
+            //$file = $this->archivo->file('import_file');
+            //dd($this->file);
             
         }   
+        
         //validar si el usuario esta usando un tipo de reporte
         // if($this->reportType == 1 && ($this->dateFrom == '' || $this->dateTo == '')) {
         //     dd("Hola");
@@ -103,7 +110,7 @@ class AttendancesController extends Component
             //dd($xd);
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->join('shifts as s', 's.ci', 'attendances.employee_id')
-            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday', DB::raw('0 as Salida_Normal'), DB::raw('0 as dia') )
             ->whereBetween('attendances.fecha', [$from,$to])
             //->groupBy("e.id")
             ->orderBy('attendances.fecha','asc')
@@ -167,6 +174,18 @@ class AttendancesController extends Component
             //agregar las horas cumplidas del usuario
             foreach ($this->data as $os)
             {
+                //validacion del dia de hoy
+                
+                $fec=Carbon::parse($os->fecha)->format('l');
+                $os->dia=$this->fecha_dia($fec);
+                //validacion de no marco salida
+                if($os->salida=="00:00:00")
+                {
+                    $os->Salida_Normal = "No marco salida";
+                }
+                else{
+                    $os->Salida_Normal = "Normal";
+                }
                 $timeacumleted= $this->horascumplidas($os->entrada, $os->salida);
                 if($os->employee=='Carlos')
                 {
@@ -189,7 +208,7 @@ class AttendancesController extends Component
 
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->join('shifts as s', 's.ci', 'attendances.employee_id')
-            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
+            ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday', DB::raw('0 as Salida_Normal'), DB::raw('0 as dia'))
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $this->userId)
             ->orderBy('attendances.fecha','asc')
@@ -273,6 +292,18 @@ class AttendancesController extends Component
         //agregar las horas cumplidas del usuario
         foreach ($this->data as $os)
         {
+            //agregar dia que fue
+            
+            $fec=Carbon::parse($os->fecha)->format('l');
+            $os->dia = $this->fecha_dia($fec);
+            //no marco salida validacion
+            if($os->salida=="00:00:00"){
+                $os->Salida_Normal="Se Quedo a Dormir";
+            }
+            else{
+                $os->Salida_Normal = "Normal";
+            }
+
         $timeacumleted= $this->horascumplidas($os->entrada, $os->salida);
         if($os->employee=='Carlos')
         {
@@ -656,5 +687,38 @@ class AttendancesController extends Component
                         return "no se encontro resultado";
                 }
             }
+    }
+
+    public function fecha_dia($dia)
+    {
+        switch ($dia) {
+            case 'Monday':
+                
+                return "Lunes";
+                break;
+            case 'Tuesday':
+                
+                return "Martes";
+                break;
+            case 'Wednesday':
+                
+                return "Miercoles";
+                break;
+            case 'Thursday':
+
+                return "Jueves";
+                break;
+            case 'Friday':
+
+
+                return "Viernes";
+                break;
+            case 'Saturday':
+
+                return "Sabado";
+                break;
+            default:
+                return "no se encontro resultado";
+        }
     }
 }

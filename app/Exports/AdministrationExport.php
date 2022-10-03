@@ -147,14 +147,14 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
-        ->select('employees.id', 'employees.name', 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Adelanto' ) ,DB::raw('0 as Descuento'), DB::raw('0 as Bonificaciones'),DB::raw('0 as Total_pagado'),DB::raw('0 as retrasos'))
+        ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Adelanto' ) ,DB::raw('0 as Descuento'), DB::raw('0 as Bonificaciones'),DB::raw('0 as Total_pagado'),DB::raw('0 as retrasos'))
         ->where('at.id',1)
         ->get();
-        
+        dd($reporte);
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.fecha', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
+            ->select('attendances.fecha',  'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $h->id)
             ->get();

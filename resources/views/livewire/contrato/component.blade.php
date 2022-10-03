@@ -29,7 +29,7 @@
                         <tbody>
                             @foreach($contratos as $datos)
                             <tr>
-                                <td><h6>{{$datos->fechaFin}}</h6></td>
+                                <td><h6>{{\Carbon\Carbon::parse($datos->fechaFin)->format('Y-m-d')}}</h6></td>
                                 <td><h6>{{$datos->descripcion}}</h6></td>
                                 <td><h6>{{$datos->nota}}</h6></td>
                                 <td><h6>{{$datos->salario}}</h6></td>

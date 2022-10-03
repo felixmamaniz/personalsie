@@ -4,6 +4,8 @@ namespace App\Exports;
 
 use App\Models\Attendance;
 use App\Models\Employee;
+use App\Models\Anticipo;
+use App\Models\Discountsv;
 
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
@@ -144,14 +146,15 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         //esto tendria que ser los datos que mandaremos para el excel
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id', 'employees.name', 'at.nameArea as area', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), DB::raw('0 as comisiones') ,DB::raw('0 as Descuento') ,DB::raw('0 as retrasos'))
+        ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
+        ->select('employees.id', 'employees.name', 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Adelanto' ) ,DB::raw('0 as Descuento'), DB::raw('0 as Bonificaciones'),DB::raw('0 as Total_pagado'),DB::raw('0 as retrasos'))
         ->where('at.id',1)
         ->get();
         
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
+            ->select('attendances.fecha', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $h->id)
             ->get();
@@ -231,6 +234,34 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             }
             //$h->retrasos=$retrasomin;
             $h->Horas=$horasum;
+
+            //Descuento varios
+                $fecfrom = Carbon::parse($this->dateFrom)->format('Y-m-d');
+                $fecto = Carbon::parse($this->dateTo)->format('Y-m-d');
+                $descuento = Discountsv::select('discountsvs.*')
+                ->where('discountsvs.ci',$h->id)
+                ->whereBetween('discountsvs.fecha', [$fecfrom,'2022-09-30'])
+                ->get(); 
+                //dd($descuento);
+                $desctotal=0;
+                foreach ($descuento as $d) {
+                    $desctotal=$desctotal+$d->descuento;
+                }
+            $h->Descuento= number_format($desctotal,2) ;
+
+            //Adelantos o Anticipos
+                $adelantos = Anticipo::select('anticipos.*')
+                ->where('anticipos.empleado_id',$h->id)
+                ->get();
+                //dd($adelantos);
+                $adelantototal=0;
+                foreach ($adelantos as $d) {
+                    $adelantototal=$adelantototal+$d->anticipo;
+                }
+
+            $h->Adelanto= number_format($adelantototal,2);
+            $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos);
+
             $h->id=$num;
             $num++;
             //$h->Dias_trabajados=$dias;
@@ -308,7 +339,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
     public function columnFormats(): array
     {
         return [
-            'A' => NumberFormat::FORMAT_NUMBER,
+            'E' => '0.00',
+            'F' => '0.00',
+            'G' => '0.00',
+            'H' => '0.00',
+            'I'=> '0.00',
         ];
     }
     
@@ -529,6 +564,19 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                                     'font' => [
                                         'name'      =>  'Times New Roman',
                                         'size'      =>  8,
+                                        'bold'      =>  true,
+                                        'color' => ['rgb' => 'black'],
+                                    ],
+                                ]
+                            );
+
+                            //darle tamaño, tipo letra y negrilla en la columna
+                            $event->sheet->styleCells(
+                                'B',
+                                [
+                                    'font' => [
+                                        'name'      =>  'Times New Roman',
+                                        'size'      =>  11,
                                         'bold'      =>  true,
                                         'color' => ['rgb' => 'black'],
                                     ],

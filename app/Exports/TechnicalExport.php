@@ -5,7 +5,9 @@ namespace App\Exports;
 use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Discountsv;
+use App\Models\Assistance;
 use App\Models\Anticipo;
+use App\Models\Shift;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;          // para trabajar con colecciones y obtener la data
@@ -132,8 +134,9 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
              $to = Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59';
         }
         //mostrar el dia de la fecha en letras
-        
+        //(int)  substr($horaentrada,0,2);
         //$date = Carbon::parse($this->dateFrom)->format('F');
+        
         $date = new Carbon('today');
         $date = $date->format('F');
         //dd($date);
@@ -145,7 +148,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //esto tendria que ser los datos que mandaremos para el excel
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
         ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), 'ct.salario as Total_ganado', DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as Total_pagado') ,DB::raw('0 as retrasos'),DB::raw('0 as no_marco_entrada'),DB::raw('0 as no_marco_salida'))
         ->where('at.id',2)
         ->get();
@@ -153,13 +156,15 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
-            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
+            ->join('shifts as s', 's.ci', 'attendances.employee_id')
+            ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $h->id)
             ->get();
+            
+            
             foreach ($data3 as $os)
              {   
-                 
                  //validar el horario conformado y enviarlo a unfuncion para calcular
                  //if($os->turno=='medio turno TARDE' || $os->permiso =='tarde')
                  if($os->entrada>'14:00:00') {
@@ -236,9 +241,16 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->Dias_trabajados=$dias;
             $h->no_marco_entrada=$countE;
             $h->no_marco_salida=$countS;
-            
+            //calcular el numero de faltas de la persona
+            $feini =(int) Carbon::parse($this->dateFrom)->format('d');
+            $fefi =(int) Carbon::parse($this->dateTo)->format('d');
+            $countDiasF=$this->faltas_empleado($data3, $h->id,$feini,$fefi);
+            $h->Faltas_Licencias=$countDiasF;
+
+
             //dd($reporte);
             //$h->descuento='0';
+
             //Descuento varios
                 $fecfrom = Carbon::parse($this->dateFrom)->format('Y-m-d');
                 $fecto = Carbon::parse($this->dateTo)->format('Y-m-d');
@@ -252,6 +264,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     $desctotal=$desctotal+$d->descuento;
                 }
             $h->Descuento= number_format($desctotal,2) ;
+
             //Adelantos o Anticipos
                 $adelantos = Anticipo::select('anticipos.*')
                 ->where('anticipos.empleado_id',$h->id)
@@ -261,13 +274,11 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 foreach ($adelantos as $d) {
                     $adelantototal=$adelantototal+$d->anticipo;
                 }
+
             $h->Adelantos= number_format($adelantototal,2);
             $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos);
-            //$h->Total_pagado=number_format($tpagando,2);
-            //dd($h->Total_pagado);
-          /* $descuento=Discountsv::where('id',$h->id)->sum('descuento')
-           ->groupBy('discountsvs.id');*/
-           
+            
+           //agregar id desde el 1
            $h->id=$num;
            $num++;
         }
@@ -289,7 +300,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
-        ->join('puesto_trabajos as pt', 'pt.id', 'employees.puesto_trabajo_id')
+        ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
         ->select('employees.id', 'employees.name', 'pt.name as cargo')
         ->where('at.id',2)
         ->get();
@@ -633,7 +644,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
 
     //Función que resta horas Ahi que tenerla por si a caso
  
-    function restar_horas($hora1,$hora2){
+function restar_horas($hora1,$hora2){
  
         $temp1 = explode(":",$hora1);
         $temp_h1 = (int)$temp1[0];
@@ -704,9 +715,11 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
      
         return ($rst_hrs);
      
-        }
-     //calcular el tiempo del retraso del empleado
-     public function strtotime($horaentrada,$horaconformada)
+}
+
+
+ //calcular el tiempo del retraso del empleado
+public function strtotime($horaentrada,$horaconformada)
      {
          if($horaentrada<=$horaconformada)
          {
@@ -761,8 +774,10 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
          return $timestamp;
          
      }
-    //sumar horas
-    function suma_horas($hora1,$hora2){
+
+
+//sumar horas
+function suma_horas($hora1,$hora2){
         
         $hora1=explode(":",$hora1);
         $hora2=explode(":",$hora2);
@@ -798,5 +813,90 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
      
         return ($sum_hrs);
      
+}
+        
+ 
+ //metodo donde obtendremos el total de dias faltados
+ public function faltas_empleado($datos, $id, $from, $to)
+ {
+    //obtener los turnos del usuario
+    $revisionDias=Shift::select('shifts.*')
+    ->where('ci',$id)
+    ->first();
+
+    //obtendremos una coleccion con las fechas segun lo mandado en la vista
+    $this->fechasfaltas=collect([]);
+    $fechita = Carbon::parse($this->dateFrom)->format('Y-m');
+    $count=0;
+    
+    //validar si tiene turno el sabado
+    if( $revisionDias->saturday == '00:00:00')
+        {
+            for ($i=$from; $i <= $to ; $i++){
+                //validar que no sea domingo
+                
+                if( Carbon::parse($fechita.'-'.$i)->format('l') != "Sunday" && Carbon::parse($fechita.'-'.$i)->format('l') != "Saturday")
+                {
+                    //agregamos los datos
+                    if($i<10)
+                    {
+                        $this->fechasfaltas->push(['id'=> $count,'fecha' => $fechita.'-0'.$i]);
+                        $count++; 
+                    }else{
+                        $this->fechasfaltas->push(['id'=> $count,'fecha' => $fechita.'-'.$i]);
+                    $count++; 
+                    }
+                     
+    
+                }
+                 
+            }
         }
+    else{
+        for ($i=$from; $i <= $to ; $i++){
+            //validar que no sea domingo
+            
+            if( (Carbon::parse($fechita.'-'.$i)->format('l') != "Sunday"))
+            {
+                //agregamos los datos
+                if($i<10)
+                {
+                    $this->fechasfaltas->push(['id'=> $count,'fecha' => $fechita.'-0'.$i]);
+                    $count++; 
+                }else{
+                    $this->fechasfaltas->push(['id'=> $count,'fecha' => $fechita.'-'.$i]);
+                $count++; 
+                }
+                 
+
+            }
+             
+        }
+    }
+    
+    
+     
+    //dd($this->fechasfaltas);
+    
+    $countDias=0;
+    foreach($this->fechasfaltas as $f)
+    {
+        //buscamos fecha    
+        $result=$datos->where('fecha',$f['fecha'])->first();
+        //validamos si la fecha es != se elimina la fecha de fechasfaltas
+        if($result!=null)
+        {
+            
+            //dd($f);
+            $this->fechasfaltas->pull($f['id']);
+        }
+        
+    }
+    
+    
+    return $this->fechasfaltas->count();
+     
+ }
+
+
 }

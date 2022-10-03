@@ -689,6 +689,7 @@ class AttendancesController extends Component
             }
     }
 
+    //dia
     public function fecha_dia($dia)
     {
         switch ($dia) {

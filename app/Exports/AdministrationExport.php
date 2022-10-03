@@ -150,7 +150,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Adelanto' ) ,DB::raw('0 as Descuento'), DB::raw('0 as Bonificaciones'),DB::raw('0 as Total_pagado'),DB::raw('0 as retrasos'))
         ->where('at.id',1)
         ->get();
-        dd($reporte);
+        //dd($reporte);
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')

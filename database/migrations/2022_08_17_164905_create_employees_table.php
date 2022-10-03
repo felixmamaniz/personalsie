@@ -22,7 +22,7 @@ class CreateEmployeesTable extends Migration
             $table->enum('genero',['Masculino','Femenino'])->default('Masculino'); // seleccionar genero
             $table->date('dateNac');    // fecha de nacimiento
             $table->string('address',255);
-            $table->string('phone',10);
+            $table->integer('phone');
             $table->enum('estadoCivil',['Soltero','Casado'])->default('Soltero');
 
             $table->unsignedBigInteger('area_trabajo_id');

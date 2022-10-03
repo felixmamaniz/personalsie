@@ -44,7 +44,7 @@
                                         </span>
                                     </td>--}}
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
-                                    <td><h6 class="text-center">{{ $employee->fechaInicio }}</h6></td>
+                                    <td><h6 class="text-center">{{ \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') }}</h6></td>
 
                                     <td>
                                         <h6 class="text-center">

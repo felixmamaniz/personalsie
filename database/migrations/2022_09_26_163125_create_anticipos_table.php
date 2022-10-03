@@ -19,7 +19,7 @@ class CreateAnticiposTable extends Migration
             $table->unsignedBigInteger('empleado_id');
             $table->foreign('empleado_id')->references('id')->on('employees');
 
-            $table->string('anticipo',255);
+            $table->decimal('anticipo',10,2);
             $table->string('motivo',500)->nullable();
 
             $table->timestamps();

@@ -35,10 +35,10 @@
                                 <td><h6 class="text-center">{{$a->anticipo}} Bs</h6></td>
 
                                 <td><h6 class="text-center">
-                                    {{number_format($a->salario - $a->anticipo)}} Bs
+                                    {{number_format($a->salario - ($a->anticipo +  $a->descuento))}} Bs
                                 </h6></td>
 
-                                <td><h6 class="text-center">{{$a->created_at}}</h6></td> {{--{{ $employee->created_at->diffForHumans() }}--}}
+                                <td><h6 class="text-center">{{$a->created_at}}</h6></td> {{-- {{ $employee->created_at->diffForHumans() }}--}}
                                 <td><h6 class="text-center">{{$a->motivo}}</h6></td>
 
                                 <td class="text-center">

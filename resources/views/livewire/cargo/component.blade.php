@@ -10,7 +10,7 @@
                     data-target="#theModal">Agregar</a>
                 </ul>
             </div>
-            
+
             @include('common.searchbox')
             
             <div class="widget-content">

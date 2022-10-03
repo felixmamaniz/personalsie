@@ -187,7 +187,7 @@
 										<li>
 											<a href="{{ url('assistances') }}">
 												<i class="fa fas fa-minus"></i>
-												Asistencias</a>
+												Permisos ó  Licencias</a>
 										</li>
 									@endcan
 									@can('Sucursal_Index')
@@ -197,13 +197,6 @@
 												Adelantos ò Anticipos</a>
 										</li>
 									@endcan
-									{{--@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('tipo_contratos') }}">
-												<i class="fa fas fa-minus"></i>
-												Importacion Excel</a>
-										</li>
-									@endcan--}}
 									<li>
 										<a href="{{ url('attendance') }}">
 											<i class="fa fas fa-minus"></i>

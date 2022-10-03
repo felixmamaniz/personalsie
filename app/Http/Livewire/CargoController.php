@@ -127,6 +127,10 @@ class CargoController extends Component
             'estado'=>$this->estado
         ]);
 
+        // if($this->nrovacantes ){
+            //if($rows <10){se pueden registrar}else{ no se pueden registrar}
+        // }
+
         $this->resetUI();
         $this->emit('cargo-added', 'Cargo Registrado');
     }

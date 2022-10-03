@@ -478,7 +478,7 @@ class EmployeeController extends Component
             'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
-            'image' => 'max:2048',
+            //'image' => 'max:2048',
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -504,7 +504,7 @@ class EmployeeController extends Component
             'contratoid.not_in' => 'elije contrato de elegir',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
             //'image.required' => 'Seleccione una imagen no superior a 2048 kilobytes',
-            'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
+            //'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
         ];
 
         $this->validate($rules, $messages);

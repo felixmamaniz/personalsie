@@ -16,7 +16,6 @@ use App\Http\Livewire\AttendancesController;
 use App\Http\Livewire\InicioController;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Livewire\CargoController;
-//use App\Http\Livewire\TipoContratoController; // pruebas de compresion
 use App\Http\Livewire\ContratoController;
 use App\Http\Livewire\AssistanceController;
 use App\Http\Livewire\AnticipoController;
@@ -44,7 +43,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('attendance', AttendancesController::class);
     Route::get('areaspermissions', AreasPermissionsController::class);
     Route::get('cargos', CargoController::class);
-    //Route::get('tipo_contratos', TipoContratoController::class); // prueba de compression
     Route::get('contratos', ContratoController::class);
     Route::get('assistances', AssistanceController::class);
     Route::get('anticipos', AnticipoController::class);
@@ -65,11 +63,6 @@ Route::middleware(['auth'])->group(function () {
      Route::get('report/excelAdministrativo/{user}/{type}', [ExportController::class, 'reporteExcelAdministrativo']);
      //mandar un evento post de la vista attendance
      Route::post('POST', [ExportController::class, 'store']);
-
-
-    // prueba de importacion
-    //Route::get('tipo_contratos/import','TipoContratoController@importForm')->name('tipo_contratos.importForm');
-    //Route::post('tipo_contratos/import','TipoContratoController@import')->name('tipo_contratos.import');
 
 });
 

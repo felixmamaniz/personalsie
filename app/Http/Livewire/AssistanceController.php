@@ -15,15 +15,15 @@ class AssistanceController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $empleadoid, $fecha, $estado, $selected_id;
+    public $empleadoid, $fecha, $motivo, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
 
     public function mount(){
         $this -> pageTitle = 'Listado';
-        $this -> componentName = 'Asistencias';
+        $this -> componentName = 'Permisos ó licencias';
 
-        $this->estado = 'Elegir';
+        //$this->estado = 'Elegir';
         $this->empleadoid = 'Elegir';
     }
 
@@ -37,6 +37,7 @@ class AssistanceController extends Component
         if(strlen($this->search) > 0)
         {
             $data = Assistance::join('employees as at', 'at.id', 'assistances.empleado_id') // se uno amabas tablas
+            //->join('contratos as ct', 'ct.id', 'at.contrato_id')
             ->select('assistances.*','at.name as empleado', 'assistances.id as idAsistencia', DB::raw('0 as verificar'))
             ->where('assistances.estado', 'like', '%' . $this->search . '%')   
             ->orWhere('at.name', 'like', '%' . $this->search . '%')         
@@ -51,6 +52,7 @@ class AssistanceController extends Component
         }
         else
             $data = Assistance::join('employees as at', 'at.id', 'assistances.empleado_id')
+            //->join('contratos as ct', 'ct.id', 'at.contrato_id')
             ->select('assistances.*','at.name as empleado', 'assistances.id as idAsistencia', DB::raw('0 as verificar'))
             ->orderBy('assistances.fecha', 'asc')
             ->paginate($this->pagination);
@@ -89,32 +91,34 @@ class AssistanceController extends Component
         $rules = [
             'fecha' => 'required',
             'empleadoid' => 'required|not_in:Elegir',
-            'estado' => 'required|not_in:Elegir',
+            //'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'fecha.required' => 'La fecha es requerida',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
-            'estado.required' => 'seleccione estado de asistencia',
-            'estado.not_in' => 'selecciona estado de asistencia diferente a elegir',
+            //'estado.required' => 'seleccione estado de asistencia',
+            //'estado.not_in' => 'selecciona estado de asistencia diferente a elegir',
         ];
 
         $this->validate($rules, $messages);
 
         $assistance = Assistance::create([
             'fecha'=>$this->fecha,
-            'estado'=>$this->estado,
+            'motivo'=>$this->motivo,
+            //'estado'=>$this->estado,
             'empleado_id' => $this->empleadoid
         ]);
 
         $this->resetUI();
-        $this->emit('asist-added', 'Categoria Registrada');
+        $this->emit('asist-added', 'Ausencia Registrada');
     }
 
     // editar datos
     public function Edit(Assistance $assistance){
         $this->selected_id = $assistance->id;
         $this->fecha = $assistance->fecha;
-        $this->estado = $assistance->estado;
+        $this->motivo = $assistance->motivo;
+        //$this->estado = $assistance->estado;
         $this->empleadoid = $assistance->empleado_id;
 
         $this->emit('show-modal', 'show modal!');
@@ -125,31 +129,33 @@ class AssistanceController extends Component
         $rules = [
             'fecha' => "required",
             'empleadoid' => 'required|not_in:Elegir',
-            'estado' => 'required|not_in:Elegir',
+            //'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'fecha.required' => 'La fecha es requerida',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
-            'estado.required' => 'seleccione estado de asistencia',
-            'estado.not_in' => 'selecciona estado de asistencia diferente a elegir',
+            //'estado.required' => 'seleccione estado de asistencia',
+            //'estado.not_in' => 'selecciona estado de asistencia diferente a elegir',
         ];
         $this->validate($rules,$messages);
 
         $assistance = Assistance::find($this->selected_id);
         $assistance -> update([
             'fecha'=>$this->fecha,
-            'estado'=>$this->estado,
+            'motivo'=>$this->motivo,
+            //'estado'=>$this->estado,
             'empleado_id' => $this->empleadoid
         ]);
 
         $this->resetUI();
-        $this->emit('asist-updated','Categoria Actualizar');
+        $this->emit('asist-updated','ausencia Actualizada');
     }
 
     // vaciar formulario
     public function resetUI(){
         $this->fecha='';
-        $this->estado='Elegir';
+        $this->motivo='';
+        //$this->estado='Elegir';
         $this->empleadoid = 'Elegir';
         $this->search='';
         $this->selected_id=0;
@@ -164,6 +170,6 @@ class AssistanceController extends Component
     public function Destroy(Assistance $assistance){
         $assistance->delete();
         $this->resetUI();
-        $this->emit('asist-deleted','Producto Eliminada');
+        $this->emit('asist-deleted','Ausencia Eliminada');
     }
 }

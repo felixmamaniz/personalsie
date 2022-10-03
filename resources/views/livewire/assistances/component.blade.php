@@ -20,7 +20,9 @@
                             <tr>
                                <th class="table-th text-white">EMPLEADO</th>
                                <th class="table-th text-white text-center">FECHA</th>
-                               <th class="table-th text-withe text-center">ESTADO</th>
+                               <th class="table-th text-withe text-center">MOTIVO</th>
+                               {{--<th class="table-th text-withe text-center">SALARION</th>
+                               <th class="table-th text-withe text-center">NUEVO SALARIO</th>--}}
                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
@@ -29,12 +31,15 @@
                             <tr>
                                 <td><h6>{{ $a->empleado }}</h6></td>
                                 <td><h6 class="text-center">{{$a->fecha}}</h6></td>
-                                <td class="text-center">
+                                <td><h6 class="text-center">{{$a->motivo}}</h6></td>
+                                {{---<td><h6 class="text-center">{{$a->salario}}</h6></td>
+                                <td><h6 class="text-center">{{number_format($a->salario - 30)}} Bs</h6></td>--}}
+                                {{--<td class="text-center">
                                     <span class="badge {{$a->estado == 'Presente' ? 'badge-success' : 'badge-danger'}}
                                         text-uppercase">
                                         {{$a->estado}}
                                     </span>
-                                </td>
+                                </td>--}}
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"

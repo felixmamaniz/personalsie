@@ -320,14 +320,16 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         //dd($date);
         $this->mes=$this->Mes($date);
         //dd($this->mes);
-        
+        //FECHA
+        $from = Carbon::parse($this->dateFrom)->format('Y-m-d');
+        $to = Carbon::parse($this->dateTo)->format('Y-m-d');
            //dd($this->mes);
 
             return [
                  ["SOLUCIONES INFORMATICAS EMANUEL"],
                  ["PLANILLA DE SUELDOS Y SALARIOS PERSONAL TECNICO"],
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
-                 [""],
+                 ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
                 ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA"],
             ];
@@ -386,6 +388,10 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             ]
             ],*/
             3    => ['font' => [
+                'size' => 14,
+                'bold' => true],
+                    ],
+            6   => ['font' => [
                 'size' => 14,
                 'bold' => true],
                     ],
@@ -471,7 +477,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     /*$event->sheet->setHeight(array(
                         1     =>  50
                     ));*/
-                    //ajustar el texto al tamaño de la columna
+                    //ajustar el texto al tamaño de todas las columnas
                     //$event->sheet->getStyle('A6:B' . $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
                     $event->sheet->getStyle($this->wrap)->getAlignment()->setWrapText(true);
                      //centrear A3 hasta l3
@@ -489,7 +495,12 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                      $event->sheet->getDelegate()->getStyle('A5:l5')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
-                    
+                     //centrar A6 hasta L6
+                     $event->sheet->mergeCells('A6:L6');
+                     $event->sheet->getDelegate()->getStyle('A6:L6')
+                             ->getAlignment()
+                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                            //subtitlos del indice de las tablas principal
                             $event->sheet->getDelegate()->getStyle('A8:l8')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
@@ -874,17 +885,24 @@ function suma_horas($hora1,$hora2){
         }
     }
     
-    
+   
      
     //dd($this->fechasfaltas);
-    
+    $licencias= Assistance::select('assistances.*')
+    ->where('empleado_id',$id)
+    ->first();
+    if($id == 8693177)
+    {
+        dd($licencias);
+    }
     $countDias=0;
     foreach($this->fechasfaltas as $f)
     {
         //buscamos fecha    
         $result=$datos->where('fecha',$f['fecha'])->first();
+        $result2=$datos->where('fecha',$f['fecha'])->first();
         //validamos si la fecha es != se elimina la fecha de fechasfaltas
-        if($result!=null)
+        if($result!=null || $result2!=null)
         {
             
             //dd($f);

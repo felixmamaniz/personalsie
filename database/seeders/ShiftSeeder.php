@@ -198,7 +198,7 @@ class ShiftSeeder extends Seeder
             'wednesday' => '14:00:00',
             'thursday' => '14:00:00',
             'friday' => '14:00:00',
-            'saturday' => '08:00:00',
+            'saturday' => '00:00:00',
             ]);
         Shift::create([
             

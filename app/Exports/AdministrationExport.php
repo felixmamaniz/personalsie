@@ -150,7 +150,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Adelanto' ) ,DB::raw('0 as Descuento'), DB::raw('0 as Bonificaciones'),DB::raw('0 as Total_pagado'),DB::raw('0 as retrasos'))
         ->where('at.id',1)
         ->get();
-        dd($reporte);
+        //dd($reporte);
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
@@ -298,6 +298,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         //$date = new Carbon('today');
         //$date = $date->format('F');
         //dd($date);
+
+            //FECHA
+            $from = Carbon::parse($this->dateFrom)->format('Y-m-d');
+            $to = Carbon::parse($this->dateTo)->format('Y-m-d');
+       
         $this->mes=$this->Mes($date);
         //dd($this->mes);
         
@@ -307,7 +312,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                  ["SOLUCIONES INFORMATICAS EMANUEL"],
                  ["PLANILLA DE SUELDOS Y SALARIOS PERSONAL ADMINISTRATIVO"],
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
-                 [""],
+                 ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
                 ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "ADELANTOS", "DESCUENTOS", "BONIFICACION", "TOTAL PAGADO"],
             ];
@@ -366,6 +371,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             
 
             3    => ['font' => [
+                'size' => 14,
+                'bold' => true],
+                    ],
+
+            6  => ['font' => [
                 'size' => 14,
                 'bold' => true],
                     ],
@@ -464,6 +474,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                             //centrear A3 hasta l3
                      $event->sheet->mergeCells('A5:I5');
                      $event->sheet->getDelegate()->getStyle('A5:I5')
+                            ->getAlignment()
+                            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    //centrar A6 hasta I6
+                    $event->sheet->mergeCells('A6:I6');
+                    $event->sheet->getDelegate()->getStyle('A6:I6')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     

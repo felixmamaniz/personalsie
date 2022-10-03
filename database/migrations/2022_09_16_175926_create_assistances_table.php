@@ -22,7 +22,7 @@ class CreateAssistancesTable extends Migration
             $table->unsignedBigInteger('empleado_id');
             $table->foreign('empleado_id')->references('id')->on('employees');
 
-            $table->dateTime('fecha');
+            $table->date('fecha');
             //$table->enum('estado',['Presente','Falta','Licencia'])->default('Presente');
             $table->string('motivo',500)->nullable();
             

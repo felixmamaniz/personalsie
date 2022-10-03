@@ -116,7 +116,7 @@ class AssistanceController extends Component
     // editar datos
     public function Edit(Assistance $assistance){
         $this->selected_id = $assistance->id;
-        $this->fecha = $assistance->fecha;
+        $this->fecha = \Carbon\Carbon::parse($assistance->fecha)->format('Y-m-d') ;
         $this->motivo = $assistance->motivo;
         //$this->estado = $assistance->estado;
         $this->empleadoid = $assistance->empleado_id;

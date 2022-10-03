@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use App\Models\Contrato;
 use App\Models\Employee;
+use Carbon\Carbon;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
@@ -23,6 +24,8 @@ class ContratoController extends Component
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Contrato';
         $this->estado = 'Elegir';
+
+        //$this->fechaFin=Carbon::parse(Carbon::now())->format('Y-m-d');
     }
 
     public function paginationView()
@@ -88,7 +91,9 @@ class ContratoController extends Component
     // editar 
     public function Edit($id){
         $record = Contrato::find($id, ['id', 'fechaFin', 'descripcion', 'nota', 'salario','estado']);
-        $this->fechaFin = $record->fechaFin;
+        //dd(\Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d'));
+        $this->fechaFin = \Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d');
+        //Carbon::parse(Carbon::now())->format('Y-m-d');
         $this->descripcion = $record->descripcion;
         $this->nota = $record->nota;
         $this->salario = $record->salario;

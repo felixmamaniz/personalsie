@@ -30,7 +30,7 @@
                             @foreach($asistencias as $a)
                             <tr>
                                 <td><h6>{{ $a->empleado }}</h6></td>
-                                <td><h6 class="text-center">{{$a->fecha}}</h6></td>
+                                <td><h6 class="text-center">{{\Carbon\Carbon::parse($a->fecha)->format('Y-m-d')}}</h6></td>
                                 <td><h6 class="text-center">{{$a->motivo}}</h6></td>
                                 {{---<td><h6 class="text-center">{{$a->salario}}</h6></td>
                                 <td><h6 class="text-center">{{number_format($a->salario - 30)}} Bs</h6></td>--}}

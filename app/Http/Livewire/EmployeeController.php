@@ -449,14 +449,14 @@ class EmployeeController extends Component
         $this->name = $employee->name;
         $this->lastname = $employee->lastname;
         $this->genero = $employee->genero;
-        $this->dateNac = $employee->dateNac;
+        $this->dateNac = \Carbon\Carbon::parse($employee->dateNac)->format('Y-m-d') ;
         $this->address = $employee->address;
         $this->phone = $employee->phone;
         $this->estadoCivil = $employee->estadoCivil;
         $this->areaid = $employee->area_trabajo_id;
         $this->cargoid = $employee->cargo_id;
         $this->contratoid = $employee->contrato_id;
-        $this->fechaInicio = $employee->fechaInicio;
+        $this->fechaInicio = \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') ;
         $this->image = $employee->null;
         $this->selected_id = $employee->id;
 

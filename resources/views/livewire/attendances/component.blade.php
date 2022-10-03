@@ -1,6 +1,12 @@
-<div class="row sales layout-top-spacing">
-    <div class="col-sm-12" >
 
+
+<div class="row sales layout-top-spacing" >
+    <div class="col-sm-12" >
+        <div class="text-center text-warning" style="margin-left: 600px;" wire:loading>
+            <div class="col-4">
+                <div class="loader mx-auto"></div>
+            </div>
+        </div>
             <!-- Secciones para las Ventas -->
             <div class="widget">
 
@@ -41,7 +47,7 @@
     
                         <div class="col-sm-2 ">
                             <h6>Fecha Desde</h6>
-                            <div class="form-group">
+                            <div class="form-group" >
                                 <input @if ($reportType != 1) disabled @endif type="date" wire:model="dateFrom"
                                     class="form-control flatpickr" placeholder="Click para elegir">
                             </div>
@@ -65,7 +71,7 @@
 
                         
 
-                        <div class="col-sm-5 mt-2">
+                        <div class="col-sm-5 mt-2" >
                             <div class="card-body">
                                 @if (isset($errors) && $errors->any())
                                 <div class="alert alert-danger" role="alert">
@@ -98,7 +104,7 @@
                     </div>
     
                     <br>
-    
+                    
                     <div class="table-responsive">
                         <table class="table table-hover table table-bordered table-bordered-bd-warning mt-4">
                             <thead class="text-white" style="background: #ee761c">

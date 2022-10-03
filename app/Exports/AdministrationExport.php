@@ -298,6 +298,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         //$date = new Carbon('today');
         //$date = $date->format('F');
         //dd($date);
+
+            //FECHA
+            $from = Carbon::parse($this->dateFrom)->format('Y-m-d');
+            $to = Carbon::parse($this->dateTo)->format('Y-m-d');
+       
         $this->mes=$this->Mes($date);
         //dd($this->mes);
         
@@ -307,7 +312,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                  ["SOLUCIONES INFORMATICAS EMANUEL"],
                  ["PLANILLA DE SUELDOS Y SALARIOS PERSONAL ADMINISTRATIVO"],
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
-                 [""],
+                 ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
                 ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "ADELANTOS", "DESCUENTOS", "BONIFICACION", "TOTAL PAGADO"],
             ];
@@ -366,6 +371,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             
 
             3    => ['font' => [
+                'size' => 14,
+                'bold' => true],
+                    ],
+
+            6  => ['font' => [
                 'size' => 14,
                 'bold' => true],
                     ],
@@ -464,6 +474,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                             //centrear A3 hasta l3
                      $event->sheet->mergeCells('A5:I5');
                      $event->sheet->getDelegate()->getStyle('A5:I5')
+                            ->getAlignment()
+                            ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+                    //centrar A6 hasta I6
+                    $event->sheet->mergeCells('A6:I6');
+                    $event->sheet->getDelegate()->getStyle('A6:I6')
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
                     

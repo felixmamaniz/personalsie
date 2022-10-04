@@ -28,7 +28,6 @@ class EmployeeController extends Component
     private $pagination = 6;
 
     public $anioRestante, $mesesRestante, $diasRestante;
-
     public $yearEmployee, $mouthEmployee, $dayEmployee;
 
     // Datos de Contrato
@@ -81,7 +80,7 @@ class EmployeeController extends Component
                 DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'), 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->orderBy('employees.name', 'asc')
             ->paginate($this->pagination);
-        
+
             foreach ($employ as $os)
             {
                 //Obtener los servicios de la orden de servicio
@@ -368,7 +367,7 @@ class EmployeeController extends Component
             'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
             'fechaInicio' => 'required',
-            //'image' => 'max:2048',
+            //'image' => 'required', //'max:2048'
         ];
         $messages =  [
             'ci.required' => 'numero de cedula de identidad requerida',
@@ -386,6 +385,7 @@ class EmployeeController extends Component
             'cargoid.not_in' => 'elije un nombre del cargo diferente de elegir',
             'contratoid.not_in' => 'seleccione un contrato',
             'fechaInicio.required' => 'la fecha de Inicio es requerido',
+            //'image.required' => 'la image es requerida seleccione una'
             //'image.max' => 'La imagen no debe ser superior a 2048 kilobytes.',
         ];
 
@@ -404,32 +404,30 @@ class EmployeeController extends Component
             'cargo_id' => $this->cargoid,
             'contrato_id' => $this->contratoid,
             'fechaInicio'=>$this->fechaInicio,
-            //'image'=>  $customFileName
+            //'image'=>  $customFileName,
         ]);
         //$customFileName;
         if($this->image)
         {
-            // https://image.intervention.io/v2
-            // revisar verificacion de Resolucion de Imagen al comprimir
-
+            // guardar nueva imagen
             $customFileName = uniqid() . '_.' . $this->image->extension();
             $path = $this->image->storeAs('public/employees', $customFileName);
             $employ->image = $customFileName;
             $employ->save();
+
+            // proceso de compresion de imagen
+            $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
+            $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
+
+            // reduccion de calidad y compresion de imagen
+            $imagex->resize(1280, null, function ($constraint) {
+                $constraint->aspectRatio();
+                $constraint->upsize();
+            });
+
+            // por ultimo solo guardamos esta nueva instancia, reemplazando la imagen anterior.
+            Storage::put($path, (string) $imagex->encode('jpg', 30));
         }
-
-        $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
-        $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
-
-        // reducimos la calidad y cambiamos la dimensiones de la nueva instancia.
-        $imagex->resize(1280, null, function ($constraint) {
-            $constraint->aspectRatio();
-            $constraint->upsize();
-          });
-
-        // por ultimo solo guardamos esta nueva instancia, reemplazando la imagen anterior.
-        Storage::put($path, (string) $imagex->encode('jpg', 30));
-        
         //$employ->save();
         
         //https://codea.app/blog/reducir-el-tamano-de-una-imagen
@@ -542,7 +540,7 @@ class EmployeeController extends Component
             $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
             $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
 
-            // reducimos la calidad y cambiamos la dimensiones de la nueva instancia.
+            // reduccion de calidad y compresion de imagen
             $imagex->resize(1280, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();

@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Cargo extends Model
 {
     use HasFactory;
-    protected $fillable = ['name', 'nrovacantes','estado'];
+    protected $fillable = ['name','estado'];
 
     public function employee(){
         return $this->hasMany(Employee::class);

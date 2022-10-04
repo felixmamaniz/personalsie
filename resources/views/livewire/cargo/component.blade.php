@@ -18,9 +18,9 @@
                     <table class="table table-bordered table striped mt-1" >
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                               {{--<th class="table-th text-white">ID</th>--}}
-                               <th class="table-th text-white">NOMBRE</th>
-                               <th class="table-th text-white text-center">NRO VACANTES</th>
+                               <th class="table-th text-white">ID</th>
+                               <th class="table-th text-white">CARGO</th>
+                               {{--<th class="table-th text-white text-center">NRO VACANTES</th>--}}
                                <th class="table-th text-white text-center">ESTADO</th>
                                <th class="table-th text-white text-center">ACTIONS</th> 
                             </tr>
@@ -28,9 +28,9 @@
                         <tbody>
                             @foreach($cargos as $cargo)
                             <tr>
-                                {{--<td><h6>{{$cargo->idcargo}}</h6></td>--}}
+                                <td><h6>{{$cargo->idcargo}}</h6></td>
                                 <td><h6>{{$cargo->name}}</h6></td>
-                                <td><h6 class="text-center">{{$cargo->nrovacantes}}</h6></td>
+                                {{--<td><h6 class="text-center">{{$cargo->nrovacantes}}</h6></td>--}}
                                 
                                 <td class="text-center">
                                     <span class="badge {{$cargo->estado == 'Disponible' ? 'badge-success' : 'badge-danger'}}

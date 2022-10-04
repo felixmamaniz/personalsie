@@ -15,7 +15,7 @@ class CargoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $name, $nrovacantes, $estado, $selected_id;
+    public $name, /*$nrovacantes,*/ $estado, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
@@ -38,7 +38,7 @@ class CargoController extends Component
         {
             $data = Cargo::select('cargos.id as idcargo',
             'cargos.name as name',
-            'cargos.nrovacantes as nrovacantes',
+            //'cargos.nrovacantes as nrovacantes',
             'cargos.estado as estado',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
@@ -55,7 +55,7 @@ class CargoController extends Component
         {
             $data = Cargo::select('cargos.id as idcargo',
             'cargos.name as name',
-            'cargos.nrovacantes as nrovacantes',
+            //'cargos.nrovacantes as nrovacantes',
             'cargos.estado as estado',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
@@ -93,9 +93,9 @@ class CargoController extends Component
 
     // editar 
     public function Edit($id){
-        $record = Cargo::find($id, ['id', 'name', 'nrovacantes', 'estado']);
+        $record = Cargo::find($id, ['id', 'name'/*, 'nrovacantes'*/, 'estado']);
         $this->name = $record->name;
-        $this->nrovacantes = $record->nrovacantes;
+        //$this->nrovacantes = $record->nrovacantes;
         $this->estado = $record->estado;
         $this->selected_id = $record->id;
 
@@ -105,7 +105,7 @@ class CargoController extends Component
     public function Store(){
         $rules = [
             'name' => 'required|unique:cargos|min:5',
-            'nrovacantes.required' => 'Nombre del cargo es requerida',
+            //'nrovacantes.required' => 'Nombre del cargo es requerida',
             'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
@@ -113,7 +113,7 @@ class CargoController extends Component
             'name.unique' => 'ya existe el nombre del cargo',
             'name.min' => 'el nombre del cargo debe tener al menos 5 caracteres',
 
-            'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el cargo',
+            //'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el cargo',
 
             'estado.required' => 'seleccione estado de cargo',
             'estado.not_in' => 'selecciona estado de cargo',
@@ -123,7 +123,7 @@ class CargoController extends Component
        
         $cargo = Cargo::create([
             'name'=>$this->name,
-            'nrovacantes'=>$this->nrovacantes,
+            //'nrovacantes'=>$this->nrovacantes,
             'estado'=>$this->estado
         ]);
 
@@ -139,7 +139,7 @@ class CargoController extends Component
     public function Update(){
         $rules = [
             'name' => "required|min:5|unique:cargos,name,{$this->selected_id}",
-            'nrovacantes.required' => 'Nombre del cargo es requerida',
+            //'nrovacantes.required' => 'Nombre del cargo es requerida',
             'estado' => 'required|not_in:Elegir',
         ];
 
@@ -148,7 +148,7 @@ class CargoController extends Component
             'name.unique' => 'ya existe el nombre del cargo',
             'name.min' => 'el nombre del cargo debe tener al menos 5 caracteres',
 
-            'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el cargo',
+            //'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el cargo',
 
             'estado.required' => 'seleccione estado de cargo',
             'estado.not_in' => 'selecciona estado de cargo',
@@ -158,7 +158,7 @@ class CargoController extends Component
         $cargo = Cargo::find($this->selected_id);
         $cargo -> update([
             'name' => $this->name,
-            'nrovacantes'=>$this->nrovacantes,
+            //'nrovacantes'=>$this->nrovacantes,
             'estado'=>$this->estado
         ]);
 
@@ -168,7 +168,7 @@ class CargoController extends Component
 
     public function resetUI(){
         $this->name='';
-        $this->nrovacantes='';
+        //$this->nrovacantes='';
         $this->estado = 'Elegir';
         $this->search='';
         $this->selected_id=0;

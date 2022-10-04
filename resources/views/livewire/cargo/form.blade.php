@@ -9,13 +9,13 @@
         @error('name') <span class="text-danger er">{{ $message }}</span> @enderror
     </div>
 
-    <div class="col-sm-12 col-md-6">
+    {{--<div class="col-sm-12 col-md-6">
         <div class="form-group">
             <label>Nro de Vacantes</label>
             <input type="text" class="form-control" wire:model.lazy="nrovacantes" placeholder="Ingrese nro de vacante requerido">
         </div>
         @error('nrovacantes') <span class="text-danger er">{{ $message }}</span> @enderror
-    </div>
+    </div>--}}
 
     <div class="col-sm-12 col-md-5">
         <div class="form-group">

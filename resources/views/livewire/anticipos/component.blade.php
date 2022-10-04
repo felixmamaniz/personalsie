@@ -35,7 +35,11 @@
                                 <td><h6 class="text-center">{{$a->anticipo}} Bs</h6></td>
 
                                 <td><h6 class="text-center">
-                                    {{number_format($a->salario - ($a->anticipo +  $a->descuento))}} Bs
+                                    @if($a->descuento > 0)
+                                        {{number_format($a->salario - ($a->anticipo +  $a->descuento))}} Bs
+                                    @else
+                                        {{number_format($a->salario - $a->anticipo)}}
+                                    @endif
                                 </h6></td>
 
                                 <td><h6 class="text-center">{{$a->created_at}}</h6></td> {{-- {{ $employee->created_at->diffForHumans() }}--}}

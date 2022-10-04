@@ -113,7 +113,7 @@ class AnticipoController extends Component
         ]);
 
         $this->resetUI();
-        $this->emit('asist-added', 'Adelanto Registrado');
+        $this->emit('asist-added', 'Anticipo Registrado');
     }
 
     // editar datos
@@ -147,7 +147,7 @@ class AnticipoController extends Component
         ]);
 
         $this->resetUI();
-        $this->emit('asist-updated','Categoria Actualizar');
+        $this->emit('asist-updated','Anticipo Actualizar');
     }
 
     // vaciar formulario
@@ -168,6 +168,6 @@ class AnticipoController extends Component
     public function Destroy(Anticipo $anticipo){
         $anticipo->delete();
         $this->resetUI();
-        $this->emit('asist-deleted','Producto Eliminada');
+        $this->emit('asist-deleted','Anticipo Eliminada');
     }
 }

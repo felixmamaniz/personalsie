@@ -7,7 +7,7 @@
                   class="btn btn-warning close-btn text-info">GUARDAR</button>
           @else
               <button type="button" wire:click.prevent="Update()"
-                  class="btn btn-dark close-btn text-info">ACTUALIZAR</button>
+                  class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
           @endif
 
 

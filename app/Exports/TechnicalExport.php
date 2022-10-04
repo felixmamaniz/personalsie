@@ -149,7 +149,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
-        ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), 'ct.salario as Total_ganado', DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as Total_pagado') ,DB::raw('0 as retrasos'),DB::raw('0 as no_marco_entrada'),DB::raw('0 as no_marco_salida'))
+        ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), 'ct.salario as Total_ganado', DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as Total_pagado') ,DB::raw('0 as no_marco_entrada'),DB::raw('0 as no_marco_salida'),DB::raw('0 as Faltast'),DB::raw('0 as retrasos'))
         ->where('at.id',2)
         ->get();
         
@@ -241,12 +241,26 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->Dias_trabajados=$dias;
             $h->no_marco_entrada=$countE;
             $h->no_marco_salida=$countS;
+
             //calcular el numero de faltas de la persona
             $feini =(int) Carbon::parse($this->dateFrom)->format('d');
             $fefi =(int) Carbon::parse($this->dateTo)->format('d');
             $countDiasF=$this->faltas_empleado($data3, $h->id,$feini,$fefi);
-            $h->Faltas_Licencias=$countDiasF;
-
+            $h->Faltast=$countDiasF;
+            //calcular cuanto valdra cada falta y licencia para sumarlos
+            $licencias= Assistance::select('assistances.*')
+            ->where('empleado_id',$h->id)
+            ->get();
+            $countlicencias=0;
+                foreach ($licencias as $d) {
+                    $countlicencias++;
+                }
+            
+            //sacar total descuento de faltas
+            $countFT=$countDiasF*30;
+            $countLT=$countlicencias * 15;
+            $h->Faltas_Licencias=$countFT + $countLT;
+            
 
             //dd($reporte);
             //$h->descuento='0';
@@ -276,7 +290,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 }
 
             $h->Adelantos= number_format($adelantototal,2);
-            $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos);
+            $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos + $h->Faltas_Licencias);
             
            //agregar id desde el 1
            $h->id=$num;
@@ -331,7 +345,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
-                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA"],
+                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA", "FALTAS"],
             ];
         
 
@@ -449,7 +463,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $this->J='J8:J'.($this->Allemployee+9);
             $this->L='L8:L'.($this->Allemployee+9);
             $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
-            $this->wrap='A8:'.'L'.($this->Allemployee+8);
+            $this->wrap='A8:'.'O'.($this->Allemployee+8);
             //dd($this->B);
             //dd($cell);
             return [ 
@@ -891,16 +905,17 @@ function suma_horas($hora1,$hora2){
     $licencias= Assistance::select('assistances.*')
     ->where('empleado_id',$id)
     ->first();
-    if($id == 8693177)
-    {
-        dd($licencias);
-    }
+    
     $countDias=0;
     foreach($this->fechasfaltas as $f)
     {
-        //buscamos fecha    
+        //buscamos fecha   
+        $result2=""; 
         $result=$datos->where('fecha',$f['fecha'])->first();
-        $result2=$datos->where('fecha',$f['fecha'])->first();
+        if($licencias != null){
+        $result2=$licencias->where('fecha',$f['fecha'])->first();
+        }
+        
         //validamos si la fecha es != se elimina la fecha de fechasfaltas
         if($result!=null || $result2!=null)
         {

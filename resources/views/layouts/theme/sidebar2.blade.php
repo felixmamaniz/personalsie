@@ -148,163 +148,78 @@
 												Sucursales </a>
 										</li>
 									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('areas_de_trabajos') }}">
-												<i class="fa fas fa-minus"></i>
-												Areas de Trabajo</a>
-										</li>
-									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('function_areas') }}">
-												<i class="fa fas fa-minus"></i>
-												Funciones</a>
-										</li>
-									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('cargos') }}">
-												<i class="fa fas fa-minus"></i>
-												Cargos</a>
-										</li>
-									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('contratos') }}">
-												<i class="fa fas fa-minus"></i>
-												Contrato</a>
-										</li>
-									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('employees') }}">
-												<i class="fa fas fa-minus"></i>
-												Empleados</a>
-										</li>
-									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('assistances') }}">
-												<i class="fa fas fa-minus"></i>
-												Permisos ó  Licencias</a>
-										</li>
-									@endcan
-									@can('Sucursal_Index')
-										<li>
-											<a href="{{ url('anticipos') }}">
-												<i class="fa fas fa-minus"></i>
-												Adelantos ò Anticipos</a>
-										</li>
-									@endcan
-									<li>
-										<a href="{{ url('attendance') }}">
-											<i class="fa fas fa-minus"></i>
-											Horario </a>
-									</li>
-
-									<li>
-										<a href="{{ url('descuentos') }}">
-											<i class="fa fas fa-minus"></i>
-											Descuentos o Varios</a>
-									</li>
+									
 								</ul>
 							</div>
 						</li>
 						<li class="nav-item">
-							<a data-toggle="collapse" href="#base">
+							<a data-toggle="collapse" href="#Employees">
 								<i class="fas fa-layer-group"></i>
-								<p>Level</p>
+								<p>Empleados</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse" id="base">
+							<div class="collapse" id="Employees">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="">
+										<a href="{{ url('employees') }}">
 											<i class="fa fas fa-minus"></i>
-											Level</a>
+											Registro</a>
 									  </li>
-								</ul>
-								<ul class="nav nav-collapse">
+								
 									<li>
-										<a href="">
-											<i class="fa fas fa-minus"></i>
-											Level</a>
+											<a href="{{ url('areas_de_trabajos') }}">
+												<i class="fa fas fa-minus"></i>
+												Areas de Trabajo</a>
 									  </li>
 								  @can('Arqueos_Tigo_Index')
 									  <li>
-										<a href="">
+										<a href="{{ url('function_areas') }}">
 											<i class="fa fas fa-minus"></i>
-											Level</a>
+											Funciones</a>
 									  </li>
 								  @endcan
 
 								  @can('Reportes_Tigo_Index')
 									  <li>
-										<a href="">
+										<a href="{{ url('cargos') }}">
 											<i class="fa fas fa-minus"></i>
-											Level</a>
+											Cargos</a>
 									  </li>
 								  @endcan
 								  @can('Reportes_Tigo_Index')
 								  <li>
-									<a href="">
+									<a href="{{ url('contratos') }}">
 										<i class="fa fas fa-minus"></i>
-										Level</a>
+										Contrato</a>
 								  </li>
 								  @endcan
 								</ul>
 							</div>
 						</li>
+
 						<li class="nav-item">
-							<a data-toggle="collapse" href="#sidebarLayouts">
+							<a data-toggle="collapse" href="#Asistencia">
 								<i class="fas fa-layer-group"></i>
-								<p>Level</p>
+								<p>Asistencia</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse" id="sidebarLayouts">
-								<ul class="nav nav-collapse">
-									@can('Cuentas_Index')
-										<li>
-											<a href="">
-												<i class="fa fas fa-minus"></i>
-												Level </a>
-										</li>
-									@endcan
-									@can('Perfiles_Index')
-										<li>
-											<a href="">
-												<i class="fa fas fa-minus"></i>
-												Level </a>
-										</li>
-									@endcan
-								</ul>
-								<ul class="nav nav-collapse">
-									@can('Planes_Index')
-										<li>
-											<a href="">
-												<i class="fa fas fa-minus"></i>
-												Level </a>
-										</li>
-									@endcan
-								</ul>
-							</div>
-						</li>
-						<li class="nav-item">
-							<a data-toggle="collapse" href="#forms">
-								<i class="fas fa-layer-group"></i>
-								<p>Level</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="forms">
+							<div class="collapse" id="Asistencia">
 								<ul class="nav nav-collapse">
 								@can('Cat_Prod_Service_Index')
 								<li>
-									<a href="">
+									<a href="{{ url('attendance') }}">
 										<i class="fa fas fa-minus"></i>
-										Level </a>
+										Horario </a>
 								</li>
 								@endcan
+
+								<li>
+									<a href="{{ url('assistances') }}">
+										<i class="fa fas fa-minus"></i>
+										Permisos ó  Licencias</a>
+								</li>
+								
+								
 								</ul>
 							</div>
 						</li>
@@ -315,17 +230,22 @@
 
 
 						<li class="nav-item">
-							<a data-toggle="collapse" href="#charts">
+							<a data-toggle="collapse" href="#Descuentos">
 								<i class="fas fa-layer-group"></i>
-								<p>Level</p>
+								<p>Descuentos o Adelantos</p>
 								<span class="caret"></span>
 							</a>
-							<div class="collapse" id="charts">
+							<div class="collapse" id="Descuentos">
 								<ul class="nav nav-collapse">
 									<li>
-										<a href="">
+										<a href="{{ url('anticipos') }}">
 											<i class="fa fas fa-minus"></i>
-											Level </a>
+											Adelantos ò Anticipos</a>
+									</li>
+									<li>
+											<a href="{{ url('descuentos') }}">
+												<i class="fa fas fa-minus"></i>
+												Descuentos o Varios</a>
 									</li>
 								</ul>
 							</div>

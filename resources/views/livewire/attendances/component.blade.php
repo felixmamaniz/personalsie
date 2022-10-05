@@ -196,6 +196,9 @@
             //llamar a la funcion del backend
             $('#theModal').modal('hide')
         })
+        window.livewire.on('importe-rechazado', Msg => {
+            noty(Msg)
+        })
 
     });
 </script>

@@ -21,11 +21,25 @@ class AttendancesImport implements ToCollection, WithHeadingRow, WithBatchInsert
     //
     public function collection(Collection $rows)
     {
-        /*$unique = $rows->unique(function ($item) {
-            return $item['id_de_usuario'].$item['nombre'];
-        });
-        dump($unique);*/
+        
+        
+        $importfecha=$rows->first();
+       // dd(substr($importfecha['tiempo'],5,2));
+       
         //dd($rows);
+        //validar fechas repetidas
+        $valifecha=Attendance::select('attendances.*')
+        ->whereMonth('fecha', substr($importfecha['tiempo'],5,2))->first();
+        
+        if($valifecha != null)
+        {
+            return redirect('/')->with('importe-rechazado', 'Malo!');
+        }
+        
+        
+        
+
+
         //separamos entra y salida en otros collection  
         $this->empleado=collect([]);
         $this->entrada=collect([]);

@@ -270,7 +270,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 $fecto = Carbon::parse($this->dateTo)->format('Y-m-d');
                 $descuento = Discountsv::select('discountsvs.*')
                 ->where('discountsvs.ci',$h->id)
-                ->whereBetween('discountsvs.fecha', [$fecfrom,'2022-09-30'])
+                ->whereBetween('discountsvs.fecha', [$fecfrom,$fecto])
                 ->get(); 
                 //dd($descuento);
                 $desctotal=0;
@@ -278,12 +278,14 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     $desctotal=$desctotal+$d->descuento;
                 }
             $h->Descuento= number_format($desctotal,2) ;
-
+            
             //Adelantos o Anticipos
+            
                 $adelantos = Anticipo::select('anticipos.*')
                 ->where('anticipos.empleado_id',$h->id)
+                ->whereBetween('created_at', [$fecfrom,$fecto])
                 ->get();
-                //dd($adelantos);
+                
                 $adelantototal=0;
                 foreach ($adelantos as $d) {
                     $adelantototal=$adelantototal+$d->anticipo;

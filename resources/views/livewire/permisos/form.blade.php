@@ -22,26 +22,15 @@
                         </div>
                         @error('permissionName')<span class="text-danger er">{{ $message }}</span> @enderror
                         <br>
-                        <!-- -->
-                        <div class="col-sm-12 col-md-12 d-flex flex-row bd-highlight mb-3 text-center">
-                            <div class="form-control p-2 bd-highligh">
-                                <h5>Asignar Area</h5>
-                                <select wire:model='area' class="form-control">
-                                    <option value="Elegir" disabled selected>Elegir</option>
-                                    @foreach ($listaareas as $u)
-                                        <option value="{{ $u->id }}">{{ $u->name }}</option>
-                                    @endforeach
-                                </select>
-                                @error('area')
-                                    <span class="text-danger er">{{ $message }}</span>
-                                @enderror
-                                
+                        <div class="input-group">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text">
+                                    <span class="fas fa-edit"></span>
+                                </span>
                             </div>
-                            <div class="p-2 bd-highligh">
-                                <a href="javascript:void(0)" wire:click="AgregarArea()" class="btn btn-warning close-btn text-info">AGREGAR AREA NUEVA</a>
-                            </div>
-                            
+                            <input type="text" wire:model.lazy="permissionArea" class="form-control" placeholder="Area a la que pertenece el permiso" maxlength="255">
                         </div>
+                        @error('permissionArea')<span class="text-danger er">{{ $message }}</span> @enderror
                     </div>
                     
                 </div>

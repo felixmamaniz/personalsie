@@ -9,12 +9,6 @@ class Permission extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'guard_name','areaspermissions_id','descripcion'];
+    protected $fillable = ['name', 'guard_name','area','descripcion'];
 
-    //relacion que tiene con categoria y tambien para usarlo en el component 
-    public function areaspermissions()
-    {
-        return $this->belongsTo(Areaspermissions::class);
-
-    }
 }

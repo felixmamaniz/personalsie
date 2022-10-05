@@ -51,5 +51,7 @@
             <label class="custom-file-label">Logo Empresa {{ $image }}</label>
         </div>
     </div>
+
+
 </div>
 @include('common.modalFooter')

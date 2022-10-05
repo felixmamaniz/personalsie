@@ -21,16 +21,18 @@
                         <select wire:model="permisosseleccionado" class="form-control">
                             <option value="Todos"><b>Todos los Permisos</b></option>
                             @foreach ($listaareas as $u)
-                            <option value="{{$u->id}}">{{$u->name}}</option>
+                            <option value="{{$u->area}}">{{$u->area}}</option>
                             @endforeach
                         </select>
                     </div>
-                    @if($permisosseleccionado != "Todos")
+                    {{-- @if($permisosseleccionado != "Todos")
                     <button wire:click.prevent="SyncAll2()" type="button" class="btn btn-warning">Sincronizar Todos Area</button>
                     @else
                     <button wire:click.prevent="SyncAll()" type="button" class="btn btn-warning">Sincronizar Todos</button>
                     <button onclick="Revocar()" type="button" class="btn btn-warning">Revocar Todos</button>
-                    @endif
+                    @endif --}}
+                    <button wire:click.prevent="SyncAll()" type="button" class="btn btn-warning">Sincronizar Todos los Permisos</button>
+                    <button onclick="Revocar()" type="button" class="btn btn-warning">Revocar Todos</button>
                 </div>
                 <br>
                 <div class="text-right">
@@ -44,7 +46,7 @@
 
                             @if($permisosseleccionado == "Todos")
                             <table class="table table-hover table table-bordered table-bordered-bd-warning">
-                                <thead class="text-white" style="background: #ee761c">
+                                <thead class="text-white" style="background: #02b1ce">
                                     <tr>
                                         <th class="table-th text-withe text-center">ID</th>
                                         <th class="table-th text-withe text-center">#</th>
@@ -119,7 +121,7 @@
                             @else
                             
                             <table class="table table-hover table table-bordered table-bordered-bd-warning">
-                                <thead class="text-white" style="background: #ee761c">
+                                <thead class="text-white" style="background: #02b1ce">
                                     <tr>
                                         <th class="table-th text-withe text-center">ID</th>
                                         <th class="table-th text-withe text-center">#</th>

@@ -16,7 +16,7 @@
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-hover table table-bordered table-bordered-bd-warning mt-4">
-                        <thead class="text-white" style="background: #ee761c">
+                        <thead class="text-white" style="background: #02b1ce">
                             <tr>
                                 <th class="table-th text-withe text-center">NOMBRE DE LA SUCURSAL</th>
                                 <th class="table-th text-withe text-center">DIRECCIÓN</th>
@@ -54,7 +54,7 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
                                         <a href="javascript:void(0)" onclick="Confirm('{{ $item->id }}','{{ $item->name }}',
-                                            '{{ $item->usuarios->count() }}')"
+                                            '{{ $item->cajas->count() }}','{{ $item->usuarios->count() }}')"
                                             class="btn btn-warning" title="Borrar">
                                             <i class="fas fa-trash"></i>
                                         </a>

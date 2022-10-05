@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Anticipo;
+use App\Models\UserEmployee;
 use App\Models\Discountsv;
 
 use Illuminate\Support\Facades\DB;
@@ -68,7 +69,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         $drawing2 = new Drawing();
         $drawing2->setName('direccion');
         $drawing2->setDescription('This is my direccion');
-        $drawing2->setPath(public_path('assets/img/direccion.png'));
+        $drawing2->setPath(public_path('assets/img/logo.png'));
         $drawing2->setHeight(90);
         $drawing2->setCoordinates('H1');
 
@@ -140,7 +141,12 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         $this->mes=$this->Mes($date);
         //dd($this->mes);
 
-        
+        $comissiones=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
+        ->join('employees as e', 'e.id', 'user_employees.employee_id')
+        ->join('sales as s', 's.user_id', 'u.id')
+        ->select('s.total', 'u.name')
+        ->get();
+        //dd($comissiones);
 
         $num=1;
         //esto tendria que ser los datos que mandaremos para el excel

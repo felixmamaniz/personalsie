@@ -106,7 +106,7 @@
             </div>
         </div>
     </div>
-   
+
     @include('livewire.salaries.salariedetail')
 </div>
 

@@ -17,9 +17,10 @@ class AnticipoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $empleadoid, $anticipo, $motivo, $fecha, $selected_id;
+    public $empleadoid, $anticipo, $motivo, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
+
 
     public function mount(){
         $this -> pageTitle = 'Lista';
@@ -54,12 +55,12 @@ class AnticipoController extends Component
             }
         }
         else
-            
+        {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id')
             ->join('contratos as ct', 'ct.id', 'at.contrato_id')
             ->join('discountsvs as dc', 'dc.ci', 'at.ci')
             ->select('anticipos.*', 'at.name as empleado', 'ct.salario as salario', 'dc.descuento as descuento', 'anticipos.id as idAnticipo',
-                DB::raw('0 as verificar'), DB::raw('0 as calculo'))
+                DB::raw('0 as verificar'))
             ->orderBy('at.name', 'asc')
             ->paginate($this->pagination);
 
@@ -68,6 +69,10 @@ class AnticipoController extends Component
                 //Obtener los servicios de la orden de servicio
                 $os->verificar = $this->verificar($os->idAnticipo);
             }
+        }
+
+
+
 
         return view('livewire.anticipos.component', [
             'anticipos' => $data,        // se envia anticipos
@@ -97,13 +102,11 @@ class AnticipoController extends Component
         $rules = [
             'empleadoid' => 'required|not_in:Elegir',
             'anticipo' => 'required',
-            'fecha' => 'required',
         ];
         $messages =  [
             'empleadoid.required' => 'Elija un Empleado',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'anticipo.required' => 'Este espacio es requerida',
-            'fecha.required' => 'La fecha es requerida',
         ];
 
         $this->validate($rules, $messages);
@@ -112,7 +115,6 @@ class AnticipoController extends Component
             'empleado_id' => $this->empleadoid,
             'anticipo'=>$this->anticipo,
             'motivo'=>$this->motivo,
-            'fecha'=>$this->fecha
         ]);
 
         $this->resetUI();
@@ -125,7 +127,6 @@ class AnticipoController extends Component
         $this->empleadoid = $anticipo->empleado_id;
         $this->anticipo = $anticipo->anticipo;
         $this->motivo = $anticipo->motivo;
-        $this->fecha = $anticipo->fecha;
 
         $this->emit('show-modal', 'show modal!');
     }
@@ -135,13 +136,11 @@ class AnticipoController extends Component
         $rules = [
             'empleadoid' => 'required|not_in:Elegir',
             'anticipo' => 'required',
-            'anticipo' => 'required',
         ];
         $messages =  [
             'empleadoid.required' => 'Elija un Empleado',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'anticipo.required' => 'Este espacio es requerida',
-            'fecha.required' => 'La fecha es requerida',
         ];
         $this->validate($rules,$messages);
 
@@ -150,7 +149,6 @@ class AnticipoController extends Component
             'empleado_id' => $this->empleadoid,
             'anticipo'=>$this->anticipo,
             'motivo'=>$this->motivo,
-            'fecha'=>$this->fecha
         ]);
 
         $this->resetUI();
@@ -162,7 +160,6 @@ class AnticipoController extends Component
         $this->empleadoid = 'Elegir';
         $this->anticipo='';
         $this->motivo='';
-        $this->fecha='';
         $this->search='';
         $this->selected_id=0;
         $this->resetValidation(); // resetValidation para quitar los smg Rojos

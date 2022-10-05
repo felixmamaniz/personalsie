@@ -19,6 +19,7 @@ class AnticipoSeeder extends Seeder
             'empleado_id' => 8693177,
             'anticipo' => '500',
             'motivo' => 'Emergencia',
+            'fecha' => '2022-09-28',
         ]);
     }
 }

@@ -42,7 +42,7 @@
                                     @endif
                                 </h6></td>
 
-                                <td><h6 class="text-center">{{$a->created_at}}</h6></td> {{-- {{ $employee->created_at->diffForHumans() }}--}}
+                                <td><h6 class="text-center">{{$a->fecha}}</h6></td> {{-- {{$a->created_at}}{{ $employee->created_at->diffForHumans() }}--}}
                                 <td><h6 class="text-center">{{$a->motivo}}</h6></td>
 
                                 <td class="text-center">

@@ -21,6 +21,7 @@ class CreateAnticiposTable extends Migration
 
             $table->decimal('anticipo',10,2);
             $table->string('motivo',500)->nullable();
+            //$table->date('fecha');
 
             $table->timestamps();
         });

@@ -21,6 +21,7 @@ class AnticipoController extends Component
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
 
+
     public function mount(){
         $this -> pageTitle = 'Lista';
         $this -> componentName = 'Adelantos de Sueldo';
@@ -54,7 +55,7 @@ class AnticipoController extends Component
             }
         }
         else
-            
+        {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id')
             ->join('contratos as ct', 'ct.id', 'at.contrato_id')
             ->join('discountsvs as dc', 'dc.ci', 'at.ci')
@@ -68,6 +69,10 @@ class AnticipoController extends Component
                 //Obtener los servicios de la orden de servicio
                 $os->verificar = $this->verificar($os->idAnticipo);
             }
+        }
+
+
+
 
         return view('livewire.anticipos.component', [
             'anticipos' => $data,        // se envia anticipos

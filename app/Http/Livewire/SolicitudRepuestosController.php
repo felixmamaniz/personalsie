@@ -196,6 +196,7 @@ class SolicitudRepuestosController extends Component
         //Creando la órden de Compra
         $orden_compra = ServOrdenCompra::create([
             'user_id' => Auth()->user()->id,
+            'idcomprador' => $this->usuario_id,
         ]);
         
         //Obtenemos los detalles de la coleccion lista_productos

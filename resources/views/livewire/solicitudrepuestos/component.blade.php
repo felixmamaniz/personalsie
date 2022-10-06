@@ -176,7 +176,7 @@
                         <td>
 
 
-                            <table style="font-size: 13px;">
+                            <table style="font-size: 12px;">
                                 <thead style="background-color: rgb(255, 255, 255);">
                                     <tr>
                                         <th class="text-center">
@@ -224,27 +224,41 @@
                                             <td class="text-center">
                                                 @if($d->estado == "PENDIENTE" && $d->tipo != "CompraRepuesto")
 
-                                                <a href="#" onclick="ConfirmarCambiar({{ $d->iddetalle }}, {{$l->codigo}})"  class="pendienteestilos" title="Aceptar Solicitud">
+                                                <button onclick="ConfirmarCambiar({{ $d->iddetalle }}, {{$l->codigo}})"  class="pendienteestilos" title="Aceptar Solicitud">
                                                     {{$d->estado}}
-                                                </a>
+                                                </button>
 
                                                 @else
 
-                                                    @if($d->estado == "ACEPTADO")
+                                                    @if($d->estado == "PENDIENTE" && $d->tipo == "CompraRepuesto")
 
-                                                        <a href="#" class="aceptadoestilos">
-                                                            {{$d->estado}}
-                                                        </a>
+                                                    <button class="pendienteestilos" title="Aceptar Solicitud">
+                                                        Compra Pendiente
+                                                    </button>
 
                                                     @else
 
-                                                        @if($d->estado == "COMPRANDO")
 
-                                                        <button class="compraestilos">
-                                                            {{$d->estado}}
-                                                        </button>
+                                                        @if($d->estado == "ACEPTADO")
+
+                                                            <a href="#" class="aceptadoestilos">
+                                                                {{$d->estado}}
+                                                            </a>
+
+                                                        @else
+
+                                                            @if($d->estado == "COMPRANDO")
+
+                                                            <button class="compraestilos">
+                                                                {{$d->estado}}
+                                                            </button>
+                                                            @endif
+                                                        
                                                         @endif
-                                                    
+
+
+
+
                                                     @endif
 
                                                 

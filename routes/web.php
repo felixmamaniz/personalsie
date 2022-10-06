@@ -93,6 +93,7 @@ use App\Http\Livewire\DestinoController;
 use App\Http\Livewire\DiscountsvController;
 use App\Http\Livewire\EmployeeController;
 use App\Http\Livewire\FunctionAreaController;
+use App\Http\Livewire\OrdenCompraController;
 use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\SaleDailyMovementController;
 use App\Http\Livewire\SaleDevolutionController;
@@ -238,6 +239,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('orderservice', OrderServiceController::class)->name('os')->middleware('permission:Orden_Servicio_Index');
     Route::get('inicio', InicioController::class)->name('in')->middleware('permission:Inicio_Index');
     Route::get('idorderservice/{id}', [OrderServiceController::class, 'buscarid'])->name('buscarid')->middleware('permission:Orden_Servicio_Index');
+    Route::get('ordencompra', OrdenCompraController::class)->name('ordencompra');
     Route::get('abrirnuevo/{id}', [OrderServiceController::class, 'abrirventana'])->name('abrirventana')->middleware('permission:Orden_Servicio_Index');
     Route::get('reporte/pdf/{id}', [ImprimirController::class, 'print'])->middleware('permission:Imprimir_Orden_Servicio_Index');
     Route::get('informetecnico/pdf/{id}', [ServicioInformeTecnicoController::class, 'print']);

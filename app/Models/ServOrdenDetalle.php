@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class ServOrdenDetalle extends Model
 {
     use HasFactory;
-    protected $fillable = ['detalle_solicitud_id','product_id','cantidad','status'];
+    protected $fillable = ['orden_compra_id','detalle_solicitud_id','product_id','cantidad','status'];
 }

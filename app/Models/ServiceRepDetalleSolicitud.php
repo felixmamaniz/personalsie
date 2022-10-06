@@ -12,6 +12,6 @@ class ServiceRepDetalleSolicitud extends Model
 
     public function estado_solicitud()
     {
-        return $this->hasMany(ServiceRepEstadoSolicitud::class,"detalle_solicitud_id");
+        return $this->hasMany(ServiceRepEstadoSolicitud::class, "detalle_solicitud_id");
     }
 }

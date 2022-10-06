@@ -211,12 +211,14 @@
                                             <td class="text-center">
                                                 @if($d->tipo == "CompraRepuesto")
                                                 
-                                                <div style="background-color: rgb(255, 82, 82); color: white;">
+                                                <div style="color: rgb(255, 82, 82);">
                                                     Compra
                                                 </div>
 
                                                 @else
-                                                {{$d->tipo}}
+                                                <div style="color: rgb(0, 48, 204);">
+                                                    {{$d->tipo}}
+                                                </div>
                                                 @endif
                                             </td>
                                             <td class="text-center">
@@ -238,10 +240,9 @@
 
                                                         @if($d->estado == "COMPRANDO")
 
-                                                        <a href="#" class="">
+                                                        <button class="compraestilos">
                                                             {{$d->estado}}
-                                                        </a>
-
+                                                        </button>
                                                         @endif
                                                     
                                                     @endif

@@ -16,6 +16,8 @@ class CreateServOrdenDetallesTable extends Migration
         Schema::create('serv_orden_detalles', function (Blueprint $table) {
             $table->id();
             
+            $table->unsignedBigInteger('orden_compra_id');
+            $table->foreign('orden_compra_id')->references('id')->on('serv_orden_compras');
 
             $table->integer('detalle_solicitud_id');
 

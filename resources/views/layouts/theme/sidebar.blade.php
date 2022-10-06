@@ -540,6 +540,11 @@
 											<i class="fa fas fa-minus"></i>
 											Repuestos Servicios </a>
 									</li>
+									<li>
+										<a href="{{ url('ordencompra') }}">
+											<i class="fa fas fa-minus"></i>
+											Ordenes de Compra </a>
+									</li>
 								@endcan
 								</ul>
 							</div>
@@ -764,7 +769,7 @@
 
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#Employees">
-								<i class="fas fa-layer-group"></i>
+								<i style="color: #02b1ce;" class="fas fa-user-friends"></i>
 								<p>Empleados</p>
 								<span class="caret"></span>
 							</a>
@@ -803,13 +808,20 @@
 										Contrato</a>
 								  </li>
 								  @endcan
+								  @can('Reportes_Tigo_Index')
+								  <li>
+									<a href="{{ url('user_employees') }}">
+										<i class="fa fas fa-minus"></i>
+										UsuarioEmpleado</a>
+								  </li>
+								  @endcan
 								</ul>
 							</div>
 						</li>
 
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#Asistencia">
-								<i class="fas fa-layer-group"></i>
+								<i style="color: #02b1ce;" class="fas fa-user-clock"></i>
 								<p>Asistencia</p>
 								<span class="caret"></span>
 							</a>
@@ -841,8 +853,8 @@
 
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#Descuentos">
-								<i class="fas fa-layer-group"></i>
-								<p>Descuentos o Adelantos</p>
+								<i style="color: #02b1ce;" class="fas fa-user-lock"></i>
+								<p>Descs/Adelantos</p>
 								<span class="caret"></span>
 							</a>
 							<div class="collapse" id="Descuentos">
@@ -850,7 +862,7 @@
 									<li>
 										<a href="{{ url('anticipos') }}">
 											<i class="fa fas fa-minus"></i>
-											Adelantos ò Anticipos</a>
+											Adelantos o Anticipos</a>
 									</li>
 									<li>
 											<a href="{{ url('descuentos') }}">

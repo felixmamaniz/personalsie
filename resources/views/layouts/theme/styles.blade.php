@@ -34,7 +34,7 @@
     /* Tabla Pequeña */
     .table-1 {
     width: 100%;/* Anchura de ejemplo */
-    height: 300px;  /*Altura de ejemplo*/
+    height: 400px;  /*Altura de ejemplo*/
     overflow: auto;
     }
 

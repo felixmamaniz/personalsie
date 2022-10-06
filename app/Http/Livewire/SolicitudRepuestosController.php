@@ -87,36 +87,6 @@ class SolicitudRepuestosController extends Component
         ->extends('layouts.theme.app')
         ->section('content');
     }
-    //Busca en los detalles de una soicitud si existe alguna compra con estado PENDIENTE, devuelve true o false dependiendo el caso
-    // public function scan_buy($idsolicitud)
-    // {
-    //     $respuesta = false;
-
-
-    //     $solicitud = ServiceRepSolicitud::find($idsolicitud);
-
-
-    //     foreach($solicitud->detalle_solicitud as $d)
-    //     {
-
-    //         if($d->tipo == "CompraRepuesto")
-    //         {
-    //             $detalle = ServiceRepDetalleSolicitud::find($d->id);
-
-    //             foreach($detalle->estado_solicitud as $e)
-    //             {
-    //                 if($e->status == "PENDIENTE")
-    //                 {
-    //                     $respuesta = true;
-    //                 }
-    //                 break;
-    //             }
-    //             break;
-    //         }
-    //     }
-
-    //     return $respuesta;
-    // }
     //Obtener el Id de la Sucursal donde esta el Usuario
     public function idsucursal()
     {
@@ -226,6 +196,7 @@ class SolicitudRepuestosController extends Component
         //Creando la órden de Compra
         $orden_compra = ServOrdenCompra::create([
             'user_id' => Auth()->user()->id,
+            'idcomprador' => $this->usuario_id,
         ]);
         
         //Obtenemos los detalles de la coleccion lista_productos
@@ -233,16 +204,20 @@ class SolicitudRepuestosController extends Component
         {
             //Buscando el detalle de la solicitud
             $detalle = ServiceRepDetalleSolicitud::find($l['detalle_id']);
+
+
+
             //Buscando los estados Pendientes del detalle de la solicitud
             foreach($detalle->estado_solicitud as $e)
             {
 
-                if($e->estado == 'PENDIENTE')
+                if($e->estado == 'PENDIENTE' && $e->status == 'ACTIVO')
                 {
-                    //Actualizando los estados pendientes
+                    //Actualizando los estados pendientes ACTIVO a iNACTIVO
                     $e->update([
                         'status' => 'INACTIVO'
                     ]);
+                    //Creando nuevo estado ACTIVO para cada detalle solicitud
                     ServiceRepEstadoSolicitud::create([
                         'detalle_solicitud_id' => $l['detalle_id'],
                         'user_id' => Auth()->user()->id,
@@ -250,18 +225,26 @@ class SolicitudRepuestosController extends Component
                         'status' => 'ACTIVO',
                     ]);
 
+
                     //Creando el detalle de la orden de compra
                     ServOrdenDetalle::create([
+                        'orden_compra_id' => $orden_compra->id,
                         'detalle_solicitud_id' => $l['detalle_id'],
-                        'user_id' => Auth()->user()->id,
-                        'estado' => 'COMPRANDO',
+                        'product_id' => $l['product_id'],
+                        'cantidad' => $l['quantity'],
                         'status' => 'ACTIVO',
                     ]);
+
+
+
+
+
                 }
 
 
 
             }
+            
         }
 
 

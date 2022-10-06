@@ -94,6 +94,7 @@ use App\Http\Livewire\DestinoController;
 use App\Http\Livewire\DiscountsvController;
 use App\Http\Livewire\EmployeeController;
 use App\Http\Livewire\FunctionAreaController;
+use App\Http\Livewire\OrdenCompraController;
 use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\SaleDailyMovementController;
 use App\Http\Livewire\SaleDevolutionController;
@@ -101,6 +102,7 @@ use App\Http\Livewire\SaleStatisticController;
 use App\Http\Livewire\SaleReporteCantidadController;
 use App\Http\Livewire\ShiftsController;
 use App\Http\Livewire\SolicitudRepuestosController;
+use App\Http\Livewire\UserEmployeeController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -239,6 +241,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('orderservice', OrderServiceController::class)->name('os')->middleware('permission:Orden_Servicio_Index');
     Route::get('inicio', InicioController::class)->name('in')->middleware('permission:Inicio_Index');
     Route::get('idorderservice/{id}', [OrderServiceController::class, 'buscarid'])->name('buscarid')->middleware('permission:Orden_Servicio_Index');
+    Route::get('ordencompra', OrdenCompraController::class)->name('ordencompra');
     Route::get('abrirnuevo/{id}', [OrderServiceController::class, 'abrirventana'])->name('abrirventana')->middleware('permission:Orden_Servicio_Index');
     Route::get('reporte/pdf/{id}', [ImprimirController::class, 'print'])->middleware('permission:Imprimir_Orden_Servicio_Index');
     Route::get('informetecnico/pdf/{id}', [ServicioInformeTecnicoController::class, 'print']);
@@ -280,6 +283,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('assistances', AssistanceController::class);
     Route::get('anticipos', AnticipoController::class);
     Route::get('descuentos', DiscountsvController::class);
+
+    Route::get('user_employees', UserEmployeeController::class);
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);

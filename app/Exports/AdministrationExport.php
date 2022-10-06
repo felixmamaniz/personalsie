@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Anticipo;
 use App\Models\UserEmployee;
+use App\Models\Sale;
 use App\Models\Discountsv;
 
 use Illuminate\Support\Facades\DB;
@@ -69,7 +70,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         $drawing2 = new Drawing();
         $drawing2->setName('direccion');
         $drawing2->setDescription('This is my direccion');
-        $drawing2->setPath(public_path('assets/img/logo.png'));
+        $drawing2->setPath(public_path('assets/img/direccion.png'));
         $drawing2->setHeight(90);
         $drawing2->setCoordinates('H1');
 
@@ -144,9 +145,22 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         $comissiones=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
         ->join('employees as e', 'e.id', 'user_employees.employee_id')
         ->join('sales as s', 's.user_id', 'u.id')
-        ->select('s.total', 'u.name')
+        ->select('s.total', 'u.name', 's.created_at')
         ->get();
-        //dd($comissiones);
+
+       
+
+
+        $ventas=Sale::select('sales.*')
+        ->whereBetween('created_at',['2022-08-01','2022-08-31'])
+        ->where('user_id',31)
+        ->orWhere('user_id',37)
+        ->get();
+        //dd($ventas);
+        $comision=0.10;
+        $algo=5730.50*$comision;
+       // dd($algo);
+
 
         $num=1;
         //esto tendria que ser los datos que mandaremos para el excel

@@ -52,6 +52,7 @@ use App\Http\Livewire\CorteCajaController;
 use App\Http\Livewire\PlataformasController;
 use App\Http\Livewire\SucursalController;
 use App\Http\Livewire\CatProdServiceController;
+use App\Http\Livewire\ComissionsEmployeesController;
 use App\Http\Livewire\ComprasController;
 use App\Http\Livewire\ContratoController;
 use App\Http\Livewire\DetalleComprasController;
@@ -282,6 +283,9 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);
+
+    //comissiones
+    Route::get('comisiones', ComissionsEmployeesController::class);
     
 
      //reporte horario Excel

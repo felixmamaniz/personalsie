@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
+use App\Models\Employee;
 use App\Models\Shift;
 
 class ShiftsController extends Component
@@ -13,8 +14,9 @@ class ShiftsController extends Component
     public $shiftName, $search, $selected_id, $pageTitle, $componentName, $horaentrada, $horasalida, $minuto, $horario;
     private $pagination = 10;
     //horarios de lunes hasta el domingo
-    public $horalunes, $horamartes, $horamiercoles, $horaviernes, $horajueves, $horasabado, $horadomingo
-           ,$minutolunes, $minutomartes, $minutomiercoles, $minutojueves, $minutoviernes, $minutosabado, $minutodomingo;
+    public $horalunes, $horamartes, $horamiercoles, $horaviernes, $horajueves, $horasabado, $horadomingo;
+    //horario salida de lunes a domingo
+    public $shoralunes, $shoramartes, $shoramiercoles, $shorajueves, $shoraviernes, $shorasabado, $shoradomingo, $empleadoid;
     //horas y minutos para los dias de la semana
     public $horas=[] ,$minutos;
     public function cargaroption()
@@ -68,9 +70,10 @@ class ShiftsController extends Component
         }
 
         
-        $this->cargaroption();
+
         return view('livewire.shifts.component', [
             'data' => $shifts,
+            'employees' => Employee::orderBy('name','asc')->get()
         ])
         ->extends('layouts.theme.app')
         ->section('content');
@@ -84,19 +87,24 @@ class ShiftsController extends Component
 
     public function CreateRole()
     {
-        $rules = ['shiftName' => 'required|min:2|unique:shifts,name'];
+        $rules = ['empleadoid' => "required|not_in:Elegir|unique:shifts,ci,{$this->selected_id}"];
 
         $messages = [
-            'shiftName.required' => 'El nombre del Turno es requerido',
-            'shiftName.unique' => 'El Turno ya existe',
-            'shiftName.min' => 'El nombre del Turno debe tener al menos 2 caracteres'
+            'empleadoid.required' => 'El nombre del Turno es requerido',
+            'empleadoid.unique' => 'El Nombre ya existe'
         ];
 
         $this->validate($rules, $messages);
     $this->horario = $this->horaentrada.' a '.$this->horasalida;
         Shift::create([
-            'name' => $this->shiftName,
-            'horario' => $this->horario
+            'ci' => $this->empleadoid,
+            'monday' => $this->horalunes,
+            'tuesday' => $this->horamartes,
+            'wednesday' => $this->horamiercoles,
+            'thursday' => $this->horajueves,
+            'friday' => $this->horaviernes,
+            'saturday' => $this->horasabado,
+            'sunday' => $this->horadomingo
         ]);
 
         $this->emit('item-added', 'Se registró el Turno con éxito');
@@ -106,38 +114,37 @@ class ShiftsController extends Component
     public function Edit(Shift $shift)
     {
         $this->selected_id = $shift->id;
-        $this->shiftName = $shift->name;
+        $this->empleadoid = $shift->ci;
         //horas
         //dd($shift);
-        $this->horalunes = substr($shift->monday,0,2);
-        $this->horamartes = substr($shift->tuesday,0,2);
-        $this->horamiercoles = substr($shift->wednesday,0,2);
+        $this->horalunes = substr($shift->monday,0,5);
+        $this->horamartes = substr($shift->tuesday,0,5);
+        $this->horamiercoles = substr($shift->wednesday,0,5);
         //dd($this->horamiercoles);
-        $this->horajueves = substr($shift->thursday,0,2);
-        $this->horaviernes = substr($shift->friday,0,2);
-        $this->horasabado = substr($shift->saturday,0,2);
-        $this->horadomingo = substr($shift->Sunday,0,2);
+        $this->horajueves = substr($shift->thursday,0,5);
+        $this->horaviernes = substr($shift->friday,0,5);
+        $this->horasabado = substr($shift->saturday,0,5);
+        $this->horadomingo = substr($shift->Sunday,0,5);
         //minutos
-        $this->minutolunes = substr($shift->monday,3,2);
-        $this->minutomartes = substr($shift->tuesday,3,2);
-        $this->minutomiercoles = substr($shift->wednesday,3,2);
-        //dd($this->minutomiercoles);
-        $this->minutojueves = substr($shift->thursday,3,2);
-        $this->minutoviernes = substr($shift->friday,3,2);
-        $this->minutosabado = substr($shift->saturday,3,2);
-        $this->minutodomingo = substr($shift->sunday,3,2);
+        $this->shoralunes = substr($shift->monday,0,5);
+        $this->shoramartes = substr($shift->tuesday,0,5);
+        $this->shoramiercoles = substr($shift->wednesday,0,5);
+        //dd($this->shoramiercoles);
+        $this->shorajueves = substr($shift->thursday,0,5);
+        $this->shoraviernes = substr($shift->friday,0,5);
+        $this->shorasabado = substr($shift->saturday,0,5);
+        $this->shoradomingo = substr($shift->sunday,0,5);
 
         $this->emit('show-modal', 'Show modal ');
     }
 
     public function UpdateRole()
     {
-        $rules = ['shiftName' => "required|min:2|unique:shifts,name, {$this->selected_id}"];
+        $rules = ['empleadoid' => "required|not_in:Elegir|unique:shifts,ci,{$this->selected_id}"];
 
         $messages = [
-            'shiftName.required' => 'El nombre del Turno es requerido',
-            'shiftName.unique' => 'El Turno ya existe',
-            'shiftName.min' => 'El nombre del Turno debe tener al menos 2 caracteres'
+            'empleadoid.required' => 'El nombre del Turno es requerido',
+            'empleadoid.unique' => 'El Nombre ya existe'
         ];
 
         $this->validate($rules, $messages);

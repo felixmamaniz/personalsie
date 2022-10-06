@@ -9,19 +9,17 @@
             </div>
             <div class="modal-body">
                 <div class="row">
-                    <div class="col-sm-12">
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">
-                                    <span class="fas fa-edit"></span>
-                                </span>
-                            </div>
-                            <input type="text" wire:model.lazy="shiftName" class="form-control" placeholder="ej: mañana"
-                                maxlength="255">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label>Empleados</label>
+                            <select wire:model="empleadoid" class="form-control">
+                                <option value="Elegir" selected>Elegir</option>
+                                @foreach($employees as $a)
+                                    <option value="{{$a->id}}">{{$a->name}} {{$a->lastname}}</option>
+                                @endforeach
+                            </select>
+                            @error('empleadoid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
-                        @error('shiftName')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
                     </div>
 
                 </div>
@@ -37,302 +35,220 @@
 
               <!-- Lunes -->
               <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>lunes: h: </h3>
-                                <select name="horae" wire:model.lazy="horalunes"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Lunes Entrada :</h3>                            
+                                        <input style="width: 50%" type="time" wire:model.lazy="horalunes" class="form-control">
+                        
+                                    @error('horalunes') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horae')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="minutolunes"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 50%" type="time" wire:model.lazy="shoralunes" class="form-control">
+                        
+                                    @error('shoralunes') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+                        
+
+                        
+                       
                         </div>
                     </div>
                 </div>
-              </div>
 
-            <!-- Martes -->
-
-              <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                <!-- Martes -->
+                <div class="col-sm-12 bg-light p-3 border">
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>Martes: h: </h3>
-                                <select name="horam" wire:model.lazy="horamartes"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Martes Entrada :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="horamartes" class="form-control">
+                        
+                                    @error('horamartes') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horam')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="minutomartes"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="shoramartes" class="form-control">
+                        
+                                    @error('shoramartes') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+
                         </div>
                     </div>
                 </div>
-              </div>
 
-              <!-- Miercoles -->
-
-              <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                 <!-- Miercoles -->
+                <div class="col-sm-12 bg-light p-3 border">
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-10 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>Miercoles: h: </h3>
-                                <select name="horae" wire:model.lazy="horamiercoles"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Miercoles Entrada :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="horamiercoles" class="form-control">
+                        
+                                    @error('horamiercoles') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horae')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="minutomiercoles"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="shoramiercoles" class="form-control">
+                        
+                                    @error('shoramiercoles') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+
                         </div>
                     </div>
                 </div>
-              </div>
 
-              <!-- Jueves -->
-
-              <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                 <!-- Jueves -->
+                <div class="col-sm-12 bg-light p-3 border">
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-10 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>Jueves: h: </h3>
-                                <select name="horae" wire:model.lazy="horajueves"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Jueves Entrada :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="horajueves" class="form-control">
+                        
+                                    @error('horajueves') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horae')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="minutojueves"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="shorajueves" class="form-control">
+                        
+                                    @error('shorajueves') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+
                         </div>
                     </div>
                 </div>
-              </div>
 
-
-              <!-- Viernes -->
-
-              <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                 <!-- Viernes -->
+                <div class="col-sm-12 bg-light p-3 border">
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-10 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>Viernes: h: </h3>
-                                <select name="horae" wire:model.lazy="horaviernes"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Viernes Entrada :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="horaviernes" class="form-control">
+                        
+                                    @error('horaviernes') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horae')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="minutoviernes"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="shoraviernes" class="form-control">
+                        
+                                    @error('shoraviernes') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+
                         </div>
                     </div>
                 </div>
-              </div>
 
-              <!-- Sabado -->
-
-              <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                 <!-- Sabado -->
+                <div class="col-sm-12 bg-light p-3 border">
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-10 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4 " style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>Sabado: h: </h3>
-                                <select name="horae" wire:model.lazy="horasabado"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Sabado Entrada :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="horasabado" class="form-control">
+                        
+                                    @error('horasabado') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horae')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="minutosabado"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="shorasabado" class="form-control">
+                        
+                                    @error('shorasabado') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+
                         </div>
                     </div>
                 </div>
-              </div>
 
-              <!-- Domingo -->
-
-              <div class="col-sm-12 bg-light p-3 border">
-                <div class="row justify-content-center" style="font-size: 20px;" >
+                 <!-- Domingo -->
+                <div class="col-sm-12 bg-light p-3 border">
+                    <div class="row justify-content-center" style="font-size: 20px;" >
                     
-                    <div class="form-control col-sm-10 p-2 bd-highligh d-flex flex-row" >
-                        <div class="col-sm-12 col-md-4" style="margin-left: 50px">
-                            <div class="input-group">
-                                <h3>Domingo: h: </h3>
-                                <select name="horae" wire:model.lazy="horaentrada"  style="margin-left: 10px; padding: 5px">
-                                   
-                                    @foreach($horas as $h)
-                                        <option value="{{$h}}">{{$h}}</option>
-                                    @endforeach
+                        <div class="form-control col-sm-9 p-2 bd-highligh d-flex flex-row" >
 
-                                    
-                                </select>
+                            <div class="col-sm-12 col-md-6" >
+                                <div class="input-group">
+                                    <h3>Domingo Entrada :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="horadomingo" class="form-control">
+                        
+                                    @error('horadomingo') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horae')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
-                        </div>
-                        <div class="col-sm-12 col-md-6 " >
-                            <div class="input-group" >
-                                <h3>m: </h3>
-                                <select name="horas" wire:model.lazy="horasalida"style="margin-left: 10px; padding: 5px">
-                                    
-                                    @foreach($minutos as $m)
-                                        <option value="{{$m}}">{{$m}}</option>
-                                    @endforeach
-                                    
-                                </select>
+
+                            <div class="col-sm-12 col-md-5" >
+                                <div class="input-group">
+                                    <h3> Salida :</h3>                            
+                                        <input style="width: 30%" type="time" wire:model.lazy="shoradomingo" class="form-control">
+                        
+                                    @error('shoradomingo') <span class="text-danger er"> {{ $message }}</span> @enderror
+                                </div>
                             </div>
-                        @error('horas')
-                            <span class="text-danger er">{{ $message }}</span>
-                        @enderror
+
                         </div>
                     </div>
                 </div>
-              </div>
-            <div class="modal-footer">
-                <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info"
-                    data-dismiss="modal" style="background: #3b3f5c">CANCELAR</button>
-                @if ($selected_id < 1)
-                    <button type="button" wire:click.prevent="CreateRole()"
-                        class="btn btn-warning close-btn text-info">GUARDAR</button>
-                @else
-                    <button type="button" wire:click.prevent="UpdateRole()"
-                        class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
-                @endif
 
+                <div class="modal-footer">
+                    <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info"
+                        data-dismiss="modal" style="background: #3b3f5c">CANCELAR</button>
+                    @if ($selected_id < 1)
+                        <button type="button" wire:click.prevent="CreateRole()"
+                            class="btn btn-warning close-btn text-info">GUARDAR</button>
+                    @else
+                        <button type="button" wire:click.prevent="UpdateRole()"
+                            class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
+                    @endif
+    
+                </div>
             </div>
+
+            
+
+            
         </div>
     </div>
 </div>

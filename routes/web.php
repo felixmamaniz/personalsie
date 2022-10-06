@@ -100,6 +100,7 @@ use App\Http\Livewire\SaleStatisticController;
 use App\Http\Livewire\SaleReporteCantidadController;
 use App\Http\Livewire\ShiftsController;
 use App\Http\Livewire\SolicitudRepuestosController;
+use App\Http\Livewire\UserEmployeeController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
@@ -279,6 +280,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('assistances', AssistanceController::class);
     Route::get('anticipos', AnticipoController::class);
     Route::get('descuentos', DiscountsvController::class);
+
+    Route::get('user_employees', UserEmployeeController::class);
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);

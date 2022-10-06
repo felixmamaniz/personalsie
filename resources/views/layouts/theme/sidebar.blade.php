@@ -803,6 +803,13 @@
 										Contrato</a>
 								  </li>
 								  @endcan
+								  @can('Reportes_Tigo_Index')
+								  <li>
+									<a href="{{ url('user_employees') }}">
+										<i class="fa fas fa-minus"></i>
+										UsuarioEmpleado</a>
+								  </li>
+								  @endcan
 								</ul>
 							</div>
 						</li>

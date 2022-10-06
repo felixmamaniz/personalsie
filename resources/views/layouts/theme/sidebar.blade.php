@@ -764,7 +764,7 @@
 
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#Employees">
-								<i class="fas fa-layer-group"></i>
+								<i style="color: #02b1ce;" class="fas fa-user-friends"></i>
 								<p>Empleados</p>
 								<span class="caret"></span>
 							</a>
@@ -816,7 +816,7 @@
 
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#Asistencia">
-								<i class="fas fa-layer-group"></i>
+								<i style="color: #02b1ce;" class="fas fa-user-clock"></i>
 								<p>Asistencia</p>
 								<span class="caret"></span>
 							</a>
@@ -848,7 +848,7 @@
 
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#Descuentos">
-								<i class="fas fa-layer-group"></i>
+								<i style="color: #02b1ce;" class="fas fa-user-lock"></i>
 								<p>Descuentos o Adelantos</p>
 								<span class="caret"></span>
 							</a>

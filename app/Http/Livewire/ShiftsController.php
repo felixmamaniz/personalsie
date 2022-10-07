@@ -151,8 +151,15 @@ class ShiftsController extends Component
         $this->horario = $this->horaentrada.' a '.$this->horasalida;
 
         $shift = Shift::find($this->selected_id);
-        $shift->name = $this->shiftName;
-        $shift->horario = $this->horario;
+        //dd($shift);
+        $shift->ci = $this->empleadoid;
+        $shift->monday = $this->horalunes;
+        $shift->tuesday = $this->horamartes;
+        $shift->wednesday = $this->horamiercoles;
+        $shift->thursday = $this->horajueves;
+        $shift->friday = $this->horaviernes;
+        $shift->saturday = $this->horasabado;
+        $shift->Sunday = $this->horadomingo;
         $shift->save();
 
         $this->emit('item-update', 'Se actualizó el Turno con éxito');

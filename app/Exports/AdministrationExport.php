@@ -6,6 +6,7 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Anticipo;
 use App\Models\UserEmployee;
+use App\Models\CommissionsEmployees;
 use App\Models\Sale;
 use App\Models\Discountsv;
 
@@ -281,7 +282,68 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
 
             $h->Adelanto= number_format($adelantototal,2);
             $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos);
+            
+            //agregar comissiones
 
+            $comisiones=CommissionsEmployees::join('employees as e', 'e.id', 'commissions_employees.user_id') // se unio ambas tablas
+            ->join('contratos as ct', 'ct.id', 'e.contrato_id')
+            ->select('commissions_employees.*','e.name as empleado', 'ct.salario', db::raw('0 as Ventas'))
+            ->where('commissions_employees.user_id', $h->id)
+            ->get();
+            
+           /* if($h->id==4)
+            {
+                dd($comisiones);
+            }*/
+            
+            //calcular ventas
+            foreach ($comisiones as $co) {
+                //dd($fecfrom.' '.$fecto);
+                $sales=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
+                ->join('employees as e', 'e.id', 'user_employees.employee_id')
+                ->join('sales as s', 's.user_id', 'u.id')
+                ->select('s.total', 's.change', 's.movimiento_id', 'u.name', 's.created_at', 'e.id as idempleado', 'u.id as idusuari')
+                ->whereBetween('s.created_at', [$fecfrom,"2022-08-31"])
+                
+                ->orderBy('s.created_at','desc')
+                ->get()
+                ->first();
+
+                dd($sales);
+                
+                if($h->id==4)
+                {
+                    
+                }
+                $sumventas=0;
+                foreach ($sales as $v) {
+                    
+                    $sumventas= $sumventas+ $v->total;
+                 }
+               $co->ventas = $sumventas;
+            }
+           
+            
+            $emplocomision=0;
+            foreach ($comisiones as $co) {
+                if($co->ventas > ($co->salario*$co->multiplicado))
+                {
+                    
+                    $emplocomision= ($co->ventas - ($co->salario * $co->multiplicado)) * $co->comision;
+                    
+                }
+               
+            }
+            
+            if($emplocomision == 0)
+            {
+                $h->Bonificaciones = number_format( $emplocomision,2);
+            }
+            else{
+                $h->Bonificaciones =  $emplocomision;
+            }
+
+            
             $h->id=$num;
             $num++;
             //$h->Dias_trabajados=$dias;
@@ -298,7 +360,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             
         }
         //dd($horitas);
-        //dd($reporte);
+        dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->select('employees.id', 'employees.name', 'at.nameArea as area')

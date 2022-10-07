@@ -831,7 +831,7 @@
 								<li>
 									<a href="{{ url('attendance') }}">
 										<i class="fa fas fa-minus"></i>
-										Horario </a>
+										Reporte Horario </a>
 								</li>
 								@endcan
 
@@ -839,6 +839,12 @@
 									<a href="{{ url('assistances') }}">
 										<i class="fa fas fa-minus"></i>
 										Permisos ó  Licencias</a>
+								</li>
+
+								<li>
+									<a href="{{ url('shifts') }}">
+										<i class="fa fas fa-minus"></i>
+										Turnos </a>
 								</li>
 								
 								

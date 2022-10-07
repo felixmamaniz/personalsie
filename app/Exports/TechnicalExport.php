@@ -6,8 +6,11 @@ use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Discountsv;
 use App\Models\Assistance;
+use App\Models\CommissionsEmployees;
+use App\Models\Sale;
 use App\Models\Anticipo;
 use App\Models\Shift;
+use App\Models\UserEmployee;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromCollection;          // para trabajar con colecciones y obtener la data
@@ -206,7 +209,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $horasum='00:00:00';
             $retrasomin = '00:00:00';
             $dias = 0;
-            //contar entras y salidas no marcadas
+            //contador entradas y salidas no marcadas
             $countE=0;
             $countS=0;
             foreach ($data3 as $x) {
@@ -294,6 +297,40 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->Adelantos= number_format($adelantototal,2);
             $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos + $h->Faltas_Licencias);
             
+            //agregar comissiones
+
+            $comisiones=CommissionsEmployees::join('employees as e', 'e.id', 'commissions_employees.user_id') // se unio ambas tablas
+            ->join('contratos as ct', 'ct.id', 'e.contrato_id')
+            ->select('commissions_employees.*','e.name as empleado', 'ct.salario', db::raw('0 as Ventas'))
+            ->where('commissions_employees.user_id', $h->id)
+            ->get();
+
+            
+            //calcular ventas
+            foreach ($comisiones as $co) {
+                $ventas=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
+                ->join('employees as e', 'e.id', 'user_employees.employee_id')
+                ->join('sales as s', 's.user_id', 'u.id')
+                ->select('s.total', 'u.name', 's.created_at', 'e.id as idempleado', 'u.id as idusuari')
+                ->where('e.id', $co->user_id)
+                ->whereBetween('s.created_at', [$fecfrom,$fecto])
+                ->get();
+                //dd($ventas);
+                $sumventas=0;
+                foreach ($ventas as $v) {
+                    $sumventas= $sumventas+ $v->total;
+                 }
+               $co->ventas = $sumventas;
+            }
+            
+            $emplocomision=0;
+            foreach ($comisiones as $co) {
+                $emplocomision= ($co->ventas - ($co->salario * $co->multiplicado)) * $co->comision;
+            }
+            
+            $h->comisiones = $emplocomision;
+
+
            //agregar id desde el 1
            $h->id=$num;
            $num++;

@@ -37,6 +37,20 @@
         </div>
     </div>
 
+    <div class="col-sm-6 ">
+        <h4>Horario Caja</h4>
+        <div class="form-group">
+            <label for="">Entrada</label>
+            <input  type="time" wire:model="timefrom"
+                class="form-control" placeholder="Click para elegir">
+        </div>
+        <div class="form-group">
+            <label for="">Entrada</label>
+            <input type="time" wire:model="timeto"
+                class="form-control" placeholder="Click para elegir">
+        </div>
+    </div>
+
 </div>
 
 @include('common.modalFooter')

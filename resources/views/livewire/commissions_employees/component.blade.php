@@ -22,6 +22,7 @@
                                <th class="table-th text-white text-center">NOMBRE</th>
                                <th class="table-th text-white text-center">MULTIPLICADO X </th>
                                <th class="table-th text-white text-center">COMISSION DEL</th>
+                               <th class="table-th text-white text-center">Horario Caja</th>
                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
@@ -32,6 +33,8 @@
                                 <td><h6 class="">{{$c->empleado}}</h6></td>
                                 <td><h6 class="text-center">{{$c->multiplicado}}</h6></td>
                                 <td><h6 class="text-center">{{ $c->comision*100}} %</h6></td>
+
+                                <td><h6 class="text-center">{{ $c->fromtime}} a {{ $c->totime }}</h6></td>
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"

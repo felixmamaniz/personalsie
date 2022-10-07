@@ -16,7 +16,7 @@ class ComissionsEmployeesController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $empleadoid, $multiplicado, $comisionn, $motivo, $selected_id, $descuentoc, $fecha;
+    public $empleadoid, $multiplicado, $comisionn, $motivo, $selected_id, $descuentoc, $fecha, $timefrom, $timeto;
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
 
@@ -69,10 +69,10 @@ class ComissionsEmployeesController extends Component
         foreach ($ventas as $v) {
            $sum= $sum+ $v->total;
         }
-        dd($sum);
+       // dd($sum);
         $comision=0.10;
         $algo=5730.50*$comision;
-        dd($algo);
+       // dd($algo);
     
         return view('livewire.commissions_employees.component', [
             'comision' => $data,        // se envia anticipos
@@ -102,7 +102,9 @@ class ComissionsEmployeesController extends Component
         $anticipo = CommissionsEmployees::create([
             'user_id' => $this->empleadoid,
             'multiplicado'=>$this->multiplicado,
-            'comision'=>$this->comisionn
+            'comision'=>$this->comisionn,
+            'fromtime' => $this->timefrom,
+            'totime' => $this->timeto,
         ]);
 
         $this->resetUI();
@@ -115,6 +117,8 @@ class ComissionsEmployeesController extends Component
         $this->empleadoid = $com->user_id;
         $this->multiplicado = $com->multiplicado;
         $this->comisionn = $com->comision;
+        $this->timefrom = $com->fromtime;
+        $this->timeto = $com->totime;
 
         $this->emit('show-modal', 'show modal!');
     }
@@ -140,6 +144,8 @@ class ComissionsEmployeesController extends Component
             'user_id' => $this->empleadoid,
             'multiplicado'=>$this->multiplicado,
             'comision'=>$this->comisionn,
+            'fromtime' => $this->timefrom,
+            'totime' => $this->timeto,
         ]);
 
         $this->resetUI();
@@ -151,6 +157,8 @@ class ComissionsEmployeesController extends Component
         $this->empleadoid = 'Elegir';
         $this->multiplicado='';
         $this->comisionn='';
+        $this->timefrom='';
+        $this->timeto='';
         $this->fechaSolicitud='';
         $this->search='';
         $this->selected_id=0;

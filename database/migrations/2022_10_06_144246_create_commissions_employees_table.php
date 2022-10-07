@@ -18,6 +18,8 @@ class CreateCommissionsEmployeesTable extends Migration
             $table->integer('user_id');
             $table->integer('multiplicado');
             $table->decimal('comision',10,2);
+            $table->time('fromtime');
+            $table->time('totime');
             $table->timestamps();
         });
     }

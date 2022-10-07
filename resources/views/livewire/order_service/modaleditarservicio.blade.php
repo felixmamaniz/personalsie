@@ -251,16 +251,15 @@
                                                                                     {{$l->dest}}
                                                                                 </td>
                                                                                 <td class="text-center">
-                                                                                    {{$l->estado_sol=='ACTIVO' ? 'PENDIENTE':'ACEPTADO'}}
+                                                                                    {{$l->estado_sol}}
 
                                                                                    
                                                                                 </td>
-                                                                              
-                                                                            
+           
                                                                                 <td class="text-center">
                                                                                     <div class="btn-group" role="group" aria-label="Basic example">
 
-                                                                                        @if ($l->estado_sol == 'ACTIVO')
+                                                                                        @if ($l->estado_sol == 'PENDIENTE')
                                                                                             
                                                                                         <button wire:click.prevent="descartarSolicitud({{$l->id}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
                                                                                             Eliminar Solicitud
@@ -270,10 +269,7 @@
                                                                                             Retornar Repuesto
                                                                                         </button>
                                                                                         @endif
-                                                                                   
-                                                                                 
-                                                                                      
-                                                                                     
+                                                                                  
                                                                                     </div>
                                                                                 </td>
                                                                             

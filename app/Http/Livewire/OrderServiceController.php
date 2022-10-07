@@ -99,7 +99,7 @@ class OrderServiceController extends Component
     //ROSCIO - REPUESTOS
     //variable para modal de busqueda de repuestos 
     public $nombre,$costo2, $precio_venta2,$codigo,$caracteristicas,$lote,$unidad, $marca, $garantia,$industria,
-    $categoryid,$component,$selected_categoria,$image,$selected_id2,$name,$descripcion,$unidades,$marcas2,$show_more,$cant,$orderP,$listacompra,$toogle,$solicitudservicio;
+    $categoryid,$component,$selected_categoria,$image,$selected_id2,$name,$descripcion,$unidades,$marcas2,$show_more,$cant,$orderP,$listacompra,$toogle,$solicitudservicio,$repuestostienda,$repuestosalmacen,$orderlista;
 
     //Guarda la lista donde se guardan todos los repuestos encontrados en el input de busqueda de repuestos ($searchproduct)
     public $listaproductos;
@@ -131,6 +131,9 @@ class OrderServiceController extends Component
         $this->orderP=1;
         $this->listacompra=collect();
         $this->toogle=1;
+        $this->type='TERMINADO';
+        $this->repuestosalmacen=collect();
+        $this->orderlista=1;
         //$this->searchproduct='CARGADOR RAPIDO,MICRO USB , CARGA RAPIDA, EF-1204Q, E Y F';
 
 
@@ -2629,8 +2632,52 @@ class OrderServiceController extends Component
             ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
             ->where('service_id',$this->id_servicio)
             ->where('service_rep_detalle_solicituds.status','ACTIVO')
+            ->where('service_rep_estado_solicituds.status','ACTIVO')
             ->select('products.nombre as prodnombre','destinos.nombre as dest','service_rep_detalle_solicituds.id as id','service_rep_estado_solicituds.estado as estado_sol')
             ->get();
+            
+            //dd($this->solicitudservicio);
+
+        }
+        if ($this->id_servicio != null) {
+            
+            $rep= ServiceRepDetalleSolicitud::join('products','products.id','service_rep_detalle_solicituds.product_id')
+            ->join('destinos','destinos.id','service_rep_detalle_solicituds.destino_id')
+            ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
+            ->where('service_id',$this->id_servicio)
+            ->where('service_rep_detalle_solicituds.status','ACTIVO')
+            ->where('service_rep_estado_solicituds.status','ACTIVO')
+            ->where('service_rep_estado_solicituds.estado','ACEPTADO')
+            ->select('products.nombre as prodnombre',
+            'products.id as proid',
+            'destinos.nombre as dest',
+            'service_rep_detalle_solicituds.id as id',
+            'service_rep_estado_solicituds.estado as estado_sol',
+            'service_rep_detalle_solicituds.cantidad as cant',
+            'destinos.id as destid')
+            ->get();
+
+            foreach ($rep as $data) {
+                $this->repuestosalmacen->push([
+                     'orderM'=>$this->orderlista,
+                    'product_id'=> $data->proid,
+                    'product_name'=> $data->prodnombre,
+                    'destiny_id' => $data->destid,
+                    'destiny_name' => $data->dest,
+                    'quantity'=> $data->cant,
+                    'precioventa'=>0,
+                    'subtotal'=>0
+                
+                ]);
+
+                //dd($this->repuestosalmacen);
+
+            }
+             
+
+            
+            
+      
 
         }
 
@@ -2924,7 +2971,6 @@ class OrderServiceController extends Component
 
         //Poniendo el id del servicio en la variable $this->id_servicio para crear pdf de informe técnico
         $this->id_servicio = $idservicio;
-
 
         $this->emit('show-sd', 'show modal!');
     }
@@ -4227,8 +4273,8 @@ class OrderServiceController extends Component
             ServiceRepEstadoSolicitud::create([
                 'detalle_solicitud_id' => $detallesolicitud->id,
                 'user_id' => Auth()->user()->id,
-                'status' => "PENDIENTE",
-                'estado' =>"ACTIVO"
+                'status' => 'ACTIVO',
+                'estado' =>"PENDIENTE"
             ]);
         }
 
@@ -4318,6 +4364,33 @@ class OrderServiceController extends Component
             'status' =>'INACTIVO'
         ]);
         $id->save();
+
+    }
+
+    public function changePrecioVenta($ss,$mm)
+    {
+        //dd($ss,$mm);
+
+        $itemc=$this->repuestosalmacen->where('product_id');
+     
+        $this->repuestosalmacen->pull($itemc->keys()->first());
+
+        $orderM=$itemc->first()['orderM'];
+
+        //dd($itemc);
+
+        $this->repuestosalmacen->push([
+            'orderM'=>$orderM,
+           'product_id'=> $itemc->first()['product_id'],
+           'product_name'=>  $itemc->first()['product_name'],
+           'destiny_id' =>  $itemc->first()['destiny_id'],
+           'destiny_name' =>  $itemc->first()['destiny_name'],
+           'quantity'=>  $itemc->first()['quantity'],
+           'precioventa'=>$mm,
+           'subtotal'=>$mm* $itemc->first()['quantity']
+       
+       ]);
+
 
     }
 }

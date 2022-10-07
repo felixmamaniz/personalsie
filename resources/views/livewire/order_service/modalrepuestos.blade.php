@@ -118,13 +118,6 @@
 
 
 
-
-
-
-
-
-
-
             @if($this->lista_solicitudes != null)
             <div class="row">
                 <div class="col-12 text-center">
@@ -195,19 +188,6 @@
                   </table>
                 </div>
                 @endif
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
         </div>

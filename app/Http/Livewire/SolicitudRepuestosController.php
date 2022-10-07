@@ -352,14 +352,14 @@ class SolicitudRepuestosController extends Component
         foreach($detalle_solicitud->estado_solicitud as $estado)
         {
             $estado->update([
-                'estado' => 'INACTIVO'
+                'status' => 'INACTIVO'
             ]);
         }
 
         ServiceRepEstadoSolicitud::create([
             'detalle_solicitud_id' => $detalle_solicitud->id,
             'user_id' => Auth()->user()->id,
-            'status' => 'ACEPTADO'
+            'estado' => 'ACEPTADO'
         ]);
 
         $this->message = "¡Solicitud de la Orden de Servicio: " . $codigo . " Aceptada!";

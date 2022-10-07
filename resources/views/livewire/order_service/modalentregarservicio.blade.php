@@ -98,11 +98,76 @@
                                     
                                 </div>
                         </div>
-                        
-                        <div class="col-sm-6 col-md-3">
-
-                        </div>
+                 
                     </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-lg-11">
+
+                        <center> <strong> <label class="m-2" >Detalle de Repuestos</label></strong></center> 
+                               <div class="table-repuesto">
+                                   <table>
+                                       <thead>
+                                           <tr>
+                                            <th class="text-center">Nombre Producto</th>
+                                            <th class="text-center">Nombre Destino</th>
+                                            <th class="text-center">Cantidad</th>
+                                            <th class="text-center">Precio Venta</th>
+                                            <th class="text-center">SubTot.</th>
+                                           
+                                           </tr>
+                                       </thead>
+                                       <tbody>
+                                        @if ($id_servicio != null)
+                                        @forelse ($repuestosalmacen as $item)
+                                        
+                                        <tr class="tablaserviciostr">
+                                            <td>
+                                                {{$item['product_name']}}
+
+                                            </td>
+                                            <td>
+                                                {{$item['destiny_name']}}
+
+                                            </td>
+                                            <td>
+                                                {{$item['quantity']}}
+
+                                            </td>
+                                            <td>
+                                                <div class="input-group"  style="min-width: 120px; max-width: 130px; align-items: center;">
+                                                    <input type="number" style="max-height: 30px;" 
+                                                    class="form-control" placeholder="Bs.." aria-label="Recipient's username" aria-describedby="basic-addon2"
+                                                    wire:change="changePrecioVenta({{$item['product_id']}},$event.target.value)">
+                                                    
+                                                    <div class="input-group-append">
+                                                        <span class="input-group-text">Bs</span>
+                                                    </div>
+
+                                            </td>
+                                            <td>
+                                                {{$item['subtotal']}}
+                                            </td>
+                                            </tr>
+                                        @empty
+                                        <p>ningun dato</p>
+                                        @endforelse
+                                                          
+                                        @endif
+                                     
+
+                                                                           
+                                   
+                                     
+                   
+                                       </tbody>
+                                   </table>
+                               </div>
+                        </div>
+                    
+                      
+                    </div>
+                  
                     @else
 
                     <div class="row">

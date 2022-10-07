@@ -1,7 +1,42 @@
 <div class="row">
     
     <div class="col-12 text-center">
-        <h1>ORDENES DE COMPRA</h1>
+        <h1>Ordenes de Compra</h1>
+    </div>
+
+
+
+
+    <div class="col-12 col-sm-6 col-md-3 text-center">
+        <b>Buscar...</b>
+        <div class="form-group">
+            <div class="input-group mb-4">
+                <div class="input-group-prepend">
+                    <span class="input-group-text input-gp">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <input type="text" wire:model="search" placeholder="Buscar por Código..." class="form-control">
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-md-3 text-center">
+        <b>Sucursal</b>
+        <div class="form-group">
+            <select wire:model="sucursal_id" class="form-control">
+                @foreach($listasucursales as $sucursal)
+                <option value="{{$sucursal->id}}">{{$sucursal->name}}</option>
+                @endforeach
+                <option value="Todos">Todas las Sucursales</option>
+            </select>
+        </div>
+    </div>
+    <div class="col-12 col-sm-6 col-md-3 text-center">
+        <b style="color: white;">|</b>
+        <div class="form-group">
+            <a href="{{ url('solicitudrepuestos') }}" type="button" class="btn btn-success">Ir a Solicitud de Repuestos</a>
+        </div>
     </div>
 
     
@@ -10,7 +45,7 @@
 
 
     <div class="col-12">
-        <div class="table-1">
+        <div class="table-null">
             <table>
                 <thead class="text-center" style="background: #02b1ce; color: white;">
                     <tr class="text-center">
@@ -25,7 +60,7 @@
                 </thead>
                 <tbody>
                     @foreach($lista_ordenes as $l)
-                    <tr style="background-color: rgb(162, 237, 250);" class="text-center">
+                    <tr class="fila text-center">
                         <td>
                             <B>{{$loop->iteration}}</B>
                         </td>
@@ -44,9 +79,17 @@
                            <b>{{ \Carbon\Carbon::parse($l->created_at)->format('d/m/Y H:i') }}</b>
                         </td>
                         <td class="text-center">
+                            @if($l->estado != "COMPRADO")
+
                             <button wire:click.prevent="modalrecibircompra({{$l->codigo}})">
                                 Recibir Compra
                             </button>
+
+                            @else
+
+                            Compra Finalizada
+
+                            @endif
                         </td>
                         
                     </tr>
@@ -64,7 +107,7 @@
                         <td>
 
 
-                            <table style="font-size: 12px;">
+                            <table style="font-size: 13px;">
                                 <thead>
                                     <tr>
                                         <th class="text-center">
@@ -135,11 +178,11 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
 
-        //Mostrar ventana modal comprar repuesto
+        //Mostrar ventana modal recibircompra
         window.livewire.on('modalrecibircompra-show', msg => {
             $('#modalrecibircompra').modal('show')
         });
-        //Ocultar ventana modal comprar repuesto
+        //Ocultar ventana modal recibir compra
         window.livewire.on('modalrecibircompra-hide', msg => {
             $('#modalrecibircompra').modal('hide')
             swal(

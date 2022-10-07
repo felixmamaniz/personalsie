@@ -37,7 +37,7 @@
                   <div class="col-6 col-sm-4">
 
                     <label for="exampleFormControlTextarea1"><b>Monto Bs Compra</b></label>
-                    <input type="number" wire:model.lazy="monto_bs_compra" placeholder="Ingrese Bs para la compra..." class="form-control">
+                    <input type="number" wire:model="monto_bs_compra" placeholder="Ingrese Bs para la compra..." class="form-control">
                     @error('monto_bs_compra')
                     <span class="text-danger er">{{ $message }}</span>
                     @enderror
@@ -74,7 +74,7 @@
                       <tr class="text-center">
                         <th>Nombre</th>
                         <th>Cantidad</th>
-                        <th>Precio</th>
+                        <th>Costo</th>
                         <th>Total</th>
                         <th>Acciones</th>
                       </tr>
@@ -89,20 +89,20 @@
                         {{$l['quantity']}}
                         </td>
                         <td class="text-right">
-                          {{ number_format($l['price'], 2)}}
+                          {{ number_format($l['cost'], 2)}}
                         </td>
                         <td class="text-right">
-                          {{ number_format($l['price'] * $l['quantity'], 2)}}
+                          {{ number_format($l['cost'] * $l['quantity'], 2)}}
                         </td>
                         <td>
                           <div class="btn-group" role="group" aria-label="Basic example">
-                            <button wire:click.prevent="InsertarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
+                            {{-- <button wire:click.prevent="InsertarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
                                 <i class="fas fa-chevron-up"></i>
                             </button>
                             <button wire:click.prevent="DecrementarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(255, 124, 1); color:white">
                                 <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <button wire:click.prevent="EliminarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(230, 0, 0); color:white">
+                            </button> --}}
+                            <button wire:click.prevent="EliminarItem({{$l['product_id']}})" class="btn btn-sm" title="Eliminar Este Producto" style="background-color: rgb(230, 0, 0); color:white">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>
@@ -121,6 +121,19 @@
               </div>
 
 
+              @if($this->usuario_id > 0 && $this->monto_bs_compra >= $this->total_bs && $this->cartera_id > 0)
+              <div class="col-12 text-center">
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Se generará un egreso con el siguiente detalle</label>
+                  <textarea wire:model.lazy="detalleegreso" placeholder="Detalle para generar el egreso por compra de repuestos" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+              </div>
+              @endif
+
+
+              
+
+
 
             </div>
 
@@ -135,7 +148,9 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button wire:click="iniciar_compra()" type="button" class="btn btn-primary">Guardar</button>
+          @if($this->total_bs > 0)
+          <button wire:click="iniciar_compra()" type="button" class="btn btn-primary">Generar Orden de Compra</button>
+          @endif
         </div>
       </div>
     </div>

@@ -37,7 +37,7 @@
                   <div class="col-6 col-sm-4">
 
                     <label for="exampleFormControlTextarea1"><b>Monto Bs Cambio</b></label>
-                    <input type="number" wire:model.lazy="monto_bs_cambio" placeholder="Ingrese Bs para la compra..." class="form-control">
+                    <input type="number" wire:model.lazy="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
                     @error('monto_bs_cambio')
                     <span class="text-danger er">{{ $message }}</span>
                     @enderror
@@ -96,13 +96,13 @@
                         </td>
                         <td>
                           <div class="btn-group" role="group" aria-label="Basic example">
-                            <button wire:click.prevent="InsertarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
+                            {{-- <button wire:click.prevent="InsertarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
                                 <i class="fas fa-chevron-up"></i>
                             </button>
                             <button wire:click.prevent="DecrementarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(255, 124, 1); color:white">
                                 <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <button wire:click.prevent="EliminarSolicitud({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(230, 0, 0); color:white">
+                            </button> --}}
+                            <button wire:click.prevent="EliminarItem({{$l['product_id']}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(230, 0, 0); color:white">
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                         </div>

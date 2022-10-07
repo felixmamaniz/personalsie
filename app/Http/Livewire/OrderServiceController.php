@@ -4254,6 +4254,7 @@ class OrderServiceController extends Component
         //Creando la solicitud
         $solicitud = ServiceRepSolicitud::create([
             'user_id' => Auth()->user()->id,
+            'sucursal_id' => $this->idsucursal(),
             'order_service_id' => $this->id_orden_de_servicio
         ]);
         $solicitud->save();

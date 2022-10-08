@@ -3,6 +3,9 @@
 namespace App\Http\Livewire;
 
 use App\Models\Caja;
+use App\Models\Cartera;
+use App\Models\CarteraMov;
+use App\Models\Movimiento;
 use App\Models\ServiceRepDetalleSolicitud;
 use App\Models\ServiceRepEstadoSolicitud;
 use App\Models\ServOrdenCompra;
@@ -16,6 +19,8 @@ class OrdenCompraController extends Component
 {
     //Almacena todos los productos a comprar
     public $lista_productos, $cartera_id, $monto_bs_cambio, $message, $id_orden_compra;
+    //Guarda el detalle con el cual se generará el ingreso en caso de que exista un monto cambio
+    public $detalleingreso;
 
     public function mount()
     {
@@ -35,6 +40,23 @@ class OrdenCompraController extends Component
 
     public function render()
     {
+
+        //Detalle de ingreso en caso de que exista algun monto como cambio
+        if(strlen($this->monto_bs_cambio) > 0)
+        {
+            $nombre_comprador = ServOrdenCompra::join("users as u", "u.id", "serv_orden_compras.idcomprador")
+            ->select("u.name as nombrecomprador")
+            ->where("serv_orden_compras.id",$this->id_orden_compra)
+            ->get()
+            ->first()->nombrecomprador;
+
+
+            $this->detalleingreso = "Por el cambio recibido de: " .$nombre_comprador . " en la compra de repuestos para servicios";
+        }
+
+
+
+
         //Listando todas las ordenes de compra
         $lista_ordenes = ServOrdenCompra::join("users as u","u.id","serv_orden_compras.user_id")
         ->select("serv_orden_compras.id as codigo","serv_orden_compras.idcomprador as idcomprador",
@@ -178,7 +200,34 @@ class OrdenCompraController extends Component
         }
         else
         {
+            foreach($this->lista_productos as $l)
+            {
+                 //Buscando el detalle de la solicitud
+                $detalle = ServiceRepDetalleSolicitud::find($l['detail_id']);
+                //Buscando los estados COMPRANDO del detalle de la solicitud
+                foreach($detalle->estado_solicitud as $e)
+                {
 
+                    if($e->estado == 'COMPRANDO' && $e->status == 'ACTIVO')
+                    {
+                        //Actualizando los estados pendientes ACTIVO a iNACTIVO
+                        $e->update([
+                            'status' => 'INACTIVO'
+                        ]);
+                        //Creando nuevo estado ACTIVO para cada detalle solicitud
+                        ServiceRepEstadoSolicitud::create([
+                            'detalle_solicitud_id' => $l['detail_id'],
+                            'user_id' => Auth()->user()->id,
+                            'estado' => 'COMPRADO',
+                            'status' => 'ACTIVO',
+                        ]);
+
+                    }
+                }
+
+
+
+            }
         }
         $orden_compra = ServOrdenCompra::find($this->id_orden_compra);
 
@@ -187,7 +236,27 @@ class OrdenCompraController extends Component
         ]);
 
 
-        $this->message = "Orden de Compra Finalizada";
+
+
+        //Creando el movimiento con el monto dado como cambio
+        $movimiento = Movimiento::create([
+            'type' => 'TERMINADO',
+            'status' => 'ACTIVO',
+            'import' => $this->monto_bs_cambio,
+            'user_id' => Auth()->user()->id,
+        ]);
+        //Creando el egreso de cartera movimiento 
+        CarteraMov::create([
+            'type' => 'INGRESO',
+            'tipoDeMovimiento' => 'EGRESO/INGRESO',
+            'comentario' => $this->detalleingreso,
+            'cartera_id' => $this->cartera_id,
+            'movimiento_id' => $movimiento->id,
+        ]);
+
+        $nombrecartera = Cartera::find($this->cartera_id)->nombre;
+
+        $this->message = "Se guardo la compra y se creó el ingreso de: " . $this->monto_bs_cambio . " Bs por concepto de cambio en la cartera " . $nombrecartera;
 
         $this->emit("modalrecibircompra-hide");
 

@@ -50,7 +50,8 @@
 								<ul class="nav nav-collapse">
 									<li>
 										<a href="{{ url('reportentregservices') }}">
-											<span class="sub-item">Servicios</span>
+											<i class="fas fa-wrench"></i>
+											Servicios
 										</a>
 									</li>
 									{{-- <li>
@@ -60,27 +61,28 @@
 									</li> --}}
 									<li>
 										<a href="{{ url('salemovimientodiario') }}">
-											<span class="sub-item">Ventas</span>
+											<i class="fas fa-cart-plus"></i>
+											Ventas
 										</a>
 									</li>
-									@can('Reporte_Movimientos_General')
+									{{-- @can('Reporte_Movimientos_General')
 									<li>
 										<a href="{{ url('movimientos') }}">
 											<i class="fa fas fa-minus"></i>
 											Reportes Movimientos</a>
 									</li>
-									@endcan
+									@endcan --}}
 									@can('Reporte_Movimientos_General')
 									<li>
 										<a href="{{ url('resumenmovimientos') }}">
-											<i class="fa fas fa-minus"></i>
-											Resumen Reportes</a>
+											<i class="fas fa-chart-line"></i>
+											Resumen Reportes General</a>
 									</li>
 									@endcan
 									@can('Reporte_Movimientos_General')
 									<li>
 										<a href="{{ url('ingresoegreso') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-money-bill-wave"></i>
 											Ingresos/Egresos</a>
 									</li>
 									@endcan
@@ -108,83 +110,83 @@
 									@can('Roles_Index')
 									<li>
 										<a href="{{ url('roles') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-address-card"></i>
 											Roles </a>
 									</li>
 									@endcan
 									@can('Permission_Index')
 										<li>
 											<a href="{{ url('permisos') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-chalkboard"></i>
 												Permisos </a>
 										</li>
 									@endcan
 									@can('Asignar_Index')
 										<li>
 											<a href="{{ url('asignar') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-chalkboard-teacher"></i>
 												Asignar permisos </a>
 										</li>
 									@endcan
 									@can('Usuarios_Index')
 										<li>
 											<a href="{{ url('users') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-users"></i>
 												Usuarios </a>
 										</li>
 									@endcan
 									@can('Cliente_Index')
 										<li>
 											<a href="{{ url('clientes') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-user-tag"></i>
 												Clientes </a>
 										</li>
 									@endcan
 									@can('Procedencia_Index')
 										<li>
 											<a href="{{ url('procedenciaCli') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-user-lock"></i>
 												Procedencia Clientes </a>
 										</li>
 									@endcan
 									@can('Empresa_Index')
 										<li>
 											<a href="{{ url('companies') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-school"></i>
 												Empresa </a>
 										</li>
 									@endcan
 									@can('Sucursal_Index')
 										<li>
 											<a href="{{ url('sucursales') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-map-marked-alt"></i>
 												Sucursales </a>
 										</li>
 									@endcan
 									@can('Caja_Index')
 										<li>
 											<a href="{{ url('cajas') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-user-tie"></i>
 												Cajas </a>
 										</li>
 									@endcan
 									@can('Cartera_Index')
 										<li>
 											<a href="{{ url('carteras') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-wallet"></i>
 												Cartera </a>
 										</li>
 										<li>
 											<a href="{{ url('carteramovcategoria') }}">
-												<i class="fa fas fa-minus"></i>
-												Cartera Mov Categoria </a>
+												<i class="fas fa-layer-group"></i>
+												Categoria Cartera Mov </a>
 										</li>
 
 									@endcan
 									@can('Corte_Caja_Index')
 										<li>
 											<a href="{{ url('cortecajas') }}">
-												<i class="fa fas fa-minus"></i>
+												<i class="fas fa-credit-card"></i>
 												Corte caja </a>
 										</li>
 									@endcan
@@ -495,54 +497,54 @@
 								@can('Cat_Prod_Service_Index')
 								<li>
 									<a href="{{ url('catprodservice') }}">
-										<i class="fa fas fa-minus"></i>
+										<i class="fas fa-bars"></i>
 										Categoria Equipo </a>
 								</li>
 								@endcan
 								@can('SubCat_Prod_Service_Index')
 									<li>
 										<a href="{{ url('subcatprodservice') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-window-restore"></i>
 											Sub Categ. Equipo </a>
 									</li>
 								@endcan
 								@can('Type_Work_Index')
 									<li>
 										<a href="{{ url('typework') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="far fa-newspaper"></i>
 											Tipo de Trabajo </a>
 									</li>
 								@endcan
 								@can('Orden_Servicio_Index')
 									<li>
 										<a href="{{ url('orderservice') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-wrench"></i>
 											Orden de Servicio </a>
 									</li>
 								@endcan
 								@can('Reporte_Servicios_Index')
 									<li>
 										<a href="{{ url('reporteservices') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-signal"></i>
 											Reporte de Servicios </a>
 									</li>
 								@endcan
 								@can('Reporte_Servicios_Index')
 									<li>
 										<a href="{{ url('reportentregservices') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-server"></i>
 											Repor. Servi. Entregados </a>
 									</li>
 								@endcan
 								@can('Reporte_Servicios_Index')
 									<li>
 										<a href="{{ url('solicitudrepuestos') }}">
-											<i class="fa fas fa-minus"></i>
-											Repuestos Servicios </a>
+											<i class="fas fa-user-clock"></i>
+											Solicitud Repuestos </a>
 									</li>
 									<li>
 										<a href="{{ url('ordencompra') }}">
-											<i class="fa fas fa-minus"></i>
+											<i class="fas fa-user-edit"></i>
 											Ordenes de Compra </a>
 									</li>
 								@endcan

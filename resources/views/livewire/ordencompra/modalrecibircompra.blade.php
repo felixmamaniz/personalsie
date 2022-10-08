@@ -37,7 +37,7 @@
                   <div class="col-6 col-sm-4">
 
                     <label for="exampleFormControlTextarea1"><b>Monto Bs Cambio</b></label>
-                    <input type="number" wire:model.lazy="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
+                    <input type="number" wire:model="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
                     @error('monto_bs_cambio')
                     <span class="text-danger er">{{ $message }}</span>
                     @enderror
@@ -62,6 +62,10 @@
 
                 </div>
               </div>
+
+
+
+
             </div>
 
             <br>
@@ -123,6 +127,21 @@
 
 
 
+            @if(strlen($this->monto_bs_cambio) > 0)
+              <div class="col-12 text-center">
+                <div class="form-group">
+                  <label for="exampleFormControlTextarea1">Se generará un ingreso con el siguiente detalle</label>
+                  <textarea wire:model.lazy="detalleingreso" placeholder="Detalle para generar el egreso por compra de repuestos" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                </div>
+              </div>
+              @endif
+
+
+
+
+
+
+
 
           </div>
 
@@ -131,7 +150,15 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+
+
+          @if($lista_productos->count() > 0)
           <button wire:click="finalizar_compra()" type="button" class="btn btn-primary">Recibir Compra y Entregar Productos</button>
+          @endif
+
+
+
+
         </div>
       </div>
     </div>

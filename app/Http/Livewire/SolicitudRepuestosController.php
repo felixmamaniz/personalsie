@@ -65,14 +65,8 @@ class SolicitudRepuestosController extends Component
         if($this->usuario_id > 0 && $this->monto_bs_compra >= $this->total_bs && $this->cartera_id > 0)
         {
             $nombre_comprador = User::find($this->usuario_id)->name;
-            $this->detalleegreso = "Por la compra de repuestos en servicios, dinero entregado a " . $nombre_comprador;
+            $this->detalleegreso = "Para la compra de repuestos en servicios, dinero entregado a " . $nombre_comprador;
         }
-
-
-
-
-
-
         if(strlen($this->search) == 0)
         {
             if($this->sucursal_id == "Todos")

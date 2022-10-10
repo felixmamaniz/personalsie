@@ -92,15 +92,14 @@
     function Confirm(id, verificar){
         if(verificar == 'si')
         {
-            swal({
-                title: 'CONFIRMAR',
-                text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
-                type: 'WARNING',
-                showCancelButton: true,
-                cancelButtonText: 'cerrar',
-                cancelButtonColor: '#fff',
-                confirmButtonColor: '#3b3f5c',
-                confirmButtonText: 'Aceptar'
+            Swal.fire({
+            title: 'CONFIRMAR',
+            text: "¿CONFIRMAS ELIMINAR  EL REGISTRO",
+            icon: 'WARNING',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Aceptar'
             }).then(function(result){
                 if(result.value){
                     window.livewire.emit('deleteRow',id)

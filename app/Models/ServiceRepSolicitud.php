@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ServiceRepSolicitud extends Model
 {
     use HasFactory;
-    protected $fillable = ['user_id','order_service_id','status'];
+    protected $fillable = ['user_id','order_service_id','sucursal_id','status'];
 
     public function detalle_solicitud()
     {

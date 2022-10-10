@@ -71,12 +71,15 @@ class AnticipoController extends Component
             }
         }
 
-
+        // calcular nuevo saldo
+        //$result = number_format($data->salario - ($this->anticipo +  $this->descuento)); //$data->salario - $data->anticipo;
+        
 
 
         return view('livewire.anticipos.component', [
             'anticipos' => $data,        // se envia anticipos
             'empleados' => Employee::orderBy('name', 'asc')->get(),
+            //'pruebas' => $result
             ])
         ->extends('layouts.theme.app')
         ->section('content');

@@ -15,14 +15,11 @@ class CreateServOrdenComprasTable extends Migration
     {
         Schema::create('serv_orden_compras', function (Blueprint $table) {
             $table->id();
-
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users');
-
             $table->integer('idcomprador');
-
+            $table->string('estado',100)->default('COMPRANDO');
             $table->enum('status',['ACTIVO','INACTIVO'])->default('ACTIVO');
-
             $table->timestamps();
         });
     }

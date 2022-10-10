@@ -19,6 +19,9 @@ use App\Models\Service;
 use App\Models\OrderService;
 use App\Models\Product;
 use App\Models\ProductosDestino;
+use App\Models\Sale;
+use App\Models\SaleDetail;
+use App\Models\SaleLote;
 use App\Models\SalidaLote;
 use App\Models\SalidaProductos;
 use App\Models\SalidaServicio;
@@ -69,7 +72,7 @@ class OrderServiceController extends Component
     public $lista_de_usuarios,$observacion;
 
     //Id Servicio, Id Orden de Servicio
-    public $id_servicio, $id_orden_de_servicio;
+    public $id_servicio, $id_orden_de_servicio,$count;
 
     //Variables para la Ventana Modal Editar Servicio
     public $edit_tipodetrabajo, $edit_categoriatrabajo, $edit_marca, $edit_detalle, $edit_fallaseguncliente, $edit_diagnostico, $edit_solucion;
@@ -2639,48 +2642,7 @@ class OrderServiceController extends Component
             //dd($this->solicitudservicio);
 
         }
-        if ($this->id_servicio != null) {
-            
-            $rep= ServiceRepDetalleSolicitud::join('products','products.id','service_rep_detalle_solicituds.product_id')
-            ->join('destinos','destinos.id','service_rep_detalle_solicituds.destino_id')
-            ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
-            ->where('service_id',$this->id_servicio)
-            ->where('service_rep_detalle_solicituds.status','ACTIVO')
-            ->where('service_rep_estado_solicituds.status','ACTIVO')
-            ->where('service_rep_estado_solicituds.estado','ACEPTADO')
-            ->select('products.nombre as prodnombre',
-            'products.id as proid',
-            'destinos.nombre as dest',
-            'service_rep_detalle_solicituds.id as id',
-            'service_rep_estado_solicituds.estado as estado_sol',
-            'service_rep_detalle_solicituds.cantidad as cant',
-            'destinos.id as destid')
-            ->get();
-
-            foreach ($rep as $data) {
-                $this->repuestosalmacen->push([
-                     'orderM'=>$this->orderlista,
-                    'product_id'=> $data->proid,
-                    'product_name'=> $data->prodnombre,
-                    'destiny_id' => $data->destid,
-                    'destiny_name' => $data->dest,
-                    'quantity'=> $data->cant,
-                    'precioventa'=>0,
-                    'subtotal'=>0
-                
-                ]);
-
-                //dd($this->repuestosalmacen);
-
-            }
-             
-
-            
-            
-      
-
-        }
-
+        
     
 
 
@@ -3362,6 +3324,42 @@ class OrderServiceController extends Component
     //Muestra una Ventana Modal para entregar un Servicio
     public function modalentregarservicio($type, $idservicio, $idordendeservicio)
     {
+
+     
+        $this->repuestosalmacen=collect();
+            $rep= ServiceRepDetalleSolicitud::join('products','products.id','service_rep_detalle_solicituds.product_id')
+            ->join('destinos','destinos.id','service_rep_detalle_solicituds.destino_id')
+            ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
+            ->where('service_id',$idservicio)
+            ->where('service_rep_detalle_solicituds.status','ACTIVO')
+            ->where('service_rep_estado_solicituds.status','ACTIVO')
+            ->where('service_rep_estado_solicituds.estado','ACEPTADO')
+            ->select('products.nombre as prodnombre',
+            'products.id as proid',
+            'destinos.nombre as dest',
+            'service_rep_detalle_solicituds.id as id',
+            'service_rep_estado_solicituds.estado as estado_sol',
+            'service_rep_detalle_solicituds.cantidad as cant',
+            'destinos.id as destid')
+            ->get();
+
+            foreach ($rep as $data) {
+                $this->repuestosalmacen->push([
+                     'orderM'=>$this->orderlista,
+                    'product_id'=> $data->proid,
+                    'product_name'=> $data->prodnombre,
+                    'destiny_id' => $data->destid,
+                    'destiny_name' => $data->dest,
+                    'quantity'=> $data->cant,
+                    'precioventa'=>0,
+                    'subtotal'=>0
+                
+                ]);
+                $this->orderlista++;
+                //dd($this->repuestosalmacen);
+
+            }
+            
          //Verificando si el usuario tiene una caja abierta
          if($this->listarcarteras() == null)
          {
@@ -3494,6 +3492,155 @@ class OrderServiceController extends Component
                 }
             }
         }
+
+
+        //Venta de repuestos de tienda
+
+        foreach ($this->repuestosalmacen as $data) {
+            
+            //Los precios de los productos de tienda vienen aparte y no se cobran en conjunto con la venta, se busca los productos de tienda
+            //dd($data);
+            
+            if ($data['destiny_name'] === 'TIENDA') {
+                
+        //dd("hola");
+
+                // $Movimiento = Movimiento::create([
+                //     'type' => "VENTAS",
+                //     'import' => $data['subtotal'],
+                //     'user_id' => Auth()->user()->id,
+                // ]);
+
+                // $sale = Sale::create([
+
+                //     'total' => $data['subtotal'],
+                //     'items' => 1,
+                //     'cash' => $data['subtotal'],
+                //     'change' =>0,
+                //     'tipopago' => 'Efectivo',
+                //     'factura' => "No",
+                //     'cartera_id' => $this->tipopago,
+                //     'observacion' =>'Ninguna',
+                //     'movimiento_id' => $Movimiento->id,
+                //     'user_id' => Auth()->user()->id
+                // ]);
+                
+                //     $sd = SaleDetail::create([
+                //         'price' => $data['subtotal'],
+                //         'quantity' => $data['quantity'],
+                //         'product_id' =>  $data['product_id'],
+                //         'sale_id' => $sale->id,
+                //     ]);
+    
+                  
+    
+                    //Buscamos todos los lotes que tengan ese producto
+                    $mn = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')->get();
+                    
+                    dump("ss",$mn);
+    
+                    //Recorremos todos los lotes que tengan ese producto
+                    foreach($lotes as $l)
+                    {
+                        //Obtenemos la cantidad de existencia que tenga ese lote de ese producto
+                        $cantidad_producto_lote = $l->existencia;
+    
+                        //Si la cantidad del producto para la venta supera la existencia en el lote
+                        //Vaciamos toda la existencia de ese lote y lo inactivamos
+                        if($cantidad_producto_venta > $cantidad_producto_lote)
+                        {
+                            //Creamos un registro en la tabla SaleLote con la cantidad total del producto en el lote
+                            $sale_lote = SaleLote::create([
+                                'sale_detail_id' => $sd->id,
+                                'lote_id' => $l->id,
+                                'cantidad' => $cantidad_producto_lote
+                            ]);
+                            //Dismunuimos la cantidad del producto para la venta por el total cantidad del producto en el lote
+                            $cantidad_producto_venta = $cantidad_producto_venta - $cantidad_producto_lote;
+    
+    
+                            //Actualizamos el lote
+                            $l->update([
+                                'existencia' => 0,
+                                'status' => 'Inactivo'
+                                ]);
+                            $l->save();
+                        }
+                        else
+                        {
+                            //Si la cantidad del producto para la venta no supera la existencia en el lote
+                            //Reducimos la existencia de ese lote por la cantidad del producto para la venta
+                            SaleLote::create([
+                                'sale_detail_id' => $sd->id,
+                                'lote_id' => $l->id,
+                                'cantidad' => $cantidad_producto_venta
+                            ]);
+    
+                            $l->update([ 
+                                'existencia'=> $cantidad_producto_lote - $cantidad_producto_venta
+                            ]);
+                            $l->save();
+                            $cantidad_producto_venta=0;
+                        }
+                    }
+    
+    
+    
+    
+    
+    
+                    //Decrementando el stock en tienda
+                    $tiendaproducto = ProductosDestino::join("products as p", "p.id", "productos_destinos.product_id")
+                    ->join('destinos as des', 'des.id', 'productos_destinos.destino_id')
+                    ->select("productos_destinos.id as id","p.nombre as name",
+                    "productos_destinos.stock as stock")
+                    ->where("p.id", $p->id)
+                    ->where("des.nombre", 'TIENDA')
+                    ->where("des.sucursal_id", $this->idsucursal())
+                    ->get()->first();
+    
+    
+                    $tiendaproducto->update([
+                        'stock' => $tiendaproducto->stock - $p->quantity
+                    ]);
+    
+    
+    
+    
+    
+    
+                
+            }
+    
+            $sale = Sale::create([
+                'total' => $this->total_bs,
+                'items' => $this->total_items,
+                'cash' => $this->dinero_recibido,
+                'change' => $this->cambio,
+                'tipopago' => $cartera->nombre,
+                'factura' => $this->invoice,
+                'cartera_id' => $cartera->id,
+                'observacion' => $this->observacion,
+                'movimiento_id' => $Movimiento->id,
+                'user_id' => Auth()->user()->id
+            ]);
+
+
+          
+            
+
+        }
+
+
+
+
+
+
+
+
+
+
+
     }
     //Actualizar un Servicio (Tabla services y movimientos)
     public function actualizarservicio()
@@ -4254,6 +4401,7 @@ class OrderServiceController extends Component
         //Creando la solicitud
         $solicitud = ServiceRepSolicitud::create([
             'user_id' => Auth()->user()->id,
+            'sucursal_id' => $this->idsucursal(),
             'order_service_id' => $this->id_orden_de_servicio
         ]);
         $solicitud->save();
@@ -4367,29 +4515,33 @@ class OrderServiceController extends Component
 
     }
 
-    public function changePrecioVenta($ss,$mm)
+    public function changePrecioVenta($ss,$mm,$tt)
     {
-        //dd($ss,$mm);
-
-        $itemc=$this->repuestosalmacen->where('product_id');
-     
-        $this->repuestosalmacen->pull($itemc->keys()->first());
+        //dd($ss,$mm,$tt);
+        $itemc=$this->repuestosalmacen->where('product_id',$ss)->where('destiny_id',$mm);
+        //dd($itemc);
+        $product=$itemc;
 
         $orderM=$itemc->first()['orderM'];
-
-        //dd($itemc);
+        //dd($itemc->keys()->first());
+        $this->repuestosalmacen->pull($itemc->keys()->first());
+        
+        //dd($this->repuestosalmacen);
 
         $this->repuestosalmacen->push([
             'orderM'=>$orderM,
-           'product_id'=> $itemc->first()['product_id'],
-           'product_name'=>  $itemc->first()['product_name'],
-           'destiny_id' =>  $itemc->first()['destiny_id'],
-           'destiny_name' =>  $itemc->first()['destiny_name'],
-           'quantity'=>  $itemc->first()['quantity'],
-           'precioventa'=>$mm,
-           'subtotal'=>$mm* $itemc->first()['quantity']
+            
+           'product_id'=> $product->first()['product_id'],
+           'product_name'=>  $product->first()['product_name'],
+           'destiny_id' =>  $product->first()['destiny_id'],
+           'destiny_name' =>  $product->first()['destiny_name'],
+           'quantity'=>  $product->first()['quantity'],
+           'precioventa'=>$tt,
+           'subtotal'=>$tt* $product->first()['quantity']
        
        ]);
+
+       //dd($this->repuestosalmacen);
 
 
     }

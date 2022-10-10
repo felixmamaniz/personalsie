@@ -19,6 +19,8 @@ class CreateServiceRepSolicitudsTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->unsignedBigInteger('order_service_id');
             $table->foreign('order_service_id')->references('id')->on('order_services');
+            $table->unsignedBigInteger('sucursal_id');
+            $table->foreign('sucursal_id')->references('id')->on('sucursals');
             $table->enum('status',['ACTIVO','INACTIVO'])->default('ACTIVO');
             $table->timestamps();
         });

@@ -8,5 +8,5 @@ use Illuminate\Database\Eloquent\Model;
 class CarteraMovCategoria extends Model
 {
     use HasFactory;
-    protected $fillable = ['nombre','detalle','tipo','status'];
+    protected $fillable = ['nombre','detalle','tipo','subcategoria','status'];
 }

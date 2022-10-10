@@ -891,7 +891,7 @@ class ReporteMovimientoResumenController extends Component
 
         $this->EgresosTotales = $this->totalesEgresosV->sum('importe') + $this->totalesEgresosIE->sum('importe');
 
-
+     
 
         // egresos totales por caja fisica
         $this->EgresosTotalesCF = $this->totalesEgresosV->where('ctipo','CajaFisica')->sum('importe') + $this->totalesEgresosIE->where('ctipo','CajaFisica')->sum('importe');
@@ -904,7 +904,7 @@ class ReporteMovimientoResumenController extends Component
         //$this->operacionefectivoeg= $this->totalesEgresos->where('ctipo','CajaFisica')->sum('importe');
 
         //Ingresos - Egresos
-        $this->subtotalcaja= $this->ingresosTotales - $this->EgresosTotales;
+        $this->subtotalcaja= $this->subtotalesIngresos - $this->EgresosTotalesCF;
         $this->operacionesefectivas= $this->ingresosTotalesCF - $this->EgresosTotalesCF;
 
         if ($this->caja != "TODAS") {

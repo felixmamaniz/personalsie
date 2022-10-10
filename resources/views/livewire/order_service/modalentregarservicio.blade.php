@@ -121,10 +121,9 @@
                                         @if ($id_servicio != null)
                                         @forelse ($repuestosalmacen as $item)
                                         
-                                        <tr class="tablaserviciostr">
+                                        <tr wire:key="{{$item['orderM']}}">
                                             <td>
                                                 {{$item['product_name']}}
-
                                             </td>
                                             <td>
                                                 {{$item['destiny_name']}}
@@ -137,13 +136,12 @@
                                             <td>
                                                 <div class="input-group"  style="min-width: 120px; max-width: 130px; align-items: center;">
                                                     <input type="number" style="max-height: 30px;" 
-                                                    class="form-control" placeholder="Bs.." aria-label="Recipient's username" aria-describedby="basic-addon2"
-                                                    wire:change="changePrecioVenta({{$item['product_id']}},$event.target.value)">
-                                                    
+                                                    class="form-control" placeholder="Bs.." aria-label="Recipient's username" value="{{ $item['precioventa'] }}"
+                                                    wire:change="changePrecioVenta({{$item['product_id']}},'{{$item['destiny_id']}}',$event.target.value)">
                                                     <div class="input-group-append">
                                                         <span class="input-group-text">Bs</span>
-                                                    </div>
-
+                                                </div>
+                                                </div>
                                             </td>
                                             <td>
                                                 {{$item['subtotal']}}
@@ -187,15 +185,6 @@
 
 
                 @endif
-
-
-
-                
-
-
-
-
-
 
             </div>
 

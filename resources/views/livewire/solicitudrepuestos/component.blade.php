@@ -66,103 +66,104 @@
     .compraestilos {
         text-decoration: none !important; 
         background-color: rgb(224, 101, 0);
-        cursor: pointer;
-        color: white;
-        border-color: rgb(224, 101, 0);
-        border-radius: 5px;
+        color: white !important; 
+        cursor: default;
+        border:none;
+        border-radius: 7px;
         padding-top: 2px;
         padding-bottom: 2px;
-        padding-left: 2px;
-        padding-right: 2px;
+        padding-left: 5px;
+        padding-right: 5px;
         box-shadow: none;
         border-width: 2px;
         border-style: solid;
         border-color: rgb(224, 101, 0);
         display: inline-block;
-        }
-        .compraestilos:hover {
-        background-color: rgb(255, 255, 255);
-        color: rgb(224, 101, 0);
-        transition: all 0.4s ease-out;
-        border-color: rgb(224, 101, 0);
-        text-decoration: underline;
-        -webkit-transform: scale(1.05);
-        -moz-transform: scale(1.05);
-        -ms-transform: scale(1.05);
-        transform: scale(1.05);
-
     }
 
 </style>
 @endsection
 <div class="row">
     <div class="col-12 text-center">
-        <p class="h1">SOLICITUDES</p>
+        <p class="h1">Solicitud de Repuestos</p>
     </div>
 
     <div class="col-12 col-sm-6 col-md-3 text-center">
-        <b>XXXXXXXX</b>
+        <b>Buscar...</b>
         <div class="form-group">
-
+            <div class="input-group mb-4">
+                <div class="input-group-prepend">
+                    <span class="input-group-text input-gp">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+                <input type="text" wire:model="search" placeholder="Buscar por Código..." class="form-control">
+            </div>
         </div>
     </div>
 
     <div class="col-12 col-sm-6 col-md-3 text-center">
-        <b>XXXXXXX</b>
+        <b>Sucursal</b>
         <div class="form-group">
-            
+            <select wire:model="sucursal_id" class="form-control">
+                @foreach($listasucursales as $sucursal)
+                <option value="{{$sucursal->id}}">{{$sucursal->name}}</option>
+                @endforeach
+                <option value="Todos">Todas las Sucursales</option>
+            </select>
         </div>
     </div>
     <div class="col-12 col-sm-6 col-md-3 text-center">
-        <b>XXXXXX</b>
+        <b style="color: white;">|</b>
         <div class="form-group">
-            
+            <a href="{{ url('ordencompra') }}" type="button" class="btn btn-success">Ir a Ordenes de Compra</a>
         </div>
     </div>
     <div class="col-12 col-sm-6 col-md-3 text-center">
-        <b>|</b>
+        <b style="color: white;">|</b>
         <div class="form-group">
-            <button wire:click="modal_iniciar_compra2()" type="button" class="btn btn-primary">Generar Órden de Compra</button>
+            <button wire:click="modal_iniciar_compra()" type="button" class="btn btn-primary">Generar Órden de Compra</button>
         </div>
     </div>
 
 
 
     <div class="col-12">
-        <div class="table-1">
+        <div class="table-null">
             <table>
-                <thead class="text-center" style="background: #02b1ce; color: white;">
-                    <tr class="text-center">
+                <thead class="text-center cabeza">
+                    <tr>
                         <th>No</th>
                         <th>ORDEN DE SERVICIO</th>
                         <th>TECNICO SOLICITANTE</th>
                         <th>FECHA SOLICITUD</th>
-                        <th>TIEMPO</th>
+                        <th>SUCURSAL</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($lista_solicitudes as $l)
-                    <tr style="background-color: rgb(162, 237, 250);" class="text-center">
+                    <tr class="fila text-center">
                         <td>
                             <B>{{$loop->iteration}}</B>
                         </td>
                         <td>
-                            <span class="stamp stamp" style="background-color: #02b1ce">
+                            <span class="stamp stamp" style="background-color: #007bdf">
                                 {{$l->codigo}}
                             </span>
                         </td>
                         <td>
                             <b>{{$l->nombresolicitante}}</b>
+                            @if($l->minutos >= 0)
+                            <span class="stamp stamp" style="background-color: rgb(22, 192, 0)">
+                                Hace <b>{{$l->minutos}}</b> Minutos  
+                            </span>
+                            @endif
                         </td>
                         <td>
                            <b>{{ \Carbon\Carbon::parse($l->created_at)->format('d/m/Y H:i') }}</b>
                         </td>
                         <td>
-                            @if($l->minutos >= 0)
-                            <span class="stamp stamp" style="background-color: #007bdf">
-                                Hace <b>{{$l->minutos}}</b> Minutos  
-                            </span>
-                            @endif
+                            <b>{{$l->nombresucursal}}</b>
                         </td>
                     </tr>
 
@@ -175,9 +176,8 @@
                         </td>
                         <td>
 
-
-                            <table style="font-size: 12px;">
-                                <thead style="background-color: rgb(255, 255, 255);">
+                            <table style="font-size: 13px;">
+                                <thead>
                                     <tr>
                                         <th class="text-center">
                                             <b>NOMBRE PRODUCTO</b>
@@ -197,7 +197,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach($l->detalles as $d)
+                                    @foreach($l->detalles->sortBy("iddetalle") as $d)
                                         <tr>
                                             <td>
                                                 {{$d->nombreproducto}}
@@ -210,11 +210,9 @@
                                             </td>
                                             <td class="text-center">
                                                 @if($d->tipo == "CompraRepuesto")
-                                                
                                                 <div style="color: rgb(255, 82, 82);">
                                                     Compra
                                                 </div>
-
                                                 @else
                                                 <div style="color: rgb(0, 48, 204);">
                                                     {{$d->tipo}}
@@ -232,8 +230,8 @@
 
                                                     @if($d->estado == "PENDIENTE" && $d->tipo == "CompraRepuesto")
 
-                                                    <button class="pendienteestilos" title="Aceptar Solicitud">
-                                                        Compra Pendiente
+                                                    <button wire:click.prevent="solicitar_orden_compra()" class="pendienteestilos" title="Ver Información">
+                                                        COMPRA PENDIENTE
                                                     </button>
 
                                                     @else
@@ -242,7 +240,8 @@
                                                         @if($d->estado == "ACEPTADO")
 
                                                             <a href="#" class="aceptadoestilos">
-                                                                {{$d->estado}}
+                                                                {{-- {{$d->estado}} --}}
+                                                                ACEPTADO/ENTREGADO
                                                             </a>
 
                                                         @else
@@ -252,6 +251,17 @@
                                                             <button class="compraestilos">
                                                                 {{$d->estado}}
                                                             </button>
+
+                                                            @else
+
+                                                            <button class="aceptadoestilos">
+                                                                {{-- {{$d->estado}} --}}
+                                                                COMPRADO/ENTREGADO
+                                                            </button>
+
+
+
+
                                                             @endif
                                                         
                                                         @endif
@@ -271,7 +281,6 @@
                                 </tbody>
                             </table>
 
-
                         </td>
                         <td class="text-center">
                             
@@ -280,15 +289,8 @@
 
                         </td>
                     </tr>
-
-
-
-                    
                     @endforeach
                 </tbody>
-                <tfoot>
-
-                </tfoot>
             </table>
         </div>
     </div>
@@ -324,6 +326,15 @@
                     '¡Solicitud Aceptada!',
                     @this.message,
                     'success'
+                    )
+            });
+
+        //Mostrar cualquier tipo de Mensaje Ventana de Informacion
+        window.livewire.on('mensaje-info', event => {
+                swal(
+                    '¡Información!',
+                    @this.message,
+                    'info'
                     )
             });
 

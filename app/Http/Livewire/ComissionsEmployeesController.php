@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Livewire;
+
+use App\Models\Comision;
 use App\Models\CommissionsEmployees;
 use App\Models\Employee;
 use Livewire\WithFileUploads;
@@ -16,7 +18,7 @@ class ComissionsEmployeesController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $empleadoid, $multiplicado, $comisionn, $motivo, $selected_id, $descuentoc, $fecha, $timefrom, $timeto;
+    public $empleadoid, $multiplicado, $comisionn, $motivo, $selected_id, $descuentoc, $fecha, $timefrom, $timeto, $venta_comision, $MesVenta;
     public $pageTitle, $componentName, $search;
     private $pagination = 5;
 
@@ -40,7 +42,7 @@ class ComissionsEmployeesController extends Component
             ->select('commissions_employees.*','e.name as empleado')
             ->where('e.name', 'like', '%' . $this->search . '%')   
             //->orWhere('at.name', 'like', '%' . $this->search . '%')         
-            ->orderBy('commissions_employees.created_at', 'asc')
+            ->orderBy('commissions_employees.mes', 'desc')
             ->paginate($this->pagination);
 
             
@@ -48,7 +50,7 @@ class ComissionsEmployeesController extends Component
         else
             $data = CommissionsEmployees::join('employees as e', 'e.id', 'commissions_employees.user_id')
             ->select('commissions_employees.*','e.name as empleado')
-            ->orderBy('commissions_employees.created_at', 'asc')
+            ->orderBy('commissions_employees.mes', 'desc')
             ->paginate($this->pagination);
 
            $comissiones=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
@@ -57,9 +59,13 @@ class ComissionsEmployeesController extends Component
         ->select('s.total', 'u.name', 's.created_at')
         ->get();
 
-       
+       foreach ($data as $d) {
+        $fecmes='2022-'.$d->mes.'-01';
+        $date = Carbon::parse($fecmes)->format('F');
+        $d->mes = $this->Mes($date);
+       }
 
-
+       //dd($data);
         $ventas=Sale::select('sales.*')
         ->whereBetween('created_at',['2022-08-01','2022-08-31'])
         ->where('user_id',31)
@@ -84,27 +90,42 @@ class ComissionsEmployeesController extends Component
 
     // crear y guardar
     public function Store(){
+
+        $fechap=CommissionsEmployees::select('commissions_employees.*')
+       ->where('commissions_employees.mes', $this->MesVenta)
+       ->where('user_id',$this->empleadoid )
+       ->first();
+       //validar para el msg de error
+       //dd($fechap);
+       
+        if($fechap==null){
+            $this->prueba=1;
+        }
+        else{
+            $this->prueba=null;
+        }
         $rules = [
-            'empleadoid' => "required|not_in:Elegir|unique:commissions_employees,user_id,{$this->selected_id}",
+            'empleadoid' => "required|not_in:Elegir",
             'multiplicado' => 'required',
-            'comisionn' => 'required'
+            'comisionn' => 'required',
+            'prueba' => "required_if:prueba,null",
         ];
         $messages =  [
             'empleadoid.required' => 'Elija un Empleado',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
-            'empleadoid.unique' => 'El empleado ya existe',
             'multiplicado.required' => 'Este espacio es requerida',
-            'comisionn.required' => 'Este espacio es requerida'
+            'comisionn.required' => 'Este espacio es requerida',
+            'prueba.required_if' => 'Elija una fecha no asignada',
         ];
-        //dd($this->descuentoc);
         $this->validate($rules, $messages);
         $this->fecha = Carbon::parse(Carbon::now())->format('Y-m-d');
+       // dd($this->venta_comision);
         $anticipo = CommissionsEmployees::create([
             'user_id' => $this->empleadoid,
             'multiplicado'=>$this->multiplicado,
             'comision'=>$this->comisionn,
-            'fromtime' => $this->timefrom,
-            'totime' => $this->timeto,
+            'venta_comision' => $this->venta_comision,
+            'mes' => $this->MesVenta,
         ]);
 
         $this->resetUI();
@@ -117,25 +138,45 @@ class ComissionsEmployeesController extends Component
         $this->empleadoid = $com->user_id;
         $this->multiplicado = $com->multiplicado;
         $this->comisionn = $com->comision;
-        $this->timefrom = $com->fromtime;
-        $this->timeto = $com->totime;
+        $this->venta_comision = $com->venta_comision;
+        if($com->mes < 10)
+        $this->MesVenta = '0'.$com->mes;
+        else
+        $this->MesVenta = $com->mes;
 
         $this->emit('show-modal', 'show modal!');
     }
 
     // Actualizar datos
     public function Update(){
+
+        $fechap=CommissionsEmployees::select('commissions_employees.*')
+       ->where('commissions_employees.mes', $this->MesVenta)
+       ->where('user_id',$this->empleadoid )
+       ->first();
+       //validar para el msg de error
+       //dd($fechap);
+       
+        if($fechap==null){
+            $this->prueba=1;
+        }
+        else{
+            $this->prueba=null;    
+        }
+
         $rules = [
             'empleadoid' => 'required|not_in:Elegir',
             'multiplicado' => 'required',
-            'comisionn' => 'required'
+            'comisionn' => 'required',
+            'prueba' => "required_if:prueba,null",
 
         ];
         $messages =  [
             'empleadoid.required' => 'Elija un Empleado',
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'multiplicado.required' => 'Este espacio es requerida',
-            'comisionn.required' => 'Este espacio es requerida'
+            'comisionn.required' => 'Este espacio es requerida',
+            'prueba.required_if' => 'Elija una fecha no asignada',
         ];
         $this->validate($rules,$messages);
 
@@ -144,8 +185,8 @@ class ComissionsEmployeesController extends Component
             'user_id' => $this->empleadoid,
             'multiplicado'=>$this->multiplicado,
             'comision'=>$this->comisionn,
-            'fromtime' => $this->timefrom,
-            'totime' => $this->timeto,
+            'venta_comision' => $this->venta_comision,
+            'mes' => $this->MesVenta,
         ]);
 
         $this->resetUI();
@@ -157,11 +198,56 @@ class ComissionsEmployeesController extends Component
         $this->empleadoid = 'Elegir';
         $this->multiplicado='';
         $this->comisionn='';
-        $this->timefrom='';
-        $this->timeto='';
+        $this->venta_comision='';
+        $this->MesVenta='';
         $this->fechaSolicitud='';
         $this->search='';
         $this->selected_id=0;
         $this->resetValidation(); // resetValidation para quitar los smg Rojos
+    }
+
+    public function Mes($m)
+    {
+       
+        switch ($m) {
+            case 'January':
+                return 'ENERO';
+                break;
+            case 'February':
+                return 'FEBRERO';
+                break;
+            case 'March':
+                return 'MARZO';
+                break;
+            case 'April':
+                return 'ABRIL';
+                break;
+            case 'May':
+                return 'MAYO';
+                break;
+            case 'June':
+                return 'JUNIO';
+                break;
+            case 'July':
+                return 'JULIO';
+                break;
+            case 'August':
+                return 'AGOSTO';
+                break;
+            case 'September':
+                return 'SEPTIEMBRE';
+                break;
+            case 'October':
+                return 'OCTUBRE';
+                break;
+            case 'November':
+                return 'NOVIEMBRE';
+                break;
+            case 'December':
+                return 'DICIEMBRE';
+                break;
+            default:
+                return "no se encontro resultado";
+        }
     }
 }

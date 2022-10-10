@@ -295,7 +295,7 @@ class AttendancesController extends Component
             $os->dia = $this->fecha_dia($fec);
             //no marco salida validacion
             if($os->salida=="00:00:00"){
-                $os->Salida_Normal="Se Quedo a Dormir";
+                $os->Salida_Normal="No Marco Salida";
             }
             else{
                 $os->Salida_Normal = "Normal";

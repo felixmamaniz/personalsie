@@ -5,13 +5,16 @@ namespace App\Http\Livewire;
 use App\Models\Caja;
 use App\Models\Cartera;
 use App\Models\CarteraMov;
+use App\Models\Compra;
 use App\Models\Movimiento;
+use App\Models\Provider;
 use App\Models\ServiceRepDetalleSolicitud;
 use App\Models\ServiceRepEstadoSolicitud;
 use App\Models\ServOrdenCompra;
 use App\Models\ServOrdenDetalle;
 use App\Models\Sucursal;
 use App\Models\User;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 
@@ -21,6 +24,14 @@ class OrdenCompraController extends Component
     public $lista_productos, $cartera_id, $monto_bs_cambio, $message, $id_orden_compra;
     //Guarda el detalle con el cual se generará el ingreso en caso de que exista un monto cambio
     public $detalleingreso;
+    
+
+
+    //VARIABLES PARA LAS COMPRAS
+
+    //
+
+
 
     public function mount()
     {
@@ -73,11 +84,26 @@ class OrdenCompraController extends Component
         }
 
 
+
+
+        $providers = Provider::where('status','ACTIVO')->get();
+
+
+
+        //---------------Select destino de la compra----------------------//
+       $data_destino= Sucursal::join('destinos as dest','sucursals.id','dest.sucursal_id')
+       ->select('dest.*','dest.id as destino_id','sucursals.*')
+       ->get();
+
+
+
         return view('livewire.ordencompra.ordencompra', [
             'lista_ordenes' => $lista_ordenes,
             'lista_carteras' => $this->listarcarteras(),
             'lista_cartera_general' => $this->listarcarterasg(),
             'listasucursales' => Sucursal::all(),
+            'providers'=>$providers,
+            'data_suc'=>$data_destino,
         ])
             ->extends('layouts.theme.app')
             ->section('content');
@@ -160,12 +186,25 @@ class OrdenCompraController extends Component
         $this->emit("modalrecibircompra-show");
 
     }
-    //Recibe y finaliza una orden de compra
+    //Recibe y finaliza una orden de compra - realiza una compra
     public function finalizar_compra()
     {
-        //Si no escribio un monto de cambio
+        DB::beginTransaction();
+        try
+        {
+
+
+
+
+
+
+
+
+
+             //Si no escribio un monto de cambio
         if(strlen($this->monto_bs_cambio) == 0)
         {
+            //Actualizando y creando los estados de la orden de compra y detalle solicitud
             foreach($this->lista_productos as $l)
             {
                  //Buscando el detalle de la solicitud
@@ -173,7 +212,6 @@ class OrdenCompraController extends Component
                 //Buscando los estados COMPRANDO del detalle de la solicitud
                 foreach($detalle->estado_solicitud as $e)
                 {
-
                     if($e->estado == 'COMPRANDO' && $e->status == 'ACTIVO')
                     {
                         //Actualizando los estados pendientes ACTIVO a iNACTIVO
@@ -187,16 +225,37 @@ class OrdenCompraController extends Component
                             'estado' => 'COMPRADO',
                             'status' => 'ACTIVO',
                         ]);
-
                     }
-
-
-
                 }
-
-
-
             }
+
+
+
+
+
+            $compra_encabezado = Compra::create([
+                'importe_total'=>$this->total_compra,
+                'descuento'=>$this->descuento,
+                'fecha_compra'=>$this->fecha_compra,
+                'transaccion' => "Contado",
+                'saldo' => "0.00",
+                'tipo_doc'=>$this->tipo_documento,
+                'nro_documento'=>$this->nro_documento,
+                'observacion'=>$this->observacion,
+                'proveedor_id'=>Provider::select('providers.id')->where('nombre_prov',$this->provider)->value('providers.id'),
+                'estado_compra'=>$this->estado_compra,
+                'status'=>$this->status,
+                'destino_id'=>$this->destino,
+                'user_id'=> Auth()->user()->id,
+                'lote_compra'=> $this->lote_compra 
+            ]);
+
+
+
+
+
+
+
         }
         else
         {
@@ -228,38 +287,62 @@ class OrdenCompraController extends Component
 
 
             }
+             //Creando el movimiento con el monto dado como cambio
+            $movimiento = Movimiento::create([
+                'type' => 'TERMINADO',
+                'status' => 'ACTIVO',
+                'import' => $this->monto_bs_cambio,
+                'user_id' => Auth()->user()->id,
+            ]);
+            //Creando el egreso de cartera movimiento 
+            CarteraMov::create([
+                'type' => 'INGRESO',
+                'tipoDeMovimiento' => 'EGRESO/INGRESO',
+                'comentario' => $this->detalleingreso,
+                'cartera_id' => $this->cartera_id,
+                'movimiento_id' => $movimiento->id,
+            ]);
+            $nombrecartera = Cartera::find($this->cartera_id)->nombre;
+            $this->message = "Se guardo la compra y se creó el ingreso de: " . $this->monto_bs_cambio . " Bs por concepto de cambio en la cartera " . $nombrecartera;
         }
+        
         $orden_compra = ServOrdenCompra::find($this->id_orden_compra);
-
         $orden_compra->update([
             'estado' => 'COMPRADO'
         ]);
 
-
-
-
-        //Creando el movimiento con el monto dado como cambio
-        $movimiento = Movimiento::create([
-            'type' => 'TERMINADO',
-            'status' => 'ACTIVO',
-            'import' => $this->monto_bs_cambio,
-            'user_id' => Auth()->user()->id,
-        ]);
-        //Creando el egreso de cartera movimiento 
-        CarteraMov::create([
-            'type' => 'INGRESO',
-            'tipoDeMovimiento' => 'EGRESO/INGRESO',
-            'comentario' => $this->detalleingreso,
-            'cartera_id' => $this->cartera_id,
-            'movimiento_id' => $movimiento->id,
-        ]);
-
-        $nombrecartera = Cartera::find($this->cartera_id)->nombre;
-
-        $this->message = "Se guardo la compra y se creó el ingreso de: " . $this->monto_bs_cambio . " Bs por concepto de cambio en la cartera " . $nombrecartera;
-
         $this->emit("modalrecibircompra-hide");
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            DB::commit();
+        }
+        catch (Exception $e)
+        {
+            DB::rollback();
+            $this->mensaje_toast = ": ".$e->getMessage();
+            $this->emit('sale-error');
+        }
     }
     //Elimina un item en la orden de compra
     public function EliminarItem($idproducto)

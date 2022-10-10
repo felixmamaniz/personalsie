@@ -121,7 +121,7 @@
               </div>
 
 
-              @if($this->usuario_id > 0 && $this->monto_bs_compra >= $this->total_bs && $this->cartera_id > 0)
+              @if($this->usuario_id > 0 && $this->monto_bs_compra >= $this->total_bs && $this->cartera_id > 0 && $this->total_bs > 0)
               <div class="col-12 text-center">
                 <div class="form-group">
                   <label for="exampleFormControlTextarea1">Se generará un egreso con el siguiente detalle</label>

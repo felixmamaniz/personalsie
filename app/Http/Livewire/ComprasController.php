@@ -27,11 +27,12 @@ class ComprasController extends Component
             $totales,
             $aprobado;
 
-  public function paginationView()
-     {
-            return 'vendor.livewire.bootstrap';
-     }
-  public function mount(){
+    public function paginationView()
+    {
+        return 'vendor.livewire.bootstrap';
+    }
+    public function mount()
+    {
         $this->nro=1;
         $this->filtro='Contado';
         $this->fecha='hoy';

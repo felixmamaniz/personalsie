@@ -1,4 +1,51 @@
 
+    antiguedad de empleado -> no requerido
+    permisos por usuarios
+
+    https://temp-mail.org/es/10minutemail
+    notificaciones de empleados a finalizacion
+
+    geweti7750@cebaike.com
+    Ab*123456789
+    https://factorialhr.com/
+
+    https://api.factorialhr.com/users/sign_in?utm_campaign=ALL_ONB_SIGNUP&utm_medium=email&_hsmi=205708806&_hsenc=p2ANqtz--bzk39pczaiuTGCUWgdMDWvHD_t_xAOFQOgxP_YBsU8QYB9fSV43c1TWLtHgyoUQXjLZtEcZNpi6V-DyK0ItToRzWEBg&utm_content=205708806&utm_source=hs_automation&return_to=https%3A%2F%2Fapp.factorialhr.com%2Fdashboard%3Futm_campaign%3DALL_ONB_SIGNUP%26utm_medium%3Demail%26_hsmi%3D205708806%26_hsenc%3Dp2ANqtz--bzk39pczaiuTGCUWgdMDWvHD_t_xAOFQOgxP_YBsU8QYB9fSV43c1TWLtHgyoUQXjLZtEcZNpi6V-DyK0ItToRzWEBg%26utm_content%3D205708806%26utm_source%3Dhs_automation
+
+    https://app.factorialhr.com/settings/task_templates/list
+
+
+
+
+    Solicitudes 
+        tipo de Solicitudes
+        seleccionar trabajador o empleado
+        
+        nombre de Solicitudes
+        responsable
+        motivo
+        fecha
+        horas
+        comentarios
+
+
+
+notificaciones
+    nuevos empleados
+    finalizacion de contrato
+
+    // ejemplos 
+    https://www.youtube.com/watch?v=OgmYk4xg66w
+
+    https://www.youtube.com/watch?v=CKej3HvFi-8
+    https://www.youtube.com/watch?v=6PplYQ8FhEc
+
+
+
+
+
+
+
+https://www.youtube.com/watch?v=ZWb3QlMOAmM
 
 
 
@@ -107,8 +154,6 @@ if ($request->hasFile('urlfoto')){
         ->extends('layouts.theme.app')
         ->section('content');
     
-    integracion de numero de cantidad de vacantes en puesto de trabajo
-    selecionar sueldo de emppleado DB
     -----------------------------------------------------------------
 
     cambia combobox por un buscador en asistencias

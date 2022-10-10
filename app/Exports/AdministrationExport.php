@@ -5,6 +5,7 @@ namespace App\Exports;
 use App\Models\Attendance;
 use App\Models\Employee;
 use App\Models\Anticipo;
+use App\Models\CarteraMov;
 use App\Models\UserEmployee;
 use App\Models\CommissionsEmployees;
 use App\Models\Sale;
@@ -45,7 +46,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
     //calcular cuantas filas se tiene
     public $data2, $Allemployee;
     //para agregar los tatales
-    public $horitas, $Dtrabajados,$tganado;
+    public $horitas, $Dtrabajados,$tganado, $tadelantos, $tdescuentos, $tbonificacion, $tpagado;
     //Mes
     public $mes;
     
@@ -107,7 +108,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             case 'September':
                 return 'SEPTIEMBRE';
                 break;
-            case 'Octuber':
+            case 'October':
                 return 'OCTUBRE';
                 break;
             case 'November':
@@ -285,10 +286,13 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             
             //agregar comissiones
 
+            $mescom = substr($fecfrom,6,1);
+            //dd($mescom);
             $comisiones=CommissionsEmployees::join('employees as e', 'e.id', 'commissions_employees.user_id') // se unio ambas tablas
             ->join('contratos as ct', 'ct.id', 'e.contrato_id')
             ->select('commissions_employees.*','e.name as empleado', 'ct.salario', db::raw('0 as Ventas'))
             ->where('commissions_employees.user_id', $h->id)
+            ->where('mes', substr($fecfrom,6,1))
             ->get();
             
            /* if($h->id==4)
@@ -297,18 +301,42 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             }*/
             
             //calcular ventas
-            foreach ($comisiones as $co) {
+            /*foreach ($comisiones as $co) {
+
+                $data = CarteraMov::join('movimientos as m', 'm.id', 'cartera_movs.movimiento_id')
+                    ->join("carteras as c", "c.id", "cartera_movs.cartera_id")
+                    ->join("users as u", "u.id", "m.user_id")
+                    ->join("cajas as ca", "ca.id", "c.caja_id")
+                    ->join("sucursals as s", "s.id", "ca.sucursal_id")
+                    ->select('c.id as idcartera','cartera_movs.created_at as fecha','u.name as nombreusuario',
+                    'cartera_movs.comentario as motivo','m.import as importe','ca.nombre as nombrecaja',
+                    'cartera_movs.type as tipo','c.nombre as nombrecartera','s.name as nombresucursal','m.id as idmovimiento')
+                    ->where('m.status','<>','INACTIVO')
+                    ->whereIn('cartera_movs.comentario', ['Venta', 'Devolución Venta'])
+                    ->whereMonth('cartera_movs.created_at', '=', '08')
+                    //->whereBetween('cartera_movs.created_at', [$fecfrom, $fecto])
+                    
+
+                    ->orderBy('cartera_movs.created_at', 'asc')
+                    ->get()
+                    ->first();
+                    $date = Carbon::parse($this->dateFrom)->format('F');
+                    dd($date);
+                    dd($data);
                 //dd($fecfrom.' '.$fecto);
                 $sales=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
                 ->join('employees as e', 'e.id', 'user_employees.employee_id')
                 ->join('sales as s', 's.user_id', 'u.id')
-                ->select('s.total', 's.change', 's.movimiento_id', 'u.name', 's.created_at', 'e.id as idempleado', 'u.id as idusuari')
-                ->whereBetween('s.created_at', [$fecfrom,"2022-08-31"])
+                ->select('s.total', 's.change', 's.movimiento_id', 'u.name', 's.created_at', 'e.id as idempleado', 'u.id as idusuario')
+                //->whereBetween('s.created_at', [$fecfrom,"2022-08-31"])
+                
+                ->whereMonth('s.created_at', '=', '08')
                 
                 ->orderBy('s.created_at','desc')
                 ->get()
                 ->first();
 
+                
                 dd($sales);
                 
                 if($h->id==4)
@@ -321,20 +349,26 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                     $sumventas= $sumventas+ $v->total;
                  }
                $co->ventas = $sumventas;
-            }
+            }*/
            
-            
+            //calcular el total de comision
             $emplocomision=0;
             foreach ($comisiones as $co) {
-                if($co->ventas > ($co->salario*$co->multiplicado))
+                if($co->venta_comision > ($co->salario*$co->multiplicado))
                 {
                     
-                    $emplocomision= ($co->ventas - ($co->salario * $co->multiplicado)) * $co->comision;
+                    $emplocomision= ($co->venta_comision - ($co->salario * $co->multiplicado)) * $co->comision;
                     
                 }
                
             }
+            if($h->id==4)
+            {
+                //dd($emplocomision);
+            }
             
+            //dd($emplocomision);
+            //validar si el numero es 0 o > para convertirlo
             if($emplocomision == 0)
             {
                 $h->Bonificaciones = number_format( $emplocomision,2);
@@ -357,10 +391,14 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         foreach ($reporte as $x) {
                 $this->horitas = $this->suma_horas($this->horitas,$x->Horas);
                 $this->tganado = $this->tganado + $x->salario;
+                $this->tadelantos = number_format( ($this->tadelantos + $x->Adelantos),2);
+                $this->tdescuentos = number_format( ($this->tdescuentos + $x->Descuento),2);
+                $this->tbonificacion = number_format(($this->tbonificacion + $x->Bonificaciones),2) ;
+                $this->tpagado = $this->tpagado + $x->Total_pagado; 
             
         }
         //dd($horitas);
-        dd($reporte);
+        //dd($reporte);
         //empleados
         $data2 = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->select('employees.id', 'employees.name', 'at.nameArea as area')
@@ -524,7 +562,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                     //footer total y suma de totales
                     
                     $event->sheet->appendRows(array(
-                        array('Total','','',$this->horitas,$this->tganado),
+                        array('Total','','',$this->horitas,$this->tganado, $this->tadelantos, $this->tdescuentos, $this->tbonificacion, $this->tpagado),
                         
                         //....
                     ), $event);

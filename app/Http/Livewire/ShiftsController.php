@@ -66,7 +66,7 @@ class ShiftsController extends Component
         if (strlen($this->search) > 0) {
             $shifts = Shift::where('name', 'like', '%' . $this->search . '%')->paginate($this->pagination);
         } else {
-            $shifts = Shift::select('Shifts.*')->orderBy('name', 'asc')->paginate($this->pagination);
+            $shifts = Shift::select('shifts.*')->orderBy('name', 'asc')->paginate($this->pagination);
         }
 
         

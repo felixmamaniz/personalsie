@@ -21,6 +21,7 @@ use App\Models\Product;
 use App\Models\ProductosDestino;
 use App\Models\Sale;
 use App\Models\SaleDetail;
+use App\Models\SaleLote;
 use App\Models\SalidaLote;
 use App\Models\SalidaProductos;
 use App\Models\SalidaServicio;
@@ -3354,23 +3355,11 @@ class OrderServiceController extends Component
                     'subtotal'=>0
                 
                 ]);
-
                 $this->orderlista++;
                 //dd($this->repuestosalmacen);
 
             }
-             
-
             
-            
-      
-
-        
-
-
-
-
-
          //Verificando si el usuario tiene una caja abierta
          if($this->listarcarteras() == null)
          {
@@ -3505,57 +3494,50 @@ class OrderServiceController extends Component
         }
 
 
-
-        'orderM'=>$this->orderlista,
-        'product_id'=> $data->proid,
-        'product_name'=> $data->prodnombre,
-        'destiny_id' => $data->destid,
-        'destiny_name' => $data->dest,
-        'quantity'=> $data->cant,
-        'precioventa'=>0,
-        'subtotal'=>0
-
-
-
-
         //Venta de repuestos de tienda
 
         foreach ($this->repuestosalmacen as $data) {
             
-            if ($data['destiny_nombre'] == 'TIENDA') {
-
-                $Movimiento = Movimiento::create([
-                    'type' => "VENTAS",
-                    'import' => $data['subtotal'],
-                    'user_id' => Auth()->user()->id,
-                ]);
-
-                $sale = Sale::create([
-
-                    'total' => $data['subtotal'],
-                    'items' => 1,
-                    'cash' => $data['subtotal'],
-                    'change' =>0,
-                    'tipopago' => 'Efectivo',
-                    'factura' => "No",
-                    'cartera_id' => $this->tipopago,
-                    'observacion' =>'Ninguna',
-                    'movimiento_id' => $Movimiento->id,
-                    'user_id' => Auth()->user()->id
-                ]);
+            //Los precios de los productos de tienda vienen aparte y no se cobran en conjunto con la venta, se busca los productos de tienda
+            //dd($data);
+            
+            if ($data['destiny_name'] === 'TIENDA') {
                 
-                    $sd = SaleDetail::create([
-                        'price' => $data['subtotal'],
-                        'quantity' => $data['quantity'],
-                        'product_id' =>  $data['product_id'],
-                        'sale_id' => $sale->id,
-                    ]);
+        //dd("hola");
+
+                // $Movimiento = Movimiento::create([
+                //     'type' => "VENTAS",
+                //     'import' => $data['subtotal'],
+                //     'user_id' => Auth()->user()->id,
+                // ]);
+
+                // $sale = Sale::create([
+
+                //     'total' => $data['subtotal'],
+                //     'items' => 1,
+                //     'cash' => $data['subtotal'],
+                //     'change' =>0,
+                //     'tipopago' => 'Efectivo',
+                //     'factura' => "No",
+                //     'cartera_id' => $this->tipopago,
+                //     'observacion' =>'Ninguna',
+                //     'movimiento_id' => $Movimiento->id,
+                //     'user_id' => Auth()->user()->id
+                // ]);
+                
+                //     $sd = SaleDetail::create([
+                //         'price' => $data['subtotal'],
+                //         'quantity' => $data['quantity'],
+                //         'product_id' =>  $data['product_id'],
+                //         'sale_id' => $sale->id,
+                //     ]);
     
-                    //Para obtener la cantidad del producto que se va a vender
-                    $cantidad_producto_venta = $p->quantity;
+                  
     
                     //Buscamos todos los lotes que tengan ese producto
-                    $lotes = Lote::where('product_id', $p->id)->where('status','Activo')->get();
+                    $mn = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')->get();
+                    
+                    dump("ss",$mn);
     
                     //Recorremos todos los lotes que tengan ese producto
                     foreach($lotes as $l)

@@ -55,9 +55,10 @@ class MercanciaController extends Component
     //$this->borrarLotes();
     //    $this->ajustarLotes();
     //    $this->productosajustados();
- //$this->limpiarstock();
-//$this->buscarproducto();
-    //$this->inactivarlotes();
+    //Correr estos metodos para los lotes
+//  $this->limpiarstock();
+// $this->buscarproducto();
+// $this->inactivarlotes();
 
     }
     public function render()
@@ -679,13 +680,10 @@ EXISTEN PRODUCTOS QUE HAN INGRESADO POR AJUSTE DE INVENTARIOS O INVENTARIO INICI
 
                 }
                     
-
-
                 }
                 else{
                     
                     try {
-        
         
                         $operacion= SalidaProductos::create([
             

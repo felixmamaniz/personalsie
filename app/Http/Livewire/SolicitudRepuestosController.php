@@ -5,7 +5,13 @@ namespace App\Http\Livewire;
 use App\Models\Caja;
 use App\Models\Cartera;
 use App\Models\CarteraMov;
+use App\Models\DetalleSalidaProductos;
+use App\Models\Lote;
 use App\Models\Movimiento;
+use App\Models\ProductosDestino;
+use App\Models\SalidaLote;
+use App\Models\SalidaProductos;
+use App\Models\SalidaServicio;
 use App\Models\Service;
 use App\Models\ServiceRepDetalleSolicitud;
 use App\Models\ServiceRepEstadoSolicitud;
@@ -15,6 +21,7 @@ use App\Models\ServOrdenDetalle;
 use App\Models\Sucursal;
 use App\Models\User;
 use Carbon\Carbon;
+use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
 use phpDocumentor\Reflection\Types\This;
@@ -394,6 +401,7 @@ class SolicitudRepuestosController extends Component
     public function aceptar_solicitud($iddetalle, $codigo)
     {
         $detalle_solicitud = ServiceRepDetalleSolicitud::find($iddetalle);
+        //dd($detalle_solicitud);
 
         foreach($detalle_solicitud->estado_solicitud as $estado)
         {
@@ -407,6 +415,92 @@ class SolicitudRepuestosController extends Component
             'user_id' => Auth()->user()->id,
             'estado' => 'ACEPTADO'
         ]);
+
+        //Salida Registrada de productos aceptados 
+        try {
+            $operacion= SalidaProductos::create([
+                'destino'=>$detalle_solicitud->destino_id,
+                'user_id'=> Auth()->user()->id,
+                'concepto'=>'SALIDA',
+                'observacion'=>'Producto para servicio'
+            ]);
+        // dd($auxi2->pluck('stock')[0]);
+    
+                $auxi=DetalleSalidaProductos::create([
+                    'product_id'=>$detalle_solicitud->product_id,
+                    'cantidad'=> $detalle_solicitud->cantidad,
+                    'id_salida'=>$operacion->id
+            ]);
+
+            $lot=Lote::where('product_id',$detalle_solicitud->product_id)->where('status','Activo')->get();
+
+            //obtener la cantidad del detalle de la venta 
+            $this->qq=$detalle_solicitud->cantidad;
+            foreach ($lot as $val) { 
+            $this->lotecantidad = $val->existencia;
+          
+            if($this->qq>0){
+         
+               if ($this->qq > $this->lotecantidad) {
+                   $ss=SalidaLote::create([
+                       'salida_detalle_id'=>$auxi->id,
+                       'lote_id'=>$val->id,
+                       'cantidad'=>$val->existencia
+                       
+                   ]);
+                   $val->update([
+                       'existencia'=>0,
+                       'status'=>'Inactivo'                       
+                    ]);
+                    $val->save();
+                    $this->qq=$this->qq-$this->lotecantidad;
+                    
+               }
+               else{
+               
+                $ss=SalidaLote::create([
+                   'salida_detalle_id'=>$auxi->id,
+                   'lote_id'=>$val->id,
+                   'cantidad'=>$this->qq
+                   
+               ]);
+
+                   $val->update([ 
+                       'existencia'=>$this->lotecantidad-$this->qq
+                   ]);
+                   $val->save();
+                   $this->qq=0;
+               
+                }
+                }
+    
+             }
+
+             
+             $q=ProductosDestino::where('product_id',$detalle_solicitud->product_id)
+             ->where('destino_id',$detalle_solicitud->destino_id)->value('stock');
+
+             ProductosDestino::updateOrCreate(['product_id' => $detalle_solicitud->product_id, 'destino_id'=>$detalle_solicitud->destino_id],['stock'=>$q-$detalle_solicitud->cantidad]); 
+
+
+             SalidaServicio::create([
+                'salida_id'=>$operacion->id,
+                'service_id'=>$detalle_solicitud->service_id, 
+                'estado'=>'Activo'
+            ]);
+    
+        
+
+            DB::commit();
+ }
+         catch (Exception $e)
+        {
+        DB::rollback();
+        dd($e->getMessage());
+        }
+
+   
+
 
         $this->message = "¡Solicitud de la Orden de Servicio: " . $codigo . " Aceptada!";
 

@@ -186,15 +186,6 @@
 
                 @endif
 
-
-
-                
-
-
-
-
-
-
             </div>
 
             <div class="modal-footer">

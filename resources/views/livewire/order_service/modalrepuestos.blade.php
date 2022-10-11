@@ -74,7 +74,7 @@
                                                                             <button
                                                                             wire:click="InsertarSolicitudCompra('{{$key}}')"
                                                                                 class="btn btn-warning mtmobile btn-sm"
-                                                                                title="Solicitar Repuesto">
+                                                                                title="Solicitar Compra">
                                                                                 Solicitar Compra
                                                                             </button>
                                                                         </td>

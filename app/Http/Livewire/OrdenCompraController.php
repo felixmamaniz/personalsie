@@ -6,14 +6,24 @@ use App\Models\Caja;
 use App\Models\Cartera;
 use App\Models\CarteraMov;
 use App\Models\Compra;
+use App\Models\CompraDetalle;
+use App\Models\Destino;
+use App\Models\DetalleSalidaProductos;
+use App\Models\Lote;
 use App\Models\Movimiento;
+use App\Models\MovimientoCompra;
+use App\Models\ProductosDestino;
 use App\Models\Provider;
+use App\Models\SalidaLote;
+use App\Models\SalidaProductos;
+use App\Models\SalidaServicio;
 use App\Models\ServiceRepDetalleSolicitud;
 use App\Models\ServiceRepEstadoSolicitud;
 use App\Models\ServOrdenCompra;
 use App\Models\ServOrdenDetalle;
 use App\Models\Sucursal;
 use App\Models\User;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -29,13 +39,38 @@ class OrdenCompraController extends Component
 
     //VARIABLES PARA LAS COMPRAS
 
-    //
+    //Para guardar el total Bs de una compra
+    public $total_compra_bs;
+    //Guarda el tipo de Documento que se usa en una compra
+    public $tipo_documento;
+    //Guarda el numero de documento en una compra
+    public $numero_documento;
+    //Guarda el id de un proiveedor
+    public $proveedor_id;
+    //Guarda el id destino donde se registrará la compra
+    public $destino_id;
 
 
 
     public function mount()
     {
         $this->lista_productos = collect([]);
+        $this->tipo_documento = "NINGUNO";
+
+        $destino = Destino::where("destinos.nombre","DEPOSITO")->where("destinos.sucursal_id", $this->idsucursal())->get();
+        if($destino->count() > 0)
+        {
+            $this->destino_id = $destino->first()->id;
+        }
+
+
+
+        $proveedor = Provider::where("providers.nombre_prov","cancha")->get();
+        if($proveedor->count() > 0)
+        {
+            $this->proveedor_id = $proveedor->first()->id;
+        }
+
 
         $this->cartera_id = 'Elegir';
         foreach($this->listarcarteras() as $list)
@@ -85,15 +120,12 @@ class OrdenCompraController extends Component
 
 
 
-
+        //Lista todos los proveedores activos
         $providers = Provider::where('status','ACTIVO')->get();
-
-
-
-        //---------------Select destino de la compra----------------------//
-       $data_destino= Sucursal::join('destinos as dest','sucursals.id','dest.sucursal_id')
-       ->select('dest.*','dest.id as destino_id','sucursals.*')
-       ->get();
+        //Lista todos los destinos y su sucursal
+        $destinos= Sucursal::join('destinos as d','sucursals.id','d.sucursal_id')
+        ->select('d.nombre as nombredestino','d.id as destinoid','sucursals.name as nombresucursal')
+        ->get();
 
 
 
@@ -102,8 +134,8 @@ class OrdenCompraController extends Component
             'lista_carteras' => $this->listarcarteras(),
             'lista_cartera_general' => $this->listarcarterasg(),
             'listasucursales' => Sucursal::all(),
-            'providers'=>$providers,
-            'data_suc'=>$data_destino,
+            'providers' => $providers,
+            'destinos' => $destinos,
         ])
             ->extends('layouts.theme.app')
             ->section('content');
@@ -115,8 +147,9 @@ class OrdenCompraController extends Component
     public function obtener_detalles($idcompra)
     {
         $detalles = ServOrdenDetalle::join("products as p", "p.id","serv_orden_detalles.product_id")
-        ->select("serv_orden_detalles.detalle_solicitud_id as detalle_id","p.id as product_id","p.nombre as nombreproducto", "serv_orden_detalles.cantidad as cantidad","p.costo as costoproducto"
-        ,"p.precio_venta as precioproducto")
+        ->select("serv_orden_detalles.detalle_solicitud_id as detalle_id","p.id as product_id","p.nombre as nombreproducto",
+        "serv_orden_detalles.cantidad as cantidad","p.costo as costoproducto",
+        "p.precio_venta as precioproducto")
         ->where("serv_orden_detalles.orden_compra_id", $idcompra)
         ->get();
         return $detalles;
@@ -189,25 +222,55 @@ class OrdenCompraController extends Component
     //Recibe y finaliza una orden de compra - realiza una compra
     public function finalizar_compra()
     {
+        $rules = [
+            'cartera_id'=>'required|not_in:Elegir',
+            'destino_id'=>'required|not_in:Elegir',
+        ];
+        $messages = [
+            'cartera_id.required' => 'La cartera es requerido',
+            'cartera_id.not_in' => 'Seleccione una Cartera',
+
+            'destino_id.required' => 'La cartera es requerido',
+            'destino_id.not_in' => 'Seleccione un Destino',
+        ];
+        $this->validate($rules, $messages);
+
+
+
         DB::beginTransaction();
         try
         {
+            //Si escribio un monto de cambio
+            if(strlen($this->monto_bs_cambio) > 0)
+            {
+                //Creando el movimiento con el monto dado como cambio
+                $m = Movimiento::create([
+                    'type' => 'TERMINADO',
+                    'status' => 'ACTIVO',
+                    'import' => $this->monto_bs_cambio,
+                    'user_id' => Auth()->user()->id,
+                ]);
+                //Creando el egreso de cartera movimiento 
+                CarteraMov::create([
+                    'type' => 'INGRESO',
+                    'tipoDeMovimiento' => 'EGRESO/INGRESO',
+                    'comentario' => $this->detalleingreso,
+                    'cartera_id' => $this->cartera_id,
+                    'movimiento_id' => $m->id,
+                ]);
+                $nombrecartera = Cartera::find($this->cartera_id)->nombre;
+                $this->message = "Se guardo la compra y se creó el ingreso de: " . $this->monto_bs_cambio . " Bs por concepto de cambio en la cartera " . $nombrecartera;
+            }
 
 
 
 
 
-
-
-
-
-             //Si no escribio un monto de cambio
-        if(strlen($this->monto_bs_cambio) == 0)
-        {
-            //Actualizando y creando los estados de la orden de compra y detalle solicitud
+            $total_bs = 0;
+            //Actualizando y creando los estados de la orden de compra, detalle solicitud y detalle de la compra
             foreach($this->lista_productos as $l)
             {
-                 //Buscando el detalle de la solicitud
+                //Buscando el detalle de la solicitud
                 $detalle = ServiceRepDetalleSolicitud::find($l['detail_id']);
                 //Buscando los estados COMPRANDO del detalle de la solicitud
                 foreach($detalle->estado_solicitud as $e)
@@ -227,114 +290,151 @@ class OrdenCompraController extends Component
                         ]);
                     }
                 }
+                $total_bs = $total_bs + $l['cost'];
             }
-
-
-
-
-
-            $compra_encabezado = Compra::create([
-                'importe_total'=>$this->total_compra,
-                'descuento'=>$this->descuento,
-                'fecha_compra'=>$this->fecha_compra,
+            //Creando la Compra
+            $compra = Compra::create([
+                'importe_total' => $total_bs,
+                'descuento' => 0,
+                'fecha_compra' => Carbon::parse(Carbon::now()),
                 'transaccion' => "Contado",
                 'saldo' => "0.00",
-                'tipo_doc'=>$this->tipo_documento,
-                'nro_documento'=>$this->nro_documento,
-                'observacion'=>$this->observacion,
-                'proveedor_id'=>Provider::select('providers.id')->where('nombre_prov',$this->provider)->value('providers.id'),
-                'estado_compra'=>$this->estado_compra,
-                'status'=>$this->status,
-                'destino_id'=>$this->destino,
+                'tipo_doc' => $this->tipo_documento,
+                'nro_documento' => $this->numero_documento,
+                'observacion'=> "",
+                'proveedor_id' => $this->proveedor_id,
+                'estado_compra'=> "finalizada",
+                'status' => "ACTIVO",
+                'destino_id' => $this->destino_id,
                 'user_id'=> Auth()->user()->id,
-                'lote_compra'=> $this->lote_compra 
+                'lote_compra'=> "",
+            ]);
+            //Creando el movimiento
+            $movimiento = Movimiento::create([
+                'type' => "COMPRAS",
+                'status' => "ACTIVO",
+                'saldo' => 0,
+                'on_account' => 0,
+                'import' => $total_bs,
+                'user_id' => Auth()->user()->id
+            ]);
+            //Creando movimiento compra
+            MovimientoCompra::create([
+                'compra_id'=>$compra->id,
+                'movimiento_id' => $movimiento->id
             ]);
 
-
-
-
-
-
-
-        }
-        else
-        {
-            foreach($this->lista_productos as $l)
+            //Creando el detalle de la compra y el incremento del stock del producto
+            foreach ($this->lista_productos as $p)
             {
-                 //Buscando el detalle de la solicitud
-                $detalle = ServiceRepDetalleSolicitud::find($l['detail_id']);
-                //Buscando los estados COMPRANDO del detalle de la solicitud
-                foreach($detalle->estado_solicitud as $e)
+                $lote = Lote::create([
+                    'existencia' => $p['quantity'],
+                    'costo' => $p['cost'],
+                    'status' => 'Activo',
+                    'product_id' => $p['product_id'],
+                    'pv_lote' => $p['price']
+                ]);
+
+                CompraDetalle::create([
+                    'precio' => $p['price'],
+                    'cantidad' => $p['quantity'],
+                    'product_id' => $p['product_id'],
+                    'compra_id' => $compra->id,
+                    'lote_compra'=>$lote->id
+                ]);
+                
+                $q = ProductosDestino::where('product_id', $p['product_id'])
+                ->where('destino_id', $this->destino_id)->value('stock');
+
+                ProductosDestino::updateOrCreate([
+                    'product_id' => $p['product_id'],
+                    'destino_id' => $this->destino_id],
+                    ['stock'=> $q + $p['quantity']]);
+
+
+                //Creando la salida del producto (decrementando el Stock)
+
+                $salida = SalidaProductos::create([
+                    'destino' => $this->destino_id,
+                    'user_id'=> Auth()->user()->id,
+                    'concepto'=>'SALIDA',
+                    'observacion'=>'Producto para servicio'
+                ]);
+        
+                $detalle_salida = DetalleSalidaProductos::create([
+                    'product_id' => $p['product_id'],
+                    'cantidad' => $p['quantity'],
+                    'id_salida' => $salida->id
+                ]);
+                //Listamos todos los lotes que tenga el producto
+                $lotes_producto = Lote::where('product_id', $p['product_id'])->where('status','Activo')->get();
+                //Obteniendo la cantidad de la salida de producto
+                $cantidad_salida = ServiceRepDetalleSolicitud::find($p['detail_id'])->cantidad;
+                //Decrementando los lotes del producto
+                foreach ($lotes_producto as $lp)
                 {
-
-                    if($e->estado == 'COMPRANDO' && $e->status == 'ACTIVO')
+                    //Obteniendo la cantidad del lote
+                    $cantidad_lote = $lp->existencia;
+                    //Si la cantidad de salida es mayor que 0
+                    if($cantidad_salida > 0)
                     {
-                        //Actualizando los estados pendientes ACTIVO a iNACTIVO
-                        $e->update([
-                            'status' => 'INACTIVO'
-                        ]);
-                        //Creando nuevo estado ACTIVO para cada detalle solicitud
-                        ServiceRepEstadoSolicitud::create([
-                            'detalle_solicitud_id' => $l['detail_id'],
-                            'user_id' => Auth()->user()->id,
-                            'estado' => 'COMPRADO',
-                            'status' => 'ACTIVO',
-                        ]);
-
+                        //Si la cantidad de salida es mayor que la cantidad que hay en el lote
+                        if($cantidad_salida > $cantidad_lote)
+                        {
+                            SalidaLote::create([
+                            'salida_detalle_id' => $detalle_salida->id,
+                            'lote_id' => $lp->id,
+                            'cantidad' => $lp->existencia
+                            ]);
+                            $lp->update([
+                                'existencia' => 0,
+                                'status' => 'Inactivo'                       
+                            ]);
+                            $lp->save();
+                            $cantidad_salida = $cantidad_salida - $cantidad_lote;
+                        }
+                        else
+                        {
+                            SalidaLote::create([
+                                'salida_detalle_id' => $detalle_salida->id,
+                                'lote_id' => $lp->id,
+                                'cantidad' => $cantidad_salida
+                            ]);
+                            $lp->update([ 
+                                'existencia' => $cantidad_lote - $cantidad_salida
+                            ]);
+                            $lp->save();
+                            $cantidad_salida = 0;
+                        }
                     }
                 }
 
+             
+                $stock_producto = ProductosDestino::where('product_id', $p['product_id'])
+                ->where('destino_id', $this->destino_id)->value('stock');
 
+                
+                $stock_actualizado = $stock_producto - ServiceRepDetalleSolicitud::find($p['detail_id'])->cantidad;
 
+                ProductosDestino::updateOrCreate([
+                    'product_id' => $p['product_id'],
+                    'destino_id' => $this->destino_id],
+                    ['stock' => $stock_actualizado]);
+
+                SalidaServicio::create([
+                    'salida_id' => $salida->id,
+                    'service_id' => ServiceRepDetalleSolicitud::find($p['detail_id'])->service_id, 
+                    'estado' => 'Activo'
+                ]);
             }
-             //Creando el movimiento con el monto dado como cambio
-            $movimiento = Movimiento::create([
-                'type' => 'TERMINADO',
-                'status' => 'ACTIVO',
-                'import' => $this->monto_bs_cambio,
-                'user_id' => Auth()->user()->id,
-            ]);
-            //Creando el egreso de cartera movimiento 
-            CarteraMov::create([
-                'type' => 'INGRESO',
-                'tipoDeMovimiento' => 'EGRESO/INGRESO',
-                'comentario' => $this->detalleingreso,
-                'cartera_id' => $this->cartera_id,
-                'movimiento_id' => $movimiento->id,
-            ]);
-            $nombrecartera = Cartera::find($this->cartera_id)->nombre;
-            $this->message = "Se guardo la compra y se creó el ingreso de: " . $this->monto_bs_cambio . " Bs por concepto de cambio en la cartera " . $nombrecartera;
-        }
+
         
-        $orden_compra = ServOrdenCompra::find($this->id_orden_compra);
-        $orden_compra->update([
-            'estado' => 'COMPRADO'
-        ]);
+            $orden_compra = ServOrdenCompra::find($this->id_orden_compra);
+            $orden_compra->update([
+                'estado' => 'COMPRADO'
+            ]);
 
-        $this->emit("modalrecibircompra-hide");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            $this->emit("modalrecibircompra-hide");
             DB::commit();
         }
         catch (Exception $e)

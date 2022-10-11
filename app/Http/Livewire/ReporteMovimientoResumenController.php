@@ -11,6 +11,7 @@ use App\Models\Sale;
 use App\Models\SaleDetail;
 use App\Models\SaleLote;
 use App\Models\Service;
+use App\Models\ServiceRepVentaInterna;
 use App\Models\Sucursal;
 use App\Models\Transaccion;
 use App\Models\User;
@@ -261,7 +262,6 @@ class ReporteMovimientoResumenController extends Component
             foreach ($this->totalesIngresosS as $var1)
             {
                $var1->utilidadservicios = $this->utilidadservicio($var1->idmov);
-
             }
 
             //Totales Ingresos (EGRESOS/INGRESOS)
@@ -852,11 +852,16 @@ class ReporteMovimientoResumenController extends Component
          $serv = Service::join('mov_services as m', 'm.service_id', 'services.id')
                  ->join('movimientos','movimientos.id','m.movimiento_id')
                  ->where('movimientos.id',$idmovimiento)
-                 ->select('movimientos.import as ms','services.costo as mc')
+                 ->select('movimientos.import as ms','services.costo as mc','services.id as servid')
                  ->get();
 
-         $utilidad2=$serv[0]->ms- $serv[0]->mc;
-
+                 
+                 //tendria que añadir los repuestos utilizados como costo del servicio, buscar los repuestos del servicio de la tabla service_rep_venta_internas
+                 
+                 $servrep= ServiceRepVentaInterna::where('service_id',$serv[0]->servid)->sum('cantidad');
+               
+            
+                 $utilidad2=$serv[0]->ms- $serv[0]->mc-$servrep;
 
         return $utilidad2;
      }

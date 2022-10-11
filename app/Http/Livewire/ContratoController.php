@@ -52,6 +52,9 @@ class ContratoController extends Component
         }
         else
         {
+  
+ 
+   /* Seleccionar los datos de la base de datos y paginarlos. */
             $data = Contrato::select('contratos.id as idContrato','contratos.fechaFin as fechaFin','contratos.descripcion as descripcion',
             'contratos.nota as nota','contratos.salario as salario','contratos.estado as estado',
             DB::raw('0 as verificar'))

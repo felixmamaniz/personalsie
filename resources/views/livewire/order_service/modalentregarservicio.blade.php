@@ -36,14 +36,7 @@
                                     <input type="number" wire:model="edit_acuenta" class="form-control">
                                 </div>
                             </div>
-                            <div class="form-row text-center" style="width: 33.33%">
-                                <div class="col-md-12">
-                                    <label>Monto a Cobrar Bs</label>
-                                    <div class="text-center">
-                                        <label for="validationTooltipUsername"> <h2>{{number_format($this->edit_saldo,2)}}</h2> </label>
-                                    </div>
-                                </div>
-                            </div>
+                         
                         </div>
                     @else
                         <div class="form-row">
@@ -100,6 +93,8 @@
                         </div>
                  
                     </div>
+
+           
 
                     <div class="row justify-content-center">
                         <div class="col-lg-11">
@@ -165,6 +160,39 @@
                     
                       
                     </div>
+
+                    <div class="row justify-content-center">
+                        <div class="col-lg-11">
+
+                            <div class="form-row text-center" style="width: 90%">
+                                <div class="col-md-12">
+                                    <label>Monto a Cobrar Servicio</label>
+                                    <div class="text-center">
+                                        <label for="validationTooltipUsername"> <h2>{{number_format($this->edit_saldo,2)}}</h2> </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-center" style="width: 90%">
+                                <div class="col-md-12">
+                                    <label>Producto/Repuesto</label>
+                                    <div class="text-center">
+                                        <label for="validationTooltipUsername"> <h2>1200</h2> </label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-row text-center" style="width: 90%">
+                                <div class="col-md-12">
+                                    <label>Total a Cobrar</label>
+                                    <div class="text-center">
+                                        <label for="validationTooltipUsername"> <h2>500</h2> </label>
+                                    </div>
+                                </div>
+                            </div>
+                   
+                        </div>
+                    
+                      
+                    </div>
                   
                     @else
 
@@ -181,20 +209,15 @@
 
                 <center>No tiene los Permisos para Entregar Servicios</center>
 
-
-
-
                 @endif
 
             </div>
 
             <div class="modal-footer">
-                
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                 @if($this->estadocaja == "abierto")
                 <button type="button" class="btn btn text-white" wire:click="entregarservicio()" style="background-color: rgb(22, 192, 0)">Registrar Como Entregado</button>
                 @endif
-
             </div>
         </div>
     </div>

@@ -17,35 +17,19 @@
           <div class="container-fluid">
             <div class="row">
               <div class="col-sm-12">
+
                 <div class="row">
 
-                  {{-- <div class="col-6 col-sm-4">
-
-                    <label for="exampleFormControlInput1"><b>Será Comprado Por:</b></label>
-                    <select wire:model="usuario_id" class="form-control" aria-label="Default select example">
-                      <option value="Elegir">Seleccione Usuario</option>
-                      @foreach($lista_usuarios as $u)
-                      <option value="{{$u->id}}">{{ucwords(strtolower($u->name))}}</option>
-                      @endforeach
-                    </select>
-                    @error('usuario_id')
-                    <span class="text-danger er">{{ $message }}</span>
-                    @enderror
-
-                  </div> --}}
-
                   <div class="col-6 col-sm-4">
-
-                    <label for="exampleFormControlTextarea1"><b>Monto Bs Cambio</b></label>
+                    <label><b>Monto Bs Cambio</b></label>
                     <input type="number" wire:model="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
                     @error('monto_bs_cambio')
                     <span class="text-danger er">{{ $message }}</span>
                     @enderror
 
                   </div>
-                  
-                  <div class="col-6 col-sm-4">
 
+                  <div class="col-6 col-sm-4">
                     <label for="exampleFormControlInput1"><b>El Dinero Entrará a la Cartera</b></label>
                     <select wire:model="cartera_id" class="form-control" aria-label="Default select example">
                         <option value="Elegir">Lista de Carteras en su Caja</option>
@@ -59,8 +43,77 @@
 
                   </div>
 
+                  <div class="col-6 col-sm-4">
+                    <label><b>Destino Producto</b></label>
+                    <select wire:model.lazy="destino" class="form-control">
+                      <option value='Elegir'>Elegir Destino</option>
+                      @foreach($data_suc as $data)
+                        <option value="{{$data->destino_id}}">{{$data->nombre}}-{{$data->name}}</option>
+                      @endforeach
+                  </select>
+                    @error('tipo_documento')
+                        <span class="text-danger er">{{ $message }}</span>
+                    @enderror 
+                  </div>
 
                 </div>
+
+                <br>
+
+                <div class="row">
+
+                  <div class="col-6 col-sm-4">
+                    <label><b>Proveedor</b></label>
+
+                    <input list="provider" wire:model="provider_id" class="form-control" placeholder="Ingrese Proveedor...">
+                    <datalist id="provider">
+                      @foreach($providers as $p)
+                          <option value="{{$p->nombre_prov}}">{{$p->nombre_prov}}</option>
+                      @endforeach
+                    </datalist>
+
+
+                    {{-- <input type="number" wire:model="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
+                    @error('monto_bs_cambio')
+                    <span class="text-danger er">{{ $message }}</span>
+                    @enderror --}}
+                  </div>
+
+                  <div class="col-6 col-sm-4">
+                    <label><b>Nro. de Documento</b></label>
+                    <input type="number" wire:model="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
+                    @error('monto_bs_cambio')
+                    <span class="text-danger er">{{ $message }}</span>
+                    @enderror
+                  </div>
+
+                  <div class="col-6 col-sm-4">
+                    <label><b>Tipo de Documento</b></label>
+                    <select wire:model='tipo_documento' class="form-control">
+                      <option value='FACTURA' selected>Factura</option>
+                      <option value='NOTA DE VENTA'>Nota de Venta</option>
+                      <option value='RECIBO'>Recibo</option>
+                      <option value='NINGUNO'>Ninguno</option>
+                    </select>
+                    @error('tipo_documento')
+                        <span class="text-danger er">{{ $message }}</span>
+                    @enderror 
+                  </div>
+
+                </div>
+
+                <br>
+
+
+
+
+
+
+
+
+
+
+
               </div>
 
 
@@ -130,7 +183,7 @@
             @if(strlen($this->monto_bs_cambio) > 0)
               <div class="col-12 text-center">
                 <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Se generará un ingreso con el siguiente detalle</label>
+                  <label>Se generará un ingreso con el siguiente detalle</label>
                   <textarea wire:model.lazy="detalleingreso" placeholder="Detalle para generar el egreso por compra de repuestos" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
                 </div>
               </div>

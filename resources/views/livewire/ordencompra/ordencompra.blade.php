@@ -1,3 +1,38 @@
+@section('css')
+<style>
+            /*Estilos para el Boton Pendiente en la Tabla*/
+        .recibir {
+        text-decoration: none !important; 
+        background-color: #4894ef;
+        cursor: pointer;
+        color: white;
+        border-color: #4894ef;
+        border-radius: 5px;
+        padding-top: 0px;
+        padding-bottom: 0px;
+        padding-left: 1px;
+        padding-right: 1px;
+        box-shadow: none;
+        border-width: 2px;
+        border-style: solid;
+        border-color: #4894ef;
+        display: inline-block;
+    }
+    .recibir:hover {
+        background-color: rgb(255, 255, 255);
+        color: #4894ef;
+        transition: all 0.4s ease-out;
+        border-color: #4894ef;
+        text-decoration: underline;
+        -webkit-transform: scale(1.05);
+        -moz-transform: scale(1.05);
+        -ms-transform: scale(1.05);
+        transform: scale(1.05);
+        
+    }
+</style>
+@endsection
+
 <div class="row">
     
     <div class="col-12 text-center">
@@ -81,7 +116,7 @@
                         <td class="text-center">
                             @if($l->estado != "COMPRADO")
 
-                            <button wire:click.prevent="modalrecibircompra({{$l->codigo}})">
+                            <button class="recibir" wire:click.prevent="modalrecibircompra({{$l->codigo}})">
                                 Recibir Compra
                             </button>
 

@@ -46,7 +46,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
     //calcular cuantas filas se tiene
     public $data2, $Allemployee;
     //para agregar los tatales
-    public $horitas, $Dtrabajados, $tganado, $tDias, $tAdelanto, $Tdescuentos, $Tpagado;
+    public $horitas, $Dtrabajados, $tganado, $tcomisiones, $tDias, $tAdelanto, $tdescuentofaltas, $Tdescuentos, $Tpagado;
     //Mes
     public $mes;
     
@@ -109,7 +109,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             case 'September':
                 return 'SEPTIEMBRE';
                 break;
-            case 'Octuber':
+            case 'October':
                 return 'OCTUBRE';
                 break;
             case 'November':
@@ -262,7 +262,17 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             //sacar total descuento de faltas
             $countFT=$countDiasF*30;
             $countLT=$countlicencias * 15;
-            $h->Faltas_Licencias=$countFT + $countLT;
+            $Tfaltaslicencias= $countFT + $countLT;
+            
+            if($Tfaltaslicencias == 0)
+            {
+                //dd($Tfaltaslicencias);
+                $h->Faltas_Licencias = number_format( $Tfaltaslicencias,2);
+            }
+            else{
+                $h->Faltas_Licencias =  $Tfaltaslicencias;
+            }
+            //$h->Faltas_Licencias=$countFT + $countLT;
             
 
             //dd($reporte);
@@ -298,16 +308,18 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos + $h->Faltas_Licencias);
             
             //agregar comissiones
-
+            $mescom = Carbon::parse($this->dateFrom)->format('m');
+            //dd($mescom);
             $comisiones=CommissionsEmployees::join('employees as e', 'e.id', 'commissions_employees.user_id') // se unio ambas tablas
             ->join('contratos as ct', 'ct.id', 'e.contrato_id')
             ->select('commissions_employees.*','e.name as empleado', 'ct.salario', db::raw('0 as Ventas'))
             ->where('commissions_employees.user_id', $h->id)
+            ->where('mes', substr($fecfrom,6,1))
             ->get();
 
             
             //calcular ventas
-            foreach ($comisiones as $co) {
+           /* foreach ($comisiones as $co) {
                 $ventas=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
                 ->join('employees as e', 'e.id', 'user_employees.employee_id')
                 ->join('sales as s', 's.user_id', 'u.id')
@@ -315,20 +327,34 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 ->where('e.id', $co->user_id)
                 ->whereBetween('s.created_at', [$fecfrom,$fecto])
                 ->get();
+
                 //dd($ventas);
                 $sumventas=0;
                 foreach ($ventas as $v) {
                     $sumventas= $sumventas+ $v->total;
                  }
                $co->ventas = $sumventas;
-            }
+            }*/
             
             $emplocomision=0;
             foreach ($comisiones as $co) {
-                $emplocomision= ($co->ventas - ($co->salario * $co->multiplicado)) * $co->comision;
+                if($co->venta_comision > ($co->salario*$co->multiplicado))
+                {
+                    
+                    $emplocomision= ($co->venta_comision - ($co->salario * $co->multiplicado)) * $co->comision;
+                    
+                }
+               
             }
-            
-            $h->comisiones = $emplocomision;
+            //dd($emplocomision);
+            if($emplocomision == 0)
+            {
+                $h->comisiones = number_format( $emplocomision,2);
+            }
+            else{
+                $h->comisiones =  $emplocomision;
+            }
+           
 
 
            //agregar id desde el 1
@@ -345,6 +371,8 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 $this->tDias = $this->tDias + $x->Dias_trabajados;
                 $this->tAdelanto = number_format( ($this->tAdelanto + $x->Adelantos),2);
                 $this->Tdescuentos = number_format( ($this->Tdescuentos + $x->Descuento),2);
+                $this->tcomisiones = number_format(($this->tcomisiones + $x->comisiones),2);
+                $this->tdescuentofaltas = $this->tdescuentofaltas + $x->Faltas_Licencias;
                 $this->Tpagado = $this->Tpagado + $x->Total_pagado; 
         }
         
@@ -514,7 +542,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     //footer total y suma de totales
                     
                     $event->sheet->appendRows(array(
-                        array('Total','','', $this->horitas, $this->tganado.',00', $this->tDias, $this->tganado, '', $this->tAdelanto, '', $this->Tdescuentos, $this->Tpagado),
+                        array('Total','','', $this->horitas, $this->tganado.',00', $this->tDias, $this->tganado, $this->tcomisiones, $this->tAdelanto, $this->tdescuentofaltas, $this->Tdescuentos, $this->Tpagado),
                         
                         //....
                     ), $event);

@@ -648,7 +648,6 @@ class PosController extends Component
             $this->mensaje_toast = "¡Venta con el código: '" . $sale->id . "' realizada exitosamente!";
             $this->emit('sale-ok');
 
-            DB::commit();
 
             //Verificando la variable $this->pdf para crear o no un comprobante pdf
             if($this->pdf)
@@ -657,6 +656,7 @@ class PosController extends Component
             }
 
 
+            DB::commit();
             return Redirect::to('pos');
         }
         catch (Exception $e)

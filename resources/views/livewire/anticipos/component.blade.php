@@ -19,9 +19,9 @@
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
                                <th class="table-th text-white">EMPLEADO</th>
-                               <th class="table-th text-white text-center">CONTRATO</th>
+                               {{-- <th class="table-th text-white text-center">CONTRATO</th> --}}
                                <th class="table-th text-withe text-center">ADELANTO</th>
-                               <th class="table-th text-white text-center">NUEVO SALARIO</th>
+                               {{-- <th class="table-th text-white text-center">NUEVO SALARIO</th> --}}
                                <th class="table-th text-withe text-center">FECHA</th>
                                <th class="table-th text-withe text-center">MOTIVO</th>
                                <th class="table-th text-white text-center">ACTIONS</th>
@@ -31,16 +31,16 @@
                             @foreach($anticipos as $a)
                             <tr>
                                 <td><h6>{{$a->empleado}}</h6></td>
-                                <td><h6 class="text-center">{{$a->salario}}</h6></td>
+                                {{-- <td><h6 class="text-center">{{$a->salario}}</h6></td> --}}
                                 <td><h6 class="text-center">{{$a->anticipo}} Bs</h6></td>
 
-                                <td><h6 class="text-center">
+                                {{-- <td><h6 class="text-center">
                                     @if($a->descuento > 0)
                                         {{number_format($a->salario - ($a->anticipo +  $a->descuento))}} Bs
                                     @else
                                         {{number_format($a->salario - $a->anticipo)}}
                                     @endif
-                                </h6></td>
+                                </h6></td> --}}
 
                                 <td><h6 class="text-center">{{\Carbon\Carbon::parse($a->created_at)->format('Y-m-d') }}</h6></td> {{-- {{$a->created_at}}{{ $employee->created_at->diffForHumans() }}--}}
                                 <td><h6 class="text-center">{{$a->motivo}}</h6></td>

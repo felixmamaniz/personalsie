@@ -107,6 +107,17 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
+// prueba de notificaciones
+use App\Mail\TestMail;
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/mail', function (){
+    Mail::to('admin@admin.com')->send(new TestMail());
+    return 'Mail Send';
+});
+
+
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -114,6 +125,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', InicioController::class);
     // Route::group(['middleware' => ['role:ADMIN']], function () {
     // });
+
 
     /* ADMINISTRACION */
     Route::get('roles', RolesController::class)->name('roles')->middleware('permission:Roles_Index');

@@ -846,7 +846,7 @@
 								<li>
 									<a href="{{ url('shifts') }}">
 										<i class="fa fas fa-minus"></i>
-										Turnos </a>
+										Horario Entrada del Empleado </a>
 								</li>
 								
 								
@@ -877,6 +877,13 @@
 												<i class="fa fas fa-minus"></i>
 												Descuentos o Varios</a>
 									</li>
+
+									<li>
+										<a href="{{ url('descfaltaslicencias') }}">
+											<i class="fa fas fa-minus"></i>
+											Descuentos de Faltas y Licencias</a>
+								</li>
+									
 								</ul>
 							</div>
 						</li>

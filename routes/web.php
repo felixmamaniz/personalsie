@@ -59,6 +59,7 @@ use App\Http\Livewire\DetalleComprasController;
 use App\Http\Livewire\EditarCompraDetalleController;
 use App\Http\Livewire\MercanciaController;
 use App\Http\Livewire\CuentasController;
+use App\Http\Livewire\DescuentoFaltasLicenciasController;
 use App\Http\Livewire\EmailsController;
 use App\Http\Livewire\InicioController;
 use App\Http\Livewire\LocalizacionController;
@@ -288,7 +289,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);
-
+    
+    Route::get('descfaltaslicencias',DescuentoFaltasLicenciasController::class);
     //comissiones
     Route::get('comisiones', ComissionsEmployeesController::class);
     

@@ -117,7 +117,7 @@
                                 <th class="text-center">NOMBRE</th>
                                 <th class="text-center">RETRASO</th>
                                 <th class="text-center">SALIDA</th>
-                                <th class="text-center">HORAS CUMPLIDAS</th>
+                                <!--<th class="text-center">HORAS CUMPLIDAS</th>-->
                               </tr>
                             </thead>
                             <tbody>
@@ -152,9 +152,7 @@
                                         <td class="text-center">
                                             {{ ($item->Salida_Normal) }}
                                         </td>
-                                        <td class="text-center">
-                                            {{ ($item->hcumplida) }}
-                                        </td>
+                                        
                                     </tr>
                                     @endforeach
                                     

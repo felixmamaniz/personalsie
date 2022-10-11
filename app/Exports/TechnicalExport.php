@@ -7,6 +7,7 @@ use App\Models\Employee;
 use App\Models\Discountsv;
 use App\Models\Assistance;
 use App\Models\CommissionsEmployees;
+use App\Models\DescuentoFaltasLicencias;
 use App\Models\Sale;
 use App\Models\Anticipo;
 use App\Models\Shift;
@@ -260,8 +261,15 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 }
             
             //sacar total descuento de faltas
-            $countFT=$countDiasF*30;
-            $countLT=$countlicencias * 15;
+            $preciof=DescuentoFaltasLicencias::select('descuento_faltas_licencias.precio')
+            ->where('name','1')
+            ->first();
+            $preciol=DescuentoFaltasLicencias::select('descuento_faltas_licencias.precio')
+            ->where('name','2')
+            ->first();
+            //dd($preciol->precio);
+            $countFT=$countDiasF*$preciof->precio;
+            $countLT=$countlicencias * $preciol->precio;
             $Tfaltaslicencias= $countFT + $countLT;
             
             if($Tfaltaslicencias == 0)
@@ -531,7 +539,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $this->L='L8:L'.($this->Allemployee+9);
             $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
             $this->wrap='A8:'.'O'.($this->Allemployee+8);
-            //dd($this->B);
+            //dd($this->wrap);
             //dd($cell);
             return [ 
                 
@@ -587,7 +595,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)
                             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
 
-                            $event->sheet->getDelegate()->getStyle('A8:L19')
+                            $event->sheet->getDelegate()->getStyle($this->wrap)
                             ->getAlignment()
                             ->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT)
                             ->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);

@@ -59,6 +59,7 @@ use App\Http\Livewire\DetalleComprasController;
 use App\Http\Livewire\EditarCompraDetalleController;
 use App\Http\Livewire\MercanciaController;
 use App\Http\Livewire\CuentasController;
+use App\Http\Livewire\DescuentoFaltasLicenciasController;
 use App\Http\Livewire\EmailsController;
 use App\Http\Livewire\InicioController;
 use App\Http\Livewire\LocalizacionController;
@@ -107,6 +108,17 @@ use App\Models\Product;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
+// prueba de notificaciones
+use App\Mail\TestMail;
+use Illuminate\Support\Facades\Mail;
+
+Route::get('/mail', function (){
+    Mail::to('admin@admin.com')->send(new TestMail());
+    return 'Mail Send';
+});
+
+
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -114,6 +126,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/home', InicioController::class);
     // Route::group(['middleware' => ['role:ADMIN']], function () {
     // });
+
 
     /* ADMINISTRACION */
     Route::get('roles', RolesController::class)->name('roles')->middleware('permission:Roles_Index');
@@ -288,7 +301,8 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);
-
+    
+    Route::get('descfaltaslicencias',DescuentoFaltasLicenciasController::class);
     //comissiones
     Route::get('comisiones', ComissionsEmployeesController::class);
     

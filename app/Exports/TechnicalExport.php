@@ -247,7 +247,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->no_marco_salida=$countS;
 
             //calcular el numero de faltas de la persona
-            $feini =(int) Carbon::parse($this->dateFrom)->format('d');
+          /*  $feini =(int) Carbon::parse($this->dateFrom)->format('d');
             $fefi =(int) Carbon::parse($this->dateTo)->format('d');
             $countDiasF=$this->faltas_empleado($data3, $h->id,$feini,$fefi);
             $h->Faltast=$countDiasF;
@@ -267,6 +267,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $preciol=DescuentoFaltasLicencias::select('descuento_faltas_licencias.precio')
             ->where('name','2')
             ->first();
+           
             //dd($preciol->precio);
             $countFT=$countDiasF*$preciof->precio;
             $countLT=$countlicencias * $preciol->precio;
@@ -282,7 +283,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             }
             //$h->Faltas_Licencias=$countFT + $countLT;
             
-
+*/
             //dd($reporte);
             //$h->descuento='0';
 
@@ -420,7 +421,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
-                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA", "FALTAS"],
+                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA"],
             ];
         
 
@@ -919,16 +920,17 @@ function suma_horas($hora1,$hora2){
  //metodo donde obtendremos el total de dias faltados
  public function faltas_empleado($datos, $id, $from, $to)
  {
+    dd($datos);
     //obtener los turnos del usuario
     $revisionDias=Shift::select('shifts.*')
     ->where('ci',$id)
     ->first();
-
+    
     //obtendremos una coleccion con las fechas segun lo mandado en la vista
     $this->fechasfaltas=collect([]);
     $fechita = Carbon::parse($this->dateFrom)->format('Y-m');
     $count=0;
-    
+    //dump($revisionDias->saturday);
     //validar si tiene turno el sabado
     if( $revisionDias->saturday == '00:00:00')
         {
@@ -977,6 +979,8 @@ function suma_horas($hora1,$hora2){
    
      
     //dd($this->fechasfaltas);
+
+    //licencias a permisos
     $licencias= Assistance::select('assistances.*')
     ->where('empleado_id',$id)
     ->first();
@@ -1000,7 +1004,10 @@ function suma_horas($hora1,$hora2){
         }
         
     }
-    
+    //dias feriados, festivos o fallo de sistema
+
+    //validacion de dias feriados
+
     
     return $this->fechasfaltas->count();
      

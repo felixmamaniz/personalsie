@@ -91,12 +91,12 @@ class ComissionsEmployeesController extends Component
     // crear y guardar
     public function Store(){
 
+        //buscar si se tiene repetido una fecha de la comision
         $fechap=CommissionsEmployees::select('commissions_employees.*')
        ->where('commissions_employees.mes', $this->MesVenta)
        ->where('user_id',$this->empleadoid )
        ->first();
-       //validar para el msg de error
-       //dd($fechap);
+       //validar para el msg de error si no si tiene esa fecha
        
         if($fechap==null){
             $this->prueba=1;
@@ -158,10 +158,10 @@ class ComissionsEmployeesController extends Component
        //dd($fechap);
        
         if($fechap==null){
-            $this->prueba=1;
+            $this->prueba=null;
         }
         else{
-            $this->prueba=null;    
+            $this->prueba=1;    
         }
 
         $rules = [
@@ -176,7 +176,7 @@ class ComissionsEmployeesController extends Component
             'empleadoid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'multiplicado.required' => 'Este espacio es requerida',
             'comisionn.required' => 'Este espacio es requerida',
-            'prueba.required_if' => 'Elija una fecha no asignada',
+            'prueba.required_if' => 'no se puede cambiar la fecha',
         ];
         $this->validate($rules,$messages);
 
@@ -205,6 +205,21 @@ class ComissionsEmployeesController extends Component
         $this->selected_id=0;
         $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
+
+     //escuchar evento de eliminar para js
+     protected $listeners = [
+        'deleteRow' => 'Destroy'
+    ];
+    //metodo eliminar categoria con funcion nueva
+    public function Destroy(CommissionsEmployees $category)
+    {
+        //eliminar de la tabla
+        $category->delete();
+
+        $this->resetUI();
+        $this->emit('category-delete', 'Categoria Eliminada');
+
+    }   
 
     public function Mes($m)
     {

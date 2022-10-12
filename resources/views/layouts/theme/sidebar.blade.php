@@ -810,6 +810,11 @@
 										Contrato</a>
 								  </li>
 								  @endcan
+								  <li>
+									<a href="{{ url('comisiones') }}">
+										<i class="fa fas fa-minus"></i>
+										comisiones</a>
+								  </li>
 								  @can('Reportes_Tigo_Index')
 								  <li>
 									<a href="{{ url('user_employees') }}">
@@ -836,6 +841,12 @@
 										Reporte Horario </a>
 								</li>
 								@endcan
+
+								<li>
+									<a href="{{ url('calendariolaboral') }}">
+										<i class="fa fas fa-minus"></i>
+										Calendario Feriado/Festivo/Fallo del Sistema </a>
+								</li>
 
 								<li>
 									<a href="{{ url('assistances') }}">

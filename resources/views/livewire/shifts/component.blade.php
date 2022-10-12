@@ -88,20 +88,20 @@
         
         window.livewire.on('item-added', Msg => {
             $('#theModal').modal('hide')
-            noty(Msg)
+            
         })
         window.livewire.on('item-update', Msg => {
             $('#theModal').modal('hide')
-            noty(Msg)
+            
         })
         window.livewire.on('role-deleted', Msg => {
-            noty(Msg)
+            
         })
         window.livewire.on('item-exists', Msg => {
-            noty(Msg)
+            
         })
         window.livewire.on('item-error', Msg => {
-            noty(Msg)
+            
         })
         window.livewire.on('show-modal', Msg => {
             $('#theModal').modal('show')

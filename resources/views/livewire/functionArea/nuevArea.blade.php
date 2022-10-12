@@ -30,7 +30,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" wire:click.prevent="cancelar()" class="btn btn-warning close-btn text-info"
-                    data-dismiss="modal" style="background: #ee761c">CANCELAR
+                    data-dismiss="modal" style="background: #02b1ce">CANCELAR
                 </button>
                 
                     <button type="button" wire:click.prevent="RegNuevArea()"

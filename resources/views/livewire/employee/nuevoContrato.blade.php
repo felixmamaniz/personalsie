@@ -36,11 +36,12 @@
                             <div class="form-group">
                                 <label>Salario</label>
                                 <input type="number" wire:model.lazy="salario" class="form-control">
+                                @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
-                            @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
+                            
                         </div>
 
-                        <div class="col-sm-12 col-md-6">
+                        {{-- <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Estado de Contrato</label>
                                 <select wire:model.lazy="estado" class="form-control">
@@ -50,7 +51,7 @@
                                 </select>
                                 @error('estado') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
-                        </div>
+                        </div> --}}
                     </div>
   
 

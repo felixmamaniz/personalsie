@@ -26,21 +26,23 @@
         <div class="form-group">
             <label>Salario</label>
             <input type="number" class="form-control" wire:model.lazy="salario" placeholder="0.00">
-        </div>
-        @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
-    </div>
-    
-    <div class="col-sm-12 col-md-5">
-        <div class="form-group">
-            <label>Estado de Contrato</label>
-            <select id="seleccion" wire:model="estado" class="form-control">
-                <option value="Elegir" disabled>Elegir</option>
-                <option value="Activo" selected>Activo</option>
-                <option value="Finalizado" selected>Finalizado</option>
-            </select>
-            @error('estado') <span class="text-danger er">{{ $message }}</span> @enderror
+            @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
         </div>
     </div>
+
+    @if ($selected_id > 1)
+        <div class="col-sm-12 col-md-5">
+            <div class="form-group">
+                <label>Estado de Contrato</label>
+                <select id="seleccion" wire:model="estado" class="form-control">
+                    <option value="Elegir" disabled>Elegir</option>
+                    <option value="Activo" selected>Activo</option>
+                    <option value="Finalizado" selected>Finalizado</option>
+                </select>
+                @error('estado') <span class="text-danger er">{{ $message }}</span> @enderror
+            </div>
+        </div>
+    @endif
 </div>
 
 @include('common.modalFooter')

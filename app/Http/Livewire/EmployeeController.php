@@ -325,13 +325,13 @@ class EmployeeController extends Component
     // Registro de nuevo Contrato
     public function RegNuevoContrato(){
         $rules = [
-            //'fechaFin' => 'required',
-            'estado' => 'required|not_in:Elegir',
+            'salario' => 'required',
+            //'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
-            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
-            'estado.required' => 'seleccione estado de contrato',
-            'estado.not_in' => 'selecciona estado de contrato',
+            'salario.required' => 'El salario es requerido',
+            //'estado.required' => 'seleccione estado de contrato',
+            //'estado.not_in' => 'selecciona estado de contrato',
         ];
 
         $this->validate($rules, $messages);
@@ -341,13 +341,13 @@ class EmployeeController extends Component
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
             'salario'=>$this->salario,
-            'estado'=>$this->estado
+            'estado'=>'Activo'
         ]);
 
         //$contrato->save();
 
         $this->emit('tcontrato-added','Area Registrada');
-        $this->resetUI();
+        //$this->resetUI();
         $this->emit('modal-hide-contrato', 'show modal!');
         $this->emit('modal-show', 'show modal!');
     }
@@ -360,9 +360,9 @@ class EmployeeController extends Component
             'lastname' => 'required',
             'genero' => 'required|not_in:Seleccionar',
             'dateNac' => 'required',
-            'address' => 'required',
+            //'address' => 'required',
             'phone' => 'required',
-            'estadoCivil' => 'required|not_in:Seleccionar',
+            //'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
@@ -377,10 +377,10 @@ class EmployeeController extends Component
             'genero.required' => 'seleccione el genero del empleado',
             'genero.not_in' => 'selecciona genero',
             'dateNac.required' => 'la fecha de nacimiento es requerido',
-            'address.required' => 'la direccion es requerida',
+            //'address.required' => 'la direccion es requerida',
             'phone.required' => 'el numero de telefono es requerido',
-            'estadoCivil.required' => 'seleccione estado civil del empleado',
-            'estadoCivil.not_in' => 'selecciona estado civil',
+            //'estadoCivil.required' => 'seleccione estado civil del empleado',
+            //'estadoCivil.not_in' => 'selecciona estado civil',
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
             'cargoid.not_in' => 'elije un nombre del cargo diferente de elegir',
             'contratoid.not_in' => 'seleccione un contrato',
@@ -415,26 +415,27 @@ class EmployeeController extends Component
             $employ->image = $customFileName;
             $employ->save();
 
+            //dd('hola');
             // proceso de compresion de imagen
             $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
             $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
-
+            
             // reduccion de calidad y compresion de imagen
             $imagex->resize(1280, null, function ($constraint) {
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
+            dd($imagex);
 
             // por ultimo solo guardamos esta nueva instancia, reemplazando la imagen anterior.
             Storage::put($path, (string) $imagex->encode('jpg', 30));
         }
         //$employ->save();
-        
-        //https://codea.app/blog/reducir-el-tamano-de-una-imagen
+
         //https://hcastillaq.medium.com/comprimiendo-im%C3%A1genes-con-laravel-ccc92a0d45e5
         
 
-        $this->resetUI();
+        //$this->resetUI();
         $this->emit('employee-added', 'Empleado Registrado');
         $this->emit('modal-hide-contrato', 'show modal!');
         $this->emit('modal-show', 'show modal!');
@@ -469,9 +470,9 @@ class EmployeeController extends Component
             'lastname' => 'required',
             'genero' => 'required|not_in:Seleccionar',
             'dateNac' => 'required',
-            'address' => 'required',
+            //'address' => 'required',
             'phone' => 'required',
-            'estadoCivil' => 'required|not_in:Seleccionar',
+            //'estadoCivil' => 'required|not_in:Seleccionar',
             'areaid' => 'required|not_in:Elegir',
             'cargoid' => 'required|not_in:Elegir',
             'contratoid' => 'required|not_in:Elegir',
@@ -490,11 +491,11 @@ class EmployeeController extends Component
 
             'dateNac.required' => 'la fecha de nacimiento es requerido',
 
-            'address.required' => 'la direccion es requerida',
+            //'address.required' => 'la direccion es requerida',
             'phone.required' => 'el numero de telefono es requerido',
 
-            'estadoCivil.required' => 'seleccione estado civil del empleado',
-            'estadoCivil.not_in' => 'selecciona estado civil',
+            //'estadoCivil.required' => 'seleccione estado civil del empleado',
+            //'estadoCivil.not_in' => 'selecciona estado civil',
 
             'areaid.not_in' => 'elije un nombre de area diferente de elegir',
 
@@ -537,7 +538,9 @@ class EmployeeController extends Component
                 }
             }
 
+            
             $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
+            dd($fileName);
             $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
 
             // reduccion de calidad y compresion de imagen

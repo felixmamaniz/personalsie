@@ -21,9 +21,9 @@ class CreateEmployeesTable extends Migration
             $table->string('lastname',255);
             $table->enum('genero',['Masculino','Femenino'])->default('Masculino'); // seleccionar genero
             $table->date('dateNac');    // fecha de nacimiento
-            $table->string('address',255);
+            $table->string('address',255)->nullable();
             $table->string('phone');
-            $table->enum('estadoCivil',['Soltero','Casado'])->default('Soltero');
+            $table->enum('estadoCivil',['Soltero','Casado'])->default('Soltero')->nullable();
 
             $table->unsignedBigInteger('area_trabajo_id');
             $table->foreign('area_trabajo_id')->references('id')->on('area_trabajos');

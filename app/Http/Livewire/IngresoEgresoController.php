@@ -151,7 +151,7 @@ class IngresoEgresoController extends Component
                         'movimientos.status as movstatus'
                     )
                     ->where('ca.sucursal_id', $this->sucursal)
-                    ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                    ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                     ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->where(function($querys){
                         $querys->where( 'crms.tipoDeMovimiento', 'like', '%' . $this->search . '%')
@@ -189,7 +189,7 @@ class IngresoEgresoController extends Component
                             'movimientos.status as movstatus'
                         )
                         ->where('ca.id', $this->caja)
-                        ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                        ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                         ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                         ->where(function($querys){
                             $querys->where( 'crms.tipoDeMovimiento', 'like', '%' . $this->search . '%')
@@ -233,7 +233,7 @@ class IngresoEgresoController extends Component
                     )
                     ->where('cc.id', $this->categoria_id)
                     ->where('ca.sucursal_id', $this->sucursal)
-                    ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                    ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                     ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->where(function($querys){
                         $querys->where( 'crms.tipoDeMovimiento', 'like', '%' . $this->search . '%')
@@ -272,7 +272,7 @@ class IngresoEgresoController extends Component
                         )
                         ->where('cc.id', $this->categoria_id)
                         ->where('ca.id', $this->caja)
-                        ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                        ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                         ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                         ->where(function($querys){
                             $querys->where( 'crms.tipoDeMovimiento', 'like', '%' . $this->search . '%')
@@ -318,7 +318,7 @@ class IngresoEgresoController extends Component
                         'movimientos.status as movstatus'
                     )
                     ->where('ca.sucursal_id', $this->sucursal)
-                    ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                    ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                     ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->orderBy('movimientos.id', 'desc')
                     ->get();   
@@ -351,7 +351,7 @@ class IngresoEgresoController extends Component
                         'movimientos.status as movstatus'
                     )
                     ->where('ca.id', $this->caja)
-                    ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                    ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                     ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->orderBy('movimientos.id', 'desc')
                     ->get();
@@ -386,7 +386,7 @@ class IngresoEgresoController extends Component
                     )
                     ->where('cc.id', $this->categoria_id)
                     ->where('ca.sucursal_id', $this->sucursal)
-                    ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                    ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                     ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->orderBy('movimientos.id', 'desc')
                     ->get();   
@@ -420,7 +420,7 @@ class IngresoEgresoController extends Component
                     )
                     ->where('cc.id', $this->categoria_id)
                     ->where('ca.id', $this->caja)
-                    ->where('crms.tipoDeMovimiento','=', 'EGRESO/INGRESO')
+                    ->whereIn('crms.tipoDeMovimiento', ['EGRESO/INGRESO','SOBRANTE','FALTANTE'])
                     ->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->orderBy('movimientos.id', 'desc')
                     ->get();

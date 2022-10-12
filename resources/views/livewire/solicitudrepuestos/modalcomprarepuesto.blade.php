@@ -116,8 +116,8 @@
 
 
               <div class="col-12 text-center">
-                <h2>Precio Total Estimado</h2>
-                <h2><b>{{$this->total_bs}} Bs</b></h2>
+                <h2>Costo Total Estimado</h2>
+                <h2><b>{{number_format($this->total_bs,2)}} Bs</b></h2>
               </div>
 
 

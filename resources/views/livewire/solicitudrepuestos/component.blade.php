@@ -84,8 +84,22 @@
 </style>
 @endsection
 <div class="row">
-    <div class="col-12 text-center">
+
+
+
+
+    <div class="col-4 text-center">
+        
+    </div>
+
+    <div class="col-4 text-center">
         <p class="h1">Solicitud de Repuestos</p>
+    </div>
+
+    <div class="col-4 text-right">
+        <div class="form-group">
+            <a href="{{ url('ordencompra') }}" type="button" class="btn btn-success">Ir a Ordenes de Compra</a>
+        </div>
     </div>
 
     <div class="col-12 col-sm-6 col-md-3 text-center">
@@ -113,12 +127,14 @@
             </select>
         </div>
     </div>
+
+
     <div class="col-12 col-sm-6 col-md-3 text-center">
-        <b style="color: white;">|</b>
-        <div class="form-group">
-            <a href="{{ url('ordencompra') }}" type="button" class="btn btn-success">Ir a Ordenes de Compra</a>
-        </div>
+
     </div>
+
+
+
     <div class="col-12 col-sm-6 col-md-3 text-center">
         <b style="color: white;">|</b>
         <div class="form-group">
@@ -265,8 +281,6 @@
                                                             @endif
                                                         
                                                         @endif
-
-
 
 
                                                     @endif

@@ -810,6 +810,11 @@
 										Contrato</a>
 								  </li>
 								  @endcan
+								  <li>
+									<a href="{{ url('comisiones') }}">
+										<i class="fa fas fa-minus"></i>
+										comisiones</a>
+								  </li>
 								  @can('Reportes_Tigo_Index')
 								  <li>
 									<a href="{{ url('user_employees') }}">
@@ -838,6 +843,12 @@
 								@endcan
 
 								<li>
+									<a href="{{ url('calendariolaboral') }}">
+										<i class="fa fas fa-minus"></i>
+										Calendario Feriado/Festivo/Fallo del Sistema </a>
+								</li>
+
+								<li>
 									<a href="{{ url('assistances') }}">
 										<i class="fa fas fa-minus"></i>
 										Permisos ó  Licencias</a>
@@ -846,7 +857,7 @@
 								<li>
 									<a href="{{ url('shifts') }}">
 										<i class="fa fas fa-minus"></i>
-										Turnos </a>
+										Horario Entrada del Empleado </a>
 								</li>
 								
 								
@@ -877,6 +888,13 @@
 												<i class="fa fas fa-minus"></i>
 												Descuentos o Varios</a>
 									</li>
+
+									<li>
+										<a href="{{ url('descfaltaslicencias') }}">
+											<i class="fa fas fa-minus"></i>
+											Descuentos de Faltas y Licencias</a>
+								</li>
+									
 								</ul>
 							</div>
 						</li>

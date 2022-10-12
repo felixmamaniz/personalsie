@@ -504,7 +504,7 @@
                                         <h5 class="text-dark text-left" ><b> Total Efectivo </b></h5>
                                     </td>
                                     <td>
-                                        <hr class="m-0 p-0" width="100%" style="background-color: black">
+                                        <hr class="m-0 p-0" width="50%" style="background-color: black">
                                         <h5 class="text-dark text-left" > <b> {{ number_format($operacionesW,2)}}</b></h5>
                                     </td>
                                 </tr>

@@ -24,6 +24,7 @@ use App\Http\Livewire\AsignarController;
 use App\Http\Livewire\AssistanceController;
 use App\Http\Livewire\AttendancesController;
 use App\Http\Livewire\CajasController;
+use App\Http\Livewire\CalendarioLaboralController;
 use App\Http\Livewire\CargoController;
 use App\Http\Livewire\CarteraController;
 use App\Http\Livewire\CarteraMovCategoriaController;
@@ -59,6 +60,7 @@ use App\Http\Livewire\DetalleComprasController;
 use App\Http\Livewire\EditarCompraDetalleController;
 use App\Http\Livewire\MercanciaController;
 use App\Http\Livewire\CuentasController;
+use App\Http\Livewire\DescuentoFaltasLicenciasController;
 use App\Http\Livewire\EmailsController;
 use App\Http\Livewire\InicioController;
 use App\Http\Livewire\LocalizacionController;
@@ -301,7 +303,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('shifts',ShiftsController::class);
     Route::get('Salaries',SalariesController::class);
+    
+    Route::get('descfaltaslicencias',DescuentoFaltasLicenciasController::class);
 
+    Route::get('calendariolaboral',CalendarioLaboralController::class);
     //comissiones
     Route::get('comisiones', ComissionsEmployeesController::class);
     

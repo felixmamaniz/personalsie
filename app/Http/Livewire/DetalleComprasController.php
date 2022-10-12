@@ -151,7 +151,8 @@ class DetalleComprasController extends Component
          $this->total_compra= $this->subtotal-$this->dscto;
 
     }
-    public function addProvider(){
+    public function addProvider()
+    {
         $obj= new Prov;
         $obj->nombre_prov = $this->nombre_prov;
         $obj->apellido = $this->apellido_prov;
@@ -164,14 +165,16 @@ class DetalleComprasController extends Component
         $this->emit('prov_added', 'Proveedor Registrado');
 
     }
-    public function GenerateCode(){
+    public function GenerateCode()
+    {
         
         $min=10000;
         $max= 99999;
         $this->codigo= Carbon::now()->format('ymd').mt_rand($min,$max);
     }
 
-    public function StoreCategory(){
+    public function StoreCategory()
+    {
 
         $rules = ['name' => 'required|unique:categories|min:3'];
         $messages = [
@@ -190,14 +193,13 @@ class DetalleComprasController extends Component
         $this->resetCategory();
         $this->emit('cat-added', 'Categoría Registrada');
     }
-
-    public function resetCategory(){
+    public function resetCategory()
+    {
             $this->name="";
             $this->descripcion="";
     }
-
-
-    public function Store(){
+    public function Store()
+    {
         $prod = new Products;
         $prod->selected_id2=$this->selected_id2;
         $prod->nombre= $this->nombre;
@@ -220,7 +222,6 @@ class DetalleComprasController extends Component
         $this->resetUI();
 
     }
-
     public function UpdateQty($productId, $cant = 3)
     {
       
@@ -262,7 +263,6 @@ class DetalleComprasController extends Component
 
         }
     }
-
     public function UpdatePrice($productId, $price = 20)
     {
         $product = Product::select('products.*')
@@ -297,18 +297,17 @@ class DetalleComprasController extends Component
             $this->total_compra= $this->subtotal-$this->dscto;
         }
     }
-
-    public function aplicarDescto(){
+    public function aplicarDescto()
+    {
         $this->dscto=$this->descuento;
         $this->emit('dscto_added','Descuento aplicado satisfactoriamente');
         $this->total_compra=$this->subtotal-$this->dscto;
     }
-
-    public function cancelDscto(){
+    public function cancelDscto()
+    {
         $this->descuento=null;
         $this->porcentaje=0;
     }
-
     public function UpdatePrecioVenta($productId, $price = 20)
     {
       
@@ -355,8 +354,6 @@ class DetalleComprasController extends Component
             $this->total_compra= $this->subtotal-$this->dscto;
     }
     }
-
-
     public function removeItem($productId)
     {
         Compras::remove($productId);
@@ -378,13 +375,12 @@ class DetalleComprasController extends Component
         }
 
     }
-
-    public function exit(){
+    public function exit()
+    {
         Compras::clear();
         $this->resetUI();
         redirect('/compras');
     }
-
     public function resetUI()
     {
         $this->costo = '';
@@ -413,9 +409,8 @@ class DetalleComprasController extends Component
         $this->telefono_prov='';
         $this->resetValidation();
     }
- 
-
-    public function descuento_change(){
+    public function descuento_change()
+    {
         if ($this->subtotal>0 && $this->descuento>0 && $this->descuento<$this->subtotal) {
             
             //$this->total_compra= $this->subtotal-$this->descuento;
@@ -425,7 +420,8 @@ class DetalleComprasController extends Component
             $this->descuento =0;
         }
     }
-    public function validateCarrito(){
+    public function validateCarrito()
+    {
         if (Compras::getTotalQuantity() == 0) {
             $this->emit('empty_cart', 'No tiene productos en el detalle de compra');
             return false;
@@ -434,10 +430,8 @@ class DetalleComprasController extends Component
             return true;
         }
     }
-
     public function guardarCompra()
     {
-
         $rules = [
             'provider'=>'required|exists:providers,nombre_prov',
             'destino'=>'required|not_in:Elegir',
@@ -496,7 +490,6 @@ if ($this->validateCarrito()) {
         if ($this->tipo_transaccion === 'Contado' || $this->pago_parcial>0) {
 
             $Movimiento= Movimiento::create([
-                
                 'type'=>"COMPRAS",
                 'status'=>"ACTIVO",
                 'saldo'=>$this->saldo,
@@ -517,8 +510,10 @@ if ($this->validateCarrito()) {
          
             $items = Compras::getContent();
             //dd($items);
-            if ($this->tipo_documento == 'FACTURA') {
-                foreach ($items as $item) {
+            if ($this->tipo_documento == 'FACTURA')
+            {
+                foreach ($items as $item)
+                {
                     $lot= Lote::create([
                         'existencia'=>$item->quantity,
                         'costo'=>$item->price,
@@ -547,7 +542,8 @@ if ($this->validateCarrito()) {
 
                 }
             }
-            else{
+            else
+            {
                 foreach ($items as $item) {
 
 

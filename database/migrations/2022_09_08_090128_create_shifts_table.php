@@ -30,6 +30,13 @@ class CreateShiftsTable extends Migration
             $table->time('friday');
             $table->time('saturday');
             $table->time('Sunday');
+            $table->time('smonday');
+            $table->time('stuesday');
+            $table->time('swednesday');
+            $table->time('sthursday');
+            $table->time('sfriday');
+            $table->time('ssaturday');
+            $table->time('sSunday');
             $table->string('name',255);
             $table->timestamps();
         });

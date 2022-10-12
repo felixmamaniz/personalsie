@@ -169,8 +169,17 @@
                                             </h6>
                                         </td>
                                         <td>
+                                            @if ($p->tipoDeMovimiento=='SOBRANTE')
+                                            <h6 class="text-center" style="font-size: 100%">SOBRANTE:{{ $p->comentario }}
+                                            </h6>
+                                            @elseif($p->tipoDeMovimiento=='FALTANTE')
+                                            <h6 class="text-center" style="font-size: 100%">FALTANTE:{{ $p->comentario }}
+                                            </h6>
+                                            @else
                                             <h6 class="text-center" style="font-size: 100%">{{ $p->comentario }}
                                             </h6>
+                                            @endif
+                                       
                                         </td>
                                    
                                         <td>

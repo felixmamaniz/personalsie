@@ -18,34 +18,27 @@
                     <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
                         <thead class="text-white" style="background: #ee761c">
                             <tr>
-                               <th class="table-th text-white">ID</th>
-                               <th class="table-th text-white text-center">NOMBRE</th>
-                               <th class="table-th text-white text-center">MULTIPLICADO X </th>
-                               <th class="table-th text-white text-center">COMISSION DEL</th>
-                               <th class="table-th text-white text-center">Venta Del Mes</th>
-                               <th class="table-th text-white text-center">MES</th>
+                               <th class="table-th text-white text-center">DESCRIPCION</th>
+                               <th class="table-th text-white text-center">PRECIO</th>
                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach($comision as $c)
+                            @foreach($desc as $d)
                             <tr>
-                                <td><h6>{{$c->id}}</h6></td>
-                                <td><h6 class="">{{$c->empleado}}</h6></td>
-                                <td><h6 class="text-center">{{$c->multiplicado}}</h6></td>
-                                <td><h6 class="text-center">{{ $c->comision*100}} %</h6></td>
-                                <td><h6 class="text-center">{{ $c->venta_comision}} </h6></td>
-                                <td><h6 class="text-center">{{ $c->mes}} </h6></td>
+                                
+                                <td><h6 class="text-center">{{$d->name}}</h6></td>
+                                <td><h6 class="text-center">{{$d->precio}} Bs.</h6></td>
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"
-                                    wire:click="Edit({{$c->id}})"
+                                    wire:click="Edit({{$d->id}})"
                                     class="btn btn-dark mtmobile" title="Edit">
                                     <i class="fas fa-edit"></i>
                                     </a>
 
                                     <a href="javascript:void(0)"
-                                        onclick="Confirm({{$c->id}})"
+                                        onclick="Confirm('{{ $d->id }}','{{ $d->name }}')"
                                         class="btn btn-dark mtmobile" title="Destroy">
                                         <i class="fas fa-trash"></i>
                                     </a>
@@ -54,13 +47,14 @@
                             @endforeach
                         </tbody>
                     </table>
-                    {{$comision->links()}}
+                    {{$desc->links()}}
                 </div>
             </div>
         </div>
     </div>
-    @include('livewire.commissions_employees.form')
+    @include('livewire.desc_faltas_licencias.form')
 </div>
+
 
 <script>
     document.addEventListener('DOMContentLoaded', function(){
@@ -84,24 +78,26 @@
             $('.er').css('display','none')
         });
     });
-    function Confirm(id){
+
+    function Confirm(id, name){
         
-        swal.fire({
-        title: 'CONFIRMAR',
-        icon: 'warning',
-        text: 'Confirmar eliminar la comision ' ,
-        showCancelButton: true,
-        cancelButtonText: 'Cerrar',
-        cancelButtonColor: '#383838',
-        confirmButtonColor: '#3B3F5C',
-        confirmButtonText: 'Aceptar'
-        }).then(function(result) {
-            if (result.value) {
-                window.livewire.emit('deleteRow', id)
-                Swal.close()
-            }
-        })
-    
-    
-}
+            swal.fire({
+            title: 'CONFIRMAR',
+            icon: 'warning',
+            text: 'Confirmar eliminar el permiso ' + '"' + name + '"',
+            showCancelButton: true,
+            cancelButtonText: 'Cerrar',
+            cancelButtonColor: '#383838',
+            confirmButtonColor: '#3B3F5C',
+            confirmButtonText: 'Aceptar'
+            }).then(function(result) {
+                if (result.value) {
+                    window.livewire.emit('deleteRow', id)
+                    Swal.close()
+                }
+            })
+        
+        
+    }
 </script>
+

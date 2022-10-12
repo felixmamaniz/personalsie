@@ -8,10 +8,10 @@
         color: white;
         border-color: #4894ef;
         border-radius: 5px;
-        padding-top: 0px;
-        padding-bottom: 0px;
-        padding-left: 1px;
-        padding-right: 1px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 2px;
+        padding-right: 2px;
         box-shadow: none;
         border-width: 2px;
         border-style: solid;
@@ -35,8 +35,16 @@
 
 <div class="row">
     
-    <div class="col-12 text-center">
+    <div class="col-4 text-center">
+        
+    </div>
+    <div class="col-4 text-center">
         <h1>Ordenes de Compra</h1>
+    </div>
+    <div class="col-4 text-right">
+        <div class="form-group">
+            <a href="{{ url('solicitudrepuestos') }}" type="button" class="btn btn-success">Ir a Solicitud de Repuestos</a>
+        </div>
     </div>
 
 
@@ -68,10 +76,7 @@
         </div>
     </div>
     <div class="col-12 col-sm-6 col-md-3 text-center">
-        <b style="color: white;">|</b>
-        <div class="form-group">
-            <a href="{{ url('solicitudrepuestos') }}" type="button" class="btn btn-success">Ir a Solicitud de Repuestos</a>
-        </div>
+        
     </div>
 
     
@@ -88,7 +93,7 @@
                         <th>CODIGO</th>
                         {{-- <th>ORDEN DE COMPRA</th> --}}
                         <th>USUARIO</th>
-                        <th>COMPRADOR ASIGNADO</th>
+                        <th>COMPRADOR / MONTO BS / CARTERA</th>
                         <th>FECHA</th>
                         <th>ACCION</th>
                     </tr>
@@ -108,7 +113,7 @@
                             <b>{{$l->nombreusuario}}</b>
                         </td>
                         <td>
-                            <b>{{$l->nombrecomprador}}</b>
+                            <b>{{$l->nombrecomprador}} / {{$l->monto_bs_compra}} Bs / {{$l->nombrecartera}}</b>
                         </td>
                         <td>
                            <b>{{ \Carbon\Carbon::parse($l->created_at)->format('d/m/Y H:i') }}</b>
@@ -116,8 +121,11 @@
                         <td class="text-center">
                             @if($l->estado != "COMPRADO")
 
-                            <button class="recibir" wire:click.prevent="modalrecibircompra({{$l->codigo}})">
+                            <button class="recibir" wire:click.prevent="modalrecibircompra({{$l->codigo}})" title="Recibir Orden de Compra">
                                 Recibir Compra
+                            </button>
+                            <button wire:click.prevent="modaleditar({{$l->codigo}})" class="recibir" title="Editar Orden de Compra">
+                                <i class="far fa-edit"></i>
                             </button>
 
                             @else
@@ -207,6 +215,7 @@
 
 
     @include('livewire.ordencompra.modalrecibircompra')
+    @include('livewire.ordencompra.modaleditar')
 </div>
 @section('javascript')
 
@@ -226,6 +235,12 @@
             'success'
             )
         });
+
+        //Mostrar ventana modal recibircompra
+        window.livewire.on('modaleditar-show', msg => {
+            $('#modaleditar').modal('show')
+        });
+
 
 
         //Mostrar cualquier tipo de Mensaje Ventana de Ok

@@ -45,13 +45,13 @@
 
                   <div class="col-6 col-sm-4">
                     <label><b>Destino Producto</b></label>
-                    <select wire:model.lazy="destino" class="form-control">
+                    <select wire:model="destino_id" class="form-control">
                       <option value='Elegir'>Elegir Destino</option>
-                      @foreach($data_suc as $data)
-                        <option value="{{$data->destino_id}}">{{$data->nombre}}-{{$data->name}}</option>
+                      @foreach($destinos as $d)
+                        <option value="{{$d->destinoid}}">{{ucwords(strtolower($d->nombredestino))}} - {{$d->nombresucursal}}</option>
                       @endforeach
-                  </select>
-                    @error('tipo_documento')
+                    </select>
+                    @error('destino_id')
                         <span class="text-danger er">{{ $message }}</span>
                     @enderror 
                   </div>
@@ -64,27 +64,16 @@
 
                   <div class="col-6 col-sm-4">
                     <label><b>Proveedor</b></label>
-
-                    <input list="provider" wire:model="provider_id" class="form-control" placeholder="Ingrese Proveedor...">
-                    <datalist id="provider">
+                    <select wire:model.lazy="proveedor_id" class="form-control">
                       @foreach($providers as $p)
-                          <option value="{{$p->nombre_prov}}">{{$p->nombre_prov}}</option>
+                        <option value="{{$d->id}}">{{ucwords(strtolower($p->nombre_prov))}}</option>
                       @endforeach
-                    </datalist>
-
-
-                    {{-- <input type="number" wire:model="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
-                    @error('monto_bs_cambio')
-                    <span class="text-danger er">{{ $message }}</span>
-                    @enderror --}}
+                    </select>
                   </div>
 
                   <div class="col-6 col-sm-4">
-                    <label><b>Nro. de Documento</b></label>
-                    <input type="number" wire:model="monto_bs_cambio" placeholder="Dato Opcional..." class="form-control">
-                    @error('monto_bs_cambio')
-                    <span class="text-danger er">{{ $message }}</span>
-                    @enderror
+                    <label><b>Número de Documento</b></label>
+                    <input type="number" wire:model="numero_documento" placeholder="Dato Opcional..." class="form-control">
                   </div>
 
                   <div class="col-6 col-sm-4">
@@ -95,9 +84,6 @@
                       <option value='RECIBO'>Recibo</option>
                       <option value='NINGUNO'>Ninguno</option>
                     </select>
-                    @error('tipo_documento')
-                        <span class="text-danger er">{{ $message }}</span>
-                    @enderror 
                   </div>
 
                 </div>
@@ -131,7 +117,7 @@
                       <tr class="text-center">
                         <th>Nombre</th>
                         <th>Cantidad</th>
-                        <th>Precio</th>
+                        <th>Costo</th>
                         <th>Total</th>
                         <th>Acciones</th>
                       </tr>
@@ -146,7 +132,7 @@
                         {{$l['quantity']}}
                         </td>
                         <td class="text-right">
-                          {{ number_format($l['price'], 2)}}
+                          {{ number_format($l['cost'], 2)}}
                         </td>
                         <td class="text-right">
                           {{ number_format($l['price'] * $l['quantity'], 2)}}

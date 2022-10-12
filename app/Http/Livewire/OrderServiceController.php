@@ -103,7 +103,7 @@ class OrderServiceController extends Component
     //ROSCIO - REPUESTOS
     //variable para modal de busqueda de repuestos 
     public $nombre,$costo2, $precio_venta2,$codigo,$caracteristicas,$lote,$unidad, $marca, $garantia,$industria,
-    $categoryid,$component,$selected_categoria,$image,$selected_id2,$name,$descripcion,$unidades,$marcas2,$show_more,$cant,$orderP,$listacompra,$toogle,$solicitudservicio,$repuestostienda,$repuestosalmacen,$orderlista;
+    $categoryid,$component,$selected_categoria,$image,$selected_id2,$name,$descripcion,$unidades,$marcas2,$show_more,$cant,$orderP,$listacompra,$toogle,$solicitudservicio,$repuestostienda,$repuestosalmacen,$orderlista,$sumaProductosTienda,$totalServicio;
 
     //Guarda la lista donde se guardan todos los repuestos encontrados en el input de busqueda de repuestos ($searchproduct)
     public $listaproductos;
@@ -137,11 +137,13 @@ class OrderServiceController extends Component
         $this->toogle=1;
         $this->type='TERMINADO';
         $this->repuestosalmacen=collect();
-        $this->orderlista=1;
+        $this->repuestostienda=collect();
+        $this->orderlistatienda=1;
+        $this->orderlistaalmacenes=1;
+        $this->sumaProductosTienda=0;
+        $this->totalServicio=$this->edit_saldo+$this->sumaProductosTienda;
+
         //$this->searchproduct='CARGADOR RAPIDO,MICRO USB , CARGA RAPIDA, EF-1204Q, E Y F';
-
-
-        
 
         $this->list_produts_collect = collect();
 
@@ -3328,6 +3330,7 @@ class OrderServiceController extends Component
 
      
         $this->repuestosalmacen=collect();
+        $this->repuestostienda=collect();
             $rep= ServiceRepDetalleSolicitud::join('products','products.id','service_rep_detalle_solicituds.product_id')
             ->join('destinos','destinos.id','service_rep_detalle_solicituds.destino_id')
             ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
@@ -3345,21 +3348,45 @@ class OrderServiceController extends Component
             ->get();
 
             foreach ($rep as $data) {
-                $this->repuestosalmacen->push([
-                     'orderM'=>$this->orderlista,
-                    'product_id'=> $data->proid,
-                    'product_name'=> $data->prodnombre,
-                    'destiny_id' => $data->destid,
-                    'destiny_name' => $data->dest,
-                    'quantity'=> $data->cant,
-                    'precioventa'=>0,
-                    'subtotal'=>0
+                if ($data->dest == "TIENDA") {
+                    
+                    $this->repuestostienda->push([
+                         'orderM'=>$this->orderlista,
+                        'product_id'=> $data->proid,
+                        'product_name'=> $data->prodnombre,
+                        'destiny_id' => $data->destid,
+                        'destiny_name' => $data->dest,
+                        'quantity'=> $data->cant,
+                        'precioventa'=>0,
+                        'subtotal'=>0
+                    ]);
+                    $this->orderlistatienda++;
+                    $this->repuestostienda->sortByDesc('orderM');
+                    
+                }
+                else{
+                    
+                    $this->repuestosalmacen->push([
+                        'orderM'=>$this->orderlistaalmacenes,
+                       'product_id'=> $data->proid,
+                       'product_name'=> $data->prodnombre,
+                       'destiny_id' => $data->destid,
+                       'destiny_name' => $data->dest,
+                       'quantity'=> $data->cant,
+                       'precioventa'=>0,
+                       'subtotal'=>0
+                   ]);
+
+                    $this->orderlistaalmacenes++;
+                    $this->repuestosalmacen->sortByDesc('orderM');
+                }
                 
-                ]);
-                
-                $this->orderlista++;
-                $this->repuestosalmacen->sortByDesc('orderM');
                 //dd($this->repuestosalmacen);
+                $this->sumaProductosTienda=$this->repuestostienda->sum(function($value){
+                        return $value['quantity']*$value['precioventa'];
+                });
+
+               
 
             }
             
@@ -4465,20 +4492,24 @@ class OrderServiceController extends Component
 
     public function changePrecioVenta($ss,$mm,$tt)
     {
-        //dd($ss,$mm,$tt);
-        $itemc=$this->repuestosalmacen->where('product_id',$ss)->where('destiny_id',$mm);
+        $th= Destino::find($mm);
+
+        //dd($th);
+        if ($th->nombre == 'TIENDA')
+        {
+            //dd($ss,$mm,$tt);
+        $itemc=$this->repuestostienda->where('product_id',$ss)->where('destiny_id',$mm);
         //dd($itemc);
         $product=$itemc;
 
         $orderM=$itemc->first()['orderM'];
         //dd($itemc->keys()->first());
-        $this->repuestosalmacen->pull($itemc->keys()->first());
+        $this->repuestostienda->pull($itemc->keys()->first());
         
         //dd($this->repuestosalmacen);
 
-        $this->repuestosalmacen->push([
+        $this->repuestostienda->push([
             'orderM'=>$orderM,
-            
            'product_id'=> $product->first()['product_id'],
            'product_name'=>  $product->first()['product_name'],
            'destiny_id' =>  $product->first()['destiny_id'],
@@ -4488,6 +4519,38 @@ class OrderServiceController extends Component
            'subtotal'=>$tt* $product->first()['quantity']
        
        ]);
+
+       $this->sumaProductosTienda=$this->repuestostienda->sum(function($value){
+        return $value['quantity']*$value['precioventa'];
+        });
+        }
+        else{
+
+            //dd($ss,$mm,$tt);
+            $itemc=$this->repuestosalmacen->where('product_id',$ss)->where('destiny_id',$mm);
+            //dd($itemc);
+            $product=$itemc;
+    
+            $orderM=$itemc->first()['orderM'];
+            //dd($itemc->keys()->first());
+            $this->repuestosalmacen->pull($itemc->keys()->first());
+            
+            //dd($this->repuestosalmacen);
+    
+            $this->repuestosalmacen->push([
+                'orderM'=>$orderM,
+               'product_id'=> $product->first()['product_id'],
+               'product_name'=>  $product->first()['product_name'],
+               'destiny_id' =>  $product->first()['destiny_id'],
+               'destiny_name' =>  $product->first()['destiny_name'],
+               'quantity'=>  $product->first()['quantity'],
+               'precioventa'=>$tt,
+               'subtotal'=>$tt* $product->first()['quantity']
+           
+           ]);
+        }
+
+
 
        //dd($this->repuestosalmacen);
 

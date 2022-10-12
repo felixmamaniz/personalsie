@@ -1095,7 +1095,7 @@ class ReporteMovimientoResumenController extends Component
         CarteraMov::create([
             'type' => ($this->diferenciaCaja == 'SOBRANTE')?'INGRESO':'EGRESO',
             'tipoDeMovimiento' => $this->diferenciaCaja,
-            'comentario' => ($this->diferenciaCaja == 'SOBRANTE')?'SOBRANTE'.'('.$this->obsDiferencia.')': 'FALTANTE'.'('.$this->obsDiferencia.')',
+            'comentario' => $this->obsDiferencia,
             'cartera_id' =>  $carterarec2,
             'movimiento_id' => $mvt->id
         ]);

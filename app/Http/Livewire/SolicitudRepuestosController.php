@@ -400,16 +400,14 @@ class SolicitudRepuestosController extends Component
     //Pasa el estado de un detalle de una solicitud de PENDIENTE a ACEPTADO
     public function aceptar_solicitud($iddetalle, $codigo)
     {
-        $detalle_solicitud = ServiceRepDetalleSolicitud::find($iddetalle);
-        //dd($detalle_solicitud);
 
+        $detalle_solicitud = ServiceRepDetalleSolicitud::find($iddetalle);
         foreach($detalle_solicitud->estado_solicitud as $estado)
         {
             $estado->update([
                 'status' => 'INACTIVO'
             ]);
         }
-
         ServiceRepEstadoSolicitud::create([
             'detalle_solicitud_id' => $detalle_solicitud->id,
             'user_id' => Auth()->user()->id,
@@ -417,25 +415,25 @@ class SolicitudRepuestosController extends Component
         ]);
 
         //Salida Registrada de productos aceptados 
-        try {
-            $operacion= SalidaProductos::create([
-                'destino'=>$detalle_solicitud->destino_id,
+        try
+        {
+            $operacion = SalidaProductos::create([
+                'destino' => $detalle_solicitud->destino_id,
                 'user_id'=> Auth()->user()->id,
                 'concepto'=>'SALIDA',
                 'observacion'=>'Producto para servicio'
             ]);
-        // dd($auxi2->pluck('stock')[0]);
     
-                $auxi=DetalleSalidaProductos::create([
-                    'product_id'=>$detalle_solicitud->product_id,
-                    'cantidad'=> $detalle_solicitud->cantidad,
-                    'id_salida'=>$operacion->id
+            $auxi = DetalleSalidaProductos::create([
+                'product_id'=>$detalle_solicitud->product_id,
+                'cantidad'=> $detalle_solicitud->cantidad,
+                'id_salida'=>$operacion->id
             ]);
 
-            $lot=Lote::where('product_id',$detalle_solicitud->product_id)->where('status','Activo')->get();
+            $lot = Lote::where('product_id',$detalle_solicitud->product_id)->where('status','Activo')->get();
 
             //obtener la cantidad del detalle de la venta 
-            $this->qq=$detalle_solicitud->cantidad;
+            $this->qq = $detalle_solicitud->cantidad;
             foreach ($lot as $val) { 
             $this->lotecantidad = $val->existencia;
           

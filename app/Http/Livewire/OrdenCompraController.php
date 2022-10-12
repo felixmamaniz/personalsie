@@ -50,6 +50,10 @@ class OrdenCompraController extends Component
     //Guarda el id destino donde se registrará la compra
     public $destino_id;
 
+    //Varibles para editar una orden de compra
+    public $orden_compra_id;
+    public $editar_usuario_comprador_id, $editar_monto_bs_compra, $editar_cartera_id;
+
 
 
     public function mount()
@@ -100,13 +104,13 @@ class OrdenCompraController extends Component
             $this->detalleingreso = "Por el cambio recibido de: " .$nombre_comprador . " en la compra de repuestos para servicios";
         }
 
-
-
-
         //Listando todas las ordenes de compra
         $lista_ordenes = ServOrdenCompra::join("users as u","u.id","serv_orden_compras.user_id")
+        ->join("movimientos as m", "m.id", "serv_orden_compras.movimiento_id")
+        ->join("cartera_movs as cm", "cm.movimiento_id", "m.id")
+        ->join("carteras as c", "c.id", "cm.cartera_id")
         ->select("serv_orden_compras.id as codigo","serv_orden_compras.idcomprador as idcomprador",
-        "serv_orden_compras.estado as estado",
+        "serv_orden_compras.estado as estado","m.import as monto_bs_compra","c.nombre as nombrecartera",
         "u.name as nombreusuario", DB::raw('0 as detalles'), DB::raw('0 as nombrecomprador'))
         ->orderBy("serv_orden_compras.created_at","desc")
         ->get();
@@ -128,6 +132,9 @@ class OrdenCompraController extends Component
         ->get();
 
 
+        $lista_usuarios = User::select("users.*")
+        ->where("users.status","ACTIVE")
+        ->get();
 
         return view('livewire.ordencompra.ordencompra', [
             'lista_ordenes' => $lista_ordenes,
@@ -136,6 +143,7 @@ class OrdenCompraController extends Component
             'listasucursales' => Sucursal::all(),
             'providers' => $providers,
             'destinos' => $destinos,
+            'lista_usuarios' => $lista_usuarios,
         ])
             ->extends('layouts.theme.app')
             ->section('content');
@@ -452,5 +460,31 @@ class OrdenCompraController extends Component
         //Eliminando la fila del elemento en coleccion
         $this->lista_productos->pull($result->keys()->first());
         
+    }
+    //Muestra el modal editar orden de compra
+    public function modaleditar($idorden)
+    {
+        $this->orden_compra_id = $idorden;
+        $ordencompra = ServOrdenCompra::join("movimientos as m", "m.id", "serv_orden_compras.movimiento_id")
+        ->join("cartera_movs as cm", "cm.movimiento_id", "m.id")
+        ->join("users as u", "u.id", "serv_orden_compras.idcomprador")
+        ->select("u.id as idcomprador", "m.import as monto_bs_compra","cm.cartera_id as carteraid")
+        ->where("serv_orden_compras.id", $idorden)
+        ->get()
+        ->first();
+
+        $this->editar_usuario_comprador_id = $ordencompra->idcomprador;
+        $this->editar_monto_bs_compra = $ordencompra->monto_bs_compra;
+        $this->editar_cartera_id = $ordencompra->carteraid;
+
+
+
+
+        $this->emit("modaleditar-show");
+    }
+    //Actualiza una orden de compra
+    public function actulizarordencompra()
+    {
+        dd($this->orden_compra_id);
     }
 }

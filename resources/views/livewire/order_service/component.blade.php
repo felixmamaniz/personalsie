@@ -900,6 +900,9 @@
                                                         <a class="dropdown-item" href="#" onclick="ConfirmarEliminar('{{ $os->codigo }}','{{ $os->nombrecliente }}')">Eliminar Orden de Servicio</a>
                                                     </div>
                                                     @endif
+                                                    <div class="Agregar Repuestos">
+                                                        <button class="dropdown-item" wire:click="modalrepuestos()">Agregar Repuestos</button>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>

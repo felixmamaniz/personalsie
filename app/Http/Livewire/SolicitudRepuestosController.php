@@ -239,7 +239,7 @@ class SolicitudRepuestosController extends Component
 
         $this->emit("modalcomprarepuesto-show");
     }
-    //
+    //Crea o Inicia una Orden de Compra
     public function iniciar_compra()
     {
         $rules = [ /* Reglas de validacion */
@@ -256,9 +256,34 @@ class SolicitudRepuestosController extends Component
         $this->validate($rules, $messages);
         if($this->monto_bs_compra >= $this->total_bs)
         {
+
+            //Creando el movimiento con el monto dado para la compra
+            $movimiento = Movimiento::create([
+                'type' => 'TERMINADO',
+                'status' => 'ACTIVO',
+                'import' => $this->monto_bs_compra,
+                'user_id' => Auth()->user()->id,
+            ]);
+            //Creando el egreso de cartera movimiento 
+            CarteraMov::create([
+                'type' => 'EGRESO',
+                'tipoDeMovimiento' => 'EGRESO/INGRESO',
+                'comentario' => $this->detalleegreso,
+                'cartera_id' => $this->cartera_id,
+                'movimiento_id' => $movimiento->id,
+            ]);
+    
+            $nombrecartera = Cartera::find($this->cartera_id)->nombre;
+    
+            $this->message = "Se creó el egreso de: " . $this->monto_bs_compra . " Bs de la cartera " . $nombrecartera;
+
+
+
+
             //Creando la órden de Compra
             $orden_compra = ServOrdenCompra::create([
                 'user_id' => Auth()->user()->id,
+                'movimiento_id' => $movimiento->id,
                 'idcomprador' => $this->usuario_id,
             ]);
             
@@ -267,8 +292,6 @@ class SolicitudRepuestosController extends Component
             {
                 //Buscando el detalle de la solicitud
                 $detalle = ServiceRepDetalleSolicitud::find($l['detalle_id']);
-    
-    
     
                 //Buscando los estados Pendientes del detalle de la solicitud
                 foreach($detalle->estado_solicitud as $e)
@@ -302,25 +325,7 @@ class SolicitudRepuestosController extends Component
                 
             }
     
-            //Creando el movimiento con el monto dado para la compra
-            $movimiento = Movimiento::create([
-                'type' => 'TERMINADO',
-                'status' => 'ACTIVO',
-                'import' => $this->monto_bs_compra,
-                'user_id' => Auth()->user()->id,
-            ]);
-            //Creando el egreso de cartera movimiento 
-            CarteraMov::create([
-                'type' => 'EGRESO',
-                'tipoDeMovimiento' => 'EGRESO/INGRESO',
-                'comentario' => $this->detalleegreso,
-                'cartera_id' => $this->cartera_id,
-                'movimiento_id' => $movimiento->id,
-            ]);
-    
-            $nombrecartera = Cartera::find($this->cartera_id)->nombre;
-    
-            $this->message = "Se creó el egreso de: " . $this->monto_bs_compra . " Bs de la cartera " . $nombrecartera;
+
             $this->emit("modalcomprarepuesto-hide");
         }
         else
@@ -490,15 +495,12 @@ class SolicitudRepuestosController extends Component
         
 
             DB::commit();
- }
-         catch (Exception $e)
-        {
-        DB::rollback();
-        dd($e->getMessage());
         }
-
-   
-
+        catch (Exception $e)
+        {
+            DB::rollback();
+            dd($e->getMessage());
+        }
 
         $this->message = "¡Solicitud de la Orden de Servicio: " . $codigo . " Aceptada!";
 

@@ -2664,7 +2664,7 @@ class OrderServiceController extends Component
                         $querys->where('products.nombre', 'like', '%' . $this->searchproduct . '%')
                         ->orWhere('products.codigo', 'like', '%' . $this->searchproduct . '%');
                     })
-            ->take(100)->get();
+            ->take(1000)->get();
             $this->listaproductos=$listap->where('stock','>',0);
             //mostar los productos que no se encuentren disponibles en ningun lugar
 

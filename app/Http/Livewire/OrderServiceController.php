@@ -141,7 +141,7 @@ class OrderServiceController extends Component
         $this->orderlistatienda=1;
         $this->orderlistaalmacenes=1;
         $this->sumaProductosTienda=0;
-        $this->totalServicio=$this->edit_saldo+$this->sumaProductosTienda;
+        $this->totalServicio=$this->edit_saldo + $this->sumaProductosTienda;
 
         //$this->searchproduct='CARGADOR RAPIDO,MICRO USB , CARGA RAPIDA, EF-1204Q, E Y F';
 

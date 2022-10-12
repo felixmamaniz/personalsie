@@ -382,6 +382,40 @@
         border-right: 0.1px solid #02b1ce;
     }
 
+
+    .table-repuestos-entrega-servicio {
+    width: 100%;/* Anchura de ejemplo */
+  /*Altura de ejemplo */
+    overflow: auto;
+    }
+
+    .table-repuestos-entrega-servicio table {
+        border-collapse: separate;
+        border-spacing: 0;
+        border-left: 0.1px solid #02b1ce;
+        border-bottom: 0.1px solid #02b1ce;
+        width: 100%;
+    }
+
+    .table-repuestos-entrega-servicio table thead {
+        position: -webkit-sticky; /* Safari... */
+        position: sticky;
+        top: 0;
+        left: 0;
+    }
+    .table-repuestos-entrega-servicio table thead tr {
+    background: #02b1ce;
+    color: white;
+    }
+    .table-repuestos-entrega-servicio table tbody tr:hover {
+        background-color: rgba(0, 195, 255, 0.336);
+    }
+    .table-repuestos-entrega-servicio table td {
+        border-top: 0.1px solid #02b1ce;
+        padding-left: 10px;
+        border-right: 0.1px solid #02b1ce;
+    }
+
     
 
 </style>

@@ -235,8 +235,6 @@ class SolicitudRepuestosController extends Component
         }
 
         $this->total_bs = $bs;
-
-
         $this->emit("modalcomprarepuesto-show");
     }
     //Crea o Inicia una Orden de Compra

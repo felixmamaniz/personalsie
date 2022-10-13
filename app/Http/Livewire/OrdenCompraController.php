@@ -52,7 +52,7 @@ class OrdenCompraController extends Component
 
     //Varibles para editar una orden de compra
     public $orden_compra_id;
-    public $editar_usuario_comprador_id, $editar_monto_bs_compra, $editar_cartera_id;
+    public $editar_usuario_comprador_id, $editar_monto_bs_compra, $editar_cartera_id, $editar_detalleegreso;
 
 
 
@@ -90,6 +90,11 @@ class OrdenCompraController extends Component
 
     public function render()
     {
+        if(strlen($this->editar_detalleegreso) > 0)
+        {
+            $nombre_comprador = User::find($this->editar_usuario_comprador_id)->name;
+            $this->editar_detalleegreso = "Para la compra de repuestos en servicios, dinero entregado a " . $nombre_comprador;
+        }
 
         //Detalle de ingreso en caso de que exista algun monto como cambio
         if(strlen($this->monto_bs_cambio) > 0)
@@ -121,8 +126,6 @@ class OrdenCompraController extends Component
             $l->detalles = $this->obtener_detalles($l->codigo);
             $l->nombrecomprador = $this->obtener_comprador($l->idcomprador);
         }
-
-
 
         //Lista todos los proveedores activos
         $providers = Provider::where('status','ACTIVO')->get();
@@ -156,7 +159,7 @@ class OrdenCompraController extends Component
     {
         $detalles = ServOrdenDetalle::join("products as p", "p.id","serv_orden_detalles.product_id")
         ->select("serv_orden_detalles.detalle_solicitud_id as detalle_id","p.id as product_id","p.nombre as nombreproducto",
-        "serv_orden_detalles.cantidad as cantidad","p.costo as costoproducto",
+        "serv_orden_detalles.cantidad as cantidad","p.costo as costoproducto","serv_orden_detalles.status as status",
         "p.precio_venta as precioproducto")
         ->where("serv_orden_detalles.orden_compra_id", $idcompra)
         ->get();
@@ -274,6 +277,96 @@ class OrdenCompraController extends Component
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //Buscando todos los productos de la coleccion $this->lista_productos con el detalle de la orden de compra
+            //Para casos en donde no se hayan podido encontrar algunos productos en la compra
+            $lista_detalle_orden = ServOrdenDetalle::where("serv_orden_detalles.orden_compra_id", $this->id_orden_compra)->get();
+
+
+            foreach($lista_detalle_orden as $detalle)
+            {
+                //Buscamos el elemento en la colección
+                $result = $this->lista_productos->where('product_id', $detalle->product_id);
+                //Si no encuentra el producto en la colección
+                if($result->first() == null)
+                {
+                    //Actualizamos el estado del detalle de orden de compra
+                    $d = ServOrdenDetalle::find($detalle->id);
+                    //Actualizando los estados pendientes ACTIVO a iNACTIVO
+                    $d->update([
+                        'status' => 'INACTIVO'
+                    ]);
+
+                    //Buscando el detalle de la solicitud
+                    $ds = ServiceRepDetalleSolicitud::find($d->detalle_solicitud_id);
+                    //Buscando los estados COMPRANDO del detalle de la solicitud
+                    foreach($ds->estado_solicitud as $e)
+                    {
+                        if($e->estado == 'COMPRANDO' && $e->status == 'ACTIVO')
+                        {
+                            //Actualizando los estados de ACTIVO a iNACTIVO
+                            $e->update([
+                                'status' => 'INACTIVO'
+                            ]);
+                            //Creando nuevo estado ACTIVO para cada detalle solicitud
+                            ServiceRepEstadoSolicitud::create([
+                                'detalle_solicitud_id' => $d->detalle_solicitud_id,
+                                'user_id' => Auth()->user()->id,
+                                'estado' => 'NOCOMPRADO',
+                                'status' => 'ACTIVO',
+                            ]);
+                        }
+                    }
+
+
+                }
+
+            }
+
+           
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             $total_bs = 0;
             //Actualizando y creando los estados de la orden de compra, detalle solicitud y detalle de la compra
             foreach($this->lista_productos as $l)
@@ -285,7 +378,7 @@ class OrdenCompraController extends Component
                 {
                     if($e->estado == 'COMPRANDO' && $e->status == 'ACTIVO')
                     {
-                        //Actualizando los estados pendientes ACTIVO a iNACTIVO
+                        //Actualizando los estados de ACTIVO a iNACTIVO
                         $e->update([
                             'status' => 'INACTIVO'
                         ]);
@@ -468,7 +561,7 @@ class OrdenCompraController extends Component
         $ordencompra = ServOrdenCompra::join("movimientos as m", "m.id", "serv_orden_compras.movimiento_id")
         ->join("cartera_movs as cm", "cm.movimiento_id", "m.id")
         ->join("users as u", "u.id", "serv_orden_compras.idcomprador")
-        ->select("u.id as idcomprador", "m.import as monto_bs_compra","cm.cartera_id as carteraid")
+        ->select("u.id as idcomprador", "m.import as monto_bs_compra","cm.cartera_id as carteraid", "cm.comentario as comentario")
         ->where("serv_orden_compras.id", $idorden)
         ->get()
         ->first();
@@ -478,13 +571,45 @@ class OrdenCompraController extends Component
         $this->editar_cartera_id = $ordencompra->carteraid;
 
 
+        $this->editar_detalleegreso = $ordencompra->comentario;
 
 
         $this->emit("modaleditar-show");
     }
     //Actualiza una orden de compra
-    public function actulizarordencompra()
+    public function actualizarordencompra()
     {
-        dd($this->orden_compra_id);
+        $orden = ServOrdenCompra::join("movimientos as m", "m.id", "serv_orden_compras.movimiento_id")
+        ->join("cartera_movs as cm", "cm.movimiento_id", "m.id")
+        ->where("serv_orden_compras.id", $this->orden_compra_id)
+        ->select("m.id as idmovimiento","cm.id as idcarteramov")
+        ->get()
+        ->first();
+
+        //Actualizando el monto dado para la compra
+        $m = Movimiento::find($orden->idmovimiento);
+        $m->update([
+            'import' => $this->editar_monto_bs_compra
+        ]);
+        $m->save();
+
+        //Actualizando la cartera de donde sale el dinero
+        $m = CarteraMov::find($orden->idcarteramov);
+        $m->update([
+            'cartera_id' => $this->editar_cartera_id,
+            'comentario' => $this->editar_detalleegreso
+        ]);
+        $m->save();
+
+        //Actualizando al comprador de la orden de compra
+        $oc = ServOrdenCompra::find($this->orden_compra_id);
+        $oc->update([
+            'idcomprador' => $this->editar_usuario_comprador_id
+        ]);
+        $oc->save();
+
+        $this->message = "¡Datos Actualizados Exitósamente!";
+        $this->emit("modaleditar-hide");
+
     }
 }

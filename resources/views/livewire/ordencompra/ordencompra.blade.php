@@ -172,6 +172,12 @@
                                         <tr>
                                             <td>
                                                 {{$d->nombreproducto}}
+                                                @if($d->status == "INACTIVO")
+                                                <span class="stamp stamp" style="background-color: crimson">
+                                                    NO COMPRADO
+                                                </span>
+
+                                                @endif
                                             </td>
                                             <td class="text-center">
                                                 {{$d->cantidad}}
@@ -241,37 +247,24 @@
             $('#modaleditar').modal('show')
         });
 
-
-
-        //Mostrar cualquier tipo de Mensaje Ventana de Ok
-        // window.livewire.on('mensaje-ok', event => {
-        //         swal(
-        //             '¡Solicitud Aceptada!',
-        //             @this.message,
-        //             'success'
-        //             )
-        //     });
-
+        //Ocultar ventana modal editar orden de compra
+        window.livewire.on('modaleditar-hide', msg => {
+            $('#modaleditar').modal('hide')
+            const toast = swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 2500,
+            padding: '2em'
+            });
+            toast({
+                type: 'success',
+                title: @this.message,
+                padding: '2em',
+            })
+        });
 
     });
-
-
-    // Código para lanzar la Alerta de Cambiar el estado de una solicitud
-    // function ConfirmarCambiar(iddetalle, codigo) {
-    // swal({
-    //     title: '¿Aceptar la Solicitud?',
-    //     text: "Se registrará la solicitud como aceptada",
-    //     type: 'warning',
-    //     showCancelButton: true,
-    //     cancelButtonText: 'Cancelar',
-    //     confirmButtonText: 'Aceptar',
-    //     padding: '2em'
-    //     }).then(function(result) {
-    //     if (result.value) {
-    //         window.livewire.emit('aceptarsolicitud', iddetalle, codigo)
-    //         }
-    //     })
-    // }
 
 </script>
 

@@ -336,6 +336,7 @@
                 </tbody>
             </table>
         </div>
+        {{ $lista_solicitudes->links() }}
     </div>
     @include('livewire.solicitudrepuestos.modalcomprarepuesto')
 </div>

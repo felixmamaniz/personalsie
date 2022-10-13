@@ -180,6 +180,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        // compresion de imagen
+        Intervention\Image\ImageServiceProvider::class,
+
     ],
 
     /*
@@ -235,6 +238,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        //compresion de imagen
+        'Image' => Intervention\Image\Facades\Image::class,
 
     ],
 

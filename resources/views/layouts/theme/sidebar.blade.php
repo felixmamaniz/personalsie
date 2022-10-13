@@ -522,6 +522,11 @@
 											Orden de Servicio </a>
 									</li>
 								@endcan
+									<li>
+										<a href="{{ url('serviciocotizacion') }}">
+											<i class="fas fa-wrench"></i>
+											Cotización </a>
+									</li>
 								@can('Reporte_Servicios_Index')
 									<li>
 										<a href="{{ url('reporteservices') }}">

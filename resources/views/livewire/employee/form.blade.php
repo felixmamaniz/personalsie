@@ -7,7 +7,7 @@
                 </h5>
                 <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6>
             </div>
-           
+            
             {{-- DATOS DE EMPLEADO --}}
             <div class="card-body">
                 <div class="row">
@@ -105,7 +105,7 @@
                                 <option value="Soltero" selected>Soltero</option>
                                 <option value="Casado" selected>Casado</option>
                             </select>
-                            @error('genero') <span class="text-danger er">{{ $message }}</span> @enderror
+                            @error('estadoCivil') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -130,15 +130,16 @@
                                 </select>
                                 <a type="button" wire:click="NuevoContrato()" class="btn btn-warning close-btn text-info">Nuevo</a>
                             </div>
+                            <br>
+                            @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
-                        @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                        {{-- @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror --}}
                     </div>
 
                     <div class="col-sm-12 mt-3">
                         <div class="form-group custom-file">
                             <input type="file" class="custom-file-input form-control img-thumbnail center-block" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
                             <label for="" class="custom-file-label">Imagen {{$image}}</label>
-                            {{--<h6 style="color: red">Seleccione una Imagen de 2Mb</h6>--}}
                             @error('image') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -147,13 +148,16 @@
             </div>
            
             <div class="modal-footer">
-                <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info" data-dismiss="modal" style="background: #ee761c">CANCELAR</button>
+                <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info" data-dismiss="modal" style="background: #02b1ce">CANCELAR</button>
                     @if ($selected_id < 1)
                         <button type="button" wire:click.prevent="Store()"
                             class="btn btn-warning close-btn text-info">GUARDAR</button>
                     @else
-                        <button type="button" wire:click.prevent="Update()"
+                        {{-- <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6> --}}
+                        <div wire:loading.remove>
+                            <button type="button" wire:click.prevent="Update()"
                             class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
+                        </div>
                     @endif
             </div>
         </div>

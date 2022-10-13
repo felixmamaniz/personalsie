@@ -19,7 +19,7 @@ class CreateContratosTable extends Migration
             $table->timestamp('fechaFin')->nullable();
             $table->string('descripcion',255)->nullable();
             $table->string('nota',255)->nullable();
-            $table->string('salario',255)->nullable();
+            $table->string('salario',255);
 
             $table->enum('estado',['Activo','Finalizado'])->default('Activo');
 

@@ -16,7 +16,7 @@
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-hover table table-bordered table-bordered-bd-warning mt-4">
-                        <thead class="text-white" style="background: #ee761c">
+                        <thead class="text-white" style="background: #02b1ce">
                             <tr>
                                 <th class="table-th text-withe">NOMBRE</th>
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
@@ -72,26 +72,24 @@
                                     </td>
 
                                     <td class="text-center">
-                                        <a href="javascript:void(0)" wire:click="Edit({{ $employee->idEmpleado }})"
-                                            class="btn btn-dark mtmobile" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        
-                                        <a href="javascript:void(0)"
-                                            onclick="Confirm({{$employee->idEmpleado}},'{{$employee->verificar}}')"
-                                            class="btn btn-dark" title="Destroy">
-                                            <i class="fas fa-trash"></i>
-                                        </a>
+                                        <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                            <button href="javascript:void(0)" wire:click="Edit({{ $employee->idEmpleado }})"
+                                                class="btn btn-dark mtmobile" title="Edit" type="button" class="btn btn-danger">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
 
-                                        <a href="javascript:void(0)"
-                                            wire:click="DetalleEmpleado({{$employee->idEmpleado}})"
-                                            class="btn btn-dark" title="DetalleEmpleado">
-                                            <i class="fas fa-list"></i>
-                                        </a>
+                                            <button href="javascript:void(0)"
+                                                onclick="Confirm({{$employee->idEmpleado}},'{{$employee->verificar}}')"
+                                                class="btn btn-dark" title="Destroy" type="button" class="btn btn-warning">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
 
-                                        {{--<a class="btn btn-dark mtmobile" wire:click="DetalleEmpleado()">
-                                            <i class="fas fa-list"></i>
-                                        </a>--}}
+                                            <button href="javascript:void(0)"
+                                                wire:click="DetalleEmpleado({{$employee->idEmpleado}})"
+                                                class="btn btn-dark" title="DetalleEmpleado" type="button" class="btn btn-success">
+                                                <i class="fas fa-list"></i>
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach
@@ -150,18 +148,17 @@
             return;
         }else
         {
-            Swal.fire({
-            title: 'CONFIRMAR',
-            text: "Confirmar eliminar el empleado",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
-            }).then((result) => {
-                if (result.value) {
+            swal({
+                title: 'CONFIRMAR',
+                text: "¿CONFIRMAS ELIMINAR EL REGISTRO?",
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Aceptar',
+                padding: '2em'
+            }).then(function(result){
+            if (result.value){
                     window.livewire.emit('deleteRow', id)
-                    Swal.close()
                 }
             })
         }

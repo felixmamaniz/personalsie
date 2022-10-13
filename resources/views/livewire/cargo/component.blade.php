@@ -16,7 +16,7 @@
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-bordered table striped mt-1" >
-                        <thead class="text-white" style="background: #ee761c">
+                        <thead class="text-white" style="background: #02b1ce">
                             <tr>
                                <th class="table-th text-white">ID</th>
                                <th class="table-th text-white">CARGO</th>
@@ -92,17 +92,15 @@
         {
             swal({
                 title: 'CONFIRMAR',
-                text: '¿CONFIRMAS ELIMINAR  EL REGISTRO',
-                type: 'WARNING',
+                text: "¿CONFIRMAS ELIMINAR  EL REGISTRO?",
+                type: 'warning',
                 showCancelButton: true,
-                cancelButtonText: 'cerrar',
-                cancelButtonColor: '#fff',
-                confirmButtonColor: '#3b3f5c',
-                confirmButtonText: 'Aceptar'
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Aceptar',
+                padding: '2em'
             }).then(function(result){
-                if(result.value){
-                    window.livewire.emit('deleteRow',id)
-                    swal.close()
+            if (result.value){
+                    window.livewire.emit('deleteRow', id)
                 }
             })
         }

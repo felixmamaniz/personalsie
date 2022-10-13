@@ -52,6 +52,9 @@
                         @foreach($lista_carteras as $c)
                         <option value="{{$c->idcartera}}">{{ucwords(strtolower($c->nombrecartera))}}</option>
                         @endforeach
+                        @foreach($lista_cartera_general as $g)
+                        <option value="{{$g->idcartera}}">{{ucwords(strtolower($g->nombrecartera))}}</option>
+                        @endforeach
                     </select>
                     @error('cartera_id')
                       <span class="text-danger er">{{ $message }}</span>
@@ -116,8 +119,8 @@
 
 
               <div class="col-12 text-center">
-                <h2>Precio Total Estimado</h2>
-                <h2><b>{{$this->total_bs}} Bs</b></h2>
+                <h2>Costo Total Estimado</h2>
+                <h2><b>{{number_format($this->total_bs,2)}} Bs</b></h2>
               </div>
 
 

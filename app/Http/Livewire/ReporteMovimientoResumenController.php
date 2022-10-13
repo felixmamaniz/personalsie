@@ -1523,9 +1523,6 @@ class ReporteMovimientoResumenController extends Component
         }
 
 
-      
-
-      
             foreach ($consulta as $data) {
                 if ($data->created_at == $data->updated_at) {
                     
@@ -1538,7 +1535,7 @@ class ReporteMovimientoResumenController extends Component
                     ->where('movimientos.updated_at','>',$data->created_at)
                     ->select('movimientos.*','c.tipo','crms.tipoDeMovimiento')
                     ->get();
-                    $ls= $ls->whereBetween('updated_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59']);
+                    $ls= $ls->whereBetween('created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59']);
                     //dump($ls);
                 foreach($ls as $value) {
 

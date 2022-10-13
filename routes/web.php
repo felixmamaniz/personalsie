@@ -9,6 +9,7 @@ use App\Http\Controllers\ExportTigoPdfController;
 use App\Http\Controllers\ExportMovimientoController;
 use App\Http\Controllers\ImprimirController;
 use App\Http\Controllers\ExportComprasController;
+use App\Http\Controllers\ExportCotizacionController;
 use App\Http\Controllers\ExportIngresosController;
 use App\Http\Controllers\ExportSaleMovDiaController;
 use App\Http\Controllers\ExportTransferenciaController;
@@ -102,6 +103,7 @@ use App\Http\Livewire\SaleDailyMovementController;
 use App\Http\Livewire\SaleDevolutionController;
 use App\Http\Livewire\SaleStatisticController;
 use App\Http\Livewire\SaleReporteCantidadController;
+use App\Http\Livewire\ServCotizacionController;
 use App\Http\Livewire\ShiftsController;
 use App\Http\Livewire\SolicitudRepuestosController;
 use App\Http\Livewire\UserEmployeeController;
@@ -110,13 +112,14 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
 // prueba de notificaciones
-use App\Mail\TestMail;
-use Illuminate\Support\Facades\Mail;
+    use App\Mail\TestMail;
+    use Illuminate\Support\Facades\Mail;
 
-Route::get('/mail', function (){
-    Mail::to('admin@admin.com')->send(new TestMail());
-    return 'Mail Send';
-});
+    Route::get('/mail', function (){
+        Mail::to('admin@admin.com')->send(new TestMail());
+        return 'Mail Send';
+    });
+// ---------------------
 
 
 
@@ -248,6 +251,10 @@ Route::middleware(['auth'])->group(function () {
 
 
     /* SERVICIOS */
+    Route::get('serviciocotizacion', ServCotizacionController::class)->name('serviciocotizacion');
+    Route::get('crearcotizacion', [ExportCotizacionController::class, 'crear']);
+
+
     Route::get('catprodservice', CatProdServiceController::class)->name('cps')->middleware('permission:Cat_Prod_Service_Index');
     Route::get('subcatprodservice', SubCatProdServiceController::class)->name('scps')->middleware('permission:SubCat_Prod_Service_Index');
     Route::get('typework', TypeWorkController::class)->name('tw')->middleware('permission:Type_Work_Index');
@@ -286,7 +293,6 @@ Route::middleware(['auth'])->group(function () {
 
 
     //RECURSOS HUMANOS
-
     Route::get('employees', EmployeeController::class);
     Route::get('areas_de_trabajos', AreaTrabajoController::class);
     Route::get('function_areas', FunctionAreaController::class);

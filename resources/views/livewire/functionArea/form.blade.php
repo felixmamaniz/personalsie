@@ -38,8 +38,10 @@
                 </select>
                 <a type="button" wire:click="NuevArea()" class="btn btn-warning close-btn text-info">Nuevo</a>
             </div>
+            <br>
+            @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
         </div>
-        @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
+        {{-- @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror --}}
     </div>
 
     <div class="col-sm-12 col-md-6">

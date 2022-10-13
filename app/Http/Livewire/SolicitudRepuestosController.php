@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 use phpDocumentor\Reflection\Types\This;
 
 class SolicitudRepuestosController extends Component
@@ -51,8 +52,19 @@ class SolicitudRepuestosController extends Component
     //Guarda el detalle con el que se generará el egreso por compra de repuestos
     public $detalleegreso;
 
+    public $paginacion;
+
+
+    use WithPagination;
+
+    public function paginationView()
+    {
+        return 'vendor.livewire.bootstrap';
+    }
+
     public function mount()
     {
+        $this->paginacion = 50;
         $this->lista_productos = collect([]);
         $this->sucursal_id = "Todos";
         $this->cartera_id = 'Elegir';
@@ -86,7 +98,7 @@ class SolicitudRepuestosController extends Component
                 "service_rep_solicituds.order_service_id as codigo","s.name as nombresucursal",
                 "u.name as nombresolicitante", "service_rep_solicituds.created_at as created_at")
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -104,7 +116,7 @@ class SolicitudRepuestosController extends Component
                 "u.name as nombresolicitante", "service_rep_solicituds.created_at as created_at")
                 ->where("s.id",$this->sucursal_id)
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -125,7 +137,7 @@ class SolicitudRepuestosController extends Component
                 "u.name as nombresolicitante", "service_rep_solicituds.created_at as created_at")
                 ->where('service_rep_solicituds.order_service_id', 'like', '%' . $this->search . '%')
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -144,7 +156,7 @@ class SolicitudRepuestosController extends Component
                 ->where('service_rep_solicituds.order_service_id', 'like', '%' . $this->search . '%')
                 ->where("s.id",$this->sucursal_id)
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -235,11 +247,9 @@ class SolicitudRepuestosController extends Component
         }
 
         $this->total_bs = $bs;
-
-
         $this->emit("modalcomprarepuesto-show");
     }
-    //
+    //Crea o Inicia una Orden de Compra
     public function iniciar_compra()
     {
         $rules = [ /* Reglas de validacion */
@@ -256,9 +266,34 @@ class SolicitudRepuestosController extends Component
         $this->validate($rules, $messages);
         if($this->monto_bs_compra >= $this->total_bs)
         {
+
+            //Creando el movimiento con el monto dado para la compra
+            $movimiento = Movimiento::create([
+                'type' => 'TERMINADO',
+                'status' => 'ACTIVO',
+                'import' => $this->monto_bs_compra,
+                'user_id' => Auth()->user()->id,
+            ]);
+            //Creando el egreso de cartera movimiento 
+            CarteraMov::create([
+                'type' => 'EGRESO',
+                'tipoDeMovimiento' => 'EGRESO/INGRESO',
+                'comentario' => $this->detalleegreso,
+                'cartera_id' => $this->cartera_id,
+                'movimiento_id' => $movimiento->id,
+            ]);
+    
+            $nombrecartera = Cartera::find($this->cartera_id)->nombre;
+    
+            $this->message = "Se creó el egreso de: " . $this->monto_bs_compra . " Bs de la cartera " . $nombrecartera;
+
+
+
+
             //Creando la órden de Compra
             $orden_compra = ServOrdenCompra::create([
                 'user_id' => Auth()->user()->id,
+                'movimiento_id' => $movimiento->id,
                 'idcomprador' => $this->usuario_id,
             ]);
             
@@ -267,8 +302,6 @@ class SolicitudRepuestosController extends Component
             {
                 //Buscando el detalle de la solicitud
                 $detalle = ServiceRepDetalleSolicitud::find($l['detalle_id']);
-    
-    
     
                 //Buscando los estados Pendientes del detalle de la solicitud
                 foreach($detalle->estado_solicitud as $e)
@@ -302,25 +335,7 @@ class SolicitudRepuestosController extends Component
                 
             }
     
-            //Creando el movimiento con el monto dado para la compra
-            $movimiento = Movimiento::create([
-                'type' => 'TERMINADO',
-                'status' => 'ACTIVO',
-                'import' => $this->monto_bs_compra,
-                'user_id' => Auth()->user()->id,
-            ]);
-            //Creando el egreso de cartera movimiento 
-            CarteraMov::create([
-                'type' => 'EGRESO',
-                'tipoDeMovimiento' => 'EGRESO/INGRESO',
-                'comentario' => $this->detalleegreso,
-                'cartera_id' => $this->cartera_id,
-                'movimiento_id' => $movimiento->id,
-            ]);
-    
-            $nombrecartera = Cartera::find($this->cartera_id)->nombre;
-    
-            $this->message = "Se creó el egreso de: " . $this->monto_bs_compra . " Bs de la cartera " . $nombrecartera;
+
             $this->emit("modalcomprarepuesto-hide");
         }
         else
@@ -490,15 +505,12 @@ class SolicitudRepuestosController extends Component
         
 
             DB::commit();
- }
-         catch (Exception $e)
-        {
-        DB::rollback();
-        dd($e->getMessage());
         }
-
-   
-
+        catch (Exception $e)
+        {
+            DB::rollback();
+            dd($e->getMessage());
+        }
 
         $this->message = "¡Solicitud de la Orden de Servicio: " . $codigo . " Aceptada!";
 

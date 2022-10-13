@@ -52,6 +52,9 @@
                         @foreach($lista_carteras as $c)
                         <option value="{{$c->idcartera}}">{{ucwords(strtolower($c->nombrecartera))}}</option>
                         @endforeach
+                        @foreach($lista_cartera_general as $g)
+                        <option value="{{$g->idcartera}}">{{ucwords(strtolower($g->nombrecartera))}}</option>
+                        @endforeach
                     </select>
                     @error('cartera_id')
                       <span class="text-danger er">{{ $message }}</span>

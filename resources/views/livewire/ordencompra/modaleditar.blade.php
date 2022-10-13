@@ -40,15 +40,26 @@
                         @foreach($lista_carteras as $c)
                         <option value="{{$c->idcartera}}">{{ucwords(strtolower($c->nombrecartera))}}</option>
                         @endforeach
+                        @foreach($lista_cartera_general as $g)
+                        <option value="{{$g->idcartera}}">{{ucwords(strtolower($g->nombrecartera))}}</option>
+                        @endforeach
                     </select>
                     @error('cartera_id')
                       <span class="text-danger er">{{ $message }}</span>
                     @enderror
             </div>
+
+            <div class="col-12 text-center">
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Detalle del Egreso</label>
+                <textarea wire:model.lazy="editar_detalleegreso" placeholder="Detalle para generar el egreso por compra de repuestos" class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+              </div>
+            </div>
+
           </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-          <button wire:click.prevent="actulizarordencompra()" type="button" class="btn btn-primary">Actualizar Información</button>
+          <button wire:click.prevent="actualizarordencompra()" type="button" class="btn btn-primary">Actualizar Información</button>
         </div>
       </div>
     </div>

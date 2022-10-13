@@ -60,6 +60,30 @@
 
 
 
+    
+
+
+    .nocompradoestilos {
+        text-decoration: none !important; 
+        background-color: rgb(192, 0, 0);
+        color: white !important; 
+        cursor: default;
+        border:none;
+        border-radius: 7px;
+        padding-top: 2px;
+        padding-bottom: 2px;
+        padding-left: 5px;
+        padding-right: 5px;
+        box-shadow: none;
+        border-width: 2px;
+        border-style: solid;
+        border-color: rgb(192, 0, 0);
+        display: inline-block;
+    }
+    .nocompradoestilos:hover {
+        color: rgb(255, 255, 255) !important; 
+    }
+
 
 
     /*Estilos para el Boton Pendiente en la Tabla*/
@@ -270,10 +294,15 @@
 
                                                             @else
 
-                                                            <button class="aceptadoestilos">
-                                                                {{-- {{$d->estado}} --}}
-                                                                COMPRADO/ENTREGADO
-                                                            </button>
+                                                                @if($d->estado == "NOCOMPRADO")
+                                                                <button class="nocompradoestilos">
+                                                                    NO COMPRADO/ NO ENTREGADO
+                                                                </button>
+                                                                @else
+                                                                <button class="aceptadoestilos">
+                                                                    COMPRADO/ENTREGADO
+                                                                </button>
+                                                                @endif
 
 
 
@@ -307,6 +336,7 @@
                 </tbody>
             </table>
         </div>
+        {{ $lista_solicitudes->links() }}
     </div>
     @include('livewire.solicitudrepuestos.modalcomprarepuesto')
 </div>

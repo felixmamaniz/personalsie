@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
+use Livewire\WithPagination;
 use phpDocumentor\Reflection\Types\This;
 
 class SolicitudRepuestosController extends Component
@@ -51,8 +52,19 @@ class SolicitudRepuestosController extends Component
     //Guarda el detalle con el que se generará el egreso por compra de repuestos
     public $detalleegreso;
 
+    public $paginacion;
+
+
+    use WithPagination;
+
+    public function paginationView()
+    {
+        return 'vendor.livewire.bootstrap';
+    }
+
     public function mount()
     {
+        $this->paginacion = 50;
         $this->lista_productos = collect([]);
         $this->sucursal_id = "Todos";
         $this->cartera_id = 'Elegir';
@@ -86,7 +98,7 @@ class SolicitudRepuestosController extends Component
                 "service_rep_solicituds.order_service_id as codigo","s.name as nombresucursal",
                 "u.name as nombresolicitante", "service_rep_solicituds.created_at as created_at")
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -104,7 +116,7 @@ class SolicitudRepuestosController extends Component
                 "u.name as nombresolicitante", "service_rep_solicituds.created_at as created_at")
                 ->where("s.id",$this->sucursal_id)
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -125,7 +137,7 @@ class SolicitudRepuestosController extends Component
                 "u.name as nombresolicitante", "service_rep_solicituds.created_at as created_at")
                 ->where('service_rep_solicituds.order_service_id', 'like', '%' . $this->search . '%')
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -144,7 +156,7 @@ class SolicitudRepuestosController extends Component
                 ->where('service_rep_solicituds.order_service_id', 'like', '%' . $this->search . '%')
                 ->where("s.id",$this->sucursal_id)
                 ->orderBy("service_rep_solicituds.created_at", "desc")
-                ->get();
+                ->paginate($this->paginacion);
                 foreach($lista_solicitudes as $l)
                 {
                     $l->minutos = $this->solicitudreciente($l->id);
@@ -235,8 +247,6 @@ class SolicitudRepuestosController extends Component
         }
 
         $this->total_bs = $bs;
-
-
         $this->emit("modalcomprarepuesto-show");
     }
     //Crea o Inicia una Orden de Compra

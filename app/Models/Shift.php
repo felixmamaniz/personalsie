@@ -9,5 +9,5 @@ class Shift extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['ci', 'monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
+    protected $fillable = ['ci','name', 'monday','tuesday','wednesday','thursday','friday','saturday','sunday'];
 }

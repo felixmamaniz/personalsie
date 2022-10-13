@@ -48,14 +48,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 50%" type="time" wire:model.lazy="shoralunes" class="form-control">
                         
                                     @error('shoralunes') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
                         
 
                         
@@ -79,14 +79,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 30%" type="time" wire:model.lazy="shoramartes" class="form-control">
                         
                                     @error('shoramartes') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -107,14 +107,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 30%" type="time" wire:model.lazy="shoramiercoles" class="form-control">
                         
                                     @error('shoramiercoles') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -135,14 +135,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 30%" type="time" wire:model.lazy="shorajueves" class="form-control">
                         
                                     @error('shorajueves') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -163,14 +163,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 30%" type="time" wire:model.lazy="shoraviernes" class="form-control">
                         
                                     @error('shoraviernes') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -191,14 +191,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 30%" type="time" wire:model.lazy="shorasabado" class="form-control">
                         
                                     @error('shorasabado') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>
@@ -219,14 +219,14 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-12 col-md-5" >
+                            {{-- <div class="col-sm-12 col-md-5" >
                                 <div class="input-group">
                                     <h3> Salida :</h3>                            
                                         <input style="width: 30%" type="time" wire:model.lazy="shoradomingo" class="form-control">
                         
                                     @error('shoradomingo') <span class="text-danger er"> {{ $message }}</span> @enderror
                                 </div>
-                            </div>
+                            </div> --}}
 
                         </div>
                     </div>

@@ -59,6 +59,14 @@ class ShiftsController extends Component
     {
         $this->pageTitle = 'Listado';
         $this->componentName = 'Turnos';
+        $this->empleadoid = '00:00';
+        $this->horalunes = '00:00';
+        $this->horamartes = '00:00';
+        $this->horamiercoles = '00:00';
+        $this->horajueves = '00:00';
+        $this->horaviernes = '00:00';
+        $this->horasabado = '00:00';
+        $this->horadomingo = '00:00';
     }
 
     public function render()

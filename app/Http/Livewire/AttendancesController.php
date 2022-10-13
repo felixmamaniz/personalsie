@@ -96,11 +96,7 @@ class AttendancesController extends Component
             
         }   
         
-        //validar si el usuario esta usando un tipo de reporte
-        // if($this->reportType == 1 && ($this->dateFrom == '' || $this->dateTo == '')) {
-        //     dd("Hola");
-        //     return;
-        // }
+       
         //validar si seleccionamos algun usuario
         if($this->userId == 0){
             $emplo=Employee::orderBy('name','asc')->get();
@@ -205,7 +201,7 @@ class AttendancesController extends Component
                                 
             
         } else {
-
+            //obteneres datos de un solo empleado
             $this->data = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->join('shifts as s', 's.ci', 'attendances.employee_id')
             ->select('attendances.*','e.name as employee',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday', DB::raw('0 as Salida_Normal'), DB::raw('0 as dia'))

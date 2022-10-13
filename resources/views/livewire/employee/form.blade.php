@@ -7,7 +7,7 @@
                 </h5>
                 <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6>
             </div>
-           
+            
             {{-- DATOS DE EMPLEADO --}}
             <div class="card-body">
                 <div class="row">
@@ -140,7 +140,6 @@
                         <div class="form-group custom-file">
                             <input type="file" class="custom-file-input form-control img-thumbnail center-block" wire:model="image" accept="image/x-png, image/gif, image/jpeg">
                             <label for="" class="custom-file-label">Imagen {{$image}}</label>
-                            {{--<h6 style="color: red">Seleccione una Imagen de 2Mb</h6>--}}
                             @error('image') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
                     </div>
@@ -154,8 +153,11 @@
                         <button type="button" wire:click.prevent="Store()"
                             class="btn btn-warning close-btn text-info">GUARDAR</button>
                     @else
-                        <button type="button" wire:click.prevent="Update()"
+                        {{-- <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6> --}}
+                        <div wire:loading.remove>
+                            <button type="button" wire:click.prevent="Update()"
                             class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
+                        </div>
                     @endif
             </div>
         </div>

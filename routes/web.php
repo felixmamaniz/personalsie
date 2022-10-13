@@ -110,13 +110,13 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Auth;
 
 // prueba de notificaciones
-use App\Mail\TestMail;
-use Illuminate\Support\Facades\Mail;
+    use App\Mail\TestMail;
+    use Illuminate\Support\Facades\Mail;
 
-Route::get('/mail', function (){
-    Mail::to('admin@admin.com')->send(new TestMail());
-    return 'Mail Send';
-});
+    Route::get('/mail', function (){
+        Mail::to('admin@admin.com')->send(new TestMail());
+        return 'Mail Send';
+    });
 // ---------------------
 
 
@@ -287,7 +287,6 @@ Route::middleware(['auth'])->group(function () {
 
 
     //RECURSOS HUMANOS
-
     Route::get('employees', EmployeeController::class);
     Route::get('areas_de_trabajos', AreaTrabajoController::class);
     Route::get('function_areas', FunctionAreaController::class);

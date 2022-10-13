@@ -1,18 +1,18 @@
 
     /*Swal.fire({
-            title: 'CONFIRMAR',
-            text: "¿CONFIRMAS ELIMINAR  EL REGISTRO",
-            icon: 'WARNING',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
-            }).then(function(result){
-                if(result.value){
-                    window.livewire.emit('deleteRow',id)
-                    swal.close()
-                }
-            })*/
+        title: 'CONFIRMAR',
+        text: "¿CONFIRMAS ELIMINAR  EL REGISTRO",
+        icon: 'WARNING',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Aceptar'
+    }).then(function(result){
+        if(result.value){
+            window.livewire.emit('deleteRow',id)
+            swal.close()
+        }
+    })*/
 
     antiguedad de empleado -> no requerido
     permisos por usuarios
@@ -24,10 +24,7 @@
     Ab*123456789
     https://factorialhr.com/
 
-    https://api.factorialhr.com/users/sign_in?utm_campaign=ALL_ONB_SIGNUP&utm_medium=email&_hsmi=205708806&_hsenc=p2ANqtz--bzk39pczaiuTGCUWgdMDWvHD_t_xAOFQOgxP_YBsU8QYB9fSV43c1TWLtHgyoUQXjLZtEcZNpi6V-DyK0ItToRzWEBg&utm_content=205708806&utm_source=hs_automation&return_to=https%3A%2F%2Fapp.factorialhr.com%2Fdashboard%3Futm_campaign%3DALL_ONB_SIGNUP%26utm_medium%3Demail%26_hsmi%3D205708806%26_hsenc%3Dp2ANqtz--bzk39pczaiuTGCUWgdMDWvHD_t_xAOFQOgxP_YBsU8QYB9fSV43c1TWLtHgyoUQXjLZtEcZNpi6V-DyK0ItToRzWEBg%26utm_content%3D205708806%26utm_source%3Dhs_automation
-
     https://app.factorialhr.com/settings/task_templates/list
-
 
     gedenil543@ekbasia.com
     12345678
@@ -60,11 +57,11 @@
 
 
 
-notificaciones
+    notificaciones
     nuevos empleados
     finalizacion de contrato
 
-    // ejemplos 
+    // videos de ejemplos de notificacione
     https://www.youtube.com/watch?v=OgmYk4xg66w
 
     https://www.youtube.com/watch?v=CKej3HvFi-8
@@ -78,78 +75,38 @@ notificaciones
 
 
 
-// buscador de comboBox
-https://www.youtube.com/watch?v=ZWb3QlMOAmM
+    // ejemplo de buscador de comboBox
+    https://www.youtube.com/watch?v=ZWb3QlMOAmM
 
 
 
+    ejemplo de compresion de imagen
+    /*$customFileName = uniqid() . '_.' . $this->image->extension();
+    $this->image->storeAs('public/employees', $customFileName);
+    /*Image::make($request->image('image'))
+        ->resize(1200, null, function ($constraint){ 
+            $constraint->aspectRatio();
+        })
+        ->save($this->image);
+    */
 
-
-
-
-
-
-
-
-
-
-
-
-
-/*$customFileName = uniqid() . '_.' . $this->image->extension();
-            $this->image->storeAs('public/employees', $customFileName);
-            /*Image::make($request->image('image'))
-                ->resize(1200, null, function ($constraint){ 
-                    $constraint->aspectRatio();
-                })
-                ->save($this->image);
-
-            */
-
-            //$nombre = Str::random(3) . '633608bc7af64_.jpg'; // nuevo nombre de la imagen
-            /*$ruta = storage_path() . '\app\public\employees/' . $customFileName; // ruta de la imagen
-            //dd($ruta);
-            Image::make($request->file('image'))
-                    ->resize(1200, null, function ($constraint){ 
-                        $constraint->aspectRatio();
-                    })
-                    ->save($ruta);
+    //$nombre = Str::random(3) . '633608bc7af64_.jpg'; // nuevo nombre de la imagen
+    /*$ruta = storage_path() . '\app\public\employees/' . $customFileName; // ruta de la imagen
+    //dd($ruta);
+    Image::make($request->file('image'))
+        ->resize(1200, null, function ($constraint){ 
+        $constraint->aspectRatio();
+        })
+    ->save($ruta);
 
            
         
-            //$employ->image = $customFileName;
-            //$employ->save();*/
-
-
-    /*if($this->image)
-        {
-            $customFileName = uniqid() . '_.' . $this->image->extension();
-            $this->image->storeAs('public/products', $customFileName);
-            $imageTemp = $product->image;  // imagen temporal
-            $product->image = $customFileName;
-            $product->save();
-
-            if($imageTemp != null){
-                if(file_exists('storage/products/' . $imageTemp )){
-                    unlink('storage/products/' . $imageTemp);
-                }
-            }
-        }*/
-
-
-if ($request->hasFile('urlfoto')){
-            $urlfoto    = $request->file('urlfoto');
-            $nombre     = 'nuevonombre'.$urlfoto->guessExtension();
-            $ruta=public_path('/img/'.$nombre);
-            Image::make($urlfoto->getRealPath())
-                ->resize(600,400, function ($constraint){ 
-                    $constraint->aspectRatio();
-                })
-                ->save($ruta,72);
-        }*/
+    //$employ->image = $customFileName;
+    //$employ->save();*/
 
 
 
+    copia de seguridad
     if(strlen($this->search) > 0)
         {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id') // se uno amabas tablas
@@ -201,50 +158,27 @@ if ($request->hasFile('urlfoto')){
     fecha
     estado (presente falta licencia otros)
 
-    revisar loque de imagen segun tamaño o peso mb
 
     php artisan make:model "NOMBRE DE LA TABLA EN SINGULAR" -m 
     php artisan make:livewire nombre
     php artisan make:seeder "nombreSeeder" -> de cada tabla o migracion
 
-    Ejemplo
+
+
+    Ejemplo de pagina simple de recursos humanos
     http://programacionparacompartir.com/sis_recursoshh/index.php/login
+
+    video de ejemplo de compresion de imagen
     https://www.youtube.com/watch?v=H601HZ5nZd0
 
-    use Intervetion\Image\Facades\Image;
-
-    use Illuminate\Http\Request;
-
-    public function imageUploadResize(Request $request)
-    {
-        $this->validate($request,[
-            'image' => 'required|image|mimes:jpeg,png,gif|max:2048'
-        ]);
-        $image = $request->file('image');
-        $input['imagename']=time().'.'.$image->extends;
-
-        $destinationPath = public_path('images');
-        $img=Image::make($image->path());
-        $img->resize(100, 100,function($constraint){
-            $constraint->aspectRatio();
-        })->save($destinationPath.'/'.$input['imagename']);
-
-        return back()
-        ->with('success','Image Umploaded Successfull')
-        ->with('image',$input['imagename']);
-    }
     
-    --}}
 
-{{--
     18 DE JULIO 2022
     18 DE AGOSTO
     18 DE SEP 
     18 DE OCTUBRE
 
-    REALIZAR
-    REDUCIR TAMAÑO Y PESO DE IMAGEN
-    https://codea.app/blog/reducir-el-tamano-de-una-imagen
+
 
     // empleados
 
@@ -270,10 +204,12 @@ if ($request->hasFile('urlfoto')){
         notas
         -> agregar estado
 
+
+    Pruebas de suma de fechas conversion
     //$fechaInicio =   '$dateAdmission';//'2020-8-30 00:00:00';
     //$fechaActual = Carbon::now();//'2022-12-31 00:00:00';//'date("Y-m-d")'; //Carbon::now();
 
-    EmployeeController
+
 
     //$dateFrom = 
     //$date = Carbon::now();
@@ -285,11 +221,7 @@ if ($request->hasFile('urlfoto')){
     //$TiempoTranscurrido = $date->subDay(8);
     //$TiempoTranscurrido = Carbon::createFromDate(2020,30,8)->age;
 
-	Models
-	protected $dates = [
-        	'dateAdmission',
-    ];
-
+	
         /*
         Carbon::setLocale('es');
         $TiempoTranscurrido = setlocale(LC_TIME, 'es_ES.utf8');
@@ -333,9 +265,6 @@ if ($request->hasFile('urlfoto')){
 
 
         https://es.stackoverflow.com/questions/348757/diferencia-de-d%C3%ADas-entre-dos-fechas
-    --}}
-
-{{--
     
     //Devuelve el tiempo en minutos de una venta reciente
     public function Ejemplo($id)
@@ -390,9 +319,7 @@ if ($request->hasFile('urlfoto')){
         
         return $minutos;
     }
-    --}}
 
-{{-- 
     
     Tiempo Restante 
     tt = tiempo trascurrido = tiempo que esta hasta el momento
@@ -405,6 +332,4 @@ if ($request->hasFile('urlfoto')){
     estadia = 3 pasante
     tr = 3 - 2
     tiempo restante = tr = 1
-
-    --}}
-        
+      

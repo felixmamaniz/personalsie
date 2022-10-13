@@ -95,7 +95,7 @@ class CargoSeeder extends Seeder
         ]);
         Cargo::create([
             //14
-            'name' => 'No Definido',
+            'name' => 'Pasante',
             //'nrovacantes' => 'No definido',
             'estado' => 'Disponible',
         ]);

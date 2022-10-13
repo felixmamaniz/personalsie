@@ -16,7 +16,7 @@
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
-                        <thead class="text-white" style="background: #ee761c">
+                        <thead class="text-white" style="background: #02b1ce">
                             <tr>
                                <th class="table-th text-white">NOMBRE</th>
                                <th class="table-th text-white text-center">DESCRIPCION</th>
@@ -89,21 +89,21 @@
         }) 
     });
 
+
     function Confirm(id, verificar){
         if(verificar == 'si')
         {
-            Swal.fire({
-            title: 'CONFIRMAR',
-            text: "¿CONFIRMAS ELIMINAR  EL REGISTRO",
-            icon: 'WARNING',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Aceptar'
+            swal({
+                title: 'CONFIRMAR',
+                text: "¿CONFIRMAS ELIMINAR  EL REGISTRO?",
+                type: 'warning',
+                showCancelButton: true,
+                cancelButtonText: 'Cancelar',
+                confirmButtonText: 'Aceptar',
+                padding: '2em'
             }).then(function(result){
-                if(result.value){
-                    window.livewire.emit('deleteRow',id)
-                    swal.close()
+            if (result.value){
+                    window.livewire.emit('deleteRow', id)
                 }
             })
         }

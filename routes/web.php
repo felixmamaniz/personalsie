@@ -117,6 +117,7 @@ Route::get('/mail', function (){
     Mail::to('admin@admin.com')->send(new TestMail());
     return 'Mail Send';
 });
+// ---------------------
 
 
 

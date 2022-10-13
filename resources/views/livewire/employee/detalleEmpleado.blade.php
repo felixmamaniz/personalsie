@@ -2,7 +2,7 @@
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
 
-      <div class="modal-header" style="background: #ee761c">
+      <div class="modal-header" style="background: #02b1ce">
         <h5 class="modal-title text-white">
             Informacion de Empleado # {{$idEmpleado }}
         </h5>
@@ -31,7 +31,7 @@
                     Fecha de Nacimiento: {{ $dateNac }}
                   </div>
                   <div class="view-profile">
-                    <a href="#" class="btn btn-secondary btn-block">Tiempo Transcurrido: 
+                    <a href="#" class="btn btn-primary btn-block">Tiempo Transcurrido: 
                       @if($yearEmployee != 0)
                         {{$this->yearEmployee}} años
                       @endif
@@ -88,7 +88,7 @@
 
         <div class="modal-footer">
             <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info"
-                data-dismiss="modal" style="background: #ee761c">CANCELAR</button>
+                data-dismiss="modal" style="background: #02b1ce">CANCELAR</button>
         </div>
 
     </div>

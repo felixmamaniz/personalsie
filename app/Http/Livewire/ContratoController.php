@@ -23,6 +23,7 @@ class ContratoController extends Component
     public function mount(){
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Contrato';
+        
         $this->estado = 'Elegir';
 
         //$this->fechaFin=Carbon::parse(Carbon::now())->format('Y-m-d');
@@ -108,13 +109,13 @@ class ContratoController extends Component
 
     public function Store(){
         $rules = [
-            //'fechaFin' => 'required',
-            'estado' => 'required|not_in:Elegir',
+            'salario' => 'required',
+            //'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
-            //'fechaFin.required' => 'la fecha Final de contrato es requerido',
-            'estado.required' => 'seleccione estado de contrato',
-            'estado.not_in' => 'selecciona estado de contrato',
+            'salario.required' => 'El salario es requerido',
+            //'estado.required' => 'seleccione estado de contrato',
+            //'estado.not_in' => 'selecciona estado de contrato',
         ];
 
         $this->validate($rules, $messages);
@@ -124,7 +125,7 @@ class ContratoController extends Component
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
             'salario'=>$this->salario,
-            'estado'=>$this->estado
+            'estado'=>'Activo'
         ]);
 
         $this->resetUI();
@@ -134,12 +135,14 @@ class ContratoController extends Component
     // actualizar
     public function Update(){
         $rules = [
-            'estado' => 'required|not_in:Elegir',
+            'salario' => 'required',
+            //'estado' => 'required|not_in:Elegir',
         ];
 
         $messages = [
-            'estado.required' => 'seleccione estado de contrato',
-            'estado.not_in' => 'selecciona estado de contrato',
+            'salario.required' => 'El salario es requerido',
+            //'estado.required' => 'seleccione estado de contrato',
+            //'estado.not_in' => 'selecciona estado de contrato',
         ];
         $this->validate($rules,$messages);
 

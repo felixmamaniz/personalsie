@@ -105,7 +105,7 @@
                                 <option value="Soltero" selected>Soltero</option>
                                 <option value="Casado" selected>Casado</option>
                             </select>
-                            @error('genero') <span class="text-danger er">{{ $message }}</span> @enderror
+                            @error('estadoCivil') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -130,8 +130,10 @@
                                 </select>
                                 <a type="button" wire:click="NuevoContrato()" class="btn btn-warning close-btn text-info">Nuevo</a>
                             </div>
+                            <br>
+                            @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
-                        @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                        {{-- @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror --}}
                     </div>
 
                     <div class="col-sm-12 mt-3">
@@ -147,7 +149,7 @@
             </div>
            
             <div class="modal-footer">
-                <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info" data-dismiss="modal" style="background: #ee761c">CANCELAR</button>
+                <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info" data-dismiss="modal" style="background: #02b1ce">CANCELAR</button>
                     @if ($selected_id < 1)
                         <button type="button" wire:click.prevent="Store()"
                             class="btn btn-warning close-btn text-info">GUARDAR</button>

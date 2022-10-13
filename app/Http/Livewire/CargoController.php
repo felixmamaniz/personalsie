@@ -106,7 +106,7 @@ class CargoController extends Component
         $rules = [
             'name' => 'required|unique:cargos|min:5',
             //'nrovacantes.required' => 'Nombre del cargo es requerida',
-            'estado' => 'required|not_in:Elegir',
+            //'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'name.required' => 'Nombre de cargo es requerida',
@@ -115,8 +115,8 @@ class CargoController extends Component
 
             //'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el cargo',
 
-            'estado.required' => 'seleccione estado de cargo',
-            'estado.not_in' => 'selecciona estado de cargo',
+            //'estado.required' => 'seleccione estado de cargo',
+            //'estado.not_in' => 'selecciona estado de cargo',
         ];
 
         $this->validate($rules, $messages);
@@ -124,7 +124,7 @@ class CargoController extends Component
         $cargo = Cargo::create([
             'name'=>$this->name,
             //'nrovacantes'=>$this->nrovacantes,
-            'estado'=>$this->estado
+            'estado'=>'Disponible'
         ]);
 
         // if($this->nrovacantes ){
@@ -140,7 +140,7 @@ class CargoController extends Component
         $rules = [
             'name' => "required|min:5|unique:cargos,name,{$this->selected_id}",
             //'nrovacantes.required' => 'Nombre del cargo es requerida',
-            'estado' => 'required|not_in:Elegir',
+            //'estado' => 'required|not_in:Elegir',
         ];
 
         $messages = [
@@ -150,8 +150,8 @@ class CargoController extends Component
 
             //'nrovacantes.required' => 'Ingrese nro de vacantes que dispone el cargo',
 
-            'estado.required' => 'seleccione estado de cargo',
-            'estado.not_in' => 'selecciona estado de cargo',
+            //'estado.required' => 'seleccione estado de cargo',
+            //'estado.not_in' => 'selecciona estado de cargo',
         ];
         $this->validate($rules,$messages);
 

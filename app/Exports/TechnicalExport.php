@@ -158,7 +158,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
-        ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), 'ct.salario as Total_ganado', DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as Total_pagado') ,DB::raw('0 as no_marco_entrada'),DB::raw('0 as no_marco_salida'),DB::raw('0 as Faltast'),DB::raw('0 as retrasos'))
+        ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Dias_trabajados' ), 'ct.salario as Total_ganado', DB::raw('0 as comisiones'),DB::raw('0 as Adelantos') ,DB::raw('0 as Faltas_Licencias')  ,DB::raw('0 as Descuento') ,DB::raw('0 as Total_pagado') ,DB::raw('0 as no_marco_entrada'),DB::raw('0 as no_marco_salida'),DB::raw('0 as Faltast'),DB::raw('0 as retrasos'),'employees.ci')
         ->where('at.id',2)
         ->get();
         
@@ -258,7 +258,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             //calcular el numero de faltas de la persona
            $feini =(int) Carbon::parse($this->dateFrom)->format('d');
             $fefi =(int) Carbon::parse($this->dateTo)->format('d');
-            $countDiasF=$this->faltas_empleado($data3, $h->id,$feini,$fefi);
+            $countDiasF=$this->faltas_empleado($data3, $h->ci,$feini,$fefi);
             $h->Faltast=$countDiasF;
             //calcular cuanto valdra cada falta y licencia para sumarlos
             $licencias= Assistance::select('assistances.*')
@@ -323,7 +323,6 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 }
 
             $h->Adelantos= number_format($adelantototal,2);
-            $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos + $h->Faltas_Licencias);
             
             //agregar comissiones
             $mescom = Carbon::parse($this->dateFrom)->format('m');
@@ -373,7 +372,10 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                 $h->comisiones =  $emplocomision;
             }
            
-
+            //total sueldo a a pagar
+            $h->Total_pagado=($h->salario + $h->comisiones) - ($h->Descuento + $h->Adelantos + $h->Faltas_Licencias);
+            //ci vacio
+            $h->ci='';
 
            //agregar id desde el 1
            $h->id=$num;

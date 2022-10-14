@@ -125,6 +125,19 @@ class DiscountsvController extends Component
         $this->emit('asist-updated','Categoria Actualizar');
     }
 
+    protected $listeners = ['deleteRow' => 'Destroy'];
+
+    public function Destroy($id)
+    {
+       /* $employeesCount = Shift::find($id)->employees->count();
+        if ($employeesCount > 0) {
+            $this->emit('role-deleted', 'No se puede eliminar el Turno por que tiene permisos asociados');
+            return;
+        }*/
+
+        Discountsv::find($id)->delete();
+        $this->emit('role-deleted', 'Se elimino el Turno con exito');
+    }
      // vaciar formulario
      public function resetUI(){
         $this->empleadoid = 'Elegir';

@@ -270,7 +270,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                 }
 
             $h->Adelanto= number_format($adelantototal,2);
-            $h->Total_pagado=$h->salario - ($h->Descuento + $h->Adelantos);
+            
             
             //agregar comissiones
 
@@ -365,6 +365,8 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                 $h->Bonificaciones =  $emplocomision;
             }
 
+            //total a pagar sueldo
+            $h->Total_pagado=($h->salario + $h->Bonificaciones) - ($h->Descuento + $h->Adelanto);
             
             $h->id=$num;
             $num++;
@@ -379,7 +381,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         foreach ($reporte as $x) {
                 $this->horitas = $this->suma_horas($this->horitas,$x->Horas);
                 $this->tganado = $this->tganado + $x->salario;
-                $this->tadelantos = number_format( ($this->tadelantos + $x->Adelantos),2);
+                $this->tadelantos = number_format( ($this->tadelantos + $x->Adelanto),2);
                 $this->tdescuentos = number_format( ($this->tdescuentos + $x->Descuento),2);
                 $this->tbonificacion = number_format(($this->tbonificacion + $x->Bonificaciones),2) ;
                 $this->tpagado = $this->tpagado + $x->Total_pagado; 

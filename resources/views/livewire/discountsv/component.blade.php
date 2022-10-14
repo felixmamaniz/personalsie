@@ -60,7 +60,7 @@
     @include('livewire.discountsv.form')
 </div>
 
-@section('javascript')
+
 <script>
     document.addEventListener('DOMContentLoaded', function(){
         // Eventos
@@ -85,34 +85,22 @@
     });
 
     function Confirm(id, verificar){
-        if(verificar == 'si')
-        {
-            swal({
-                title: 'CONFIRMAR',
-                text: '¿CONFIRMAS ELIMINAR EL REGISTRO',
-                type: 'WARNING',
-                showCancelButton: true,
-                cancelButtonText: 'cerrar',
-                cancelButtonColor: '#fff',
-                confirmButtonColor: '#3b3f5c',
-                confirmButtonText: 'Aceptar'
-            }).then(function(result){
-                if(result.value){
-                    window.livewire.emit('deleteRow',id)
-                    swal.close()
-                }
-            })
-        }
-        else
-        {
-            swal('no es posible eliminar porque tiene datos relacionados')
-            return;
-        }
+
+        swal.fire({
+            title: 'CONFIRMAR',
+            icon: 'warning',
+            text: 'Confirmar eliminar el Descuentos ' ,
+            showCancelButton: true,
+            cancelButtonText: 'Cerrar',
+            cancelButtonColor: '#383838',
+            confirmButtonColor: '#3B3F5C',
+            confirmButtonText: 'Aceptar'
+        }).then(function(result) {
+            if (result.value) {
+                window.livewire.emit('deleteRow', id)
+                Swal.close()
+            }
+        })
         
     }
 </script>
-<!-- Scripts para el mensaje de confirmacion arriba a la derecha Categoría Creada con Éxito y Alerta de Eliminacion -->
-<script src="{{ asset('plugins/sweetalerts/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('plugins/sweetalerts/custom-sweetalert.js') }}"></script>
-<!-- Fin Scripts -->
-@endsection

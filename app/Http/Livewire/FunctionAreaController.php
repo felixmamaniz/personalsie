@@ -18,7 +18,7 @@ class FunctionAreaController extends Component
     // Datos de Funciones
     public $name, $description, $areaid, $selected_id;
     public $pageTitle, $componentName, $search;
-    private $pagination = 5;
+    private $pagination = 10;
 
     // Datos de Areas
     public $nameArea, $descriptionArea, $select_area_id, $componentNuevArea;
@@ -128,6 +128,15 @@ class FunctionAreaController extends Component
         $this->emit('show-modal', 'show modal!');
     }
 
+    public function nuevoRegistro()
+    {
+        $this->Store();
+        $this->resetUI();
+        $this->emit('fun-added', 'Funcion Registrada');
+        $this->emit('modal-hide-area', 'show modal!');
+        $this->emit('show-modal', 'show modal!');
+    }
+
     // Registrar nueva funcion
     public function Store(){
         $rules = [
@@ -148,12 +157,9 @@ class FunctionAreaController extends Component
             'description'=>$this->description,
             'area_trabajo_id' => $this->areaid
         ]);
-
-        $this->resetUI();
-        $this->emit('fun-added', 'Funcion Registrada');
-        $this->emit('modal-hide-area', 'show modal!');
-        $this->emit('show-modal', 'show modal!');
+        $this->resetUI2();
     }
+
 
     // editar datos
     public function Edit(FunctionArea $functionarea){
@@ -195,6 +201,22 @@ class FunctionAreaController extends Component
         $this->name='';
         $this->description='';
         $this->areaid = 'Elegir';
+        $this->search='';
+        $this->selected_id=0;
+
+         // Datos de Area
+         $this->nameArea='';
+         $this->descriptionArea='';
+         $this->select_area_id = 0;
+         $this->resetValidation(); // resetValidation para quitar los smg Rojos
+    }
+
+    // reset sin area id
+    public function resetUI2()
+    {
+        $this->name='';
+        $this->description='';
+        //$this->areaid = 'Elegir';
         $this->search='';
         $this->selected_id=0;
 

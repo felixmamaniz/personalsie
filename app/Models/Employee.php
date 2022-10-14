@@ -23,6 +23,13 @@ class Employee extends Model
         'fechaInicio',
         'image'
     ];
+    
+    public function getImagenAttribute(){
+        if($this-> image != null)
+            return(file_exists('storage/products/' . $this->image) ? $this->image : 'noimg.jpg');
+        else
+            return 'noimg.jpg';
+    }
 
     public function area(){
         return $this->belongsTo(AreaTrabajo::class);
@@ -31,4 +38,6 @@ class Employee extends Model
     public function puesto(){
         return $this->belongsTo(PuestoTrabajo::class);
     }
+
+    
 }

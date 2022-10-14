@@ -150,14 +150,15 @@
             <div class="modal-footer">
                 <button type="button" wire:click.prevent="resetUI()" class="btn btn-warning close-btn text-info" data-dismiss="modal" style="background: #02b1ce">CANCELAR</button>
                     @if ($selected_id < 1)
-                        <button type="button" wire:click.prevent="Store()"
-                            class="btn btn-warning close-btn text-info">GUARDAR</button>
+                        <button type="button" wire:click.prevent="Store()" class="btn btn-warning close-btn text-info">
+                            <span wire:loading.remove>GUARDAR</span>
+                            <span wire:loading style="color: blue">CARGANDO</span>
+                        </button>
                     @else
-                        {{-- <h6 class="text-center text-warning" wire:loading>POR FAVOR ESPERE</h6> --}}
-                        <div wire:loading.remove>
-                            <button type="button" wire:click.prevent="Update()"
-                            class="btn btn-warning close-btn text-info">ACTUALIZAR</button>
-                        </div>
+                        <button type="button" wire:click.prevent="Update()" class="btn btn-warning close-btn text-info">
+                                <span wire:loading.remove>ACTUALIZAR</span>
+                                <span wire:loading style="color: blue">CARGANDO</span>
+                        </button>
                     @endif
             </div>
         </div>

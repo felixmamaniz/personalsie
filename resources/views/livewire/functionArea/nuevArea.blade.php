@@ -14,14 +14,14 @@
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Nombre</label>
-                            <input type="text" wire:model.lazy="nameArea" class="form-control">
+                            <input type="text" wire:model.lazy="nameArea" class="form-control" placeholder="Ingrese area">
                             @error('nameArea') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Descripcion</label>
-                            <textarea type="text" class="form-control" wire:model.lazy="descriptionArea"></textarea>
+                            <textarea type="text" class="form-control" wire:model.lazy="descriptionArea" placeholder="Ingrese descripcion"></textarea>
                             @error('descriptionArea') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>

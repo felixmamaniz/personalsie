@@ -21,21 +21,21 @@
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Descripcion</label>
-                                <input type="text" wire:model.lazy="descripcion" class="form-control">
+                                <input type="text" wire:model.lazy="descripcion" class="form-control" placeholder="Ingrese descripcion">
                                 @error('descripcion') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Nota</label>
-                                <textarea type="text" class="form-control" wire:model.lazy="nota"></textarea>
+                                <textarea type="text" class="form-control" wire:model.lazy="nota" placeholder="Ingrese nota"></textarea>
                                 @error('nota') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                         </div>
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Salario</label>
-                                <input type="number" wire:model.lazy="salario" class="form-control">
+                                <input type="number" wire:model.lazy="salario" class="form-control" placeholder="0.00">
                                 @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                             

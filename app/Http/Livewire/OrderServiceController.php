@@ -2639,9 +2639,10 @@ class OrderServiceController extends Component
             ->where('service_id',$this->id_servicio)
             ->where('service_rep_detalle_solicituds.status','ACTIVO')
             ->where('service_rep_estado_solicituds.status','ACTIVO')
-            ->select('products.nombre as prodnombre','destinos.nombre as dest','service_rep_detalle_solicituds.id as id','service_rep_estado_solicituds.estado as estado_sol')
+            ->select('products.nombre as prodnombre','destinos.nombre as dest','service_rep_detalle_solicituds.id as id','service_rep_estado_solicituds.estado as estado_sol','service_rep_detalle_solicituds.cantidad as quantity')
             ->get();
             
+
             //dd($this->solicitudservicio);
 
         }
@@ -3348,6 +3349,7 @@ class OrderServiceController extends Component
             ->get();
 
             foreach ($rep as $data) {
+
                 if ($data->dest == "TIENDA") {
                     
                     $this->repuestostienda->push([
@@ -4180,7 +4182,8 @@ class OrderServiceController extends Component
         $stock=ProductosDestino::where('product_id', $pid->id)->where('destino_id',$did->id)->value('stock');
         if($result->count()>0)
         {
-          $cantidadyasolicitada=$result->first()['quantity'];
+            $preserve=$this->solicitudservicio->where('prodnombre')->where('destiny');
+          $cantidadyasolicitada=$result->first()['quantity'] + $preserve;
           
             $producto = $this->lista_solicitudes->where('destiny_id', $did->id)->where('product_id',$pid->id);
 
@@ -4212,7 +4215,8 @@ class OrderServiceController extends Component
                 
            
             }
-            else {
+            else
+            {
                 $this->emit('sin_stock');
             }
             
@@ -4554,6 +4558,11 @@ class OrderServiceController extends Component
 
        //dd($this->repuestosalmacen);
 
+
+    }
+
+    public function reservarProductos()
+    {
 
     }
 }

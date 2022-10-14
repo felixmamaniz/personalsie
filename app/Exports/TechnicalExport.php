@@ -38,6 +38,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use Maatwebsite\Excel\Concerns\RegistersEventListeners;  //todos los eventos
 use Maatwebsite\Excel\Concerns\Exportable;
 use Illuminate\Contracts\View\View;
+use SplFileInfo;
 
 class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCell, WithTitle, WithStyles, WithDefaultStyles, WithEvents, WithColumnWidths, WithDrawings, WithColumnFormatting
 {
@@ -60,16 +61,19 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         
     }
 
-
+    //funcion para agregar imagenes en el excel
     public function drawings()
     {
+        //para mostrar las imagenes en histinger 
+        //a lado del setpath->base_path().'/../public_html/edsoft1/assets/img/xd.png'
+
         $drawing = new Drawing();
         $drawing->setName('Logo');
         $drawing->setDescription('This is my logo');
         $drawing->setPath(public_path('assets/img/logo.png'));
         $drawing->setHeight(90);
         $drawing->setCoordinates('B1');
-
+        
         $drawing2 = new Drawing();
         $drawing2->setName('direccion');
         $drawing2->setDescription('This is my direccion');
@@ -79,6 +83,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
 
         return [$drawing, $drawing2];
     }
+    //funcion mes
     public function Mes($m)
     {
        
@@ -149,7 +154,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
 
         
         $num=1;
-        //esto tendria que ser los datos que mandaremos para el excel
+        //obtener todos los empleados del area administrativa
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
@@ -159,14 +164,18 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
+            //obtenemos el reporte del horario del empleado
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->join('shifts as s', 's.ci', 'attendances.employee_id')
             ->select('attendances.fecha', 'e.name', 'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'),'s.monday','s.tuesday','s.wednesday','s.thursday','s.friday','s.saturday')
             ->whereBetween('attendances.fecha', [$from,$to])
             ->where('employee_id', $h->id)
             ->get();
-            
-            
+            dd($reporte);
+            if($h->id == 14419461)
+            {
+                dd($data3);
+            }
             foreach ($data3 as $os)
              {   
                  //validar el horario conformado y enviarlo a unfuncion para calcular
@@ -247,7 +256,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $h->no_marco_salida=$countS;
 
             //calcular el numero de faltas de la persona
-          /*  $feini =(int) Carbon::parse($this->dateFrom)->format('d');
+           $feini =(int) Carbon::parse($this->dateFrom)->format('d');
             $fefi =(int) Carbon::parse($this->dateTo)->format('d');
             $countDiasF=$this->faltas_empleado($data3, $h->id,$feini,$fefi);
             $h->Faltast=$countDiasF;
@@ -283,7 +292,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             }
             //$h->Faltas_Licencias=$countFT + $countLT;
             
-*/
+
             //dd($reporte);
             //$h->descuento='0';
 
@@ -372,7 +381,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
         }
 
         //dd($reporte);
-        //sumar columnas para agregar a los totales
+        //sumar columnas para agregar a los totales finales
         $this->horitas = '00:00:00';
         foreach ($reporte as $x) {
                 $this->horitas = $this->suma_horas($this->horitas,$x->Horas);
@@ -404,6 +413,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
     //CABECERAS DEL REPORTE
     public function headings(): array
     {
+        //obtenemos el mes para agregar al excel
         $date = Carbon::parse($this->dateFrom)->format('F');
         //$date = new Carbon('today');
         //$date = $date->format('F');
@@ -421,7 +431,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
-                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA"],
+                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "DIAS TRABAJADOS", "TOTAL GANADO", "COMISIONES", "ADELANTOS", "DESCUENTO POR FALTAS Y LICENCIAS", "DESCUENTOS VARIOS", "TOTAL PAGADO", "NO MARCO ENTRADA", "NO MARCO SALIDA", "FALTAS"],
             ];
         
 
@@ -512,7 +522,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             //....
         ), $event);
     }
-    //PINTAR CELDAS AL COLOR QUE QUERAMOS
+    //funcion de evnto que se podra usar para agregar estilos al excel
     public function registerEvents(): array
     {
         
@@ -539,11 +549,13 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
             $this->J='J8:J'.($this->Allemployee+9);
             $this->L='L8:L'.($this->Allemployee+9);
             $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
+            //ajuste de texto en columnas
             $this->wrap='A8:'.'O'.($this->Allemployee+8);
             //dd($this->wrap);
             //dd($cell);
             return [ 
                 
+                //macros que hace uso de librerias de excel para el agregado de estilos
                 AfterSheet::class    => function(AfterSheet $event) {
                     Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
                         $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -555,6 +567,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                         
                         //....
                     ), $event);
+                    //union de celdas para el total
                     $event->sheet->mergeCells($this->total);
                      $event->sheet->getDelegate()->getStyle($this->total)
                             ->getAlignment()
@@ -567,7 +580,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                     /*$event->sheet->setHeight(array(
                         1     =>  50
                     ));*/
-                    //ajustar el texto al tamaño de todas las columnas
+                    //ajustar el texto al tamaño acorde en todas las columnas
                     //$event->sheet->getStyle('A6:B' . $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
                     $event->sheet->getStyle($this->wrap)->getAlignment()->setWrapText(true);
                      //centrear A3 hasta l3
@@ -675,6 +688,7 @@ class TechnicalExport implements FromCollection, WithHeadings, WithCustomStartCe
                                     ]
                                 ]
                             );
+                            //bordeado de las las lieneas horizontales
                             for ($i=9; $i < $this->Allemployee+9 ; $i++) { 
                                 $this->pintar='A'.$i.':L'.$i;
                                 //dd($this->pintar);
@@ -920,7 +934,7 @@ function suma_horas($hora1,$hora2){
  //metodo donde obtendremos el total de dias faltados
  public function faltas_empleado($datos, $id, $from, $to)
  {
-    dd($datos);
+    //dd($datos);
     //obtener los turnos del usuario
     $revisionDias=Shift::select('shifts.*')
     ->where('ci',$id)

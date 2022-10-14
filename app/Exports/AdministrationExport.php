@@ -59,9 +59,11 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         
     }
 
-
+    //funcion para agregar imagenes en el excel
     public function drawings()
-    {
+    {   
+        //para mostrar las imagenes en histinger 
+        //a lado del setpath->base_path().'/../public_html/edsoft1/assets/img/xd.png'
         $drawing = new Drawing();
         $drawing->setName('Logo');
         $drawing->setDescription('This is my logo');
@@ -78,6 +80,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
 
         return [$drawing, $drawing2];
     }
+    //funcion mes
     public function Mes($m)
     {
         switch ($m) {
@@ -144,37 +147,22 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         $this->mes=$this->Mes($date);
         //dd($this->mes);
 
-        $comissiones=UserEmployee::join('users as u', 'u.id', 'user_employees.user_id')
-        ->join('employees as e', 'e.id', 'user_employees.employee_id')
-        ->join('sales as s', 's.user_id', 'u.id')
-        ->select('s.total', 'u.name', 's.created_at')
-        ->get();
-
-       
-
-
-        $ventas=Sale::select('sales.*')
-        ->whereBetween('created_at',['2022-08-01','2022-08-31'])
-        ->where('user_id',31)
-        ->orWhere('user_id',37)
-        ->get();
-        //dd($ventas);
-        $comision=0.10;
-        $algo=5730.50*$comision;
-       // dd($algo);
-
 
         $num=1;
-        //esto tendria que ser los datos que mandaremos para el excel
+
+        //obtener todos los empleados del area administrativa
         $reporte = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
         ->select('employees.id', DB::raw("CONCAT(employees.name,' ',employees.lastname) AS Nombre"), 'pt.name as cargo', DB::raw('0 as Horas') , 'ct.salario', DB::raw('0 as Adelanto' ) ,DB::raw('0 as Descuento'), DB::raw('0 as Bonificaciones'),DB::raw('0 as Total_pagado'),DB::raw('0 as retrasos'))
         ->where('at.id',1)
         ->get();
+
         //dd($reporte);
         //calcular las horas totateles, retrasdos, dias de cada empleado
         foreach ($reporte as $h) {
+
+            //obtenemos el reporte del horario del empleado
             $data3 = Attendance::join('employees as e','e.id','attendances.employee_id')
             ->select('attendances.fecha',  'attendances.entrada', 'attendances.salida',DB::raw('0 as retraso'), DB::raw('0 as hcumplida'))
             ->whereBetween('attendances.fecha', [$from,$to])
@@ -384,7 +372,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
         }
 
 
-        //sumar columnas para agregar a los totales
+        //sumar columnas para agregar a los totales finales
         $this->horitas = '00:00:00';
         $this->tganado = 0;
        
@@ -414,6 +402,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
     //CABECERAS DEL REPORTE
     public function headings(): array
     {
+        //obtenemos el mes para agregar al excel
         $date = Carbon::parse($this->dateFrom)->format('F');
         //$date = new Carbon('today');
         //$date = $date->format('F');
@@ -434,7 +423,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                  ["MES DE ".$this->mes], //AGREGAR MES DE EMEISION
                  ["DESDE EL ".$from." HASTA EL ".$to],
                  [""],
-                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "ADELANTOS", "DESCUENTOS", "BONIFICACION", "TOTAL PAGADO"],
+                ["N", "NOMBRE", "CARGO", "HORAS TRABAJADAS", "TOTAL GANADO", "ADELANTOS", "DESCUENTOS", "BONIFICACION", "TOTAL PAGADO"  ],
             ];
         
 
@@ -526,7 +515,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             //....
         ), $event);
     }
-    //PINTAR CELDAS AL COLOR QUE QUERAMOS
+    //funcion de evnto que se podra usar para agregar estilos al excel
     public function registerEvents(): array
     {
         
@@ -540,6 +529,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             //dd($this->Allemployee);
 
             //dd($Allemployee);
+
             //estilos para el excel para todos
             $i=8;
             $this->cell='A'.$i.':I'.($this->Allemployee+9);
@@ -551,10 +541,15 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
             $this->H='H8:H'.($this->Allemployee+9);
 
             $this->total='A'.($this->Allemployee+9).':C'.($this->Allemployee+9);
+
+            //ajuste de texto en columnas
+
+            $this->wrap='A8:'.'J'.($this->Allemployee+8);
             //dd($this->total);
             //dd($cell);
             return [ 
                 
+                //macros que hace uso de librerias de excel para el agregado de estilos
                 AfterSheet::class    => function(AfterSheet $event) {
                     Sheet::macro('styleCells', function (Sheet $sheet, string $cellRange, array $style) {
                         $sheet->getDelegate()->getStyle($cellRange)->applyFromArray($style);
@@ -566,6 +561,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                         
                         //....
                     ), $event);
+                    //union de celdas para el total
                     $event->sheet->mergeCells($this->total);
                      $event->sheet->getDelegate()->getStyle($this->total)
                             ->getAlignment()
@@ -578,9 +574,9 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                     /*$event->sheet->setHeight(array(
                         1     =>  50
                     ));*/
-                    //ajustar el texto al tamaño de la columna
+                    //ajustar el texto al tamaño acorde en todas las columnas
                     //$event->sheet->getStyle('A6:B' . $event->sheet->getHighestRow())->getAlignment()->setWrapText(true);
-                    $event->sheet->getStyle('A8:I12')->getAlignment()->setWrapText(true);
+                    $event->sheet->getStyle($this->wrap)->getAlignment()->setWrapText(true);
                      //centrear A3 hasta l3
                      $event->sheet->mergeCells('A3:I3');
                      $event->sheet->getDelegate()->getStyle('A3:I3')
@@ -667,6 +663,7 @@ class AdministrationExport implements FromCollection, WithHeadings, WithCustomSt
                                     ]
                                 ]
                             );
+                            //bordeado de las las lieneas horizontales
                             for ($i=9; $i < $this->Allemployee+9 ; $i++) { 
                                 $this->pintar='A'.$i.':I'.$i;
                                 //dd($this->pintar);

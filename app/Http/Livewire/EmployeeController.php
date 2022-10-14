@@ -9,13 +9,17 @@ use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
 use App\Models\Contrato;
-
+use App\Models\Shift;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-//use Intervention\Image\ImageManagerStatic as Image;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\ImageManagerStatic as Image;
+//use Intervention\Image\Facades\Image;
+
+// elementos de prueba forma de compresion de img
+use Illuminate\Http\Request;
+
 
 class EmployeeController extends Component
 {
@@ -406,6 +410,18 @@ class EmployeeController extends Component
             'fechaInicio'=>$this->fechaInicio,
             //'image'=>  $customFileName,
         ]);
+
+        $turno = Shift::create([
+            'ci' => $this->ci,
+            'name' => $this->name,
+            'monday' => '08:00:00',
+            'tuesday' => '08:00:00',
+            'wednesday' => '08:00:00',
+            'thursday' => '08:00:00',
+            'friday' => '08:00:00',
+            'saturday' => '08:00:00'
+        ]);
+
         //$customFileName;
         if($this->image)
         {
@@ -425,7 +441,7 @@ class EmployeeController extends Component
                 $constraint->aspectRatio();
                 $constraint->upsize();
             });
-            dd($imagex);
+            //dd($imagex);
 
             // por ultimo solo guardamos esta nueva instancia, reemplazando la imagen anterior.
             Storage::put($path, (string) $imagex->encode('jpg', 30));
@@ -463,7 +479,7 @@ class EmployeeController extends Component
     }
 
     // actulizar informacion
-    public function Update(){
+    public function Update(Request $request){
         $rules = [
             'ci' => "required|unique:employees,ci,{$this->selected_id}",
             'name' => 'required',
@@ -538,9 +554,8 @@ class EmployeeController extends Component
                 }
             }
 
-            
             $fileName = collect(explode('/', $path))->last(); // obtener el nombre de la imagen asignado por laravel
-            dd($fileName);
+            //dd($fileName);
             $imagex = Image::make(Storage::get($path)); // recuperar la imagen almacenada y crear una nueva instancia
 
             // reduccion de calidad y compresion de imagen

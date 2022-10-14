@@ -172,12 +172,6 @@
     }
 
 
-
-
-
-
-
-
     .loader {
   width: 48px;
   height: 48px;
@@ -444,10 +438,10 @@
                                             <a href="#" onclick="ConfirmarAnular({{ $lv->codigo }}, '{{$lv->nombrecartera}}')" class="btn btn-sm" title="Anular Venta" style="background-color: red; color:white">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
-                                            {{-- <button wire:click="editsale({{$d->id}})" class="btn btn-sm" title="Editar Venta" style="background-color: rgb(13, 175, 220); color:white">
+                                            <button wire:click="editsale({{$lv->codigo}})" class="btn btn-sm" title="Editar Venta" style="background-color: rgb(13, 175, 220); color:white">
                                                 <i class="fas fa-edit"></i>
-                                            </button> --}}
-                                            <button wire:click="modalcambiarusuario({{$lv->codigo}})" class="btn btn-sm" title="Cambiar Usuario Vendedor" style="background: #4894ef; color:white">
+                                            </button>
+                                            <button wire:click="modalcambiarusuario({{$lv->codigo}})" class="btn btn-sm" title="Cambiar Usuario Vendedor" style="background: #006c70; color:white">
                                                 <i class="fas fa-user-edit"></i>
                                             </button>
                                             @endif

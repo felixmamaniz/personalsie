@@ -67,7 +67,7 @@ class EmployeeController extends Component
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
             ->orWhere('c.nameArea', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
-            ->orderBy('employees.name', 'asc')
+            ->orderBy('employees.created_at', 'desc')
             ->paginate($this->pagination);
 
             foreach ($employ as $os)
@@ -82,7 +82,7 @@ class EmployeeController extends Component
             ->join('contratos as ct', 'ct.id', 'employees.contrato_id')
             ->select('employees.*','c.nameArea as area','pt.name as cargo', 'ct.descripcion as contrato', 
                 DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'), 'employees.id as idEmpleado', DB::raw('0 as verificar'))
-            ->orderBy('employees.name', 'asc')
+            ->orderBy('employees.created_at', 'desc')
             ->paginate($this->pagination);
 
             foreach ($employ as $os)

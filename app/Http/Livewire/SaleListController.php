@@ -750,4 +750,10 @@ class SaleListController extends Component
         $this->detalleventa($idventa);
         $this->emit('crear-comprobante');
     }
+    //Redirige para Editar una Venta
+    public function editsale($idventa)
+    {
+        session(['venta_id' => $idventa]);
+        $this->redirect('editarventa');
+    }
 }

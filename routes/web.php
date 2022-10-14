@@ -101,6 +101,7 @@ use App\Http\Livewire\OrdenCompraController;
 use App\Http\Livewire\SalariesController;
 use App\Http\Livewire\SaleDailyMovementController;
 use App\Http\Livewire\SaleDevolutionController;
+use App\Http\Livewire\SaleEditController;
 use App\Http\Livewire\SaleStatisticController;
 use App\Http\Livewire\SaleReporteCantidadController;
 use App\Http\Livewire\ServCotizacionController;
@@ -277,6 +278,7 @@ Route::middleware(['auth'])->group(function () {
     //Lista de Ventas
     Route::get('salelist', SaleListController::class)->name('salelist')->middleware('permission:VentasLista_Index');
     Route::get('estadisticas', SaleStatisticController::class)->name('estadisticas');
+    Route::get('editarventa', SaleEditController::class)->name('editarventa');
     Route::get('devolucionventa', SaleDevolutionController::class)->name('devolucionventa');
     Route::get('salemovimientodiario', SaleDailyMovementController::class)->name('salemovimientodiario')->middleware('permission:VentasMovDia_Index');
     // Route::get('notificaciones', NotificationController::class)->name('notificaciones');

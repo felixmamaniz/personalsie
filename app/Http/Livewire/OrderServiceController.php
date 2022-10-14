@@ -4212,7 +4212,8 @@ class OrderServiceController extends Component
                 
            
             }
-            else {
+            else
+            {
                 $this->emit('sin_stock');
             }
             

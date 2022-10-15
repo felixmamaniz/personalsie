@@ -242,7 +242,7 @@
                             </div>
                        
                             <div class="text-left col-lg-5">
-                                <label for="validationTooltipUsername"> <h2>{{$sumaProductosTienda}}</h2> </label>
+                                <label for="validationTooltipUsername"> <h2>{{number_format($sumaProductosTienda,2)}}</h2> </label>
                             </div>
                            </div>
                         </div>
@@ -271,14 +271,11 @@
                             </div>
                        
                             <div class="text-left col-lg-5 pt-2">
-                                <label for="validationTooltipUsername"> <h2>{{$totalServicio}}</h2>  </label>
+                                <label for="validationTooltipUsername"> <h2>{{number_format($totalServicio,2)}}</h2>  </label>
                             </div>
                            </div>
                         </div>
 
-                        
-                    
-                      
                     </div>
                   
                     @else

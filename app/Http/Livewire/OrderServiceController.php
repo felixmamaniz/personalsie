@@ -141,7 +141,7 @@ class OrderServiceController extends Component
         $this->orderlistatienda=1;
         $this->orderlistaalmacenes=1;
         $this->sumaProductosTienda=0;
-        $this->totalServicio=$this->edit_saldo + $this->sumaProductosTienda;
+      
 
         //$this->searchproduct='CARGADOR RAPIDO,MICRO USB , CARGA RAPIDA, EF-1204Q, E Y F';
 
@@ -219,6 +219,7 @@ class OrderServiceController extends Component
         $this->edit_saldo = $this->edit_precioservicio - $this->edit_acuenta;
         //Para Actualizar Saldo en la Ventana Modal Editar Servicio Terminado
         $this->edit_saldoterminado = $this->edit_precioservicioterminado - $this->edit_acuentaservicioterminado;
+        $this->totalServicio=$this->edit_saldo + $this->sumaProductosTienda;
 
         //Listar a los usuarios tecnicos responsables
         $this->lista_de_usuarios = $this->listarusuarios();
@@ -3527,12 +3528,12 @@ class OrderServiceController extends Component
 
         //Venta de repuestos de tienda
 
-        foreach ($this->repuestosalmacen as $data) {
+        foreach ($this->repuestostienda as $data) {
             
             //Los precios de los productos de tienda vienen aparte y no se cobran en conjunto con la venta, se busca los productos de tienda
             //dd($data);
             
-            if ($data['destiny_name'] === 'TIENDA') {
+      
          
                     //Buscamos todos los lotes que tengan ese producto,primeramente la salida del 
                     $mn = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
@@ -3583,29 +3584,29 @@ class OrderServiceController extends Component
                             'movimiento_id' => $Movimiento->id,
                         ]);    
                     
-                    
-            }
-            else{
-
-                $rep = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
-                ->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')
-                ->join('salida_lotes','salida_lotes.salida_detalle_id','detalle_salida_productos.id')
-                ->where('salida_servicios.service_id',$this->id_servicio)
-                ->select('salida_lotes.*')
-                ->first();
-
-
-                ServiceRepVentaInterna::create([
-                    'service_id'=>$this->id_servicio,
-                    'product_id'=>$data['product_id'],
-                    'cantidad'=>$data['quantity'],
-                    'lote'=>$rep->lote_id
-                ]);
-            }
-
+    
+         
               
           
     
+        }
+
+        foreach ($this->repuestosalmacen as $data) 
+        {
+            $rep = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
+            ->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')
+            ->join('salida_lotes','salida_lotes.salida_detalle_id','detalle_salida_productos.id')
+            ->where('salida_servicios.service_id',$this->id_servicio)
+            ->select('salida_lotes.*')
+            ->first();
+
+
+            ServiceRepVentaInterna::create([
+                'service_id'=>$this->id_servicio,
+                'product_id'=>$data['product_id'],
+                'cantidad'=>$data['quantity'],
+                'lote'=>$rep->lote_id
+            ]);
         }
 
 
@@ -4025,7 +4026,7 @@ class OrderServiceController extends Component
 
         $this->edit_costoservicioterminado = $detallesservicio->costo;
         $this->edit_motivoservicioterminado = $detallesservicio->detallecosto;
-        
+
         $this->edit_precioservicioterminado = $detallesservicio->precioservicio;
         $this->edit_acuentaservicioterminado = $detallesservicio->acuenta;
         $this->edit_saldoterminado = $this->edit_precioservicioterminado - $this->edit_acuentaservicioterminado;
@@ -4219,9 +4220,6 @@ class OrderServiceController extends Component
             {
                 $this->emit('sin_stock');
             }
-            
-            
-         
         }
         else
         {
@@ -4527,6 +4525,9 @@ class OrderServiceController extends Component
        $this->sumaProductosTienda=$this->repuestostienda->sum(function($value){
         return $value['quantity']*$value['precioventa'];
         });
+
+        $this->totalServicio= $this->sumaProductosTienda+$this->edit_saldo;
+
         }
         else{
 

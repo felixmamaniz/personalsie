@@ -39,6 +39,11 @@ class SaleEditController extends Component
 
     public function mount()
     {
+        //Actualiza el total items del carrito de ventas
+        $this->total_items = 12;
+
+
+
         //Obteniendo el id de la venta por la variable de sesión
         $ventaid = session('venta_id');
         $venta = Sale::join("movimientos as m", "m.id", "sales.movimiento_id")
@@ -73,7 +78,10 @@ class SaleEditController extends Component
 
         $this->carrito_venta = collect([]);
 
-        $detalle = SaleDetail::where("sale_details.sale_id", $ventaid)->get();
+        $detalle = SaleDetail::join("products as p","p.id", "sale_details.product_id")
+        ->where("sale_details.sale_id", $ventaid)
+        ->select("p.nombre as name_product","sale_details.price as price","sale_details.quantity as quantity","sale_details.product_id as product_id")
+        ->get();
 
 
         $cont = 1;
@@ -83,10 +91,10 @@ class SaleEditController extends Component
             //Llenando la coleccion con los productos de la venta
             $this->carrito_venta->push([
                 'order' => $cont,
+                'name' => $d->name_product,
                 'price' => $d->price,
                 'quantity'=> $d->quantity,
-                'product_id' => $d->product_id,
-                // 'product_name'=> $d->product_id
+                'id' => $d->product_id,
             ]);
 
             $cont++;
@@ -94,6 +102,7 @@ class SaleEditController extends Component
 
         
 
+        //dd($this->carrito_venta);
 
 
 

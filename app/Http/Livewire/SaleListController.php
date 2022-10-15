@@ -41,9 +41,6 @@ class SaleListController extends Component
     //Tipo de Fechas (Ventas de Hoy, Ventas por Fechas)
     public $tipofecha;
 
-
-
-
     //Variable para Ocultar o Mostrar mas Filtros
     public $masfiltros;
 

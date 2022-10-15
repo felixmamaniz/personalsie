@@ -428,16 +428,16 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($cart as $item)
+                            @foreach ($this->carrito_venta->sortBy('name') as $c)
                             <tr>
                                 <td class="text-left">
-                                    {{ $item->name }}
+                                    {{ $c['name'] }}
                                 </td>
                                 <td>
                                     <div class="input-group"  style="min-width: 120px; max-width: 130px; align-items: center;">
-                                        <input type="number" style="max-height: 30px;" id="p{{$item->id}}"
-                                        wire:change="cambiarprecio({{$item->id}}, $('#p' + {{$item->id}}).val())"
-                                        value="{{ $item->price }}"
+                                        <input type="number" style="max-height: 30px;" id="p{{$c['id']}}"
+                                        wire:change="cambiarprecio({{$c['id']}}, $('#p' + {{$c['id']}}).val())"
+                                        value="{{ $c['price'] }}"
                                         class="form-control" placeholder="Bs.." aria-label="Recipient's username" aria-describedby="basic-addon2">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Bs</span>
@@ -446,9 +446,9 @@
                                 </td>
                                 <td>
                                     <div class="input-group"  style="min-width: 120px; max-width: 130px; align-items: center;">
-                                        <input type="number" style="max-height: 30px;" id="c{{$item->id}}" 
-                                        wire:change="cambiarcantidad({{$item->id}}, $('#c' + {{$item->id}}).val())"
-                                        value="{{$item->quantity}}"
+                                        <input type="number" style="max-height: 30px;" id="c{{$c['id']}}" 
+                                        wire:change="cambiarcantidad({{$c['id']}}, $('#c' + {{$c['id']}}).val())"
+                                        value="{{$c['quantity']}}"
                                         class="form-control" placeholder="Cantidad..." aria-label="Recipient's username" aria-describedby="basic-addon2">
                                         <div class="input-group-append">
                                             <span class="input-group-text">Uds</span>
@@ -456,33 +456,22 @@
                                     </div>
                                 </td>
                                 <td>
-                                    {{ $item->price * $item->quantity, 2 }}
+                                    {{ $c['price'] * $c['quantity'], 2 }}
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                        <button title="Ver Precio y Costos por Lotes" wire:click.prevent="modal_lotes({{ $item->id }})" class="btn btn-sm" style="background-color: rgb(0, 156, 135); color:white">
+                                        <button title="Ver Precio y Costos por Lotes" wire:click.prevent="modal_lotes({{ $c['id'] }})" class="btn btn-sm" style="background-color: rgb(0, 156, 135); color:white">
                                             <i class="fas fa-list-ul"></i>
                                         </button>
-                                        <a title="Eliminar Producto" href="#" onclick="ConfirmarEliminar('{{ $item->id }}', '{{$item->name}}')" class="btn btn-sm" style="background-color: red; color:white">
+                                        <a title="Eliminar Producto" href="#" onclick="ConfirmarEliminar('{{ $c['id'] }}', '{{$c['name']}}')" class="btn btn-sm" style="background-color: red; color:white">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
-                                        <button title="Quitar una unidad" wire:click.prevent="decrease({{ $item->id }})" class="btn btn-sm" style="background-color: #11be32; color:white">
+                                        <button title="Quitar una unidad" wire:click.prevent="decrease({{ $c['id'] }})" class="btn btn-sm" style="background-color: #7c7a76; color:white">
                                             <i class="fas fa-minus"></i>
                                         </button>
-                                        <button title="Incrementar una unidad" wire:click.prevent="increase({{ $item->id }})" class="btn btn-sm" style="background-color: #11be32; color:white">
+                                        <button title="Incrementar una unidad" wire:click.prevent="increase({{ $c['id'] }})" class="btn btn-sm" style="background-color: #006caa; color:white">
                                             <i class="fas fa-plus"></i>
                                         </button>
-                                        <div>
-                                            {{$item->control}} 
-                                         </div>
-                                        @if ($item->control == 'AUTOMATICO')
-                                            <div>
-                                               {{$item->control}} 
-                                            </div>
-                                        <button title="Seleccionar Lote" wire:click.prevent="selectLote({{ $item->id }})" class="btn btn-sm" style="background-color: rgb(26, 94, 68); color:white">
-                                            {{$item->control}} 
-                                        </button>
-                                        @endif
                                     </div>
                                 </td>
                             </tr>

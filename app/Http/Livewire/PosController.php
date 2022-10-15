@@ -197,7 +197,7 @@ class PosController extends Component
         return view('livewire.pos.component', [
             'denominations' => Denomination::orderBy('id', 'asc')->get(),
             'listaproductos' => $listaproductos,
-            'cart' => Cart::getContent()->sortBy('name'),
+            'cart' => Cart::getContent()->sortBy('order'),
             'carteras' => $this->listarcarteras(),
             'carterasg' => $this->listarcarterasg(),
             'listaclientes' => $listaclientes,
@@ -1019,36 +1019,5 @@ class PosController extends Component
         $this->mensaje_toast = "Precio promedio: " . number_format($this->precio_promedio,2) . "Bs aplicado al producto " . $this->nombreproducto;
         //Ocultando la Ventana Modal Lotes Producto
         $this->emit('hide-modallotesproducto');
-    }
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //Roscio
-    public function selectLote(Product $id)
-    {
-        dd($id);
-       // $this->emit('seleccionarlote');
     }
 }

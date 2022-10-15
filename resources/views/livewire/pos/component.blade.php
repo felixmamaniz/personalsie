@@ -469,23 +469,12 @@
                                             <a title="Eliminar Producto" href="#" onclick="ConfirmarEliminar('{{ $item->id }}', '{{$item->name}}')" class="btn btn-sm" style="background-color: red; color:white">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
-                                            <button title="Quitar una unidad" wire:click.prevent="decrease({{ $item->id }})" class="btn btn-sm" style="background-color: #11be32; color:white">
+                                            <button title="Quitar una unidad" wire:click.prevent="decrease({{ $item->id }})" class="btn btn-sm" style="background-color: #7c7a76; color:white">
                                                 <i class="fas fa-minus"></i>
                                             </button>
-                                            <button title="Incrementar una unidad" wire:click.prevent="increase({{ $item->id }})" class="btn btn-sm" style="background-color: #11be32; color:white">
+                                            <button title="Incrementar una unidad" wire:click.prevent="increase({{ $item->id }})" class="btn btn-sm" style="background-color: #006caa; color:white">
                                                 <i class="fas fa-plus"></i>
                                             </button>
-                                            <div>
-                                                {{$item->control}} 
-                                             </div>
-                                            @if ($item->control == 'AUTOMATICO')
-                                                <div>
-                                                   {{$item->control}} 
-                                                </div>
-                                            <button title="Seleccionar Lote" wire:click.prevent="selectLote({{ $item->id }})" class="btn btn-sm" style="background-color: rgb(26, 94, 68); color:white">
-                                                {{$item->control}} 
-                                            </button>
-                                            @endif
                                         </div>
                                     </td>
                                 </tr>

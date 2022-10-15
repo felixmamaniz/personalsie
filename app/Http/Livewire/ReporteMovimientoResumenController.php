@@ -864,9 +864,11 @@ class ReporteMovimientoResumenController extends Component
                 // dd($servrep);
                  if ($servrep->isNotEmpty()) 
                  {
-                     $servrep=$servrep->sum(function($value){
+                     $servrep=$servrep->sum(function($value)
+                         {
                          return $value['cantidad']*$value['precio_venta'];
-                         });
+                         }
+                        );
                          
                  }
                         

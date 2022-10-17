@@ -159,10 +159,10 @@
                                     <button wire:click.prevent="InsertarSolicitudCompra('{{$l['product_name']}}')" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
                                         <i class="fas fa-chevron-up"></i>
                                     </button>
-                                    <button wire:click.prevent="DecrementarSolicitudCompra('{{$l['product_name']}}')" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(255, 124, 1); color:white">
+                                    <button wire:click.prevent="DecrementarSolicitudCompra('{{$l['product_id']}}')" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(255, 124, 1); color:white">
                                         <i class="fas fa-chevron-down"></i>
                                     </button>
-                                    <button wire:click.prevent="EliminarSolicitudCompe('{{$l['product_name']}}')" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(230, 0, 0); color:white">
+                                    <button wire:click.prevent="EliminarSolicitudCompra('{{$l['product_id']}}')" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(230, 0, 0); color:white">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
                                   

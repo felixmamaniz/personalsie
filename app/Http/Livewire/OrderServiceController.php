@@ -3339,7 +3339,7 @@ class OrderServiceController extends Component
             ->where('service_id',$idservicio)
             ->where('service_rep_detalle_solicituds.status','ACTIVO')
             ->where('service_rep_estado_solicituds.status','ACTIVO')
-            ->where('service_rep_estado_solicituds.estado','ACEPTADO')
+            ->whereIn('service_rep_estado_solicituds.estado',['ACEPTADO','COMPRADO'])
             ->select('products.nombre as prodnombre',
             'products.id as proid',
             'destinos.nombre as dest',
@@ -3571,7 +3571,7 @@ class OrderServiceController extends Component
                         ]);
     
                         $sale_lote = SaleLote::create([
-                            'sale_detail_id' => $sale->id,
+                            'sale_detail_id' => $sd->id,
                             'lote_id' => $mn->lote_id,
                             'cantidad' => $data['quantity']
                         ]);
@@ -3591,6 +3591,7 @@ class OrderServiceController extends Component
     
         }
 
+       // dd($this->repuestosalmacen);
         foreach ($this->repuestosalmacen as $data) 
         {
             $rep = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
@@ -3601,10 +3602,11 @@ class OrderServiceController extends Component
             ->first();
 
 
-            ServiceRepVentaInterna::create([
+            $nn=ServiceRepVentaInterna::create([
                 'service_id'=>$this->id_servicio,
                 'product_id'=>$data['product_id'],
                 'cantidad'=>$data['quantity'],
+                'precio_venta'=> $data['precioventa'],
                 'lote'=>$rep->lote_id
             ]);
         }
@@ -3612,7 +3614,7 @@ class OrderServiceController extends Component
 
 
 
-
+dd($nn);
 
 
 
@@ -4313,6 +4315,16 @@ class OrderServiceController extends Component
         
         
     }
+    public function EliminarSolicitudCompra($key)
+    {
+        //dd($key);
+        //Buscamos el elemento en la colección
+        $result = $this->lista_solicitudes->where('product_id', $key)->where('type','CompraRepuesto');
+        //Eliminando la fila del elemento en coleccion
+        $this->lista_solicitudes->pull($result->keys()->first());
+        
+        
+    }
     //Decrementa el valor (Stock) de una solicitud
     public function DecrementarSolicitud(Product $pid,Destino $did,$type)
     {
@@ -4344,10 +4356,10 @@ class OrderServiceController extends Component
     }
     public function DecrementarSolicitudCompra($key)
     {
-        $result = $this->lista_solicitudes->where('product_name', $key)->where('type','CompraRepuesto');
+        $result = $this->lista_solicitudes->where('product_id', $key)->where('type','CompraRepuesto');
         //dd($result);
 
-        $pro=Product::where('nombre',$key)->first();
+        $pro=Product::where('id',$key)->first();
 
 
         //Guardando la cantidad del producto

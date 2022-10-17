@@ -8,6 +8,7 @@ use App\Models\ModelHasRoles;
 use App\Models\Movimiento;
 use App\Models\OrderService;
 use App\Models\Service;
+use App\Models\ServiceRepVentaInterna;
 use App\Models\Sucursal;
 use App\Models\Transaccion;
 use App\Models\User;
@@ -225,13 +226,41 @@ class ReportEntregadoServController extends Component
                     ->get();
     
                     foreach ($this->data as $serv) {
-                        foreach ($serv->movservices as $mm) {
-                            if ($mm->movs->status == 'ACTIVO') {
+                        foreach ($serv->movservices as $mm) 
+                        {
+                            if ($mm->movs->status == 'ACTIVO')
+                            {
+                                $servrep = ServiceRepVentaInterna::where('service_id', $mm->id)->get();
+                                dd($mm->id);
+
+                                if ($servrep->isNotEmpty()) {
+                                    $servrep = $servrep->sum(
+                                        function ($value) {
+                                            return $value['cantidad'] * $value['precio_venta'];
+                                        }
+                                    );
+                   
+                                $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                $this->sumaUtilidad += $serv->utilidad;
+                                } 
+                                else 
+                                {
+
+                               
                                 $serv->utilidad = $mm->movs->import - $serv->costo;
                                 $this->sumaUtilidad += $serv->utilidad;
+
+                                }
+                          
                             }
                         }
                     }
+
+              
+
+
+
+
     
                
     
@@ -417,8 +446,27 @@ class ReportEntregadoServController extends Component
                     foreach ($this->data as $serv) {
                         foreach ($serv->movservices as $mm) {
                             if ($mm->movs->status == 'ACTIVO') {
+                                $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+                                //dd($serv->id);
+
+                                if ($servrep->isNotEmpty()) {
+                                    $servrep = $servrep->sum(
+                                        function ($value) {
+                                            return $value['cantidad'] * $value['precio_venta'];
+                                        }
+                                    );
+                   
+                                $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                $this->sumaUtilidad += $serv->utilidad;
+                                } 
+                                else 
+                                {
+
+                               
                                 $serv->utilidad = $mm->movs->import - $serv->costo;
                                 $this->sumaUtilidad += $serv->utilidad;
+
+                                }
                             }
                         }
                     }

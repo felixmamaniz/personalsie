@@ -251,12 +251,8 @@
                              <div class="col-lg-12">
                                  <div class="row justify-content-center pt-1">
                                     <hr class="ml-3 p-0" width="100%" style="background-color: #8d8181">
- 
                                  </div>
- 
                              </div>
-                        
-                       
                             </div>
                          </div>
                       

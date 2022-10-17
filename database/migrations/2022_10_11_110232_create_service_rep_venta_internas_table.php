@@ -21,11 +21,10 @@ class CreateServiceRepVentaInternasTable extends Migration
             $table->foreign('service_id')->references('id')->on('services');
             $table->unsignedBigInteger('product_id');
             $table->foreign('product_id')->references('id')->on('products');
-          
             $table->integer('cantidad');
-            $table->decimal('precio_venta',2);
+            $table->decimal('precio_venta',10,2);
             $table->string('lote',100)->nullable();
-            
+  
             $table->timestamps();
         });
     }

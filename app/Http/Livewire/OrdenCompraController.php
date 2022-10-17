@@ -214,6 +214,7 @@ class OrdenCompraController extends Component
 
         
         $productos = $this->obtener_detalles($idordencompra);
+     
 
         foreach($productos as $p)
         {
@@ -240,14 +241,11 @@ class OrdenCompraController extends Component
         $messages = [
             'cartera_id.required' => 'La cartera es requerido',
             'cartera_id.not_in' => 'Seleccione una Cartera',
-
             'destino_id.required' => 'La cartera es requerido',
             'destino_id.not_in' => 'Seleccione un Destino',
         ];
+
         $this->validate($rules, $messages);
-
-
-
         DB::beginTransaction();
         try
         {
@@ -321,12 +319,13 @@ class OrdenCompraController extends Component
                                 'status' => 'INACTIVO'
                             ]);
                             //Creando nuevo estado ACTIVO para cada detalle solicitud
-                            ServiceRepEstadoSolicitud::create([
+                           $hg= ServiceRepEstadoSolicitud::create([
                                 'detalle_solicitud_id' => $d->detalle_solicitud_id,
                                 'user_id' => Auth()->user()->id,
                                 'estado' => 'NOCOMPRADO',
-                                'status' => 'ACTIVO',
+                                'status' => 'tus',
                             ]);
+                         
                         }
                     }
 
@@ -391,6 +390,9 @@ class OrdenCompraController extends Component
                         ]);
                     }
                 }
+                $detalle->update([
+                    'destino_id'=> $this->destino_id
+                ]);
                 $total_bs = $total_bs + $l['cost'];
             }
             //Creando la Compra

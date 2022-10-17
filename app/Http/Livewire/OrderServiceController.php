@@ -66,14 +66,14 @@ class OrderServiceController extends Component
     public $search;
     //Variables para la (Ventana Modal) Detalles Servicio
     public $responsabletecnico, $nombrecliente, $celularcliente, $telefonocliente, $fechaestimadaentrega, $fallaseguncliente,
-    $tipotrabajo, $detalleservicio, $falla, $diagnostico, $solucion, $precioservicio, $acuenta,
-    $saldo, $estado, $categoriaservicio, $costo, $detallecosto, $tiposervicio;
+        $tipotrabajo, $detalleservicio, $falla, $diagnostico, $solucion, $precioservicio, $acuenta,
+        $saldo, $estado, $categoriaservicio, $costo, $detallecosto, $tiposervicio;
 
     //Variable para almacenar todos los usuarios Técnico de servicios (Ventana Modal)
-    public $lista_de_usuarios,$observacion;
+    public $lista_de_usuarios, $observacion;
 
     //Id Servicio, Id Orden de Servicio
-    public $id_servicio, $id_orden_de_servicio,$count;
+    public $id_servicio, $id_orden_de_servicio, $count;
 
     //Variables para la Ventana Modal Editar Servicio
     public $edit_tipodetrabajo, $edit_categoriatrabajo, $edit_marca, $edit_detalle, $edit_fallaseguncliente, $edit_diagnostico, $edit_solucion;
@@ -89,7 +89,7 @@ class OrderServiceController extends Component
     public $edit_precioservicioterminado, $edit_acuentaservicioterminado, $edit_saldoterminado, $edit_costoservicioterminado, $edit_motivoservicioterminado, $edit_carteraservicioterminado;
 
     //Variables para cambiar técnico responsable
-    public $id_usuario, $tipo, $almacenrepuestos,$precio_venta,$repuestos,$siguiente,$type2;
+    public $id_usuario, $tipo, $almacenrepuestos, $precio_venta, $repuestos, $siguiente, $type2;
 
     //Variables para mostrar tecnico responsable en los sweet alerts (Alertas JavaScript)
     public $alert_responsabletecnico;
@@ -102,8 +102,8 @@ class OrderServiceController extends Component
 
     //ROSCIO - REPUESTOS
     //variable para modal de busqueda de repuestos 
-    public $nombre,$costo2, $precio_venta2,$codigo,$caracteristicas,$lote,$unidad, $marca, $garantia,$industria,
-    $categoryid,$component,$selected_categoria,$image,$selected_id2,$name,$descripcion,$unidades,$marcas2,$show_more,$cant,$orderP,$listacompra,$toogle,$solicitudservicio,$repuestostienda,$repuestosalmacen,$orderlista,$sumaProductosTienda,$totalServicio;
+    public $nombre, $costo2, $precio_venta2, $codigo, $caracteristicas, $lote, $unidad, $marca, $garantia, $industria,
+        $categoryid, $component, $selected_categoria, $image, $selected_id2, $name, $descripcion, $unidades, $marcas2, $show_more, $cant, $orderP, $listacompra, $toogle, $solicitudservicio, $repuestostienda, $repuestosalmacen, $orderlista, $sumaProductosTienda, $totalServicio;
 
     //Guarda la lista donde se guardan todos los repuestos encontrados en el input de busqueda de repuestos ($searchproduct)
     public $listaproductos;
@@ -132,16 +132,16 @@ class OrderServiceController extends Component
         $this->dateTo = Carbon::parse(Carbon::now())->format('Y-m-d');
         $this->lista_de_usuarios = $this->listarusuarios();
         $this->mostrarterminar = "No";
-        $this->orderP=1;
-        $this->listacompra=collect();
-        $this->toogle=1;
-        $this->type='TERMINADO';
-        $this->repuestosalmacen=collect();
-        $this->repuestostienda=collect();
-        $this->orderlistatienda=1;
-        $this->orderlistaalmacenes=1;
-        $this->sumaProductosTienda=0;
-      
+        $this->orderP = 1;
+        $this->listacompra = collect();
+        $this->toogle = 1;
+        $this->type = 'TERMINADO';
+        $this->repuestosalmacen = collect();
+        $this->repuestostienda = collect();
+        $this->orderlistatienda = 1;
+        $this->orderlistaalmacenes = 1;
+        $this->sumaProductosTienda = 0;
+
 
         //$this->searchproduct='CARGADOR RAPIDO,MICRO USB , CARGA RAPIDA, EF-1204Q, E Y F';
 
@@ -149,67 +149,49 @@ class OrderServiceController extends Component
 
         //Variable que guarda el id de la cartera
         $this->tipopago = 'Elegir';
-        $this->unidades=null;
-        $this->marcas2=null;
+        $this->unidades = null;
+        $this->marcas2 = null;
 
         //Verificando si el usuario tiene una caja abierta
-        if($this->listarcarteras() == null)
-        {
+        if ($this->listarcarteras() == null) {
             $this->estadocaja = "cerrado";
-        }
-        else
-        {
+        } else {
             $this->estadocaja = "abierto";
             //Listando todas las carteras disponibles para la caja abierta
             $listac = $this->listarcarteras();
             //Poniendo por defecto la primera cartera de tipo Cajafisica
-            foreach($listac as $list)
-                {
-                    if($list->tipo == 'CajaFisica')
-                    {
-                        $this->tipopago = $list->idcartera;
-                        break;
-                    }
-                    
+            foreach ($listac as $list) {
+                if ($list->tipo == 'CajaFisica') {
+                    $this->tipopago = $list->idcartera;
+                    break;
                 }
+            }
         }
 
 
-        if(session('orderserv') != "")
-        {
+        if (session('orderserv') != "") {
             $this->search = session('orderserv');
             session(['orderserv' => null]);
         }
-
-
     }
     public function render()
     {
         //vista de pestañas para visualizar el servicio y el detalle de repuestos
         if ($this->toogle == 1) {
-            $this->active1="active show";
-            $this->active2="";
-       
+            $this->active1 = "active show";
+            $this->active2 = "";
         }
         if ($this->toogle == 2) {
-            $this->active1="";
-            $this->active2="active show";
-          
+            $this->active1 = "";
+            $this->active2 = "active show";
         }
-   
 
-        if(Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio'))
-        {
 
-        }
-        else
-        {
-            if($this->type == 'PENDIENTE')
-            {
+        if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio')) {
+        } else {
+            if ($this->type == 'PENDIENTE') {
                 $this->usuario = 'Todos';
-            }
-            else
-            {
+            } else {
                 $this->usuario = Auth()->user()->id;
             }
         }
@@ -219,335 +201,316 @@ class OrderServiceController extends Component
         $this->edit_saldo = $this->edit_precioservicio - $this->edit_acuenta;
         //Para Actualizar Saldo en la Ventana Modal Editar Servicio Terminado
         $this->edit_saldoterminado = $this->edit_precioservicioterminado - $this->edit_acuentaservicioterminado;
-        $this->totalServicio=$this->edit_saldo + $this->sumaProductosTienda;
+        $this->totalServicio = $this->edit_saldo + $this->sumaProductosTienda;
 
         //Listar a los usuarios tecnicos responsables
         $this->lista_de_usuarios = $this->listarusuarios();
 
-        if (strlen($this->search) == 0)
-        {
-            if($this->sucursal_id != 'Todos')
-            {
-                if($this->type != 'Todos')
-                {
-                    if ($this->catprodservid == 'Todos')
-                    {
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+        if (strlen($this->search) == 0) {
+            if ($this->sucursal_id != 'Todos') {
+                if ($this->type != 'Todos') {
+                    if ($this->catprodservid == 'Todos') {
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.type', $this->type)
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('s.sucursal_id',$this->sucursal_id)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.type', $this->type)
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('s.sucursal_id', $this->sucursal_id)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico
-    
-                            if($this->type != 'ENTREGADO')
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
+
+                            if ($this->type != 'ENTREGADO') {
+                                if ($this->tipofecha == 'Todos') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
-                                        //Obtener los servicios de la orden de servicio
-                                        $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
-                                    }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', $this->type)
                                         ->where('mov.status', 'ACTIVO')
                                         ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', $this->type)
-                                        ->where('mov.status', 'ACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
-                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', 'TERMINADO')
-                                    ->where('mov.status', 'INACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                     }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
                                         $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', 'TERMINADO')
-                                        ->where('mov.status', 'INACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                         }
                                     }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                }
+                            } else {
+                                if ($this->tipofecha == 'Todos') {
+                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', 'TERMINADO')
                                         ->where('mov.status', 'INACTIVO')
                                         ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+
+                                    foreach ($orden_de_servicio as $os) {
+                                        //Obtener los servicios de la orden de servicio
+                                        $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
+                                    }
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                         }
@@ -555,335 +518,318 @@ class OrderServiceController extends Component
                                 }
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //Si selecciona una categoria (Computadoras, Impresoras, Celulares, etc...) en específico
-    
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.type', $this->type)
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('s.sucursal_id',$this->sucursal_id)
-                                ->where('s.cat_prod_service_id', $this->catprodservid)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.type', $this->type)
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('s.sucursal_id', $this->sucursal_id)
+                                    ->where('s.cat_prod_service_id', $this->catprodservid)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico
-                            if($this->type != 'ENTREGADO')
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
+                            if ($this->type != 'ENTREGADO') {
+                                if ($this->tipofecha == 'Todos') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
-                                        //Obtener los servicios de la orden de servicio
-                                        $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
-                                    }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', $this->type)
                                         ->where('mov.status', 'ACTIVO')
                                         ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', $this->type)
-                                        ->where('mov.status', 'ACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
-                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', 'TERMINADO')
-                                    ->where('mov.status', 'INACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
                                         $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', 'TERMINADO')
-                                        ->where('mov.status', 'INACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                         }
                                     }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                }
+                            } else {
+                                if ($this->tipofecha == 'Todos') {
+                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', 'TERMINADO')
                                         ->where('mov.status', 'INACTIVO')
                                         ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+
+                                    foreach ($orden_de_servicio as $os) {
+                                        //Obtener los servicios de la orden de servicio
+                                        $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
+                                    }
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.sucursal_id', $this->sucursal_id)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                         }
@@ -892,628 +838,611 @@ class OrderServiceController extends Component
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     //Si Selecciona Tipo de Servicio Todos
-    
-                    if ($this->catprodservid == 'Todos')
-                    {
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                    if ($this->catprodservid == 'Todos') {
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('s.sucursal_id',$this->sucursal_id)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('s.sucursal_id', $this->sucursal_id)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico Salta
-                            
-                            if($this->tipofecha == 'Todos')
-                                {
-                                    //Obteniendo todas las ordenes de servicio que no sean Entregadas
-                                    $aa = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+
+                            if ($this->tipofecha == 'Todos') {
+                                //Obteniendo todas las ordenes de servicio que no sean Entregadas
+                                $aa = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                     ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                     ->join('mov_services as ms', 'ms.service_id', 's.id')
                                     ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                     ->join('users as u', 'u.id', 'mov.user_id')
                                     ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                     ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
                                     ->where('order_services.status', 'ACTIVO')
                                     ->where('mov.user_id', $this->usuario)
                                     ->where('mov.status', 'ACTIVO')
                                     ->where('mov.type', '<>', 'ENTREGADO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
+                                    ->where('s.sucursal_id', $this->sucursal_id)
                                     ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
+                                    ->orderBy("order_services.id", "desc")
                                     ->get();
+
+
+                                //Obteniendo todas las ordenes de servicio que sean Terminadas e Inactivas
+                                $bb = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.type', 'TERMINADO')
+                                    ->where('mov.status', 'INACTIVO')
+                                    ->where('mov.user_id', $this->usuario)
+                                    ->where('s.sucursal_id', $this->sucursal_id)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->get();
+
+                                //Variable que almacenará a todos los ids de las ordenes de servicio de $aa y $bb
+                                $ids_orden_servicio[] = 0;
+
+                                foreach ($aa as $a) {
+                                    array_push($ids_orden_servicio, $a->codigo);
+                                }
+                                foreach ($bb as $b) {
+                                    array_push($ids_orden_servicio, $b->codigo);
+                                }
+
+
+
+                                //Consulta de todas las ordenes de servicio que tengan los ids de $ids_orden_servicio[]
+                                $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->whereIn('order_services.id', $ids_orden_servicio)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+
+
+
+                                foreach ($orden_de_servicio as $os) {
+                                    //Obtener los servicios de la orden de servicio
+                                    $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
+                                }
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
+                                    //Obteniendo todas las ordenes de servicio que no sean Entregadas
+                                    $aa = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.type', '<>', 'ENTREGADO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->get();
 
 
                                     //Obteniendo todas las ordenes de servicio que sean Terminadas e Inactivas
                                     $bb = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', 'TERMINADO')
-                                    ->where('mov.status', 'INACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->get();
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', 'TERMINADO')
+                                        ->where('mov.status', 'INACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->get();
 
                                     //Variable que almacenará a todos los ids de las ordenes de servicio de $aa y $bb
-                                    $ids_orden_servicio[] = 0; 
+                                    $ids_orden_servicio[] = 0;
 
-                                    foreach ($aa as $a)
-                                    {
+                                    foreach ($aa as $a) {
                                         array_push($ids_orden_servicio, $a->codigo);
                                     }
-                                    foreach ($bb as $b)
-                                    {
+                                    foreach ($bb as $b) {
                                         array_push($ids_orden_servicio, $b->codigo);
                                     }
 
+                                    //Consulta de todas las ordenes de servicio que tengan los ids de $ids_orden_servicio[]
+                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->whereIn('order_services.id', $ids_orden_servicio)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
 
+                                    foreach ($orden_de_servicio as $os) {
+                                        //Obtener los servicios de la orden de servicio
+                                        $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
+                                    }
+                                } else {
+                                    //Obteniendo todas las ordenes de servicio que no sean Entregadas
+                                    $aa = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.type', '<>', 'ENTREGADO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->get();
+
+
+                                    //Obteniendo todas las ordenes de servicio que sean Terminadas e Inactivas
+                                    $bb = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', 'TERMINADO')
+                                        ->where('mov.status', 'INACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->get();
+
+                                    //Variable que almacenará a todos los ids de las ordenes de servicio de $aa y $bb
+                                    $ids_orden_servicio[] = 0;
+
+                                    foreach ($aa as $a) {
+                                        array_push($ids_orden_servicio, $a->codigo);
+                                    }
+                                    foreach ($bb as $b) {
+                                        array_push($ids_orden_servicio, $b->codigo);
+                                    }
 
                                     //Consulta de todas las ordenes de servicio que tengan los ids de $ids_orden_servicio[]
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->whereIn('order_services.id', $ids_orden_servicio)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->whereIn('order_services.id', $ids_orden_servicio)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
 
-
-
-                                    
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
                                 }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
-                                        //Obteniendo todas las ordenes de servicio que no sean Entregadas
-                                        $aa = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('mov.status', 'ACTIVO')
-                                        ->where('mov.type', '<>', 'ENTREGADO')
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->get();
-
-
-                                        //Obteniendo todas las ordenes de servicio que sean Terminadas e Inactivas
-                                        $bb = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', 'TERMINADO')
-                                        ->where('mov.status', 'INACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->get();
-
-                                        //Variable que almacenará a todos los ids de las ordenes de servicio de $aa y $bb
-                                        $ids_orden_servicio[] = 0; 
-
-                                        foreach ($aa as $a)
-                                        {
-                                            array_push($ids_orden_servicio, $a->codigo);
-                                        }
-                                        foreach ($bb as $b)
-                                        {
-                                            array_push($ids_orden_servicio, $b->codigo);
-                                        }
-
-                                        //Consulta de todas las ordenes de servicio que tengan los ids de $ids_orden_servicio[]
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->whereIn('order_services.id', $ids_orden_servicio)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        //Obteniendo todas las ordenes de servicio que no sean Entregadas
-                                        $aa = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('mov.status', 'ACTIVO')
-                                        ->where('mov.type', '<>', 'ENTREGADO')
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->get();
-
-
-                                        //Obteniendo todas las ordenes de servicio que sean Terminadas e Inactivas
-                                        $bb = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', 'TERMINADO')
-                                        ->where('mov.status', 'INACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.sucursal_id',$this->sucursal_id)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->get();
-
-                                        //Variable que almacenará a todos los ids de las ordenes de servicio de $aa y $bb
-                                        $ids_orden_servicio[] = 0; 
-
-                                        foreach ($aa as $a)
-                                        {
-                                            array_push($ids_orden_servicio, $a->codigo);
-                                        }
-                                        foreach ($bb as $b)
-                                        {
-                                            array_push($ids_orden_servicio, $b->codigo);
-                                        }
-
-                                        //Consulta de todas las ordenes de servicio que tengan los ids de $ids_orden_servicio[]
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->whereIn('order_services.id', $ids_orden_servicio)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
-                                        }
-                                    }
-                                }
+                            }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //Si selecciona una categoria (Computadoras, Impresoras, Celulares, etc...) en específico
-    
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('s.sucursal_id',$this->sucursal_id)
-                                ->where('s.cat_prod_service_id', $this->catprodservid)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('s.sucursal_id', $this->sucursal_id)
+                                    ->where('s.cat_prod_service_id', $this->catprodservid)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico Salta
-    
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('mov.user_id', $this->usuario)
-                                ->where('s.sucursal_id',$this->sucursal_id)
-                                ->where('s.cat_prod_service_id',$this->catprodservid)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('mov.user_id', $this->usuario)
+                                    ->where('s.sucursal_id', $this->sucursal_id)
+                                    ->where('s.cat_prod_service_id', $this->catprodservid)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.sucursal_id',$this->sucursal_id)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('s.sucursal_id', $this->sucursal_id)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
@@ -1522,322 +1451,303 @@ class OrderServiceController extends Component
                         }
                     }
                 }
-            }
-            else
-            {
+            } else {
                 //Si Selecciona Todas las Sucursales
-    
-                if($this->type != 'Todos')
-                {
-                    if ($this->catprodservid == 'Todos')
-                    {
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                if ($this->type != 'Todos') {
+                    if ($this->catprodservid == 'Todos') {
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.type', $this->type)
-                                ->where('mov.status', 'ACTIVO')
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.type', $this->type)
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico
-    
-                            if($this->type != 'ENTREGADO')
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
+
+                            if ($this->type != 'ENTREGADO') {
+                                if ($this->tipofecha == 'Todos') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
-                                        //Obtener los servicios de la orden de servicio
-                                        $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
-                                    }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', $this->type)
                                         ->where('mov.status', 'ACTIVO')
                                         ->where('mov.user_id', $this->usuario)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', $this->type)
-                                        ->where('mov.status', 'ACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
-                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', 'TERMINADO')
-                                    ->where('mov.status', 'INACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                     }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
                                         $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', 'TERMINADO')
-                                        ->where('mov.status', 'INACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                         }
                                     }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                }
+                            } else {
+                                if ($this->tipofecha == 'Todos') {
+                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', 'TERMINADO')
                                         ->where('mov.status', 'INACTIVO')
                                         ->where('mov.user_id', $this->usuario)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+
+                                    foreach ($orden_de_servicio as $os) {
+                                        //Obtener los servicios de la orden de servicio
+                                        $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
+                                    }
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio($this->type, $os->codigo);
                                         }
@@ -1845,327 +1755,310 @@ class OrderServiceController extends Component
                                 }
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //Si selecciona una categoria (Computadoras, Impresoras, Celulares, etc...) en específico
-    
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.type', $this->type)
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('s.cat_prod_service_id', $this->catprodservid)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.type', $this->type)
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('s.cat_prod_service_id', $this->catprodservid)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.type', $this->type)
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico
-    
-                            if($this->type != 'ENTREGADO')
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
+
+                            if ($this->type != 'ENTREGADO') {
+                                if ($this->tipofecha == 'Todos') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', $this->type)
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
-                                        //Obtener los servicios de la orden de servicio
-                                        $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
-                                    }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', $this->type)
                                         ->where('mov.status', 'ACTIVO')
                                         ->where('mov.user_id', $this->usuario)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', $this->type)
-                                        ->where('mov.status', 'ACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
-                                            //Obtener los servicios de la orden de servicio
-                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Todos')
-                                {
-                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->where('mov.type', 'TERMINADO')
-                                    ->where('mov.status', 'INACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
-                                    if($this->tipofecha == 'Dia')
-                                    {
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
                                         $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                        ->join('users as u', 'u.id', 'mov.user_id')
-                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
-                                        ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                        ->where('mov.type', 'TERMINADO')
-                                        ->where('mov.status', 'INACTIVO')
-                                        ->where('mov.user_id', $this->usuario)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
-                                        ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
-                                        ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', $this->type)
+                                            ->where('mov.status', 'ACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                         }
                                     }
-                                    else
-                                    {
-                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                }
+                            } else {
+                                if ($this->tipofecha == 'Todos') {
+                                    $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
                                         ->join('sucursals as su', 'su.id', 's.sucursal_id')
                                         ->join('mov_services as ms', 'ms.service_id', 's.id')
                                         ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
                                         ->join('users as u', 'u.id', 'mov.user_id')
                                         ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
                                         ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                        ->select("order_services.id as codigo",
-                                        "order_services.created_at as fechacreacion",
-                                        "su.name as nombresucursal",
-                                        "order_services.type_service as tiposervicio",
-                                        "c.nombre as nombrecliente",
-                                        "c.id as idcliente",
-                                        'u.name as usuarioreceptor',
-                                        "mov.import as importe",
-                                        DB::raw('0 as servicios'))
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
                                         ->where('order_services.status', 'ACTIVO')
-                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
                                         ->where('mov.type', 'TERMINADO')
                                         ->where('mov.status', 'INACTIVO')
                                         ->where('mov.user_id', $this->usuario)
-                                        ->where('s.cat_prod_service_id',$this->catprodservid)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
                                         ->groupBy("order_services.id")
-                                        ->orderBy("order_services.id","desc")
+                                        ->orderBy("order_services.id", "desc")
                                         ->paginate($this->paginacion);
-                            
-                                        foreach ($orden_de_servicio as $os)
-                                        {
+
+                                    foreach ($orden_de_servicio as $os) {
+                                        //Obtener los servicios de la orden de servicio
+                                        $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
+                                    }
+                                } else {
+                                    if ($this->tipofecha == 'Dia') {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
+                                            //Obtener los servicios de la orden de servicio
+                                            $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
+                                        }
+                                    } else {
+                                        $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
+                                            ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                            ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                            ->join('users as u', 'u.id', 'mov.user_id')
+                                            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                            ->select(
+                                                "order_services.id as codigo",
+                                                "order_services.created_at as fechacreacion",
+                                                "su.name as nombresucursal",
+                                                "order_services.type_service as tiposervicio",
+                                                "c.nombre as nombrecliente",
+                                                "c.id as idcliente",
+                                                'u.name as usuarioreceptor',
+                                                "mov.import as importe",
+                                                DB::raw('0 as servicios')
+                                            )
+                                            ->where('order_services.status', 'ACTIVO')
+                                            ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                            ->where('mov.type', 'TERMINADO')
+                                            ->where('mov.status', 'INACTIVO')
+                                            ->where('mov.user_id', $this->usuario)
+                                            ->where('s.cat_prod_service_id', $this->catprodservid)
+                                            ->groupBy("order_services.id")
+                                            ->orderBy("order_services.id", "desc")
+                                            ->paginate($this->paginacion);
+
+                                        foreach ($orden_de_servicio as $os) {
                                             //Obtener los servicios de la orden de servicio
                                             $os->servicios = $this->detalle_orden_de_servicio_categoria($this->type, $os->codigo, $this->catprodservid);
                                         }
@@ -2174,420 +2067,397 @@ class OrderServiceController extends Component
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     //Si Selecciona Tipo de Servicio Todos
-    
-                    if ($this->catprodservid == 'Todos')
-                    {
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                    if ($this->catprodservid == 'Todos') {
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico Salta
-    
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('mov.user_id', $this->usuario)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('mov.user_id', $this->usuario)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
                                     }
                                 }
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         //Si selecciona una categoria (Computadoras, Impresoras, Celulares, etc...) en específico
-    
-                        if($this->usuario == 'Todos')
-                        {
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                        if ($this->usuario == 'Todos') {
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('s.cat_prod_service_id', $this->catprodservid)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('s.cat_prod_service_id', $this->catprodservid)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
                                 }
                             }
-                        }
-                        else
-                        {
+                        } else {
                             //Si selecciona un Usuario en Específico Salta
-    
-                            if($this->tipofecha == 'Todos')
-                            {
+
+                            if ($this->tipofecha == 'Todos') {
                                 $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('mov.user_id', $this->usuario)
-                                ->where('s.cat_prod_service_id',$this->catprodservid)
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
+                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                    ->join('users as u', 'u.id', 'mov.user_id')
+                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                    ->select(
+                                        "order_services.id as codigo",
+                                        "order_services.created_at as fechacreacion",
+                                        "su.name as nombresucursal",
+                                        "order_services.type_service as tiposervicio",
+                                        "c.nombre as nombrecliente",
+                                        "c.id as idcliente",
+                                        'u.name as usuarioreceptor',
+                                        "mov.import as importe",
+                                        DB::raw('0 as servicios')
+                                    )
+                                    ->where('order_services.status', 'ACTIVO')
+                                    ->where('mov.status', 'ACTIVO')
+                                    ->where('mov.user_id', $this->usuario)
+                                    ->where('s.cat_prod_service_id', $this->catprodservid)
+                                    ->groupBy("order_services.id")
+                                    ->orderBy("order_services.id", "desc")
+                                    ->paginate($this->paginacion);
+
+                                foreach ($orden_de_servicio as $os) {
                                     //Obtener los servicios de la orden de servicio
                                     $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                 }
-                            }
-                            else
-                            {
-                                if($this->tipofecha == 'Dia')
-                                {
+                            } else {
+                                if ($this->tipofecha == 'Dia') {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse(Carbon::now())->format('Y-m-d') . ' 00:00:00', Carbon::parse(Carbon::now())->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
-                                }
-                                else
-                                {
+                                } else {
                                     $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                    ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                    ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                    ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                    ->join('users as u', 'u.id', 'mov.user_id')
-                                    ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                    ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                    ->select("order_services.id as codigo",
-                                    "order_services.created_at as fechacreacion",
-                                    "su.name as nombresucursal",
-                                    "order_services.type_service as tiposervicio",
-                                    "c.nombre as nombrecliente",
-                                    "c.id as idcliente",
-                                    'u.name as usuarioreceptor',
-                                    "mov.import as importe",
-                                    DB::raw('0 as servicios'))
-                                    ->where('order_services.status', 'ACTIVO')
-                                    ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
-                                    ->where('mov.status', 'ACTIVO')
-                                    ->where('mov.user_id', $this->usuario)
-                                    ->where('s.cat_prod_service_id',$this->catprodservid)
-                                    ->groupBy("order_services.id")
-                                    ->orderBy("order_services.id","desc")
-                                    ->paginate($this->paginacion);
-                        
-                                    foreach ($orden_de_servicio as $os)
-                                    {
+                                        ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                                        ->join('mov_services as ms', 'ms.service_id', 's.id')
+                                        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                                        ->join('users as u', 'u.id', 'mov.user_id')
+                                        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                                        ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                                        ->select(
+                                            "order_services.id as codigo",
+                                            "order_services.created_at as fechacreacion",
+                                            "su.name as nombresucursal",
+                                            "order_services.type_service as tiposervicio",
+                                            "c.nombre as nombrecliente",
+                                            "c.id as idcliente",
+                                            'u.name as usuarioreceptor',
+                                            "mov.import as importe",
+                                            DB::raw('0 as servicios')
+                                        )
+                                        ->where('order_services.status', 'ACTIVO')
+                                        ->whereBetween('mov.created_at', [Carbon::parse($this->dateFrom)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->dateTo)->format('Y-m-d') . ' 23:59:59'])
+                                        ->where('mov.status', 'ACTIVO')
+                                        ->where('mov.user_id', $this->usuario)
+                                        ->where('s.cat_prod_service_id', $this->catprodservid)
+                                        ->groupBy("order_services.id")
+                                        ->orderBy("order_services.id", "desc")
+                                        ->paginate($this->paginacion);
+
+                                    foreach ($orden_de_servicio as $os) {
                                         //Obtener los servicios de la orden de servicio
                                         $os->servicios = $this->detalle_orden_de_servicio_todos_categoria($os->codigo, $this->catprodservid);
                                     }
@@ -2597,102 +2467,96 @@ class OrderServiceController extends Component
                     }
                 }
             }
-        }
-        else
-        {
+        } else {
             $orden_de_servicio = OrderService::join('services as s', 's.order_service_id', 'order_services.id')
-                                ->join('sucursals as su', 'su.id', 's.sucursal_id')
-                                ->join('mov_services as ms', 'ms.service_id', 's.id')
-                                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-                                ->join('users as u', 'u.id', 'mov.user_id')
-                                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-                                ->join('clientes as c', 'c.id', 'cm.cliente_id')
-                                ->select("order_services.id as codigo",
-                                "order_services.created_at as fechacreacion",
-                                "su.name as nombresucursal",
-                                "order_services.type_service as tiposervicio",
-                                "c.nombre as nombrecliente",
-                                "c.id as idcliente",
-                                'u.name as usuarioreceptor',
-                                "mov.import as importe",
-                                DB::raw('0 as servicios'))
-                                ->where('order_services.status', 'ACTIVO')
-                                ->where('mov.status', 'ACTIVO')
-                                ->where('c.nombre', 'like', '%' . $this->search . '%')
-                                ->orWhere('order_services.id', 'like', '%' . $this->search . '%')
-                                ->orWhere('s.detalle', 'like', '%' . $this->search . '%')
-                                ->groupBy("order_services.id")
-                                ->orderBy("order_services.id","desc")
-                                ->paginate($this->paginacion);
-                    
-                                foreach ($orden_de_servicio as $os)
-                                {
-                                    //Obtener los servicios de la orden de servicio
-                                    $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
-                                }
+                ->join('sucursals as su', 'su.id', 's.sucursal_id')
+                ->join('mov_services as ms', 'ms.service_id', 's.id')
+                ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+                ->join('users as u', 'u.id', 'mov.user_id')
+                ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+                ->join('clientes as c', 'c.id', 'cm.cliente_id')
+                ->select(
+                    "order_services.id as codigo",
+                    "order_services.created_at as fechacreacion",
+                    "su.name as nombresucursal",
+                    "order_services.type_service as tiposervicio",
+                    "c.nombre as nombrecliente",
+                    "c.id as idcliente",
+                    'u.name as usuarioreceptor',
+                    "mov.import as importe",
+                    DB::raw('0 as servicios')
+                )
+                ->where('order_services.status', 'ACTIVO')
+                ->where('mov.status', 'ACTIVO')
+                ->where('c.nombre', 'like', '%' . $this->search . '%')
+                ->orWhere('order_services.id', 'like', '%' . $this->search . '%')
+                ->orWhere('s.detalle', 'like', '%' . $this->search . '%')
+                ->groupBy("order_services.id")
+                ->orderBy("order_services.id", "desc")
+                ->paginate($this->paginacion);
+
+            foreach ($orden_de_servicio as $os) {
+                //Obtener los servicios de la orden de servicio
+                $os->servicios = $this->detalle_orden_de_servicio_todos($os->codigo);
+            }
         }
 
         if ($this->id_servicio != null) {
-            
-            $this->solicitudservicio= ServiceRepDetalleSolicitud::join('products','products.id','service_rep_detalle_solicituds.product_id')
-            ->join('destinos','destinos.id','service_rep_detalle_solicituds.destino_id')
-            ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
-            ->where('service_id',$this->id_servicio)
-            ->where('service_rep_detalle_solicituds.status','ACTIVO')
-            ->where('service_rep_estado_solicituds.status','ACTIVO')
-            ->select('products.nombre as prodnombre','destinos.nombre as dest','service_rep_detalle_solicituds.id as id','service_rep_estado_solicituds.estado as estado_sol','service_rep_detalle_solicituds.cantidad as quantity')
-            ->get();
-            
 
+            $this->solicitudservicio = ServiceRepDetalleSolicitud::join('products', 'products.id', 'service_rep_detalle_solicituds.product_id')
+                ->leftjoin('destinos', 'destinos.id', 'service_rep_detalle_solicituds.destino_id')
+                ->join('service_rep_estado_solicituds', 'service_rep_estado_solicituds.detalle_solicitud_id', 'service_rep_detalle_solicituds.id')
+                ->where('service_id', $this->id_servicio)
+                ->where('service_rep_detalle_solicituds.status', 'ACTIVO')
+                ->where('service_rep_estado_solicituds.status', 'ACTIVO')
+                ->select(
+                    'products.nombre as prodnombre',
+                    'destinos.nombre as dest',
+                    'service_rep_detalle_solicituds.id as id',
+                    'service_rep_estado_solicituds.estado as estado_sol',
+                    'service_rep_detalle_solicituds.cantidad as quantity'
+                )
+                ->get();
             //dd($this->solicitudservicio);
-
         }
-        
-    
-
-
         //REPUESTOS
         //Contar los id productos destinos donde se encuentra el producto, y si estos son mayores a cero no mostrar la otra collection de comprar producto q sera
         //solamente si el producto esta creado pero no tiene stock.
-        if (strlen($this->searchproduct) > 0) 
-        {
-            $listap = Product::join('productos_destinos as pd','pd.product_id','products.id')
-            ->join('destinos as d','d.id','pd.destino_id')
-            ->join('sucursals as s','s.id','d.sucursal_id')
-            ->select('products.nombre as nombreproducto', 'd.nombre as nombredestino','pd.id as pdid','pd.stock as stock','products.id as pid','d.id as did')
-            ->where('s.id', $this->idsucursal())
-            ->where(function($querys)
-                    {
-                        $querys->where('products.nombre', 'like', '%' . $this->searchproduct . '%')
+        if (strlen($this->searchproduct) > 0) {
+            $listap = Product::join('productos_destinos as pd', 'pd.product_id', 'products.id')
+                ->join('destinos as d', 'd.id', 'pd.destino_id')
+                ->join('sucursals as s', 's.id', 'd.sucursal_id')
+                ->select('products.nombre as nombreproducto', 'd.nombre as nombredestino', 'pd.id as pdid', 'pd.stock as stock', 'products.id as pid', 'd.id as did')
+                ->where('s.id', $this->idsucursal())
+                ->where(function ($querys) {
+                    $querys->where('products.nombre', 'like', '%' . $this->searchproduct . '%')
                         ->orWhere('products.codigo', 'like', '%' . $this->searchproduct . '%');
-                    })
-            ->take(1000)->get();
-            $this->listaproductos=$listap->where('stock','>',0);
+                })
+                ->take(1000)->get();
+            $this->listaproductos = $listap->where('stock', '>', 0);
             //mostar los productos que no se encuentren disponibles en ningun lugar
 
-                $this->listacompra= $listap->groupBy('nombreproducto')->map(function ($row){
-                    return $row->sum('stock');
-                });
-          
-
-            $this->listacompra= $this->listacompra->filter(function ($value,$key){
-                    return $value == 0;
+            $this->listacompra = $listap->groupBy('nombreproducto')->map(function ($row) {
+                return $row->sum('stock');
             });
-                
-                //dump($this->listaproductos,$this->listacompra);
+
+
+            $this->listacompra = $this->listacompra->filter(function ($value, $key) {
+                return $value == 0;
+            });
+
+            //dump($this->listaproductos,$this->listacompra);
             //dd($this->listacompra);
 
-          
+
             $lista_nombres_ya_encontrados = $this->list_produts_collect->pluck('product-name');
 
 
             $this->listaproductos = $this->listaproductos->whereNotIn('prod_name', $lista_nombres_ya_encontrados);
-
-          
-       }
+        }
 
 
-       
+
         return view('livewire.order_service.component', [
             'orden_de_servicio' => $orden_de_servicio,
             'listasucursales' => Sucursal::all(),
@@ -2718,14 +2582,11 @@ class OrderServiceController extends Component
     //Mostrar u Ocultar Mas filtros en la Vista
     public function mostrarocultarmasfiltros()
     {
-        if($this->masfiltros)
-        {
+        if ($this->masfiltros) {
             $this->usuario = 'Todos';
             $this->tipofecha = 'Todos';
             $this->masfiltros = false;
-        }
-        else
-        {
+        } else {
             $this->masfiltros = true;
         }
     }
@@ -2736,26 +2597,27 @@ class OrderServiceController extends Component
             ->join('mov_services as ms', 'services.id', 'ms.service_id')
             ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
             ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-            ->select('cps.nombre as nombrecategoria',
-            'services.detalle as detalle',
-            'services.id as idservicio',
-            'mov.type as estado',
-            'mov.import as importe',
-            'services.falla_segun_cliente as falla_segun_cliente',
-            'services.fecha_estimada_entrega as fecha_estimada_entrega',
-            'services.marca as marca',
-            DB::raw('0 as responsabletecnico'),
-            DB::raw('0 as tecnicoreceptor'))
+            ->select(
+                'cps.nombre as nombrecategoria',
+                'services.detalle as detalle',
+                'services.id as idservicio',
+                'mov.type as estado',
+                'mov.import as importe',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.marca as marca',
+                DB::raw('0 as responsabletecnico'),
+                DB::raw('0 as tecnicoreceptor')
+            )
             ->where('mov.type', $tipo)
             ->where('mov.status', 'ACTIVO')
             ->where('services.order_service_id', $id_orden_de_servicio)
             ->get();
 
-            foreach ($servicios as $ser)
-            {
-                $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
-                $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
-            }
+        foreach ($servicios as $ser) {
+            $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
+            $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
+        }
 
 
 
@@ -2768,16 +2630,18 @@ class OrderServiceController extends Component
             ->join('mov_services as ms', 'services.id', 'ms.service_id')
             ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
             ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-            ->select('cps.nombre as nombrecategoria',
-            'services.detalle as detalle',
-            'services.id as idservicio',
-            'mov.type as estado',
-            'mov.import as importe',
-            'services.falla_segun_cliente as falla_segun_cliente',
-            'services.fecha_estimada_entrega as fecha_estimada_entrega',
-            'services.marca as marca',
-            DB::raw('0 as responsabletecnico'),
-            DB::raw('0 as tecnicoreceptor'))
+            ->select(
+                'cps.nombre as nombrecategoria',
+                'services.detalle as detalle',
+                'services.id as idservicio',
+                'mov.type as estado',
+                'mov.import as importe',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.marca as marca',
+                DB::raw('0 as responsabletecnico'),
+                DB::raw('0 as tecnicoreceptor')
+            )
             ->where('mov.type', $tipo)
             ->where('mov.status', 'ACTIVO')
             ->where('services.order_service_id', $id_orden_de_servicio)
@@ -2785,11 +2649,10 @@ class OrderServiceController extends Component
             ->groupBy('services.id')
             ->get();
 
-            foreach ($servicios as $ser)
-            {
-                $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
-                $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
-            }
+        foreach ($servicios as $ser) {
+            $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
+            $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
+        }
 
 
 
@@ -2802,26 +2665,27 @@ class OrderServiceController extends Component
             ->join('mov_services as ms', 'services.id', 'ms.service_id')
             ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
             ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-            ->select('cps.nombre as nombrecategoria',
-            'services.detalle as detalle',
-            'services.id as idservicio',
-            'mov.type as estado',
-            'mov.import as importe',
-            'services.falla_segun_cliente as falla_segun_cliente',
-            'services.fecha_estimada_entrega as fecha_estimada_entrega',
-            'services.marca as marca',
-            DB::raw('0 as responsabletecnico'),
-            DB::raw('0 as tecnicoreceptor'))
+            ->select(
+                'cps.nombre as nombrecategoria',
+                'services.detalle as detalle',
+                'services.id as idservicio',
+                'mov.type as estado',
+                'mov.import as importe',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.marca as marca',
+                DB::raw('0 as responsabletecnico'),
+                DB::raw('0 as tecnicoreceptor')
+            )
             ->where('mov.status', 'ACTIVO')
             ->where('services.order_service_id', $id_orden_de_servicio)
             ->groupBy('services.id')
             ->get();
 
-            foreach ($servicios as $ser)
-            {
-                $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
-                $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
-            }
+        foreach ($servicios as $ser) {
+            $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
+            $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
+        }
 
 
 
@@ -2834,27 +2698,28 @@ class OrderServiceController extends Component
             ->join('mov_services as ms', 'services.id', 'ms.service_id')
             ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
             ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-            ->select('cps.nombre as nombrecategoria',
-            'services.detalle as detalle',
-            'services.id as idservicio',
-            'mov.type as estado',
-            'mov.import as importe',
-            'services.falla_segun_cliente as falla_segun_cliente',
-            'services.fecha_estimada_entrega as fecha_estimada_entrega',
-            'services.marca as marca',
-            DB::raw('0 as responsabletecnico'),
-            DB::raw('0 as tecnicoreceptor'))
+            ->select(
+                'cps.nombre as nombrecategoria',
+                'services.detalle as detalle',
+                'services.id as idservicio',
+                'mov.type as estado',
+                'mov.import as importe',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.marca as marca',
+                DB::raw('0 as responsabletecnico'),
+                DB::raw('0 as tecnicoreceptor')
+            )
             ->where('mov.status', 'ACTIVO')
             ->where('services.order_service_id', $id_orden_de_servicio)
             ->where('services.cat_prod_service_id', $categoria)
             ->groupBy('services.id')
             ->get();
 
-            foreach ($servicios as $ser)
-            {
-                $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
-                $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
-            }
+        foreach ($servicios as $ser) {
+            $ser->responsabletecnico = $this->obtener_tecnico_responsable($ser->idservicio);
+            $ser->tecnicoreceptor = $this->obtener_tecnico_receptor($ser->idservicio);
+        }
 
 
 
@@ -2864,10 +2729,8 @@ class OrderServiceController extends Component
     public function obtener_tecnico_receptor($idservicio)
     {
         $servicio = Service::find($idservicio);
-        foreach ($servicio->movservices as $servmov)
-        {
-            if ($servmov->movs->type == 'PENDIENTE')
-            {
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'PENDIENTE') {
                 return User::find($servmov->movs->user_id)->name;
                 break;
             }
@@ -2877,39 +2740,26 @@ class OrderServiceController extends Component
     public function obtener_tecnico_responsable($idservicio)
     {
         $servicio = Service::find($idservicio);
-        foreach ($servicio->movservices as $servmov)
-        {
-            if($servmov->movs->type == 'PENDIENTE' && $servmov->movs->status == 'ACTIVO')
-            {
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'PENDIENTE' && $servmov->movs->status == 'ACTIVO') {
                 return "No Asignado";
-            }
-            else
-            {
+            } else {
 
-                if ($servmov->movs->type == 'PROCESO'  && $servmov->movs->status == 'ACTIVO')
-                {
+                if ($servmov->movs->type == 'PROCESO'  && $servmov->movs->status == 'ACTIVO') {
                     return User::find($servmov->movs->user_id)->name;
                     break;
-                }
-                else
-                {
-                    if ($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'ACTIVO')
-                    {
+                } else {
+                    if ($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'ACTIVO') {
                         return User::find($servmov->movs->user_id)->name;
                         break;
-                    }
-                    else
-                    {
-                        if($servmov->movs->type == 'ENTREGADO'&& $servmov->movs->status == 'ACTIVO')
-                        {
-                            foreach ($servicio->movservices as $servmov)
-                            {
-                                if($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'INACTIVO')
-                                {
+                    } else {
+                        if ($servmov->movs->type == 'ENTREGADO' && $servmov->movs->status == 'ACTIVO') {
+                            foreach ($servicio->movservices as $servmov) {
+                                if ($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'INACTIVO') {
                                     return User::find($servmov->movs->user_id)->name;
                                     break;
                                 }
-                            }   
+                            }
                         }
                     }
                 }
@@ -2919,12 +2769,12 @@ class OrderServiceController extends Component
     //Obtener el Id de la Sucursal donde esta el Usuario
     public function idsucursal()
     {
-        $idsucursal = User::join("sucursal_users as su","su.user_id","users.id")
-        ->select("su.sucursal_id as id","users.name as n")
-        ->where("users.id",Auth()->user()->id)
-        ->where("su.estado","ACTIVO")
-        ->get()
-        ->first();
+        $idsucursal = User::join("sucursal_users as su", "su.user_id", "users.id")
+            ->select("su.sucursal_id as id", "users.name as n")
+            ->where("users.id", Auth()->user()->id)
+            ->where("su.estado", "ACTIVO")
+            ->get()
+            ->first();
         return $idsucursal->id;
     }
     //Mostrar detalles del servicio en una Ventana Modal
@@ -2945,53 +2795,52 @@ class OrderServiceController extends Component
     public function detallesservicios($type, $idservicio)
     {
         $detallesservicio =  Service::join('order_services as os', 'os.id', 'services.order_service_id')
-        ->join('mov_services as ms', 'services.id', 'ms.service_id')
-        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-        ->join('users as u', 'u.id', 'mov.user_id')
-        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-        ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-        ->join('type_works as tw', 'tw.id', 'services.type_work_id')
-        ->select('cps.nombre as nombrecategoria',
-        'services.detalle as detalle',
-        'mov.type as estado',
-        'c.nombre as nombrecliente',
-        'mov.on_account as acuenta',
-        'mov.saldo as saldo',
-        'c.celular as celularcliente',
-        'c.telefono as telefonocliente',
-        'services.falla_segun_cliente as falla_segun_cliente',
-        'services.fecha_estimada_entrega as fecha_estimada_entrega',
-        'services.detalle as detalleservicio',
-        'services.costo as costo',
-        'services.diagnostico as diagnostico',
-        'services.solucion as solucion',
-        'services.detalle_costo as detallecosto',
-        'mov.import as precioservicio',
-        'tw.name as tipotrabajo',
-        'u.name as responsabletecnico',
-        'services.marca as marca')
-        ->where('mov.type', $type)
-        ->where('mov.status', 'ACTIVO')
-        ->where('services.id', $idservicio)
-        ->get()
-        ->first();
+            ->join('mov_services as ms', 'services.id', 'ms.service_id')
+            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+            ->join('users as u', 'u.id', 'mov.user_id')
+            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+            ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
+            ->join('type_works as tw', 'tw.id', 'services.type_work_id')
+            ->select(
+                'cps.nombre as nombrecategoria',
+                'services.detalle as detalle',
+                'mov.type as estado',
+                'c.nombre as nombrecliente',
+                'mov.on_account as acuenta',
+                'mov.saldo as saldo',
+                'c.celular as celularcliente',
+                'c.telefono as telefonocliente',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.detalle as detalleservicio',
+                'services.costo as costo',
+                'services.diagnostico as diagnostico',
+                'services.solucion as solucion',
+                'services.detalle_costo as detallecosto',
+                'mov.import as precioservicio',
+                'tw.name as tipotrabajo',
+                'u.name as responsabletecnico',
+                'services.marca as marca'
+            )
+            ->where('mov.type', $type)
+            ->where('mov.status', 'ACTIVO')
+            ->where('services.id', $idservicio)
+            ->get()
+            ->first();
 
         $detallesservicio->responsabletecnico = $this->obtener_tecnico_responsable($idservicio);
 
-        if($type == "PENDIENTE")
-        {
-            $this->responsabletecnico = "No Asignado";      
-        }
-        else
-        {
-            $this->responsabletecnico = $detallesservicio->responsabletecnico; 
+        if ($type == "PENDIENTE") {
+            $this->responsabletecnico = "No Asignado";
+        } else {
+            $this->responsabletecnico = $detallesservicio->responsabletecnico;
         }
 
 
 
         $this->estado = $type;
-      
+
         $this->nombrecliente = $detallesservicio->nombrecliente;
         $this->celularcliente = $detallesservicio->celularcliente;
         $this->telefonocliente = $detallesservicio->telefonocliente;
@@ -3017,27 +2866,22 @@ class OrderServiceController extends Component
     public function modalasignartecnico($idservicio, $idordendeservicio)
     {
         //Verificando que el servicio sea pendiente activo
-        if($this->verificarpendiente($idservicio))
-        {
+        if ($this->verificarpendiente($idservicio)) {
             //Actualizando variable $id_orden_de_servicio para mostrar el codigo de la orden del servicio en el titulo de la ventana modal
             $this->id_orden_de_servicio = $idordendeservicio;
-    
+
             $this->id_servicio = $idservicio;
-    
+
             $this->detallesservicios('PENDIENTE', $idservicio);
-    
+
             $this->emit('show-asignartecnicoresponsable', 'show modal!');
-        }
-        else
-        {
+        } else {
             //Si el servicio no es pendiente activo, buscamos con el método el movimiento que sea activo
             $movimiento = $this->saberactivo($idservicio);
             //Buscamos el nombre del Responsable Técnico de ese servicio y lo guardamos en una variable para mostrarlo en una alerta
             $this->alert_responsabletecnico = User::find($movimiento->user_id)->name;
             $this->emit('Serviciopendienteocupado');
-
         }
-
     }
     //Listar los Usuarios para ser asignados a un servicio Pendiente en una Ventana Modal
     public function listarusuarios()
@@ -3060,50 +2904,45 @@ class OrderServiceController extends Component
 
 
         $listausuarios1 = User::join('model_has_roles as mhr', 'mhr.model_id', 'users.id')
-        ->join('roles as r', 'r.id', 'mhr.role_id')
-        ->join('role_has_permissions as rhp', 'rhp.role_id', 'r.id')
-        ->join('permissions as p', 'p.id', 'rhp.permission_id')
-        ->select("users.id as idusuario","users.name as nombreusuario",DB::raw('0 as proceso'), DB::raw('0 as terminado'))
-        ->where('p.name', 'Aparecer_Lista_Servicios')
-        ->distinct()
-        ->orderBy('proceso','asc')
-        ->get();
+            ->join('roles as r', 'r.id', 'mhr.role_id')
+            ->join('role_has_permissions as rhp', 'rhp.role_id', 'r.id')
+            ->join('permissions as p', 'p.id', 'rhp.permission_id')
+            ->select("users.id as idusuario", "users.name as nombreusuario", DB::raw('0 as proceso'), DB::raw('0 as terminado'))
+            ->where('p.name', 'Aparecer_Lista_Servicios')
+            ->distinct()
+            ->orderBy('proceso', 'asc')
+            ->get();
 
 
 
         $listausuarios2 = User::join('movimientos as m', 'm.user_id', 'users.id')
-        ->join('mov_services as ms', 'ms.movimiento_id', 'm.id')
-        ->join('services as s', 's.id', 'ms.service_id')
-        ->join('order_services as os', 'os.id', 's.order_service_id')
-        ->select("users.name as nombreusuario", "m.type as type")
-        ->where('os.status', 'ACTIVO')
-        ->where('m.type', "PROCESO")
-        ->where('m.status', 'ACTIVO')
-        ->get();
+            ->join('mov_services as ms', 'ms.movimiento_id', 'm.id')
+            ->join('services as s', 's.id', 'ms.service_id')
+            ->join('order_services as os', 'os.id', 's.order_service_id')
+            ->select("users.name as nombreusuario", "m.type as type")
+            ->where('os.status', 'ACTIVO')
+            ->where('m.type', "PROCESO")
+            ->where('m.status', 'ACTIVO')
+            ->get();
 
         $listausuarios3 = User::join('movimientos as m', 'm.user_id', 'users.id')
-        ->join('mov_services as ms', 'ms.movimiento_id', 'm.id')
-        ->join('services as s', 's.id', 'ms.service_id')
-        ->join('order_services as os', 'os.id', 's.order_service_id')
-        ->select("users.name as nombreusuario", "m.type as type")
-        ->where('os.status', 'ACTIVO')
-        ->where('m.type', "TERMINADO")
-        ->where('m.status', 'ACTIVO')
-        ->get();
+            ->join('mov_services as ms', 'ms.movimiento_id', 'm.id')
+            ->join('services as s', 's.id', 'ms.service_id')
+            ->join('order_services as os', 'os.id', 's.order_service_id')
+            ->select("users.name as nombreusuario", "m.type as type")
+            ->where('os.status', 'ACTIVO')
+            ->where('m.type', "TERMINADO")
+            ->where('m.status', 'ACTIVO')
+            ->get();
 
-        foreach($listausuarios1 as $l)
-        {
-            foreach($listausuarios2 as $n)
-            {
-                if($l->nombreusuario == $n->nombreusuario)
-                {
+        foreach ($listausuarios1 as $l) {
+            foreach ($listausuarios2 as $n) {
+                if ($l->nombreusuario == $n->nombreusuario) {
                     $l->proceso = $l->proceso + 1;
                 }
             }
-            foreach($listausuarios3 as $z)
-            {
-                if($l->nombreusuario == $z->nombreusuario)
-                {
+            foreach ($listausuarios3 as $z) {
+                if ($l->nombreusuario == $z->nombreusuario) {
                     $l->terminado = $l->terminado + 1;
                 }
             }
@@ -3117,20 +2956,16 @@ class OrderServiceController extends Component
     public function serasignado($idordenservicio, $idservicio)
     {
         //Verificando que el servicio sea pendiente activo
-        if($this->verificarpendiente($idservicio))
-        {
+        if ($this->verificarpendiente($idservicio)) {
             $this->id_orden_de_servicio = $idordenservicio;
             $this->id_servicio = $idservicio;
             $this->asignartecnico(Auth()->user()->id);
-        }
-        else
-        {
+        } else {
             //Si el servicio no es pendiente activo, buscamos con el método el movimiento que sea activo
             $movimiento = $this->saberactivo($idservicio);
             //Buscamos el nombre del Responsable Técnico de ese servicio y lo guardamos en una variable para mostrarlo en una alerta
             $this->alert_responsabletecnico = User::find($movimiento->user_id)->name;
             $this->emit('Serviciopendienteocupado');
-
         }
     }
     //Asignar un Técnico Responsable a un Servicio
@@ -3138,17 +2973,13 @@ class OrderServiceController extends Component
     {
         $service = Service::find($this->id_servicio);
 
-        foreach ($service->movservices as $servmov)
-        {
-            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PENDIENTE')
-            {
+        foreach ($service->movservices as $servmov) {
+            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PENDIENTE') {
                 $movimiento = $servmov->movs;
-                
+
                 DB::beginTransaction();
-                try
-                {
-                    if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio'))
-                    {
+                try {
+                    if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio')) {
                         $mv = Movimiento::create([
                             'type' => 'PROCESO',
                             'status' => 'ACTIVO',
@@ -3157,9 +2988,7 @@ class OrderServiceController extends Component
                             'saldo' => $movimiento->saldo,
                             'user_id' => $idusuario
                         ]);
-                    }
-                    else
-                    {
+                    } else {
                         $mv = Movimiento::create([
                             'type' => 'PROCESO',
                             'status' => 'ACTIVO',
@@ -3186,16 +3015,13 @@ class OrderServiceController extends Component
 
                     DB::commit();
                     break;
-                    
-                }
-                catch (Exception $e)
-                {
+                } catch (Exception $e) {
                     DB::rollback();
                     $this->emit('item-error', 'ERROR' . $e->getMessage());
                 }
             }
         }
-        
+
 
         $mv = Movimiento::create([
             'type' => 'PROCESO',
@@ -3205,65 +3031,47 @@ class OrderServiceController extends Component
             'saldo' => $movimiento->saldo,
             'user_id' => $idusuario,
         ]);
-        if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio'))
-        {
+        if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio')) {
             $this->emit('show-asignartecnicoresponsablecerrar', 'show modal!');
-        }
-        else
-        {
+        } else {
             $this->emit('responsable-tecnico');
         }
-
     }
     //Llama al método modaleditarservicio pero ocultando los parámetros para Terminar un Servicio
     public function modaleditarservicio1($type, $idservicio, $idordendeservicio)
     {
-        if(Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio'))
-        {
+        if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio')) {
             $this->tipo = $type;
             $this->mostrarterminar = "No";
             $this->modaleditarservicio($type, $idservicio, $idordendeservicio);
-        }
-        else
-        {
+        } else {
             //Verificamos si el que solicita esta informacion sea el Técnico Responsable del Servicio en proceso
-            if($this->verificartecnicoresponsable($idservicio))
-            {
+            if ($this->verificartecnicoresponsable($idservicio)) {
                 $this->tipo = $type;
                 $this->mostrarterminar = "No";
                 $this->modaleditarservicio($type, $idservicio, $idordendeservicio);
-            }
-            else
-            {
+            } else {
                 $this->emit('acceso-denegado');
             }
         }
-        
     }
     //Llama al método modaleditarservicio pero mostrando los parámetros para Terminar un Servicio
     public function modaleditarservicio2($type, $idservicio, $idordendeservicio)
     {
-        if(Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio'))
-        {
+        if (Auth::user()->hasPermissionTo('Asignar_Tecnico_Servicio')) {
             $this->tipo = $type;
             $this->mostrarterminar = "Si";
             $this->modaleditarservicio($type, $idservicio, $idordendeservicio);
-        }
-        else
-        {
+        } else {
             //Verificamos si el que solicita esta informacion sea el Técnico Responsable del Servicio en proceso
-            if($this->verificartecnicoresponsable($idservicio))
-            {
+            if ($this->verificartecnicoresponsable($idservicio)) {
                 $this->tipo = $type;
                 $this->mostrarterminar = "Si";
                 $this->modaleditarservicio($type, $idservicio, $idordendeservicio);
-            }
-            else
-            {
+            } else {
                 $this->emit('acceso-denegado');
             }
         }
-
     }
     //Muestra una Ventana Modal con todos los datos de un Servicio
     public function modaleditarservicio($type, $idservicio, $idordendeservicio)
@@ -3277,36 +3085,38 @@ class OrderServiceController extends Component
         $this->id_servicio = $idservicio;
 
         $detallesservicio =  Service::join('order_services as os', 'os.id', 'services.order_service_id')
-        ->join('mov_services as ms', 'services.id', 'ms.service_id')
-        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-        ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-        ->join('type_works as tw', 'tw.id', 'services.type_work_id')
-        ->select('cps.id as idnombrecategoria',
-        'services.detalle as detalle',
-        'mov.type as estado',
-        'c.nombre as nombrecliente',
-        'mov.on_account as acuenta',
-        'mov.saldo as saldo',
-        'mov.user_id as idusuario',
-        'c.celular as celularcliente',
-        'services.falla_segun_cliente as falla_segun_cliente',
-        'services.fecha_estimada_entrega as fecha_estimada_entrega',
-        'services.detalle as detalleservicio',
-        'services.costo as costo',
-        'services.diagnostico as diagnostico',
-        'services.solucion as solucion',
-        'services.detalle_costo as detallecosto',
-        'mov.import as precioservicio',
-        'tw.id as idtipotrabajo',
-        'services.marca as marca')
-        ->where('mov.type', $type)
-        ->where('mov.status', 'ACTIVO')
-        ->where('services.id', $idservicio)
-        ->get()
-        ->first();
-  
+            ->join('mov_services as ms', 'services.id', 'ms.service_id')
+            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+            ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
+            ->join('type_works as tw', 'tw.id', 'services.type_work_id')
+            ->select(
+                'cps.id as idnombrecategoria',
+                'services.detalle as detalle',
+                'mov.type as estado',
+                'c.nombre as nombrecliente',
+                'mov.on_account as acuenta',
+                'mov.saldo as saldo',
+                'mov.user_id as idusuario',
+                'c.celular as celularcliente',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.detalle as detalleservicio',
+                'services.costo as costo',
+                'services.diagnostico as diagnostico',
+                'services.solucion as solucion',
+                'services.detalle_costo as detallecosto',
+                'mov.import as precioservicio',
+                'tw.id as idtipotrabajo',
+                'services.marca as marca'
+            )
+            ->where('mov.type', $type)
+            ->where('mov.status', 'ACTIVO')
+            ->where('services.id', $idservicio)
+            ->get()
+            ->first();
+
 
         $this->detallesservicios($type, $idservicio);
         $this->edit_tipodetrabajo = $detallesservicio->idtipotrabajo;
@@ -3330,90 +3140,82 @@ class OrderServiceController extends Component
     public function modalentregarservicio($type, $idservicio, $idordendeservicio)
     {
 
-     
-        $this->repuestosalmacen=collect();
-        $this->repuestostienda=collect();
-            $rep= ServiceRepDetalleSolicitud::join('products','products.id','service_rep_detalle_solicituds.product_id')
-            ->join('destinos','destinos.id','service_rep_detalle_solicituds.destino_id')
-            ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
-            ->where('service_id',$idservicio)
-            ->where('service_rep_detalle_solicituds.status','ACTIVO')
-            ->where('service_rep_estado_solicituds.status','ACTIVO')
-            ->whereIn('service_rep_estado_solicituds.estado',['ACEPTADO','COMPRADO'])
-            ->select('products.nombre as prodnombre',
-            'products.id as proid',
-            'destinos.nombre as dest',
-            'service_rep_detalle_solicituds.id as id',
-            'service_rep_estado_solicituds.estado as estado_sol',
-            'service_rep_detalle_solicituds.cantidad as cant',
-            'destinos.id as destid')
+
+        $this->repuestosalmacen = collect();
+        $this->repuestostienda = collect();
+        $rep = ServiceRepDetalleSolicitud::join('products', 'products.id', 'service_rep_detalle_solicituds.product_id')
+            ->leftjoin('destinos', 'destinos.id', 'service_rep_detalle_solicituds.destino_id')
+            ->join('service_rep_estado_solicituds', 'service_rep_estado_solicituds.detalle_solicitud_id', 'service_rep_detalle_solicituds.id')
+            ->where('service_id', $idservicio)
+            ->where('service_rep_detalle_solicituds.status', 'ACTIVO')
+            ->where('service_rep_estado_solicituds.status', 'ACTIVO')
+            ->whereIn('service_rep_estado_solicituds.estado', ['ACEPTADO','COMPRADO'])
+            ->select(
+                'products.nombre as prodnombre',
+                'products.id as proid',
+                'destinos.nombre as dest',
+                'service_rep_detalle_solicituds.id as id',
+                'service_rep_estado_solicituds.estado as estado_sol',
+                'service_rep_detalle_solicituds.cantidad as cant',
+                'destinos.id as destid'
+            )
             ->get();
+        // dd($rep);
 
-            foreach ($rep as $data) {
+        foreach ($rep as $data) {
 
-                if ($data->dest == "TIENDA") {
-                    
-                    $this->repuestostienda->push([
-                         'orderM'=>$this->orderlista,
-                        'product_id'=> $data->proid,
-                        'product_name'=> $data->prodnombre,
-                        'destiny_id' => $data->destid,
-                        'destiny_name' => $data->dest,
-                        'quantity'=> $data->cant,
-                        'precioventa'=>0,
-                        'subtotal'=>0
-                    ]);
-                    $this->orderlistatienda++;
-                    $this->repuestostienda->sortByDesc('orderM');
-                    
-                }
-                else{
-                    
-                    $this->repuestosalmacen->push([
-                        'orderM'=>$this->orderlistaalmacenes,
-                       'product_id'=> $data->proid,
-                       'product_name'=> $data->prodnombre,
-                       'destiny_id' => $data->destid,
-                       'destiny_name' => $data->dest,
-                       'quantity'=> $data->cant,
-                       'precioventa'=>0,
-                       'subtotal'=>0
-                   ]);
+            if ($data->dest == "TIENDA") {
 
-                    $this->orderlistaalmacenes++;
-                    $this->repuestosalmacen->sortByDesc('orderM');
-                }
-                
-                //dd($this->repuestosalmacen);
-                $this->sumaProductosTienda=$this->repuestostienda->sum(function($value){
-                        return $value['quantity']*$value['precioventa'];
-                });
+                $this->repuestostienda->push([
+                    'orderM' => $this->orderlista,
+                    'product_id' => $data->proid,
+                    'product_name' => $data->prodnombre,
+                    'destiny_id' => $data->destid,
+                    'destiny_name' => $data->dest,
+                    'quantity' => $data->cant,
+                    'precioventa' => 0,
+                    'subtotal' => 0
+                ]);
+                $this->orderlistatienda++;
+                $this->repuestostienda->sortByDesc('orderM');
+            } else {
 
-               
+                $this->repuestosalmacen->push([
+                    'orderM' => $this->orderlistaalmacenes,
+                    'product_id' => $data->proid,
+                    'product_name' => $data->prodnombre,
+                    'destiny_id' => $data->destid,
+                    'destiny_name' => $data->dest,
+                    'quantity' => $data->cant,
+                    'precioventa' => 0,
+                    'subtotal' => 0
+                ]);
 
+                $this->orderlistaalmacenes++;
+                $this->repuestosalmacen->sortByDesc('orderM');
             }
-            
-         //Verificando si el usuario tiene una caja abierta
-         if($this->listarcarteras() == null)
-         {
-             $this->estadocaja = "cerrado";
-         }
-         else
-         {
-             $this->estadocaja = "abierto";
-             //Listando todas las carteras disponibles para la caja abierta
-             $listac = $this->listarcarteras();
-             //Poniendo por defecto la primera cartera de tipo Cajafisica
-             foreach($listac as $list)
-                 {
-                     if($list->tipo == 'CajaFisica')
-                     {
-                         $this->tipopago = $list->idcartera;
-                         break;
-                     }
-                     
-                 }
-         }
+
+            //dd($this->repuestosalmacen);
+            $this->sumaProductosTienda = $this->repuestostienda->sum(function ($value) {
+                return $value['quantity'] * $value['precioventa'];
+            });
+        }
+
+        //Verificando si el usuario tiene una caja abierta
+        if ($this->listarcarteras() == null) {
+            $this->estadocaja = "cerrado";
+        } else {
+            $this->estadocaja = "abierto";
+            //Listando todas las carteras disponibles para la caja abierta
+            $listac = $this->listarcarteras();
+            //Poniendo por defecto la primera cartera de tipo Cajafisica
+            foreach ($listac as $list) {
+                if ($list->tipo == 'CajaFisica') {
+                    $this->tipopago = $list->idcartera;
+                    break;
+                }
+            }
+        }
         //Actualizando variable $id_orden_de_servicio para mostrar el codigo de la orden del servicio en el titulo de la ventana modal
         $this->id_orden_de_servicio = $idordendeservicio;
 
@@ -3421,34 +3223,36 @@ class OrderServiceController extends Component
         $this->id_servicio = $idservicio;
 
         $detallesservicio =  Service::join('order_services as os', 'os.id', 'services.order_service_id')
-        ->join('mov_services as ms', 'services.id', 'ms.service_id')
-        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-        ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-        ->join('type_works as tw', 'tw.id', 'services.type_work_id')
-        ->select('cps.id as idnombrecategoria',
-        'services.detalle as detalle',
-        'mov.type as estado',
-        'c.nombre as nombrecliente',
-        'mov.on_account as acuenta',
-        'mov.saldo as saldo',
-        'c.celular as celularcliente',
-        'services.falla_segun_cliente as falla_segun_cliente',
-        'services.fecha_estimada_entrega as fecha_estimada_entrega',
-        'services.detalle as detalleservicio',
-        'services.costo as costo',
-        'services.diagnostico as diagnostico',
-        'services.solucion as solucion',
-        'services.detalle_costo as detallecosto',
-        'mov.import as precioservicio',
-        'tw.id as idtipotrabajo',
-        'services.marca as marca')
-        ->where('mov.type', $type)
-        ->where('mov.status', 'ACTIVO')
-        ->where('services.id', $idservicio)
-        ->get()
-        ->first();
+            ->join('mov_services as ms', 'services.id', 'ms.service_id')
+            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+            ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
+            ->join('type_works as tw', 'tw.id', 'services.type_work_id')
+            ->select(
+                'cps.id as idnombrecategoria',
+                'services.detalle as detalle',
+                'mov.type as estado',
+                'c.nombre as nombrecliente',
+                'mov.on_account as acuenta',
+                'mov.saldo as saldo',
+                'c.celular as celularcliente',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.detalle as detalleservicio',
+                'services.costo as costo',
+                'services.diagnostico as diagnostico',
+                'services.solucion as solucion',
+                'services.detalle_costo as detallecosto',
+                'mov.import as precioservicio',
+                'tw.id as idtipotrabajo',
+                'services.marca as marca'
+            )
+            ->where('mov.type', $type)
+            ->where('mov.status', 'ACTIVO')
+            ->where('services.id', $idservicio)
+            ->get()
+            ->first();
 
 
 
@@ -3473,23 +3277,21 @@ class OrderServiceController extends Component
     {
         $service = Service::find($this->id_servicio);
 
-        
-        foreach ($service->movservices as $servmov)
-        {
-            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'TERMINADO')
-            {
+
+        foreach ($service->movservices as $servmov) {
+            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'TERMINADO') {
                 $movimiento = $servmov->movs;
 
                 DB::beginTransaction();
-                try
-                {
+                try {
                     $mv = Movimiento::create([
                         'type' => 'ENTREGADO',
                         'status' => 'ACTIVO',
                         'import' => $this->edit_precioservicio,
                         'on_account' => $this->edit_acuenta,
                         'saldo' => $this->edit_precioservicio - $this->edit_acuenta,
-                        'user_id' => Auth()->user()->id]);
+                        'user_id' => Auth()->user()->id
+                    ]);
 
 
                     CarteraMov::create([
@@ -3516,9 +3318,7 @@ class OrderServiceController extends Component
                     ]);
 
                     $this->emit('servicioentregado');
-                }
-                catch(Exception $e)
-                {
+                } catch (Exception $e) {
                     DB::rollback();
                     $this->emit('item-error', 'ERROR' . $e->getMessage());
                 }
@@ -3529,92 +3329,85 @@ class OrderServiceController extends Component
         //Venta de repuestos de tienda
 
         foreach ($this->repuestostienda as $data) {
-            
+
             //Los precios de los productos de tienda vienen aparte y no se cobran en conjunto con la venta, se busca los productos de tienda
             //dd($data);
-            
-      
-         
-                    //Buscamos todos los lotes que tengan ese producto,primeramente la salida del 
-                    $mn = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
-                    ->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')
-                    ->join('salida_lotes','salida_lotes.salida_detalle_id','detalle_salida_productos.id')
-                    ->where('salida_servicios.service_id',$this->id_servicio)
-                    ->select('salida_lotes.*')
-                    ->first();
 
-                    $Movimiento = Movimiento::create([
-                        'type' => "VENTAS",
-                        'import' => $data['subtotal'],
-                        'user_id' => Auth()->user()->id,
-                    ]);
-        
-                     $sale = Sale::create([
-    
-                        'total' => $data['subtotal'],
-                        'items' => 1,
-                        'cash' => $data['subtotal'],
-                        'change' =>0,
-                        'tipopago' => 'Efectivo',
-                        'factura' => "No",
-                        'cartera_id' => $this->tipopago,
-                        'observacion' =>'Ninguna',
-                        'movimiento_id' => $Movimiento->id,
-                        'user_id' => Auth()->user()->id
-                    ]);
-    
-                      $sd = SaleDetail::create([
-                            'price' => $data['subtotal'],
-                            'quantity' => $data['quantity'],
-                            'product_id' =>  $data['product_id'],
-                            'sale_id' => $sale->id,
-                        ]);
-    
-                        $sale_lote = SaleLote::create([
-                            'sale_detail_id' => $sd->id,
-                            'lote_id' => $mn->lote_id,
-                            'cantidad' => $data['quantity']
-                        ]);
-    
-                        CarteraMov::create([
-                            'type' => "INGRESO",
-                            'tipoDeMovimiento' => "VENTA",
-                            'comentario' => "Venta",
-                            'cartera_id' => $this->tipopago,
-                            'movimiento_id' => $Movimiento->id,
-                        ]);    
-                    
-    
-         
-              
-          
-    
+
+
+            //Buscamos todos los lotes que tengan ese producto,primeramente la salida del 
+            $mn = SalidaServicio::join('salida_productos', 'salida_productos.id', 'salida_servicios.salida_id')
+                ->join('detalle_salida_productos', 'detalle_salida_productos.id_salida', 'salida_productos.id')
+                ->join('salida_lotes', 'salida_lotes.salida_detalle_id', 'detalle_salida_productos.id')
+                ->where('salida_servicios.service_id', $this->id_servicio)
+                ->select('salida_lotes.*')
+                ->first();
+
+            $Movimiento = Movimiento::create([
+                'type' => "VENTAS",
+                'import' => $data['subtotal'],
+                'user_id' => Auth()->user()->id,
+            ]);
+
+            $sale = Sale::create([
+
+                'total' => $data['subtotal'],
+                'items' => 1,
+                'cash' => $data['subtotal'],
+                'change' => 0,
+                'tipopago' => 'Efectivo',
+                'factura' => "No",
+                'cartera_id' => $this->tipopago,
+                'observacion' => 'Ninguna',
+                'movimiento_id' => $Movimiento->id,
+                'user_id' => Auth()->user()->id
+            ]);
+
+            $sd = SaleDetail::create([
+                'price' => $data['subtotal'],
+                'quantity' => $data['quantity'],
+                'product_id' =>  $data['product_id'],
+                'sale_id' => $sale->id,
+            ]);
+
+            $sale_lote = SaleLote::create([
+                'sale_detail_id' => $sd->id,
+                'lote_id' => $mn->lote_id,
+                'cantidad' => $data['quantity']
+            ]);
+
+            CarteraMov::create([
+                'type' => "INGRESO",
+                'tipoDeMovimiento' => "VENTA",
+                'comentario' => "Venta",
+                'cartera_id' => $this->tipopago,
+                'movimiento_id' => $Movimiento->id,
+            ]);
         }
 
-       // dd($this->repuestosalmacen);
-        foreach ($this->repuestosalmacen as $data) 
-        {
-            $rep = SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
-            ->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')
-            ->join('salida_lotes','salida_lotes.salida_detalle_id','detalle_salida_productos.id')
-            ->where('salida_servicios.service_id',$this->id_servicio)
-            ->select('salida_lotes.*')
-            ->first();
+        // dd($this->repuestosalmacen);
+        foreach ($this->repuestosalmacen as $data) {
+            $rep = SalidaServicio::join('salida_productos', 'salida_productos.id', 'salida_servicios.salida_id')
+                ->join('detalle_salida_productos', 'detalle_salida_productos.id_salida', 'salida_productos.id')
+                ->join('salida_lotes', 'salida_lotes.salida_detalle_id', 'detalle_salida_productos.id')
+                ->where('salida_servicios.service_id', $this->id_servicio)
+                ->select('salida_lotes.*')
+                ->first();
 
 
-            $nn=ServiceRepVentaInterna::create([
-                'service_id'=>$this->id_servicio,
-                'product_id'=>$data['product_id'],
-                'cantidad'=>$data['quantity'],
-                'precio_venta'=> $data['precioventa'],
-                'lote'=>$rep->lote_id
+            $nn = ServiceRepVentaInterna::create([
+                'service_id' => $this->id_servicio,
+                'product_id' => $data['product_id'],
+                'cantidad' => $data['quantity'],
+                'precio_venta' => $data['precioventa'],
+                'lote' => $rep->lote_id
             ]);
         }
 
 
 
 
-dd($nn);
+        //dd($nn);
 
 
 
@@ -3667,7 +3460,7 @@ dd($nn);
         $service->save();
         //Editar solo el movimiento que esté activo
         $ser = $this->saberactivo($this->id_servicio);
-        
+
         $ser->update([
             'import' => $this->edit_precioservicio,
             'user_id' => $this->id_usuario,
@@ -3675,17 +3468,15 @@ dd($nn);
             'saldo' => $this->edit_saldo,
         ]);
 
-        
+
         $this->emit('show-editarservicioocultar', 'show modal!');
     }
     //Para saber el estado[ACTIVO,INACTIVO] de un servicio, devuelve el movimiento que sea activo
     public function saberactivo($idservicio)
     {
         $datoscliente = Service::find($idservicio);
-        foreach ($datoscliente->movservices as $ms)
-        {
-            if($ms->movs->status == 'ACTIVO')
-            {
+        foreach ($datoscliente->movservices as $ms) {
+            if ($ms->movs->status == 'ACTIVO') {
                 return $ms->movs;
             }
         }
@@ -3696,95 +3487,72 @@ dd($nn);
         //Llamando al Método para Actualizar el Servicio Antes de Marcarlo como Terminado
         $this->actualizarservicio();
         $service = Service::find($this->id_servicio);
-            foreach ($service->movservices as $servmov)
-            {
-                if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PROCESO')
-                {
-                    $movimiento = $servmov->movs;
+        foreach ($service->movservices as $servmov) {
+            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PROCESO') {
+                $movimiento = $servmov->movs;
 
-                    DB::beginTransaction();
-                    try
-                    {
-                        if(Auth::user()->hasPermissionTo('Orden_Servicio_Index'))
-                        {
-                            $mv = Movimiento::create([
-                                'type' => 'TERMINADO',
-                                'status' => 'ACTIVO',
-                                'import' => $movimiento->import,
-                                'on_account' => $movimiento->on_account,
-                                'saldo' => $movimiento->saldo,
-                                'user_id' => $movimiento->user_id,
-                            ]);
-                        }
-
-                        MovService::create([
-                            'movimiento_id' => $mv->id,
-                            'service_id' => $service->id
+                DB::beginTransaction();
+                try {
+                    if (Auth::user()->hasPermissionTo('Orden_Servicio_Index')) {
+                        $mv = Movimiento::create([
+                            'type' => 'TERMINADO',
+                            'status' => 'ACTIVO',
+                            'import' => $movimiento->import,
+                            'on_account' => $movimiento->on_account,
+                            'saldo' => $movimiento->saldo,
+                            'user_id' => $movimiento->user_id,
                         ]);
-                        ClienteMov::create([
-                            'movimiento_id' => $mv->id,
-                            'cliente_id' => $movimiento->climov->cliente_id,
-                        ]);
-
-                        DB::commit();
-                        $movimiento->update([
-                            'status' => 'INACTIVO'
-                        ]);
-                        $this->emit('show-terminarservicio', 'show modal!');
                     }
-                    catch(Exception $e)
-                    {
-                        DB::rollback();
-                        $this->emit('item-error', 'ERROR' . $e->getMessage());
-                    }
+
+                    MovService::create([
+                        'movimiento_id' => $mv->id,
+                        'service_id' => $service->id
+                    ]);
+                    ClienteMov::create([
+                        'movimiento_id' => $mv->id,
+                        'cliente_id' => $movimiento->climov->cliente_id,
+                    ]);
+
+                    DB::commit();
+                    $movimiento->update([
+                        'status' => 'INACTIVO'
+                    ]);
+                    $this->emit('show-terminarservicio', 'show modal!');
+                } catch (Exception $e) {
+                    DB::rollback();
+                    $this->emit('item-error', 'ERROR' . $e->getMessage());
                 }
             }
-
-        
+        }
     }
     //Devuelve el true o false de un servicio por su Técnico Responsable
     public function verificartecnicoresponsable($idservicio)
     {
         $service = Service::find($idservicio);
-        foreach ($service->movservices as $servmov)
-        {
-            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PENDIENTE')
-            {
+        foreach ($service->movservices as $servmov) {
+            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PENDIENTE') {
                 return true;
                 break;
-            }
-            else
-            {
-                if($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PROCESO')
-                {
+            } else {
+                if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PROCESO') {
                     $movimiento = $servmov->movs;
 
-                    if($movimiento->user_id == Auth()->user()->id)
-                    {
+                    if ($movimiento->user_id == Auth()->user()->id) {
                         return true;
-                    }
-                    else
-                    {
+                    } else {
                         return false;
                     }
                     break;
-                }
-                else
-                {
-                    if($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'TERMINADO')
-                    {
+                } else {
+                    if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'TERMINADO') {
                         return true;
                         break;
-                    }
-                    else
-                    {
-                        if($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'ENTREGADO')
-                        {
+                    } else {
+                        if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'ENTREGADO') {
                             return true;
                             break;
                         }
                     }
-
                 }
             }
         }
@@ -3804,7 +3572,7 @@ dd($nn);
         'sertecnicoresponsable' => 'serasignado',
         'anularservicio' => 'anularordenservicio',
         'eliminarservicio' => 'eliminarordenservicio'
-        ];
+    ];
 
     //Anula un Servicio Modificando los estados
     public function anularordenservicio($id)
@@ -3812,20 +3580,15 @@ dd($nn);
         $this->id_orden_de_servicio = $id;
         $order = OrderService::find($id);
 
-        foreach ($order->services as $servicio)
-        {
-            foreach ($servicio->movservices as $mm)
-            {
-                if(($mm->movs->status == 'ACTIVO') && ($mm->movs->type == 'TERMINADO' || $mm->movs->type == 'ENTREGADO'))
-                {
+        foreach ($order->services as $servicio) {
+            foreach ($servicio->movservices as $mm) {
+                if (($mm->movs->status == 'ACTIVO') && ($mm->movs->type == 'TERMINADO' || $mm->movs->type == 'ENTREGADO')) {
                     $this->emit('entregado-terminado');
                     return;
                 }
             }
-            foreach ($servicio->movservices as $mm)
-            {
-                if ($mm->movs->status == 'ACTIVO')
-                {
+            foreach ($servicio->movservices as $mm) {
+                if ($mm->movs->status == 'ACTIVO') {
                     $mv = $mm->movs;
                     $mv->update([
                         'type' => 'ANULADO',
@@ -3850,17 +3613,12 @@ dd($nn);
 
         DB::beginTransaction();
         try {
-            foreach ($orderservice->services as $servicio)
-            {
-                foreach ($servicio->movservices as $movimientoservicio)
-                {
-                    if(($movimientoservicio->movs->status == 'ACTIVO') && ($movimientoservicio->movs->type == 'TERMINADO' || $movimientoservicio->movs->type == 'ENTREGADO'))
-                    {
+            foreach ($orderservice->services as $servicio) {
+                foreach ($servicio->movservices as $movimientoservicio) {
+                    if (($movimientoservicio->movs->status == 'ACTIVO') && ($movimientoservicio->movs->type == 'TERMINADO' || $movimientoservicio->movs->type == 'ENTREGADO')) {
                         $this->emit('entregado-terminado');
                         return;
-                    }
-                    else
-                    {
+                    } else {
                         $movimientoservicio->movs->climov->delete();
                         $movimiento = $movimientoservicio->movs;
                         $movimientoservicio->delete();
@@ -3875,9 +3633,7 @@ dd($nn);
             DB::commit();
 
             $this->emit('orden-eliminado');
-        }
-        catch (Exception $e)
-        {
+        } catch (Exception $e) {
             DB::rollback();
             dd("Error");
             $this->emit('item-error', 'ERROR' . $e->getMessage());
@@ -3891,34 +3647,36 @@ dd($nn);
         $this->id_servicio = $idservicio;
 
         $detallesservicio =  Service::join('order_services as os', 'os.id', 'services.order_service_id')
-        ->join('mov_services as ms', 'services.id', 'ms.service_id')
-        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-        ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-        ->join('type_works as tw', 'tw.id', 'services.type_work_id')
-        ->select('cps.id as idnombrecategoria',
-        'services.detalle as detalle',
-        'mov.type as estado',
-        'c.nombre as nombrecliente',
-        'mov.on_account as acuenta',
-        'mov.saldo as saldo',
-        'c.celular as celularcliente',
-        'services.falla_segun_cliente as falla_segun_cliente',
-        'services.fecha_estimada_entrega as fecha_estimada_entrega',
-        'services.detalle as detalleservicio',
-        'services.costo as costo',
-        'services.diagnostico as diagnostico',
-        'services.solucion as solucion',
-        'services.detalle_costo as detallecosto',
-        'mov.import as precioservicio',
-        'tw.id as idtipotrabajo',
-        'services.marca as marca')
-        ->where('mov.type', $type)
-        ->where('mov.status', 'ACTIVO')
-        ->where('services.id', $idservicio)
-        ->get()
-        ->first();
+            ->join('mov_services as ms', 'services.id', 'ms.service_id')
+            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+            ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
+            ->join('type_works as tw', 'tw.id', 'services.type_work_id')
+            ->select(
+                'cps.id as idnombrecategoria',
+                'services.detalle as detalle',
+                'mov.type as estado',
+                'c.nombre as nombrecliente',
+                'mov.on_account as acuenta',
+                'mov.saldo as saldo',
+                'c.celular as celularcliente',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.detalle as detalleservicio',
+                'services.costo as costo',
+                'services.diagnostico as diagnostico',
+                'services.solucion as solucion',
+                'services.detalle_costo as detallecosto',
+                'mov.import as precioservicio',
+                'tw.id as idtipotrabajo',
+                'services.marca as marca'
+            )
+            ->where('mov.type', $type)
+            ->where('mov.status', 'ACTIVO')
+            ->where('services.id', $idservicio)
+            ->get()
+            ->first();
 
         $this->id_servicio = $idservicio;
 
@@ -3943,34 +3701,29 @@ dd($nn);
     public function listarcarteras()
     {
         $carteras = Caja::join('carteras as car', 'cajas.id', 'car.caja_id')
-        ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
-        ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
-        ->where('cajas.estado', 'Abierto')
-        ->where('mov.user_id', Auth()->user()->id)
-        ->where('mov.status', 'ACTIVO')
-        ->where('mov.type', 'APERTURA')
-        ->where('cajas.sucursal_id', $this->idsucursal())
-        ->select('car.id as idcartera', 'car.nombre as nombrecartera', 'car.descripcion as dc','car.tipo as tipo')
-        ->get();
+            ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
+            ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
+            ->where('cajas.estado', 'Abierto')
+            ->where('mov.user_id', Auth()->user()->id)
+            ->where('mov.status', 'ACTIVO')
+            ->where('mov.type', 'APERTURA')
+            ->where('cajas.sucursal_id', $this->idsucursal())
+            ->select('car.id as idcartera', 'car.nombre as nombrecartera', 'car.descripcion as dc', 'car.tipo as tipo')
+            ->get();
 
-        if($carteras->count() > 0)
-        {
+        if ($carteras->count() > 0) {
             return $carteras;
-        }
-        else
-        {
+        } else {
             return null;
         }
-
-
     }
     //Listar las carteras generales
     public function listarcarterasg()
     {
         $carteras = Caja::join('carteras as car', 'cajas.id', 'car.caja_id')
-        ->where('cajas.id', 1)
-        ->select('car.id as idcartera', 'car.nombre as nombrecartera', 'car.descripcion as dc','car.tipo as tipo')
-        ->get();
+            ->where('cajas.id', 1)
+            ->select('car.id as idcartera', 'car.nombre as nombrecartera', 'car.descripcion as dc', 'car.tipo as tipo')
+            ->get();
         return $carteras;
     }
     //Llama a la ventana Modal Editar Servicio Terminado
@@ -3983,47 +3736,47 @@ dd($nn);
         $this->id_servicio = $idservicio;
 
         $detallesservicio =  Service::join('order_services as os', 'os.id', 'services.order_service_id')
-        ->join('mov_services as ms', 'services.id', 'ms.service_id')
-        ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
-        ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
-        ->join('clientes as c', 'c.id', 'cm.cliente_id')
-        ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
-        ->join('type_works as tw', 'tw.id', 'services.type_work_id')
-        ->select('cps.id as idnombrecategoria',
-        'services.detalle as detalle',
-        'mov.type as estado',
-        'c.nombre as nombrecliente',
-        'mov.on_account as acuenta',
-        'mov.saldo as saldo',
-        'mov.user_id as idusuario',
-        'c.celular as celularcliente',
-        'services.falla_segun_cliente as falla_segun_cliente',
-        'services.fecha_estimada_entrega as fecha_estimada_entrega',
-        'services.detalle as detalleservicio',
-        'services.costo as costo',
-        'services.diagnostico as diagnostico',
-        'services.solucion as solucion',
-        'services.detalle_costo as detallecosto',
-        'mov.import as precioservicio',
-        'tw.id as idtipotrabajo',
-        'services.marca as marca')
-        ->where('mov.type', $type)
-        ->where('mov.status', 'ACTIVO')
-        ->where('services.id', $idservicio)
-        ->get()
-        ->first();
+            ->join('mov_services as ms', 'services.id', 'ms.service_id')
+            ->join('movimientos as mov', 'mov.id', 'ms.movimiento_id')
+            ->join('cliente_movs as cm', 'cm.movimiento_id', 'mov.id')
+            ->join('clientes as c', 'c.id', 'cm.cliente_id')
+            ->join('cat_prod_services as cps', 'cps.id', 'services.cat_prod_service_id')
+            ->join('type_works as tw', 'tw.id', 'services.type_work_id')
+            ->select(
+                'cps.id as idnombrecategoria',
+                'services.detalle as detalle',
+                'mov.type as estado',
+                'c.nombre as nombrecliente',
+                'mov.on_account as acuenta',
+                'mov.saldo as saldo',
+                'mov.user_id as idusuario',
+                'c.celular as celularcliente',
+                'services.falla_segun_cliente as falla_segun_cliente',
+                'services.fecha_estimada_entrega as fecha_estimada_entrega',
+                'services.detalle as detalleservicio',
+                'services.costo as costo',
+                'services.diagnostico as diagnostico',
+                'services.solucion as solucion',
+                'services.detalle_costo as detallecosto',
+                'mov.import as precioservicio',
+                'tw.id as idtipotrabajo',
+                'services.marca as marca'
+            )
+            ->where('mov.type', $type)
+            ->where('mov.status', 'ACTIVO')
+            ->where('services.id', $idservicio)
+            ->get()
+            ->first();
 
 
         //Buscando el movimiento de tipo Terminado para poner el usuario en el select de la Ventana Modal
         $servicio = Service::find($this->id_servicio);
-        foreach ($servicio->movservices as $servmov)
-        {
-            if($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'INACTIVO')
-            {
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'INACTIVO') {
                 $this->id_usuario = $servmov->movs->user_id;
                 break;
             }
-        } 
+        }
 
 
         $this->edit_costoservicioterminado = $detallesservicio->costo;
@@ -4040,19 +3793,17 @@ dd($nn);
 
         //Buscando el movimiento de tipo Entregado para obtener la cartera_id a travez de la tabla cartera_movs
         $servicio = Service::find($this->id_servicio);
-        foreach ($servicio->movservices as $servmov)
-        {
-            if($servmov->movs->type == 'ENTREGADO' && $servmov->movs->status == 'ACTIVO')
-            {
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'ENTREGADO' && $servmov->movs->status == 'ACTIVO') {
                 //Ponemos el id de la cartera en la variable $this->edit_carteraservicioterminado
-                $this->edit_carteraservicioterminado = CarteraMov::where("cartera_movs.movimiento_id",$servmov->movs->id)->get()->first()->cartera_id;
+                $this->edit_carteraservicioterminado = CarteraMov::where("cartera_movs.movimiento_id", $servmov->movs->id)->get()->first()->cartera_id;
                 break;
             }
-        } 
+        }
 
 
 
-        
+
         $this->emit('show-editarservicioterminado', 'show modal!');
     }
     //Actualiza un servicio terminado
@@ -4074,46 +3825,40 @@ dd($nn);
         //Buscando el movimiento de tipo Terminado para actualizar el id Usuario
         $servicio = Service::find($this->id_servicio);
 
-        foreach ($servicio->movservices as $servmov)
-        {
-            if($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'INACTIVO')
-            {
-                
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'TERMINADO' && $servmov->movs->status == 'INACTIVO') {
+
                 $servmov->movs->update([
                     'user_id' => $this->id_usuario,
                 ]);
-                
-                break;
-            }
-        }
-        
-        foreach ($servicio->movservices as $servmov)
-        {
-            if($servmov->movs->type == 'PROCESO' && $servmov->movs->status == 'INACTIVO')
-            {
-                
-                $servmov->movs->update([
-                    'user_id' => $this->id_usuario,
-                ]);
-                
+
                 break;
             }
         }
 
-        foreach ($servicio->movservices as $servmov)
-        {
-            if($servmov->movs->type == 'ENTREGADO' && $servmov->movs->status == 'ACTIVO')
-            {
-                
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'PROCESO' && $servmov->movs->status == 'INACTIVO') {
+
+                $servmov->movs->update([
+                    'user_id' => $this->id_usuario,
+                ]);
+
+                break;
+            }
+        }
+
+        foreach ($servicio->movservices as $servmov) {
+            if ($servmov->movs->type == 'ENTREGADO' && $servmov->movs->status == 'ACTIVO') {
+
                 $servmov->movs->update([
                     'import' => $this->edit_precioservicioterminado,
                     'on_account' => $this->edit_acuentaservicioterminado,
                     'saldo' => $this->edit_saldoterminado,
                 ]);
                 //Actuluazamos la cartera_id
-                
-                $carteramovs = CarteraMov::find(CarteraMov::where("cartera_movs.movimiento_id",$servmov->movs->id)->get()->first()->id);
-                
+
+                $carteramovs = CarteraMov::find(CarteraMov::where("cartera_movs.movimiento_id", $servmov->movs->id)->get()->first()->id);
+
                 $carteramovs->update([
                     'cartera_id' => $this->edit_carteraservicioterminado
                 ]);
@@ -4123,7 +3868,7 @@ dd($nn);
             }
         }
 
-        
+
         $servicio->update([
             'import' => $this->edit_precioservicioterminado,
             'on_account' => $this->edit_acuentaservicioterminado,
@@ -4155,10 +3900,8 @@ dd($nn);
     {
         $service = Service::find($idservicio);
 
-        foreach ($service->movservices as $servmov)
-        {
-            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PENDIENTE')
-            {
+        foreach ($service->movservices as $servmov) {
+            if ($servmov->movs->status == 'ACTIVO' && $servmov->movs->type == 'PENDIENTE') {
                 $movimiento = $servmov->movs;
                 return true;
                 break;
@@ -4177,64 +3920,57 @@ dd($nn);
         $this->emit('show-modalrepuestos');
     }
     //Crea una solicitud de un repuesto existente
-    public function InsertarSolicitud(Product $pid,Destino $did)
+    public function InsertarSolicitud(Product $pid, Destino $did)
     {
         //Buscamos el elemento en la colección
-        $result = $this->lista_solicitudes->where('product_id', $pid->id)->where('destiny_id',$did->id);
+        $result = $this->lista_solicitudes->where('product_id', $pid->id)->where('destiny_id', $did->id);
 
-        $stock=ProductosDestino::where('product_id', $pid->id)->where('destino_id',$did->id)->value('stock');
-        if($result->count()>0)
-        {
-            $preserve=$this->solicitudservicio->where('prodnombre')->where('destiny');
-          $cantidadyasolicitada=$result->first()['quantity'] + $preserve;
-          
-            $producto = $this->lista_solicitudes->where('destiny_id', $did->id)->where('product_id',$pid->id);
+        $stock = ProductosDestino::where('product_id', $pid->id)->where('destino_id', $did->id)->value('stock');
+        if ($result->count() > 0) {
+            $preserve = $this->solicitudservicio->where('prodnombre')->where('destiny');
+            $cantidadyasolicitada = $result->first()['quantity'] + $preserve;
 
-            if ($stock-$cantidadyasolicitada>0) {
-              
-                    //Guardando el id_destino
-               
-                    //Guardando la cantidad del producto
-                    $cantidad = $result->first()['quantity'];
-                    $orderM=$result->first()['orderP'];
-                    //Incrementando en una unidad
-                    $cantidad++;
-                    //Eliminando la fila del elemento en coleccion
-                    $this->lista_solicitudes->pull($producto->keys()->first());
-                    //Lo volvemos a agregar con la cantidad actualizada
-                 
-                    $this->lista_solicitudes->push([
-                        'orderP'=>$orderM,
-                        'product_id' => $pid->id,
-                        'product_name'=> $pid->nombre,
-                        'destiny_id' => $did->id,
-                        'destiny_name' => $did->nombre,
-                        'quantity'=> $cantidad,
-                        'type'=> 'Repuesto'
-                    ]);
-                   
-                    $this->message_toast = "¡Cantidad Actualizada!";
-                    $this->emit("message-succeed");
-                
-           
-            }
-            else
-            {
-                $this->emit('sin_stock');
-            }
-        }
-        else
-        {
-           
-            $this->lista_solicitudes->push([
-                'orderP'=>$this->orderP,
-                'service_id' => $this->id_servicio,
-                'product_id' => $pid->id,
-                    'product_name'=> $pid->nombre,
+            $producto = $this->lista_solicitudes->where('destiny_id', $did->id)->where('product_id', $pid->id);
+
+            if ($stock - $cantidadyasolicitada > 0) {
+
+                //Guardando el id_destino
+
+                //Guardando la cantidad del producto
+                $cantidad = $result->first()['quantity'];
+                $orderM = $result->first()['orderP'];
+                //Incrementando en una unidad
+                $cantidad++;
+                //Eliminando la fila del elemento en coleccion
+                $this->lista_solicitudes->pull($producto->keys()->first());
+                //Lo volvemos a agregar con la cantidad actualizada
+
+                $this->lista_solicitudes->push([
+                    'orderP' => $orderM,
+                    'product_id' => $pid->id,
+                    'product_name' => $pid->nombre,
                     'destiny_id' => $did->id,
                     'destiny_name' => $did->nombre,
-                    'quantity'=> 1,
-                    'type'=> 'Repuesto'
+                    'quantity' => $cantidad,
+                    'type' => 'Repuesto'
+                ]);
+
+                $this->message_toast = "¡Cantidad Actualizada!";
+                $this->emit("message-succeed");
+            } else {
+                $this->emit('sin_stock');
+            }
+        } else {
+
+            $this->lista_solicitudes->push([
+                'orderP' => $this->orderP,
+                'service_id' => $this->id_servicio,
+                'product_id' => $pid->id,
+                'product_name' => $pid->nombre,
+                'destiny_id' => $did->id,
+                'destiny_name' => $did->nombre,
+                'quantity' => 1,
+                'type' => 'Repuesto'
             ]);
 
             $this->orderP++;
@@ -4249,51 +3985,48 @@ dd($nn);
 
 
         //Buscamos el elemento en la colección
-        $result = $this->lista_solicitudes->where('product_name', $key)->where('type','CompraRepuesto');
+        $result = $this->lista_solicitudes->where('product_name', $key)->where('type', 'CompraRepuesto');
         //dd($result);
 
-        $pro=Product::where('nombre',$key)->first();
+        $pro = Product::where('nombre', $key)->first();
 
- 
 
-        if($result->count() > 0)
-        {
-            
+
+        if ($result->count() > 0) {
+
             //Guardando la cantidad del producto
             $cantidad = $result->first()['quantity'];
-            $orderM=$result->first()['orderP'];
+            $orderM = $result->first()['orderP'];
             //Incrementando en una unidad
             $cantidad++;
             //Eliminando la fila del elemento en coleccion
             $this->lista_solicitudes->pull($result->keys()->first());
             //Lo volvemos a agregar con la cantidad actualizada
-         
+
             $this->lista_solicitudes->push([
-                'orderP'=>$orderM,
+                'orderP' => $orderM,
                 'product_id' => $pro->id,
-                'product_name'=> $pro->nombre,
+                'product_name' => $pro->nombre,
                 'destiny_id' => 0,
-                'destiny_name' =>'ninguno',
-                'quantity'=> $cantidad,
-                'type'=>'CompraRepuesto'
+                'destiny_name' => 'ninguno',
+                'quantity' => $cantidad,
+                'type' => 'CompraRepuesto'
             ]);
 
             $this->message_toast = "¡Cantidad Actualizada!";
 
             $this->emit("message-succeed");
-        }
-        else
-        {
-          // dd($pro->id);
+        } else {
+            // dd($pro->id);
             $this->lista_solicitudes->push([
                 'service_id' => $this->id_servicio,
-                'orderP'=>$this->orderP,
+                'orderP' => $this->orderP,
                 'product_id' => $pro->id,
-                'product_name'=> $pro->nombre,
+                'product_name' => $pro->nombre,
                 'destiny_id' => 0,
-                'destiny_name' =>'ninguno',
-                'quantity'=> 1,
-                'type'=> 'CompraRepuesto'
+                'destiny_name' => 'ninguno',
+                'quantity' => 1,
+                'type' => 'CompraRepuesto'
             ]);
 
 
@@ -4301,53 +4034,47 @@ dd($nn);
 
             $this->emit("message-succeed");
             $this->orderP++;
-
-
         }
     }
     //Elimina una solicitud
-    public function EliminarSolicitud(Product $pid,Destino $did)
+    public function EliminarSolicitud(Product $pid, Destino $did)
     {
         //Buscamos el elemento en la colección
-        $result = $this->lista_solicitudes->where('product_id', $pid->id)->where('destiny_id',$did->id);
+        $result = $this->lista_solicitudes->where('product_id', $pid->id)->where('destiny_id', $did->id);
         //Eliminando la fila del elemento en coleccion
         $this->lista_solicitudes->pull($result->keys()->first());
-        
-        
     }
     public function EliminarSolicitudCompra($key)
     {
         //dd($key);
         //Buscamos el elemento en la colección
-        $result = $this->lista_solicitudes->where('product_id', $key)->where('type','CompraRepuesto');
+        $result = $this->lista_solicitudes->where('product_id', $key)->where('type', 'CompraRepuesto');
         //Eliminando la fila del elemento en coleccion
         $this->lista_solicitudes->pull($result->keys()->first());
-        
-        
     }
     //Decrementa el valor (Stock) de una solicitud
-    public function DecrementarSolicitud(Product $pid,Destino $did,$type)
+    public function DecrementarSolicitud(Product $pid, Destino $did, $type)
     {
         //Buscamos el elemento en la colección
-        $result = $this->lista_solicitudes->where('product_id', $pid->id)->where('destiny_id',$did->id);
+        $result = $this->lista_solicitudes->where('product_id', $pid->id)->where('destiny_id', $did->id);
 
         //Guardando la cantidad del producto
         $cantidad = $result->first()['quantity'];
-        $orderM=$result->first()['orderP'];
+        $orderM = $result->first()['orderP'];
         //Incrementando en una unidad
         $cantidad--;
         //Eliminando la fila del elemento en coleccion
         $this->lista_solicitudes->pull($result->keys()->first());
         //Lo volvemos a agregar con la cantidad actualizada
-    
+
         $this->lista_solicitudes->push([
-            'orderP'=>$orderM,
+            'orderP' => $orderM,
             'product_id' => $pid->id,
-            'product_name'=> $pid->nombre,
+            'product_name' => $pid->nombre,
             'destiny_id' => $did->id,
             'destiny_name' => $did->nombre,
-            'quantity'=> $cantidad,
-            'type'=> $type
+            'quantity' => $cantidad,
+            'type' => $type
         ]);
 
         $this->message_toast = "¡Cantidad Decrementada!";
@@ -4356,29 +4083,29 @@ dd($nn);
     }
     public function DecrementarSolicitudCompra($key)
     {
-        $result = $this->lista_solicitudes->where('product_id', $key)->where('type','CompraRepuesto');
+        $result = $this->lista_solicitudes->where('product_id', $key)->where('type', 'CompraRepuesto');
         //dd($result);
 
-        $pro=Product::where('id',$key)->first();
+        $pro = Product::where('id', $key)->first();
 
 
         //Guardando la cantidad del producto
         $cantidad = $result->first()['quantity'];
-        $orderM=$result->first()['orderP'];
+        $orderM = $result->first()['orderP'];
         //Incrementando en una unidad
         $cantidad--;
         //Eliminando la fila del elemento en coleccion
         $this->lista_solicitudes->pull($result->keys()->first());
         //Lo volvemos a agregar con la cantidad actualizada
-    
+
         $this->lista_solicitudes->push([
-            'orderP'=>$orderM,
+            'orderP' => $orderM,
             'product_id' => $pro->id,
-            'product_name'=> $pro->nombre,
+            'product_name' => $pro->nombre,
             'destiny_id' => 0,
             'destiny_name' => 'ninguno',
-            'quantity'=> $cantidad,
-            'type'=> 'CompraRepuesto'
+            'quantity' => $cantidad,
+            'type' => 'CompraRepuesto'
         ]);
 
         $this->message_toast = "¡Cantidad Decrementada!";
@@ -4395,42 +4122,38 @@ dd($nn);
         ]);
         $solicitud->save();
 
-        foreach($this->lista_solicitudes as $l)
-        {
+        foreach ($this->lista_solicitudes as $l) {
             //Creando el detalle de la solicitud
             $detallesolicitud = ServiceRepDetalleSolicitud::create([
-                'service_id'=>$this->id_servicio,
+                'service_id' => $this->id_servicio,
                 'solicitud_id' => $solicitud->id,
                 'product_id' => $l['product_id'],
                 'destino_id' => $l['destiny_id'],
                 'cantidad' => $l['quantity'],
                 'tipo' => $l['type']
             ]);
-           // dump($detallesolicitud);
+            // dump($detallesolicitud);
             ServiceRepEstadoSolicitud::create([
                 'detalle_solicitud_id' => $detallesolicitud->id,
                 'user_id' => Auth()->user()->id,
                 'status' => 'ACTIVO',
-                'estado' =>"PENDIENTE"
+                'estado' => "PENDIENTE"
             ]);
         }
 
 
         $this->emit('hide-sd');
-        
-    
     }
 
     public function addProducts()
     {
 
-        $this->unidades= Unidad::all();
-        $this->marcasp=Marca::all();
-        $this->nombre=$this->searchproduct;
+        $this->unidades = Unidad::all();
+        $this->marcasp = Marca::all();
+        $this->nombre = $this->searchproduct;
 
 
         $this->emit('show-modalproducts');
-
     }
 
     public function guardarProducto()
@@ -4438,30 +4161,30 @@ dd($nn);
 
         $rules = [
             'nombre' => 'required|unique:products|min:5',
-            'caracteristicas'=>'required',
-            'precio_venta2'=>'required'
-          
+            'caracteristicas' => 'required',
+            'precio_venta2' => 'required'
+
         ];
 
         $messages = [
             'nombre.required' => 'Nombre del repuesto es  requerido',
             'nombre.unique' => 'Este producto ya existe',
             'nombre.min' => 'El nombre del repuesto debe  contener al menos 5 caracteres',
-            'caracteristicas.required' =>'Describa algunas caracteristicas',
-            'precio_venta2.required'=>'El precio aproximado de compra del repuesto es requerido'
-       
+            'caracteristicas.required' => 'Describa algunas caracteristicas',
+            'precio_venta2.required' => 'El precio aproximado de compra del repuesto es requerido'
+
         ];
 
         $this->validate($rules, $messages);
         $categories = Category::pluck('id', 'name');
- 
+
         $categories['No definido'];
         $product = Product::create([
             'nombre' => $this->nombre,
             'costo' => $this->precio_venta2,
-            'caracteristicas'=>$this->caracteristicas,
-            'codigo'=>$this->GenerateCode(),
-            'unidad'=>$this->unidad,
+            'caracteristicas' => $this->caracteristicas,
+            'codigo' => $this->GenerateCode(),
+            'unidad' => $this->unidad,
             'marca' => $this->marcas2,
             'industria' => $this->industria,
             'category_id' => $categories['No definido']
@@ -4470,116 +4193,103 @@ dd($nn);
         $this->lista_solicitudes->push([
             'service_id' => $this->id_servicio,
             'product_id' => $product->id,
-            'product_name'=> $product->nombre,
+            'product_name' => $product->nombre,
             'destiny_id' => 0,
-            'destiny_name' =>'ninguno',
-            'quantity'=>$this->cant,
-            'type'=>'CompraRepuesto'
+            'destiny_name' => 'ninguno',
+            'quantity' => $this->cant,
+            'type' => 'CompraRepuesto'
         ]);
         $this->emit('show-p');
 
-        $this->unidad=null;
-        $this->marcap=null;
-        $this->reset(['nombre', 'precio_venta2','caracteristicas','industria']);
-        $this->searchproduct=null;
-    
+        $this->unidad = null;
+        $this->marcap = null;
+        $this->reset(['nombre', 'precio_venta2', 'caracteristicas', 'industria']);
+        $this->searchproduct = null;
     }
 
-    
+
 
     public function GenerateCode()
     {
-        
-        $min=10000;
-        $max= 99999;
-        $this->codigo= Carbon::now()->format('ymd').mt_rand($min,$max);
+
+        $min = 10000;
+        $max = 99999;
+        $this->codigo = Carbon::now()->format('ymd') . mt_rand($min, $max);
     }
 
-    public function descartarSolicitud(ServiceRepDetalleSolicitud $id){
+    public function descartarSolicitud(ServiceRepDetalleSolicitud $id)
+    {
 
         $id->update([
-            'status' =>'INACTIVO'
+            'status' => 'INACTIVO'
         ]);
         $id->save();
-
     }
 
-    public function changePrecioVenta($ss,$mm,$tt)
+    public function changePrecioVenta($ss, $mm = 0, $tt)
     {
-        $th= Destino::find($mm);
-
-        //dd($th);
-        if ($th->nombre == 'TIENDA')
-        {
-            //dd($ss,$mm,$tt);
-        $itemc=$this->repuestostienda->where('product_id',$ss)->where('destiny_id',$mm);
-        //dd($itemc);
-        $product=$itemc;
-
-        $orderM=$itemc->first()['orderM'];
-        //dd($itemc->keys()->first());
-        $this->repuestostienda->pull($itemc->keys()->first());
-        
-        //dd($this->repuestosalmacen);
-
-        $this->repuestostienda->push([
-            'orderM'=>$orderM,
-           'product_id'=> $product->first()['product_id'],
-           'product_name'=>  $product->first()['product_name'],
-           'destiny_id' =>  $product->first()['destiny_id'],
-           'destiny_name' =>  $product->first()['destiny_name'],
-           'quantity'=>  $product->first()['quantity'],
-           'precioventa'=>$tt,
-           'subtotal'=>$tt* $product->first()['quantity']
-       
-       ]);
-
-       $this->sumaProductosTienda=$this->repuestostienda->sum(function($value){
-        return $value['quantity']*$value['precioventa'];
-        });
-
-        $this->totalServicio= $this->sumaProductosTienda+$this->edit_saldo;
-
-        }
-        else{
-
-            //dd($ss,$mm,$tt);
-            $itemc=$this->repuestosalmacen->where('product_id',$ss)->where('destiny_id',$mm);
-            //dd($itemc);
-            $product=$itemc;
+        //dd($ss,$mm,$tt);
+      
+            $th = Destino::find($mm);
     
-            $orderM=$itemc->first()['orderM'];
+
+        if ($th->nombre == 'TIENDA') {
+
+            $itemc = $this->repuestostienda->where('product_id', $ss)->where('destiny_id', $mm);
+            $product = $itemc;
+            $orderM = $itemc->first()['orderM'];
+            $this->repuestostienda->pull($itemc->keys()->first());
+            $this->repuestostienda->push([
+                'orderM' => $orderM,
+                'product_id' => $product->first()['product_id'],
+                'product_name' =>  $product->first()['product_name'],
+                'destiny_id' =>  $product->first()['destiny_id'],
+                'destiny_name' =>  $product->first()['destiny_name'],
+                'quantity' =>  $product->first()['quantity'],
+                'precioventa' => $tt,
+                'subtotal' => $tt * $product->first()['quantity']
+
+            ]);
+
+            $this->sumaProductosTienda = $this->repuestostienda->sum(function ($value) {
+                return $value['quantity'] * $value['precioventa'];
+            });
+
+            $this->totalServicio = $this->sumaProductosTienda + $this->edit_saldo;
+        } else {
+
+            //dd($ss,$mm,$tt);
+            $itemc = $this->repuestosalmacen->where('product_id', $ss)->where('destiny_id', $mm);
+            //dd($itemc);
+            $product = $itemc;
+
+            $orderM = $itemc->first()['orderM'];
             //dd($itemc->keys()->first());
             $this->repuestosalmacen->pull($itemc->keys()->first());
-            
+
             //dd($this->repuestosalmacen);
-    
+
             $this->repuestosalmacen->push([
-                'orderM'=>$orderM,
-               'product_id'=> $product->first()['product_id'],
-               'product_name'=>  $product->first()['product_name'],
-               'destiny_id' =>  $product->first()['destiny_id'],
-               'destiny_name' =>  $product->first()['destiny_name'],
-               'quantity'=>  $product->first()['quantity'],
-               'precioventa'=>$tt,
-               'subtotal'=>$tt* $product->first()['quantity']
-           
-           ]);
+                'orderM' => $orderM,
+                'product_id' => $product->first()['product_id'],
+                'product_name' =>  $product->first()['product_name'],
+                'destiny_id' =>  $product->first()['destiny_id'],
+                'destiny_name' =>  $product->first()['destiny_name'],
+                'quantity' =>  $product->first()['quantity'],
+                'precioventa' => $tt,
+                'subtotal' => $tt * $product->first()['quantity']
+
+            ]);
         }
 
 
 
-       //dd($this->repuestosalmacen);
+        //dd($this->repuestosalmacen);
 
 
     }
 
     public function reservarProductos()
     {
-
     }
 }
-
-
-
-

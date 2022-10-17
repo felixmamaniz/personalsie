@@ -886,7 +886,6 @@ class ReporteMovimientoResumenController extends Component
         //     });
 
 
-        return $utilidad2;
     }
 
     public function operaciones()

@@ -235,6 +235,7 @@
                             <select wire:model="reportType" class="form-control">
                                 <option value="0">Servicios del día</option>
                                 <option value="1">Servicios por fecha</option>
+                                <option value="2">Repuestos por servicio</option>
                             </select>
                         </div>
                     </div>
@@ -420,8 +421,12 @@
                                                 @endif --}}
                                             @endforeach
                                             {{-- COSTO --}}
-                                            <td class="text-right">
-                                                {{ number_format($d->costo, 2) }}
+                                            <td class="text-center p-2">
+                                                {{ number_format($d->costo, 2) }} <br>
+                                               
+
+                                                <a href="javascript:void(0)" class="btn btn-sm btn-danger" data-toggle="modal"
+                                                data-target="#modalCosto"> <b> <i class="fas fa-plus-circle"></i>Detalle Costo</b> </a>
                                             </td>
                                             {{-- TOTAL --}}
                                             <td class="text-right">
@@ -575,6 +580,7 @@
             </div>
         </div>
     </div>
+    @include('livewire.reporte_service.detallecosto')
 </div>
 
 <script>

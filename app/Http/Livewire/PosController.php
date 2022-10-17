@@ -273,7 +273,7 @@ class PosController extends Component
             }
         }
     }
-    //Cierra la ventana modal Buscar Cliente y Cambiar el id de la variable $cliente_id
+    //Cierra la ventana modal Buscar Cliente y Cambia el id de la variable $cliente_id
     public function seleccionarcliente($idcliente)
     {
         $this->cliente_id = $idcliente;
@@ -931,7 +931,7 @@ class PosController extends Component
         //Ocultando ventana modal
         $this->emit('hide-crearcliente');
     }
-    //Método para mostrar una ventana modal cuando no hay stock en Tiena de un producto
+    //Método para mostrar una ventana modal cuando no hay stock en Tienda de un producto
     public function modalstockinsuficiente($idproducto)
     {
         $this->producto_id = $idproducto;

@@ -49,12 +49,13 @@
     .slider.round:before {
     border-radius: 40%;
     }
-    /* Estilos para las tablas */
-    .table-wrapper {
-    width: 100%;/* Anchura de ejemplo */
-    height: 350px; /* Altura de ejemplo */
-    overflow: auto;
-    }
+
+        /* Estilos para las tablas */
+        .table-wrapper {
+        width: 100%;/* Anchura de ejemplo */
+        height: 400px;  /*Altura de ejemplo*/
+        overflow: auto;
+        }
 
     .table-wrapper table {
         border-collapse: separate;
@@ -63,22 +64,17 @@
         border-bottom: 0.3px solid #02b1ce;
         width: 100%;
     }
-
     .table-wrapper table thead {
-        position: -webkit-sticky; /* Safari... */
         position: sticky;
         top: 0;
-        left: 0;
+        z-index: 10;
     }
     .table-wrapper table thead tr {
     background: #02b1ce;
     color: white;
     }
-    /* .table-wrapper table tbody tr {
-        border-top: 0.3px solid rgb(0, 0, 0);
-    } */
     .table-wrapper table tbody tr:hover {
-        background-color: #ffdf76a4;
+        background-color: #bbf7ffa4;
     }
     .table-wrapper table td {
         border-top: 0.3px solid #02b1ce;
@@ -339,7 +335,7 @@
                                     {{ $p->precio_venta }} Bs
                                 </td>
                                 <td>
-                                    <button  wire:click="increase({{ $p->id }})" class="btn btn-sm" style="background-color: rgb(10, 137, 235); color:aliceblue">
+                                    <button  wire:click="insert({{ $p->id }})" class="btn btn-sm" style="background-color: rgb(10, 137, 235); color:aliceblue">
                                         <i class="fas fa-plus"></i>
                                 </td>
                             </tr>
@@ -396,20 +392,15 @@
                 </div>
                 @else
                 <div class="row" style="height: 44.2px;">
-                    <div class="col-3 text-center">
+                    <div class="col-4 text-center">
                         
                     </div>
-                    <div class="col-3 text-center">
-                        <button wire:click.prevent="modalbuscarcliente()" type="button" class="btn btn-outline-dark">
-                            Buscar Cliente
+                    <div class="col-4 text-center">
+                        <button wire:click="$emit('show-buscarcliente')" type="button" class="btn btn-outline-dark">
+                            Buscar o Crear Cliente
                         </button>
                     </div>
-                    <div class="col-3 text-center">
-                        <button wire:click.prevent="modalcrearcliente()" type="button" class="btn btn-outline-dark">
-                            Crear Cliente
-                        </button>
-                    </div>
-                    <div class="col-3 text-center">
+                    <div class="col-4 text-center">
                         
                     </div>
                 </div>
@@ -420,6 +411,7 @@
                     <table>
                         <thead>
                             <tr>
+                                <th>No</th>
                                 <th>DESCRIPCIÓN</th>
                                 <th>PRECIO BS</th>
                                 <th>CANTIDAD</th>
@@ -428,8 +420,11 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($this->carrito_venta->sortBy('name') as $c)
+                            @foreach ($this->carrito_venta->sortBy('order') as $c)
                             <tr>
+                                <td class="text-center">
+                                    {{ $c['order'] }}
+                                </td>
                                 <td class="text-left">
                                     {{ $c['name'] }}
                                 </td>
@@ -506,7 +501,7 @@
                     <div class="col-1 text-right">
                     </div>
                     <div class="col-10 text-center">
-                        <h5>Nombre Cliente: <b>{{ucwords(strtolower($nombrecliente))}}</b></h5>
+                        <h5>Nombre Cliente: <b>{{ucwords(strtolower($this->nombrecliente))}}</b></h5>
                         <div class="btn-group" role="group" aria-label="Basic example">
                             @if($this->total_items > 0)
                             <button onclick="ConfirmarLimpiar()" class="btn btn-button" style="background-color: #373839; color: white; border-color: black;">
@@ -516,9 +511,11 @@
                             <a href="{{ url('salelist') }}" class="btn btn-button" style="background-color: rgb(255, 255, 255); border: 1.8px solid #000000; color: black;">
                                 <b>Lista de Ventas</b>
                             </a>
-                            <button wire:click.prevent="modalfinalizarventa()" class="btn btn-button" style="background-color: #11be32; color: white;">
-                                Finalizar Venta
+                            @if($this->total_items > 0)
+                            <button wire:click.prevent="modalfinalizarventa()" class="btn btn-button" style="background-color: #008b1a; color: white;">
+                                Actualizar Venta
                             </button>
+                            @endif
                         </div>
                     </div>
                     <div class="col-1 text-right">
@@ -529,11 +526,11 @@
     </div>
 
 
-    {{-- @include('livewire.pos.modal.modalfinalizarventa')
-    @include('livewire.pos.modal.modalbuscarcliente')
-    @include('livewire.pos.modal.modalcrearcliente')
-    @include('livewire.pos.modal.modal_stock_insuficiente')
-    @include('livewire.pos.modal.modallotesproducto') --}}
+    {{-- @include('livewire.pos.modal.modalfinalizarventa') --}}
+    @include('livewire.sales_edit.modal.modalbuscarcliente')
+    {{-- @include('livewire.pos.modal.modalcrearcliente') --}}
+    @include('livewire.sales_edit.modal.modal_stock_insuficiente')
+    {{-- @include('livewire.pos.modal.modallotesproducto') --}}
 
 
     @if($descuento_recargo >= 0)
@@ -581,7 +578,7 @@
             });
             toast({
                 type: 'success',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -596,7 +593,7 @@
             });
             toast({
                 type: 'warning',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -611,7 +608,7 @@
             });
             toast({
                 type: 'info',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -626,7 +623,7 @@
             });
             toast({
                 type: 'info',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -642,7 +639,7 @@
             });
             toast({
                 type: 'success',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -658,7 +655,7 @@
             });
             toast({
                 type: 'success',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -674,7 +671,7 @@
             });
             toast({
                 type: 'success',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -699,23 +696,23 @@
             });
             toast({
                 type: 'success',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
 
         //Mostrar cualquier tipo de mensaje toast de un OK
-        window.livewire.on('mensaje-ok', msg => {
+        window.livewire.on('message-ok', msg => {
             const toast = swal.mixin({
             toast: true,
             position: 'top-end',
             showConfirmButton: false,
-            timer: 4000,
+            timer: 3000,
             padding: '2em'
             });
             toast({
                 type: 'success',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -730,7 +727,7 @@
             });
             toast({
                 type: 'warning',
-                title: @this.mensaje_toast,
+                title: @this.message,
                 padding: '2em',
             })
         });
@@ -738,7 +735,7 @@
         window.livewire.on('sale-error', event => {
                 swal(
                     'A ocurrido un error al realizar la venta',
-                    'Detalle del error'+ @this.mensaje_toast,
+                    'Detalle del error'+ @this.message,
                     'error'
                     )
             });
@@ -796,7 +793,7 @@
             padding: '2em'
             }).then(function(result) {
             if (result.value) {
-                window.livewire.emit('clear-Product',idproducto)
+                window.livewire.emit('clear-product',idproducto)
                 }
             })
     }

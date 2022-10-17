@@ -4219,7 +4219,6 @@ class OrderServiceController extends Component
 
     public function descartarSolicitud(ServiceRepDetalleSolicitud $id)
     {
-
         $id->update([
             'status' => 'INACTIVO'
         ]);
@@ -4230,7 +4229,7 @@ class OrderServiceController extends Component
     {
         //dd($ss,$mm,$tt);
       
-            $th = Destino::find($mm);
+        $th = Destino::find($mm);
     
 
         if ($th->nombre == 'TIENDA') {

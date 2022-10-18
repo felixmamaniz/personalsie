@@ -5,6 +5,7 @@ namespace App\Http\Livewire;
 use App\Models\ModelHasRoles;
 use App\Models\OrderService;
 use App\Models\Service;
+use App\Models\ServiceRepVentaInterna;
 use App\Models\Sucursal;
 use App\Models\Transaccion;
 use App\Models\User;
@@ -103,7 +104,8 @@ class ReporteServiceController extends Component
                         ->where('mov.status', 'like', 'ACTIVO')
                         ->select(
                             'services.*',
-                            DB::raw('0 as utilidad')
+                            DB::raw('0 as utilidad'),
+                            DB::raw('1 as costos')
                         )
                         ->whereBetween('mov.created_at', [$this->from, $this->to])
                         ->orderBy('services.id', 'desc')
@@ -113,8 +115,29 @@ class ReporteServiceController extends Component
                     foreach ($this->data as $serv) {
                         foreach ($serv->movservices as $mm) {
                             if ($mm->movs->status == 'ACTIVO') {
-                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                                $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                if ($servrep->isNotEmpty()) {
+                                    $servrep = $servrep->sum(
+                                        function ($value) {
+                                            return $value['cantidad'] * $value['precio_venta'];
+                                        }
+                                    );
+                   
+                                $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                $serv->costos= $serv->costo+$servrep;
                                 $this->sumaUtilidad += $serv->utilidad;
+                                } 
+                                else 
+                                {
+
+                               
+                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                                $serv->costos= $serv->costo;
+                                $this->sumaUtilidad += $serv->utilidad;
+
+                                }
+
                             }
                         }
                     }
@@ -131,7 +154,8 @@ class ReporteServiceController extends Component
     
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.type', 'ENTREGADO')
@@ -179,8 +203,37 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+
+
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) 
+                                    {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+                                   
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
+
+
+
+
+                                    // $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    // $this->sumaUtilidad += $serv->utilidad;
                                 }
                             }
                         }
@@ -193,7 +246,8 @@ class ReporteServiceController extends Component
                             ->where('mov.status', 'like', 'ACTIVO')
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.user_id', $this->userId)
@@ -204,8 +258,37 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+
+
+
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+                                   
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
+
+
+
+
+                                    // $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    // $this->sumaUtilidad += $serv->utilidad;
                                 }
                             }
                         }
@@ -219,7 +302,8 @@ class ReporteServiceController extends Component
                         ->where('mov.status', 'like', 'ACTIVO')
                         ->select(
                             'services.*',
-                            DB::raw('0 as utilidad')
+                            DB::raw('0 as utilidad'),
+                            DB::raw('1 as costos')
                         )
                         ->whereBetween('mov.created_at', [$this->from, $this->to])
                         ->where('mov.type', $this->estado)
@@ -229,8 +313,30 @@ class ReporteServiceController extends Component
                     foreach ($this->data as $serv) {
                         foreach ($serv->movservices as $mm) {
                             if ($mm->movs->status == 'ACTIVO') {
-                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                             
+                                $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                if ($servrep->isNotEmpty()) {
+                                    $servrep = $servrep->sum(
+                                        function ($value) {
+                                            return $value['cantidad'] * $value['precio_venta'];
+                                        }
+                                    );
+                   
+                                $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                $serv->costos= $serv->costo+$servrep;
                                 $this->sumaUtilidad += $serv->utilidad;
+                                } 
+                                else 
+                                {
+
+                               
+                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                                $serv->costos= $serv->costo;
+                                $this->sumaUtilidad += $serv->utilidad;
+
+                                }
+
                             }
                         }
                     }
@@ -246,7 +352,8 @@ class ReporteServiceController extends Component
     
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.type', $this->estado)
@@ -268,6 +375,7 @@ class ReporteServiceController extends Component
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
                                     $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
                                     $this->sumaUtilidad += $serv->utilidad;
                                 }
                             }
@@ -280,7 +388,8 @@ class ReporteServiceController extends Component
                             ->where('mov.status', 'like', 'ACTIVO')
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.user_id', $this->userId)
@@ -291,8 +400,37 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+
+
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+                                   
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
+
+
+
+
+
+                                    // $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    // $this->sumaUtilidad += $serv->utilidad;
                                 }
                             }
                         }
@@ -309,7 +447,8 @@ class ReporteServiceController extends Component
                         ->where('services.sucursal_id',$this->sucursal)
                         ->select(
                             'services.*',
-                            DB::raw('0 as utilidad')
+                            DB::raw('0 as utilidad'),
+                            DB::raw('1 as costos')
                         )
                         ->whereBetween('mov.created_at', [$this->from, $this->to])
                         ->orderBy('services.id', 'desc')
@@ -319,8 +458,31 @@ class ReporteServiceController extends Component
                     foreach ($this->data as $serv) {
                         foreach ($serv->movservices as $mm) {
                             if ($mm->movs->status == 'ACTIVO') {
-                                $serv->utilidad = $mm->movs->import - $serv->costo;
+
+                                $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                if ($servrep->isNotEmpty()) {
+                                    $servrep = $servrep->sum(
+                                        function ($value) {
+                                            return $value['cantidad'] * $value['precio_venta'];
+                                        }
+                                    );
+                   
+                                $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                $serv->costos= $serv->costo+$servrep;
                                 $this->sumaUtilidad += $serv->utilidad;
+                                } 
+                                else 
+                                {
+
+                               
+                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                                $serv->costos= $serv->costo;
+                                $this->sumaUtilidad += $serv->utilidad;
+
+                                }
+                                // $serv->utilidad = $mm->movs->import - $serv->costo;
+                                // $this->sumaUtilidad += $serv->utilidad;
                             }
                         }
                     }
@@ -337,7 +499,8 @@ class ReporteServiceController extends Component
                             ->where('services.sucursal_id',$this->sucursal)
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.type', 'ENTREGADO')
@@ -362,7 +525,8 @@ class ReporteServiceController extends Component
                             ->where('services.sucursal_id',$this->sucursal)
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.user_id', $this->userId)
@@ -386,8 +550,32 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
+
+                                    // $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    // $this->sumaUtilidad += $serv->utilidad;
                                 }
                             }
                         }
@@ -401,7 +589,8 @@ class ReporteServiceController extends Component
                             ->where('services.sucursal_id',$this->sucursal)
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.user_id', $this->userId)
@@ -412,8 +601,29 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+                                   
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
+                               
                                 }
                             }
                         }
@@ -428,7 +638,8 @@ class ReporteServiceController extends Component
                         ->where('services.sucursal_id',$this->sucursal)
                         ->select(
                             'services.*',
-                            DB::raw('0 as utilidad')
+                            DB::raw('0 as utilidad'),
+                            DB::raw('1 as costos')
                         )
                         ->whereBetween('mov.created_at', [$this->from, $this->to])
                         ->where('mov.type', $this->estado)
@@ -438,8 +649,28 @@ class ReporteServiceController extends Component
                     foreach ($this->data as $serv) {
                         foreach ($serv->movservices as $mm) {
                             if ($mm->movs->status == 'ACTIVO') {
-                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                                $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                if ($servrep->isNotEmpty()) {
+                                    $servrep = $servrep->sum(
+                                        function ($value) {
+                                            return $value['cantidad'] * $value['precio_venta'];
+                                        }
+                                    );
+                   
+                                $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                $serv->costos= $serv->costo+$servrep;
                                 $this->sumaUtilidad += $serv->utilidad;
+                                } 
+                                else 
+                                {
+
+                               
+                                $serv->utilidad = $mm->movs->import - $serv->costo;
+                                $serv->costos= $serv->costo;
+                                $this->sumaUtilidad += $serv->utilidad;
+
+                                }
                             }
                         }
                     }
@@ -455,7 +686,8 @@ class ReporteServiceController extends Component
                             ->where('services.sucursal_id',$this->sucursal)
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.type', $this->estado)
@@ -476,8 +708,28 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+                                   
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
                                 }
                             }
                         }
@@ -490,7 +742,8 @@ class ReporteServiceController extends Component
                             ->where('services.sucursal_id',$this->sucursal)
                             ->select(
                                 'services.*',
-                                DB::raw('0 as utilidad')
+                                DB::raw('0 as utilidad'),
+                                DB::raw('1 as costos')
                             )
                             ->whereBetween('mov.created_at', [$this->from, $this->to])
                             ->where('mov.user_id', $this->userId)
@@ -501,8 +754,28 @@ class ReporteServiceController extends Component
                         foreach ($this->data as $serv) {
                             foreach ($serv->movservices as $mm) {
                                 if ($mm->movs->status == 'ACTIVO') {
-                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+
+                                    if ($servrep->isNotEmpty()) {
+                                        $servrep = $servrep->sum(
+                                            function ($value) {
+                                                return $value['cantidad'] * $value['precio_venta'];
+                                            }
+                                        );
+                       
+                                    $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+                                    $serv->costos= $serv->costo+$servrep;
                                     $this->sumaUtilidad += $serv->utilidad;
+                                    } 
+                                    else 
+                                    {
+    
+                                   
+                                    $serv->utilidad = $mm->movs->import - $serv->costo;
+                                    $serv->costos= $serv->costo;
+                                    $this->sumaUtilidad += $serv->utilidad;
+    
+                                    }
                                 }
                             }
                         }

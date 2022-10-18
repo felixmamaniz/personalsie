@@ -953,8 +953,8 @@ class ReporteMovimientoResumenController extends Component
             ->where('movimientos.status', 'ACTIVO')
             ->where('ca.id', '=', $this->caja)
             ->where(function ($query) {
-                $query->where('crms.comentario', 'like', '%' . 'SOBRANTE' . '%')
-                    ->orWhere('crms.comentario', 'like', '%' . 'FALTANTE' . '%');
+                $query->where('crms.tipoDeMovimiento','SOBRANTE')
+                    ->orWhere('crms.tipoDeMovimiento','FALTANTE');
             })
             //->where('ca.id',$this->caja)
 

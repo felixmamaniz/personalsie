@@ -220,7 +220,7 @@ class ReportEntregadoServController extends Component
                         DB::raw('0 as utilidad')
                     )
                     ->where('ca.id', $this->caja)
-                    ->where('mov.type', 'ENTREGADO')
+                    ->where('mov.type','ENTREGADO')
                     ->whereBetween('mov.created_at', [$from, $to])
                     ->distinct()
                     ->get();
@@ -231,7 +231,7 @@ class ReportEntregadoServController extends Component
                             if ($mm->movs->status == 'ACTIVO')
                             {
                                 $servrep = ServiceRepVentaInterna::where('service_id', $mm->id)->get();
-                                dd($mm->id);
+                                //dd("hola");
 
                                 if ($servrep->isNotEmpty()) {
                                     $servrep = $servrep->sum(
@@ -242,7 +242,7 @@ class ReportEntregadoServController extends Component
                    
                                 $serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
                                 $this->sumaUtilidad += $serv->utilidad;
-                                } 
+                                }
                                 else 
                                 {
 
@@ -596,7 +596,74 @@ class ReportEntregadoServController extends Component
                         foreach ($serv->movservices as $mm) {
                             
                             if ($mm->movs->status == 'ACTIVO') {
+
+
                                 $serv->utilidad = $mm->movs->import - $serv->costo;
+
+//dddddddddddddddddddddddddddddddddddddd
+
+
+$servrep = ServiceRepVentaInterna::where('service_id', $serv->id)->get();
+//dd($serv->id);
+
+if ($servrep->isNotEmpty()) {
+    $servrep = $servrep->sum(
+        function ($value) {
+            return $value['cantidad'] * $value['precio_venta'];
+        }
+    );
+
+$serv->utilidad = $mm->movs->import - $serv->costo-$servrep;
+
+} 
+else 
+{
+
+
+$serv->utilidad = $mm->movs->import - $serv->costo;
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//dddddddddddddddddddddddddddddddddddddddd
+
+                                
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                
+
+                                
                                 foreach($mm->movs->cartmov as $carmv){
                                  
                                     if($carmv->cartera->tipo == 'CajaFisica'){

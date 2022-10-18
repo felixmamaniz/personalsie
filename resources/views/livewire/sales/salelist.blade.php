@@ -238,7 +238,7 @@
             </div>
 
 
-            <center><div id="preloader_3" wire:loading>
+            <center><div id="preloader_3" wire:loading.delay.longest>
                 
             
                 <div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>

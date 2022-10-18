@@ -3,9 +3,13 @@
 namespace App\Http\Livewire;
 
 use App\Models\Caja;
+use App\Models\Cartera;
+use App\Models\CarteraMov;
 use App\Models\Cliente;
+use App\Models\ClienteMov;
 use App\Models\Destino;
 use App\Models\Product;
+use App\Models\ProductosDestino;
 use App\Models\Sale;
 use App\Models\SaleDetail;
 use App\Models\Sucursal;
@@ -132,6 +136,15 @@ class SaleEditController extends Component
         //Poniendo la variable a true por defecto
         $this->stock_disponible = true;
         $this->listasucursales = [];
+
+
+        $this->cliente_id = ClienteMov::join("movimientos as m","m.id","cliente_movs.movimiento_id")
+        ->join("sales as s","s.movimiento_id","m.id")
+        ->where("s.id",$this->venta_id)
+        ->select("cliente_movs.cliente_id as idcliente")
+        ->get()
+        ->first()->idcliente;
+
         $this->paginacion = 10;
     }
     public function render()
@@ -149,10 +162,6 @@ class SaleEditController extends Component
             ->groupBy('products.id')
             ->paginate($this->paginacion);
         }
-
-
-
-
         //Lista a todos los clientes que tengan el nombre de la variable $this->buscarcliente
         $listaclientes = [];
         if(strlen($this->buscarcliente) > 0)
@@ -162,14 +171,22 @@ class SaleEditController extends Component
             ->orderBy("clientes.created_at","desc")
             ->get();
         }
-
-
-        
         //Actualiza el total items del carrito de ventas
         $this->total_items = $this->totalarticulos();
-
         //Obteniendo el total Bs de una venta
         $this->total_bs = $this->totalbs();
+
+        $this->nombrecliente = Cliente::find($this->cliente_id)->nombre;
+
+        //Para actuazalizar el descuento o recargo total
+        $bs_total_original = 0;
+        $items = $this->carrito_venta;
+        foreach ($items as $item)
+        {
+            $bs_total_original = ($this->buscarprecio($item['id']) * $item['quantity']) + $bs_total_original;
+        }
+        $this->descuento_recargo = $bs_total_original - $this->total_bs;
+
 
         return view('livewire.sales_edit.saleedit', [
             'listaproductos' => $listaproductos,
@@ -179,6 +196,51 @@ class SaleEditController extends Component
         ])
         ->extends('layouts.theme.app')
         ->section('content');
+    }
+    //Buscar el Precio Original de un Producto
+    public function buscarprecio($id)
+    {
+        $tiendaproducto = Product::select("products.id as id","products.precio_venta as precio")
+        ->where("products.id", $id)
+        ->get()->first();
+        return $tiendaproducto->precio;
+    }
+    //Obtener el id de un cliente anónimo, si no existe creará uno
+    public function clienteanonimo_id()
+    {
+        $client = Cliente::select('clientes.nombre as nombrecliente','clientes.id as idcliente')
+        ->where('clientes.nombre','Cliente Anónimo')
+        ->get();
+        
+        if($client->count() > 0)
+        {
+            return $client->first()->idcliente;
+        }
+        else
+        {
+            $procedencia = ProcedenciaCliente::select('procedencia_clientes.procedencia as procedencia')
+            ->where('procedencia_clientes.procedencia','VENTA DE PRODUCTOS')
+            ->get();
+            if($procedencia->count() > 0)
+            {
+                $cliente_anonimo = Cliente::create([
+                    'nombre' => "Cliente Anónimo",
+                    'procedencia_cliente_id' => $procedencia->first()->id
+                ]);
+                return $cliente_anonimo->id;
+            }
+            else
+            {
+                $procedencia = ProcedenciaCliente::create([
+                    'procedencia' => "Venta de Productos"
+                ]);
+                $cliente_anonimo = Cliente::create([
+                    'nombre' => "Cliente Anónimo",
+                    'procedencia_cliente_id' => $procedencia->id
+                ]);
+                return $cliente_anonimo->id;
+            }
+        }
     }
     //Listar las Carteras disponibles en su corte de caja
     public function listarcarteras()
@@ -321,10 +383,11 @@ class SaleEditController extends Component
         {
             if($this->stocktienda($idproducto,1))
             {
+                $order = $this->carrito_venta->max('order') + 1;
                 $producto = Product::find($idproducto);
                 //Insertando el producto
                 $this->carrito_venta->push([
-                    'order' => 10,
+                    'order' => $order,
                     'product_id' => $producto->id,
                     'name' => $producto->nombre,
                     'price' => $producto->precio_venta,
@@ -502,6 +565,229 @@ class SaleEditController extends Component
             $this->emit('message-ok');
         }
     }
+    //Cambiar el precio de un producto del Carrito de Ventas
+    public function cambiarprecio($idproducto, $precio_nuevo)
+    {
+        //Guardamos los datos del producto del Carrito de Ventas
+        $product_cart = $this->carrito_venta->where('product_id', $idproducto)->first();
+        if($precio_nuevo >= 0 && $precio_nuevo != "")
+        {
+            //Eliminamos el producto del Carrito de Ventas
+            $this->clearproduct($idproducto);
+            //Volvemos a añadir el producto con el precio actualizado
+
+            //Insertando el producto
+            $this->carrito_venta->push([
+                'order' => $product_cart['order'],
+                'product_id' => $product_cart['product_id'],
+                'name' => $product_cart['name'],
+                'price' => $precio_nuevo,
+                'quantity'=> $product_cart['quantity'],
+                'id' => $product_cart['id'],
+            ]);
+            //Actualizando la variable $this->message
+            $this->message = "Precio Actualizado Exitósamente Producto: " . $product_cart['name'];
+            //Mostrando mensaje toast
+            $this->emit("message-ok");
+
+        }
+        else
+        {
+            $this->message = "El precio dado no esta admitido, se usará el precio de '" . $product_cart['price'] . " Bs'";
+            //Eliminamos el producto del Carrito de Ventas
+            $this->clearproduct($idproducto);
+            
+            //Volvemos a añadir el producto con el precio que tenia en el Carrito de Ventas
+            $this->carrito_venta->push([
+                'order' => $product_cart['order'],
+                'product_id' => $product_cart['product_id'],
+                'name' => $product_cart['name'],
+                'price' => $product_cart['price'],
+                'quantity'=> $product_cart['quantity'],
+                'id' => $product_cart['id'],
+            ]);
+            //Actualizando la variable $this->message
+            $this->message = "Precio no admitido, producto: " . $product_cart['name'];
+            $this->emit('message-warning');
+        }
+    }
+    //Cambiar la cantidad de un producto del Carrito de Ventas
+    public function cambiarcantidad($idproducto, $cantidad_nueva)
+    {
+        //Actualizando la variable $this->cantidad_venta para mostrar cantidad en lotes en la ventana modal lotes productos
+        $this->cantidad_venta = $cantidad_nueva;
+
+
+        //Guardamos los datos del producto del Carrito de Ventas
+        $product_cart = $this->carrito_venta->where('product_id', $idproducto)->first();
+        if($this->stocktienda($idproducto, $cantidad_nueva))
+        {
+            if($cantidad_nueva > 0 && $cantidad_nueva != "")
+            {
+                //Eliminamos el producto del Carrito de Ventas
+                $this->clearproduct($idproducto);
+                //Insertando el producto
+                $this->carrito_venta->push([
+                    'order' => $product_cart['order'],
+                    'product_id' => $product_cart['product_id'],
+                    'name' => $product_cart['name'],
+                    'price' => $product_cart['price'],
+                    'quantity'=> $cantidad_nueva,
+                    'id' => $product_cart['id'],
+                ]);
+                //Actualizando la variable $this->message
+                $this->message = "Cantidad Actualizada Exitósamente Producto: " . $product_cart['name'];
+                //Mostrando mensaje toast
+                $this->emit('message-ok');
+            }
+            else
+            {
+                $this->message = "La cantidad dada no esta admitida, se usará la cantidad de '" . $product_cart->quantity . " unidades'";
+                //Eliminamos el producto del Carrito de Ventas
+                $this->clearproduct($idproducto);
+                
+                //Volvemos a añadir el producto con la cantidad que tenia en el Carrito de Ventas
+                $this->carrito_venta->push([
+                    'order' => $product_cart['order'],
+                    'product_id' => $product_cart['product_id'],
+                    'name' => $product_cart['name'],
+                    'price' => $product_cart['price'],
+                    'quantity'=> $product_cart['quantity'],
+                    'id' => $product_cart['id'],
+                ]);
+                $this->emit('message-warning');
+            }
+        }
+        else
+        {   
+            $this->modalstockinsuficiente($idproducto);
+        }
+
+        
+    }
+    //Actualiza la venta
+    public function update_sale()
+    {
+        //Buscando la venta
+        $venta = Sale::find($this->venta_id);
+
+        $f = "Si";
+
+        if($this->factura == false)
+        {
+            $f = "No";
+        }
+        
+        //Actualizando Venta
+        $venta->update([
+            'tipopago' => Cartera::find($this->cartera_id)->nombre,
+            'factura' => $f,
+            'cartera_id' => $this->cartera_id,
+            'observacion' => $this->observacion,
+        ]);
+        $venta->save();
+
+        //ACTUALIZANDO EL TIPO DE PAGO
+        //Buscando el id de la cartera movimiento
+        $cartera_mov_id = CarteraMov::join("movimientos as m","m.id","cartera_movs.movimiento_id")
+        ->join("sales as s","s.movimiento_id","m.id")
+        ->select("cartera_movs.id as idcarteramov")
+        ->where("s.id",$this->venta_id)
+        ->get()
+        ->first();
+        $cartera_mov = CarteraMov::find($cartera_mov_id->idcarteramov);
+        //Actualizando el id de la cartera movimiento
+        $cartera_mov->update([
+            'cartera_id' => $this->cartera_id
+        ]);
+        $cartera_mov->save();
+        //-------------------------------------
+
+
+        //ACTUALIZANDO EL ID DEL CLIENTE
+        $cliente_mov_id = ClienteMov::join("movimientos as m","m.id","cliente_movs.movimiento_id")
+        ->join("sales as s","s.movimiento_id","m.id")
+        ->where("s.id",$this->venta_id)
+        ->select("cliente_movs.id as idclientemov")
+        ->get()
+        ->first();
+        $cliente_mov = ClienteMov::find($cliente_mov_id->idclientemov);
+        //Actualizando el id de la cartera movimiento
+        $cliente_mov->update([
+            'cliente_id' => $this->cliente_id
+        ]);
+        $cliente_mov->save();
+        //-----------------------------------
+
+
+
+        //ACTUALIZANDO DETALLE DE VENTA
+        //Obteniendo los detalles de la venta
+        $detalle_venta = SaleDetail::where("sale_details.sale_id", $this->venta_id)->get();
+        //Eliminando todos los detalles de venta
+        foreach($detalle_venta as $d)
+        {
+            //Incrementando el stock en tienda
+            $tiendaproducto = ProductosDestino::join("products as p", "p.id", "productos_destinos.product_id")
+            ->join('destinos as des', 'des.id', 'productos_destinos.destino_id')
+            ->select("productos_destinos.id as id","p.nombre as name",
+            "productos_destinos.stock as stock")
+            ->where("p.id", $d->product_id)
+            ->where("des.nombre", 'TIENDA')
+            ->where("des.sucursal_id", $this->idsucursal())
+            ->get()->first();
+
+
+            $tiendaproducto->update([
+                'stock' => $tiendaproducto->stock + $d->quantity
+            ]);
+            
+            $detalle = SaleDetail::find($d->id);
+            $detalle->delete();
+
+        }
+
+        foreach($this->carrito_venta as $p)
+        {
+            $sd = SaleDetail::create([
+                'price' => $p['price'],
+                'quantity' => $p['quantity'],
+                'product_id' => $p['id'],
+                'sale_id' => $venta->id,
+            ]);
+
+            //Decrementando el stock en tienda
+            $tiendaproducto = ProductosDestino::join("products as p", "p.id", "productos_destinos.product_id")
+            ->join('destinos as des', 'des.id', 'productos_destinos.destino_id')
+            ->select("productos_destinos.id as id","p.nombre as name",
+            "productos_destinos.stock as stock")
+            ->where("p.id", $p['id'])
+            ->where("des.nombre", 'TIENDA')
+            ->where("des.sucursal_id", $this->idsucursal())
+            ->get()->first();
+
+
+            $tiendaproducto->update([
+                'stock' => $tiendaproducto->stock - $p['quantity']
+            ]);
+
+        }
+
+
+
+
+
+
+
+        //-----------------------------------
+
+
+
+
+        $this->redirect('salelist');
+
+
+    }
     //Escucha los eventos JavaScript de la vista (saleedit.blade.php)
     protected $listeners = [
         'scan-code' => 'ScanCode',
@@ -509,7 +795,7 @@ class SaleEditController extends Component
         'clear-product' => 'clearproduct',
         'save-sale' => 'savesale'
     ];
-    //Eilimina un producto de la colección carrito de ventas
+    //Elimina un producto de la colección carrito de ventas
     public function clearproduct($idproducto)
     {
         //Buscamos el elemento en la colección

@@ -455,9 +455,9 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group" aria-label="Basic example">
-                                        <button title="Ver Precio y Costos por Lotes" wire:click.prevent="modal_lotes({{ $c['id'] }})" class="btn btn-sm" style="background-color: rgb(0, 156, 135); color:white">
+                                        {{-- <button title="Ver Precio y Costos por Lotes" wire:click.prevent="modal_lotes({{ $c['id'] }})" class="btn btn-sm" style="background-color: rgb(0, 156, 135); color:white">
                                             <i class="fas fa-list-ul"></i>
-                                        </button>
+                                        </button> --}}
                                         <a title="Eliminar Producto" href="#" onclick="ConfirmarEliminar('{{ $c['id'] }}', '{{$c['name']}}')" class="btn btn-sm" style="background-color: red; color:white">
                                             <i class="fas fa-trash-alt"></i>
                                         </a>
@@ -509,10 +509,10 @@
                             </button>
                             @endif
                             <a href="{{ url('salelist') }}" class="btn btn-button" style="background-color: rgb(255, 255, 255); border: 1.8px solid #000000; color: black;">
-                                <b>Lista de Ventas</b>
+                                <b>Cancelar Editar Venta</b>
                             </a>
                             @if($this->total_items > 0)
-                            <button wire:click.prevent="modalfinalizarventa()" class="btn btn-button" style="background-color: #008b1a; color: white;">
+                            <button wire:click.prevent="update_sale()" class="btn btn-button" style="background-color: #7b00a0; color: white;">
                                 Actualizar Venta
                             </button>
                             @endif
@@ -717,7 +717,7 @@
             })
         });
         //Mostrar cualquier tipo de mensaje toast de advertencia
-        window.livewire.on('mensaje-advertencia', msg => {
+        window.livewire.on('message-warning', msg => {
             const toast = swal.mixin({
             toast: true,
             position: 'top-end',

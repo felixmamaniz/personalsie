@@ -57,6 +57,42 @@ class ProductoDestinoSeeder extends Seeder
         }
 
 
+        //Agregando un segundo lote al producto id 1
+        $sl=IngresoProductos::create([
+            'destino'=>2,
+            'user_id'=>1,
+            'concepto'=>'a',
+            'observacion'=> 'a'
+           ]);
+
+        $l= Lote::create([
+            'existencia'=>50,
+            'costo'=>12,
+            'status'=>'Activo',
+            'product_id'=>1
+        ]);
+
+        DetalleEntradaProductos::create([
+            'product_id'=>1,
+            'cantidad'=>50,
+            'costo'=>12,
+            'id_entrada'=>$sl->id,
+            'lote_id'=>$l->id
+        ]);
+
+
+        $p = ProductosDestino::find(1);
+
+
+        $p->update([
+            'stock' => '100'
+            ]);
+        $p->save();
+
+
+
+
+
         // ProductosDestino::create([
         //     'product_id'=> 1,
         //     'destino_id' => 1,

@@ -14,25 +14,24 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-      // $this->call(CompanySeeder::class);
-      // $this->call(SucursalSeeder::class);
-      // $this->call(UserSeeder::class);
-      // $this->call(SucursalUserSeeder::class);
+      $this->call(CompanySeeder::class);
+      $this->call(SucursalSeeder::class);
+      $this->call(UserSeeder::class);
+      $this->call(SucursalUserSeeder::class);
       
         // \App\Models\User::fctory(10)->create();
-       //$this->call(DenominationSeeder::class);
-        /* $this->call(CategorySeeder::class);*/
+      $this->call(DenominationSeeder::class);
+      $this->call(CategorySeeder::class);
 
-       // $this->call(UserSeeder::class);
 
-        // $this->call(CajaSeeder::class);
-        // $this->call(CarteraSeeder::class);
+      $this->call(CajaSeeder::class);
+      $this->call(CarteraSeeder::class);
 
-        // $this->call(PermissionSeeder::class);
-        // $this->call(RoleSeeder::class);
-        // $this->call(ModelHasRolesSeeder::class);
-        // $this->call(DestinoSeeder::class);
-        // $this->call(RoleHasPermissionSeeder::class);
+      $this->call(PermissionSeeder::class);
+      $this->call(RoleSeeder::class);
+      $this->call(ModelHasRolesSeeder::class);
+      $this->call(DestinoSeeder::class);
+      $this->call(RoleHasPermissionSeeder::class);
         // $this->call(ProcedenciaSeeder::class);
         
         // $this->call(TypeworkSeeder::class);
@@ -55,8 +54,8 @@ class DatabaseSeeder extends Seeder
       //   $this->call(UnidadSeeder::class);
       //   $this->call(CategorySeeder::class);
       //   $this->call(ClientSeeder::class);
-      //  $this->call(ProductSeeder::class);
-      //  $this->call(ProductoDestinoSeeder::class);
+       $this->call(ProductSeeder::class);
+       $this->call(ProductoDestinoSeeder::class);
       //   $this->call(LocationSeeder::class);
         
       //   $this->call(ProviderSeeder::class);

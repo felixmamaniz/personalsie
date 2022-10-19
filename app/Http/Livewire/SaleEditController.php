@@ -8,10 +8,12 @@ use App\Models\CarteraMov;
 use App\Models\Cliente;
 use App\Models\ClienteMov;
 use App\Models\Destino;
+use App\Models\Lote;
 use App\Models\Product;
 use App\Models\ProductosDestino;
 use App\Models\Sale;
 use App\Models\SaleDetail;
+use App\Models\SaleLote;
 use App\Models\Sucursal;
 use App\Models\User;
 use Facade\FlareClient\Http\Client;
@@ -721,13 +723,57 @@ class SaleEditController extends Component
 
 
 
+
+
+
+
+
+
         //ACTUALIZANDO DETALLE DE VENTA
         //Obteniendo los detalles de la venta
         $detalle_venta = SaleDetail::where("sale_details.sale_id", $this->venta_id)->get();
-        //Eliminando todos los detalles de venta
+
+
+
+
+
+        //Eliminando todos los detalles de venta y lote venta
         foreach($detalle_venta as $d)
         {
-            //Incrementando el stock en tienda
+
+            //INCREMENTANDO LOTES
+
+
+            //Obteniendo todos los registros de la tabla sale lotes que tengan el id detalle venta
+            $sale_lote_i = SaleLote::where("sale_lotes.sale_detail_id", $d->id)->get();
+
+            foreach($sale_lote_i as $l_i)
+            {
+                //Buscando el lote
+                $lote_i = Lote::find($l_i->lote_id);
+
+                //Obteniendo la existencia actual del lote
+                $existencia_i = $lote_i->existencia;
+
+                //Incrementando la existencia en el lote, sumando la existencia con la cantidad registrada en sale_lote
+                $existencia_i = $existencia_i + $l_i->cantidad;
+
+                //Actualizando el lote con la nueva existencia
+                $lote_i->update([
+                    'existencia' => $existencia_i,
+                    'status' => 'ACTIVO'
+                    ]);
+                $lote_i->save();
+
+
+                //Eliminando Sale Lotes
+                $l_i->delete();
+            }
+
+
+
+
+            //INCREMENTANDO STOCK EN TIENDA
             $tiendaproducto = ProductosDestino::join("products as p", "p.id", "productos_destinos.product_id")
             ->join('destinos as des', 'des.id', 'productos_destinos.destino_id')
             ->select("productos_destinos.id as id","p.nombre as name",
@@ -742,11 +788,19 @@ class SaleEditController extends Component
                 'stock' => $tiendaproducto->stock + $d->quantity
             ]);
             
-            $detalle = SaleDetail::find($d->id);
-            $detalle->delete();
+
+            //Eliminando Detalle de ventas
+            $d->delete();
+
+
 
         }
 
+
+
+
+
+        //Creando nuevos detalles de venta y lotes venta
         foreach($this->carrito_venta as $p)
         {
             $sd = SaleDetail::create([
@@ -756,7 +810,85 @@ class SaleEditController extends Component
                 'sale_id' => $venta->id,
             ]);
 
-            //Decrementando el stock en tienda
+
+
+
+
+            //DECREMENTANDO LOTES
+
+            //Para obtener la cantidad del producto que se va a vender
+            $cantidad_producto_venta = $p['quantity'];
+
+            //Buscamos todos los lotes que tengan ese producto oredenados por fecha de creación
+            $lotes_d = Lote::where('lotes.product_id', $p['id'])->where('status','Activo')->orderBy('lotes.created_at','asc')->get();
+
+            //Recorremos todos los lotes que tengan ese producto
+            foreach($lotes_d as $l_d)
+            {
+                //Obtenemos la cantidad de existencia que tenga ese lote de ese producto
+                $cantidad_producto_lote = $l_d->existencia;
+
+                //Si la cantidad del producto para la venta supera la existencia en el lote
+                //Vaciamos toda la existencia de ese lote y lo inactivamos
+                if($cantidad_producto_venta > $cantidad_producto_lote)
+                {
+                    //Creamos un registro en la tabla SaleLote con la cantidad total del producto en el lote
+                    $sale_lote = SaleLote::create([
+                        'sale_detail_id' => $sd->id,
+                        'lote_id' => $l_d->id,
+                        'cantidad' => $cantidad_producto_lote
+                    ]);
+                    //Dismunuimos la cantidad del producto para la venta por el total cantidad del producto en el lote
+                    $cantidad_producto_venta = $cantidad_producto_venta - $cantidad_producto_lote;
+
+
+                    //Actualizamos el lote
+                    $l_d->update([
+                        'existencia' => 0,
+                        'status' => 'Inactivo'
+                        ]);
+                    $l_d->save();
+                }
+                else
+                {
+                    //Si la cantidad del producto para la venta no supera la existencia en el lote
+                    //Reducimos la existencia de ese lote por la cantidad del producto para la venta
+                    SaleLote::create([
+                        'sale_detail_id' => $sd->id,
+                        'lote_id' => $l_d->id,
+                        'cantidad' => $cantidad_producto_venta
+                    ]);
+
+                    $l_d->update([ 
+                        'existencia'=> $cantidad_producto_lote - $cantidad_producto_venta
+                    ]);
+                    $l_d->save();
+                    $cantidad_producto_venta = 0;
+                }
+            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            //DECREMENTANDO STOCK EN TIENDA
             $tiendaproducto = ProductosDestino::join("products as p", "p.id", "productos_destinos.product_id")
             ->join('destinos as des', 'des.id', 'productos_destinos.destino_id')
             ->select("productos_destinos.id as id","p.nombre as name",
@@ -779,7 +911,6 @@ class SaleEditController extends Component
 
 
 
-        //-----------------------------------
 
 
 

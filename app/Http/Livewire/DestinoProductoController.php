@@ -86,7 +86,8 @@ class DestinoProductoController extends Component
                        return $query->select('p.*','p.cantidad_minima as cant',DB::raw("SUM(productos_destinos.stock) as stock_s"))->groupBy('p.id');
                     })
                     ->when($this->selected_id != 'General',function($query){
-                        return $query->select('p.*','p.cantidad_minima as cant2','productos_destinos.stock as stock')->where('productos_destinos.destino_id',$this->selected_id);
+                        return $query->select('p.*','p.cantidad_minima as cant2','productos_destinos.stock as stock')
+                        ->where('productos_destinos.destino_id',$this->selected_id);
                      })
                      ->when($this->selected_mood =='cero',function($query){
                         if ($this->selected_id =='General') {
@@ -98,11 +99,12 @@ class DestinoProductoController extends Component
                      })
                      ->when($this->selected_mood =='bajo',function($query){
 
-                        if ($this->selected_id =='General') {
-                           
+                        if ($this->selected_id =='General') 
+                        {
                             return $query->having('stock_s','<',DB::raw("cant"));
                         }
-                        else{
+                        else
+                        {
                             return $query->whereColumn('stock','<','cantidad_minima');
                         }
 

@@ -35,6 +35,7 @@ use App\Models\Sucursal;
 use App\Models\TypeWork;
 use App\Models\Unidad;
 use App\Models\User;
+use App\Models\VentasServicios;
 use Carbon\Carbon;
 use DateTime;
 use Exception;
@@ -3382,6 +3383,13 @@ class OrderServiceController extends Component
                 'comentario' => "Venta",
                 'cartera_id' => $this->tipopago,
                 'movimiento_id' => $Movimiento->id,
+            ]);
+
+            VentasServicios::create([
+                'estado'=>'Activo',
+                'sale_id'=>$sale->id,
+                'service_id'=>$service->id,
+
             ]);
         }
 

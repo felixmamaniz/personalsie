@@ -354,136 +354,7 @@
 							</div>
 						</li>
 						@endcan
-						{{-- <li class="nav-item">
-							<a data-toggle="collapse" href="#sidebarLayouts">
-								<img src="assets/img/disney.png" width="30" height="40" alt="navbar brand" class="navbar-brand">
-								<p>Streaming</p>
-								<span class="caret"></span>
-							</a>
-							<div class="collapse" id="sidebarLayouts">
-								@if (empty(session('sesionCaja')))
-								<ul class="nav nav-collapse">
-									<li>
-										<strong style="color: black; ">
-											<p> No tiene una caja abierta </p>
-											<p> para vender planes </p>
-										</strong>
-									</li>
-									@can('Cuentas_Index')
-										<li>
-											<a href="{{ url('cuentas') }}">
-												<i class="fa fas fa-minus"></i>
-												Cuentas </a>
-										</li>
-									@endcan
-									@can('Perfiles_Index')
-										<li>
-											<a href="{{ url('perfiles') }}">
-												<i class="fa fas fa-minus"></i>
-												Perfiles </a>
-										</li>
-									@endcan
-									@can('Plataforma_Index')
-										<li>
-											<a href="{{ url('plataformas') }}">
-												<i class="fa fas fa-minus"></i>
-												Plataformas </a>
-										</li>
-									@endcan
-									@can('Proveedor_Index')
-										<li>
-											<a href="{{ url('strproveedores') }}">
-												<i class="fa fas fa-minus"></i>
-												Proveedores </a>
-										</li>
-									@endcan
-									@can('Correos_Index')
-										<li>
-											<a href="{{ url('emails') }}">
-												<i class="fa fas fa-minus"></i>
-												Correos </a>
-										</li>
-									@endcan
-									@can('Reportes_Streaming_Index')
-										<li>
-											<a href="{{ url('reportStreaming') }}">
-												<i class="fa fas fa-minus"></i>
-												Reportes Streaming </a>
-										</li>
-									@endcan
-								</ul>
-								@else
-								<ul class="nav nav-collapse">
-									@can('Planes_Index')
-										<li>
-											<a href="{{ url('planes') }}">
-												<i class="fa fas fa-minus"></i>
-												Nuevo Plan </a>
-										</li>
-									@endcan
-									@can('Cuentas_Index')
-										<li>
-											<a href="{{ url('cuentas') }}">
-												<i class="fa fas fa-minus"></i>
-												Cuentas </a>
-										</li>
-									@endcan
-									@can('Perfiles_Index')
-										<li>
-											<a href="{{ url('perfiles') }}">
-												<i class="fa fas fa-minus"></i>
-												Perfiles </a>
-										</li>
-									@endcan
-									@can('Plataforma_Index')
-										<li>
-											<a href="{{ url('plataformas') }}">
-												<i class="fa fas fa-minus"></i>
-												Plataformas </a>
-										</li>
-									@endcan
-									@can('Proveedor_Index')
-										<li>
-											<a href="{{ url('strproveedores') }}">
-												<i class="fa fas fa-minus"></i>
-												Proveedores </a>
-										</li>
-									@endcan
-									@can('Correos_Index')
-										<li>
-											<a href="{{ url('emails') }}">
-												<i class="fa fas fa-minus"></i>
-												Correos </a>
-										</li>
-									@endcan
-									@can('Arqueos_Streaming_Index')
-										<li>
-											<a href="{{ url('arqueosStreaming') }}">
-												<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-													fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-													stroke-linejoin="round" class="feather feather-dollar-sign">
-													<line x1="12" y1="1" x2="12" y2="23"></line>
-													<path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-												</svg>
-												Arqueos Streaming </a>
-										</li>
-									@endcan
-									@can('Reportes_Streaming_Index')
-										<li>
-											<a href="{{ url('reportStreaming') }}">
-												<i class="fa fas fa-minus"></i>
-												Reportes Streaming </a>
-										</li>
-									@endcan
-									<li>
-										<a href="{{ url('reportGananciaStreaming') }}">
-											<i class="fa fas fa-minus"></i>
-											Reportes Ganancias Streaming </a>
-									</li>
-								</ul>
-								@endif
-							</div>
-						</li> --}}
+						
 						@can('Service_Index')
 						<li class="nav-item">
 							<a data-toggle="collapse" href="#forms">
@@ -551,6 +422,11 @@
 										<a href="{{ url('ordencompra') }}">
 											<i class="fas fa-user-edit"></i>
 											Ordenes de Compra </a>
+									</li>
+									<li>
+										<a href="{{ url('reporterepuestos') }}">
+											<i class="fas fa-clipboard-list"></i>
+											Reporte Repuestos </a>
 									</li>
 								@endcan
 								</ul>

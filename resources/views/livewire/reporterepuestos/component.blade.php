@@ -171,6 +171,18 @@
             </div>
 
             <div class="widget-content">
+                <div class="col-12 col-sm-6 col-md-2 text-center">
+                    <h6>Elige Estado</h6>
+                    <div class="form-group">
+                        <select wire:model="estadoServicios" class="form-control">
+                            <option value="PROCESO">Repuestos Servicios en Proceso</option>
+                            <option value="TERMINADO">Repuestos Servicios Terminados</option>
+                            <option value="ENTREGADO">Repuestos Servicios Entregados</option>
+                            <option value="DAÑADOS">Repuestos Dañados</option>
+                        </select>
+                    </div>
+                </div>
+
 {{-- PENDIENTE --}}
 {{-- 
                 <div class="row">
@@ -186,20 +198,7 @@
                         </div>
                     </div>
 
-                    <div class="col-12 col-sm-6 col-md-2 text-center">
-                        <h6>Elige Estado</h6>
-                        <div class="form-group">
-                            <select wire:model="estado" class="form-control">
-                                <option value="Todos">Todos</option>
-                                <option value="PENDIENTE">Pendiente</option>
-                                <option value="PROCESO">Proceso</option>
-                                <option value="TERMINADO">Terminado</option>
-                                <option value="ENTREGADO">Entregado</option>
-                                <option value="ABANDONADO">Abandonado</option>
-                            </select>
-                        </div>
-                    </div>
-
+                   
                     <div class="col-12 col-sm-6 col-md-2 text-center">
                         <h6>Sucursal</h6>
                         <div class="form-group">
@@ -291,68 +290,75 @@
                                     <tr>
                                         <th class="table-th text-withe text-center">#</th>
                                         <th class="table-th text-withe text-center">ORD. SERVICIO</th>
-                                        <th class="table-th text-withe text-center">CLIENTE</th>
+                       
                                         <th class="table-th text-withe text-center">DETALLE REPUESTOS</th>
-                                        <th class="table-th text-withe text-center">TOTAL IMPORTE</th>                             
+                                        <th class="table-th text-withe text-center">COSTO REPUESTO</th>                             
                                         <th class="table-th text-withe text-center">TEC. SOL.</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                
-                                        <tr class="tablaserviciostr">
+                                    @foreach ($dataProceso as $item)
+                                    <tr class="tablaserviciostr">
                         
-                                            <td width="2%">
-                                                <h6 class="text-center" style="font-size: 90%; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0">
-                                       1
-                                                </h6>
-                                            </td>
-                           
-                                            <td class="text-center">
-                                                <span class="stamp stamp" style="background-color: #1572e8">
-                                                 4452
-                                                </span>
-                                            </td>
-                                            
-                                            <td class="text-center">
-                                                    Rosario Magne
-                                            </td>
-                                            
-                                            <td class="text-right">
-                                                <div class="col-lg-12 card">
-                                                    <div class="card-head text-center">
+                                        <td>
+                                            {{$loop->index+1}}
+                                        </td>
+                                        <td class="text-center">
+                                            <span class="stamp stamp" style="background-color: #1572e8">
+                                                {{$item->order_service_id}}
+                                            </span>
+                                        </td>
+                                        <td width="2%">
+                                            <h6 class="text-center" style="font-size: 90%; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0">
+                                                    {{$item->nombre}}-{{$item->caracteristicas}}
+                                            </h6>
+                                        </td>
+                       
+                                        
+                                        <td class="text-center">
+                                            {{$item->cantidad*$item->costo}}
+                                        </td>
+                                        
+                                        <td class="text-right">
+                                            {{-- <div class="col-lg-12 card">
+                                                <div class="card-head text-center">
 
-                                                        <b class="text-center" >Repuestos De Tienda</b> 
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <div class="table">
-                                                     
-                                                        </div>
-                                                    </div>
-                                                    
+                                                    <b class="text-center" >Repuestos De Tienda</b> 
                                                 </div>
-                                                <div class="col-lg-12 card">
-                                                    <div class="card-head text-center">
-
-                                                        <b class="text-center" >Repuestos De Almacen</b> 
+                                                <div class="card-body">
+                                                    <div class="table">
+                                                 
                                                     </div>
-                                                    <div class="card-body">
-                                                        <div class="table">
-                                                     
-                                                        </div>
-                                                    </div>
-                                                   
                                                 </div>
-                                            </td>
+                                                
+                                            </div>
+                                            <div class="col-lg-12 card">
+                                                <div class="card-head text-center">
 
-                
-                                            <td class="text-center">
-                                              Bs. 4520
-                                            </td>
-                
-                                            <td class="text-center">
-                                              Roger Coaquira
-                                            </td>
-                                        </tr>
+                                                    <b class="text-center" >Repuestos De Almacen</b> 
+                                                </div>
+                                                <div class="card-body">
+                                                    <div class="table">
+                                                 
+                                                    </div>
+                                                </div>
+                                               
+                                            </div> --}}
+                                            {{$item->name}}
+                                        </td>
+
+{{--             
+                                        <td class="text-center">
+                                          Bs. 4520
+                                        </td>
+            
+                                        <td class="text-center">
+                                          Roger Coaquira
+                                        </td> --}}
+                                    </tr>
+                                    @endforeach
+                                
+                                   
     
                                 </tbody>
                                 <tfoot>

@@ -7,7 +7,7 @@ use Livewire\Component;
 
 class ReporteRepuestosEntregados extends Component
 {
-    public $dataProceso,$dataTerminados,$dataEntregados,$fecha,$collectRep,$estadoServicios;
+    public $dataProceso,$tipo,$suma,$fecha,$collectRep,$estadoServicios;
 
     public function mount(){
         $data=collect();
@@ -15,7 +15,7 @@ class ReporteRepuestosEntregados extends Component
 
     public function render()
     {
-            $this->dataProceso= Service::join('mov_services','mov_services.service_id','services.id')
+            $this->data= Service::join('mov_services','mov_services.service_id','services.id')
             ->join('movimientos','movimientos.id','mov_services.movimiento_id')
             ->join('service_rep_detalle_solicituds','services.id','service_rep_detalle_solicituds.service_id')
             ->join('service_rep_estado_solicituds','service_rep_estado_solicituds.detalle_solicitud_id','service_rep_detalle_solicituds.id')
@@ -26,7 +26,7 @@ class ReporteRepuestosEntregados extends Component
             ->join('lotes','salida_lotes.lote_id','lotes.id')
             ->join('products','products.id','lotes.product_id')
             ->join('users','users.id','movimientos.user_id')
-            ->where('movimientos.type','PROCESO')
+            ->where('movimientos.type',$this->estadoServicios)
             ->where('movimientos.status','ACTIVO')
             ->where('service_rep_estado_solicituds.status','ACTIVO')
             ->where(function($query){
@@ -34,9 +34,13 @@ class ReporteRepuestosEntregados extends Component
                       ->orWhere('service_rep_estado_solicituds.estado','COMPRADO');
                     })
             ->get();
-          //dd($dataProceso);
 
-        return view('livewire.reporterepuestos.component')
+          //dd($dataProceso);
+          $this->suma = $this->data->sum(function($item){
+            return $item->cantidad * $item->costo;
+        });
+
+            return view('livewire.reporterepuestos.component')
             ->extends('layouts.theme.app')
             ->section('content');
     }

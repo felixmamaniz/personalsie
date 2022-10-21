@@ -292,12 +292,12 @@
                                         <th class="table-th text-withe text-center">ORD. SERVICIO</th>
                        
                                         <th class="table-th text-withe text-center">DETALLE REPUESTOS</th>
-                                        <th class="table-th text-withe text-center">COSTO REPUESTO</th>                             
                                         <th class="table-th text-withe text-center">TEC. SOL.</th>
+                                        <th class="table-th text-withe text-center">COSTO REPUESTO</th>                             
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    @foreach ($dataProceso as $item)
+                                    @foreach ($data as $item)
                                     <tr class="tablaserviciostr">
                         
                                         <td>
@@ -308,18 +308,16 @@
                                                 {{$item->order_service_id}}
                                             </span>
                                         </td>
-                                        <td width="2%">
+                                        <td width="30%">
                                             <h6 class="text-center" style="font-size: 90%; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0">
-                                                    {{$item->nombre}}-{{$item->caracteristicas}}
+                                                    {{$item->nombre}}
                                             </h6>
                                         </td>
                        
                                         
-                                        <td class="text-center">
-                                            {{$item->cantidad*$item->costo}}
-                                        </td>
+                                     
                                         
-                                        <td class="text-right">
+                                        <td class="text-center">
                                             {{-- <div class="col-lg-12 card">
                                                 <div class="card-head text-center">
 
@@ -347,6 +345,10 @@
                                             {{$item->name}}
                                         </td>
 
+                                        <td class="text-center">
+                                            {{$item->cantidad*$item->costo}}
+                                        </td>
+
 {{--             
                                         <td class="text-center">
                                           Bs. 4520
@@ -368,9 +370,7 @@
                                         </td>
                                         <td class="text-right" colspan="5">
                                             <span style="font-size: 90%; padding-top: 0; padding-bottom: 0; margin-top: 0; margin-bottom: 0"><strong>
-                                                 
-                                       
-                                            
+                                         {{$suma}}
                                                 </strong></span>
                                         </td>
                                         {{-- <td class="text-right" colspan="1">

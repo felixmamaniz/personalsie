@@ -3412,18 +3412,10 @@ class OrderServiceController extends Component
             ]);
         }
 
-
-
-
         //dd($nn);
-
-
-
-
-
-
     }
     //Actualizar un Servicio (Tabla services y movimientos)
+
     public function actualizarservicio()
     {
         //Reglas de Validación

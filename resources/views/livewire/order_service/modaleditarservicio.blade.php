@@ -18,7 +18,7 @@
                           <a class="nav-link" wire:click="$set('toogle', '2')" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab">Repuestos Asignados</a>
                        
                         </div>
-                      </nav>
+                    </nav>
     
                   
                     <div class="tab-content" id="nav-tabContent">
@@ -230,11 +230,14 @@
                                 <table>
                                     <thead>
                                         <tr>
+                                            <th class="text-center">#</th>
                                             <th class="text-center">Nombre </th>
-                                            <th class="text-center">Nombre Destino</th>
+                                            <th class="text-center">Cod. Sol. </th>
+                                            <th class="text-center">Cant.</th>
+                                            <th class="text-center">Proc.</th>
                                             <th class="text-center">Est/Sol. </th>
                                          
-                                            <th class="text-center">Estado</th>
+                                            <th class="text-center">Acc.</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -245,7 +248,16 @@
                                                                         
                                                                             <tr class="tablaserviciostr">
                                                                                 <td class="text-center">
+                                                                                    {{$loop->index+1}}
+                                                                                </td>
+                                                                                <td class="text-center">
                                                                                     {{$l->prodnombre}}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{$l->id}}
+                                                                                </td>
+                                                                                <td class="text-center">
+                                                                                    {{$l->quantity}}
                                                                                 </td>
                                                                                 <td class="text-center">
                                                                                     {{$l->dest}}
@@ -261,12 +273,12 @@
 
                                                                                         @if ($l->estado_sol == 'PENDIENTE')
                                                                                             
-                                                                                        <button wire:click.prevent="descartarSolicitud({{$l->id}})" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
+                                                                                        <button wire:click.prevent="descartarSolicitud({{$l->id}})" class="btn btn-sm" title="Eliminar solicitud" style="background-color: rgb(10, 137, 235); color:white">
                                                                                             Eliminar Solicitud
                                                                                         </button>
                                                                                         @else
-                                                                                        <button wire:click.prevent="descartarSolicitud('{{$l->id}}')" class="btn btn-sm" title="Ver detalles de la venta" style="background-color: rgb(10, 137, 235); color:white">
-                                                                                            Retornar Repuesto
+                                                                                        <button wire:click.prevent="devolverRepuesto('{{$l->id_detalle}}','{{$l->prod}}','{{$l->iddest}}')" class="btn btn-sm" title="Devolver repuestos" style="background-color: rgb(162, 189, 11); color:white">
+                                                                                            Devolver Repuesto
                                                                                         </button>
                                                                                         @endif
                                                                                   

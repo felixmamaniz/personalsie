@@ -2510,13 +2510,12 @@ class OrderServiceController extends Component
                 ->where('service_id', $this->id_servicio)
                 ->where('service_rep_detalle_solicituds.status', 'ACTIVO')
                 ->where('service_rep_estado_solicituds.status', 'ACTIVO')
-                ->select(
-                    'products.nombre as prodnombre',
+                ->select('products.nombre as prodnombre',
+                    'destinos.id as iddest',
                     'destinos.nombre as dest',
-                    'service_rep_detalle_solicituds.id as id',
+                    'service_rep_detalle_solicituds.id as id_detalle',
                     'service_rep_estado_solicituds.estado as estado_sol',
-                    'service_rep_detalle_solicituds.cantidad as quantity'
-                )
+                    'service_rep_detalle_solicituds.cantidad as quantity')
                 ->get();
             //dd($this->solicitudservicio);
         }
@@ -3340,7 +3339,8 @@ class OrderServiceController extends Component
             $mn = SalidaServicio::join('salida_productos', 'salida_productos.id', 'salida_servicios.salida_id')
                 ->join('detalle_salida_productos', 'detalle_salida_productos.id_salida', 'salida_productos.id')
                 ->join('salida_lotes', 'salida_lotes.salida_detalle_id', 'detalle_salida_productos.id')
-                ->where('salida_servicios.service_id', $this->id_servicio)
+                ->join('service_rep_detalle_solicituds','service_rep_detalle_solicituds.id','salida_servicios.detallesol')
+                ->where('service_rep_detalle_solicituds.service_id', $this->id_servicio)
                 ->select('salida_lotes.*')
                 ->first();
 
@@ -3396,11 +3396,12 @@ class OrderServiceController extends Component
         // dd($this->repuestosalmacen);
         foreach ($this->repuestosalmacen as $data) {
             $rep = SalidaServicio::join('salida_productos', 'salida_productos.id', 'salida_servicios.salida_id')
-                ->join('detalle_salida_productos', 'detalle_salida_productos.id_salida', 'salida_productos.id')
-                ->join('salida_lotes', 'salida_lotes.salida_detalle_id', 'detalle_salida_productos.id')
-                ->where('salida_servicios.service_id', $this->id_servicio)
-                ->select('salida_lotes.*')
-                ->first();
+            ->join('detalle_salida_productos', 'detalle_salida_productos.id_salida', 'salida_productos.id')
+            ->join('salida_lotes', 'salida_lotes.salida_detalle_id', 'detalle_salida_productos.id')
+            ->join('service_rep_detalle_solicituds','service_rep_detalle_solicituds.id','salida_servicios.detallesol')
+            ->where('service_rep_detalle_solicituds.service_id', $this->id_servicio)
+            ->select('salida_lotes.*')
+            ->first();
 
 
             $nn = ServiceRepVentaInterna::create([
@@ -3927,8 +3928,8 @@ class OrderServiceController extends Component
 
         $stock = ProductosDestino::where('product_id', $pid->id)->where('destino_id', $did->id)->value('stock');
         if ($result->count() > 0) {
-            $preserve = $this->solicitudservicio->where('prodnombre')->where('destiny');
-            $cantidadyasolicitada = $result->first()['quantity'] + $preserve;
+           // $preserve = $this->solicitudservicio->where('prodnombre')->where('destiny');
+            $cantidadyasolicitada = $result->first()['quantity'];
 
             $producto = $this->lista_solicitudes->where('destiny_id', $did->id)->where('product_id', $pid->id);
 
@@ -4288,7 +4289,32 @@ class OrderServiceController extends Component
 
     }
 
-    public function reservarProductos()
+    public function devolverRepuesto($id,$quantity,$dest)
     {
+
+        //Se devolver repuestos dependiendo del lugar de destino, si este tiene muchos lotes de los cuales salio, se buscara primeramente los lotes mas antiguos en el caso que 
+        //quiera devolver productos con muchos lotes en un mismo lugar, por ejemplo se solicito usb de carca de tienda, y hay dos lotes del mismo producto, eso se refleja en 
+        //la salida del producto, al devolver se debe retornar de acuerdo al mas antiguo de los lotes.
+
+        $detalle_sol=ServiceRepDetalleSolicitud::where('service_rep_detalle_solicituds.id',$id)
+        ->first();
+
+        $lotes= SalidaServicio::join('salida_productos','salida_productos.id','salida_servicios.salida_id')
+        ->join('detalle_salida_productos','detalle_salida_productos.id_salida','salida_productos.id')
+        ->join('salida_lotes','salida_lotes.salida_detalle_id','detalle_salida_productos.id')
+        ->join('lotes','salida_lotes.id','lotes.id')
+        ->join('service_rep_detalle_solicituds','service_rep_detalle_solicituds.id','salida_servicios.detallesol')
+        ->where('service_rep_detalle_solicituds.id',$id)
+        ->where('salida_productos.destino',$dest)
+        //->where('detalle_salida_productos.product_id',$detalle_sol->product_id)
+        //->select('detalle_salida_productos.product_id as prod','lotes.product_id as lotprod')
+        ->get();
+
+        
+
+
+
+        dd($lotes);
+       
     }
 }

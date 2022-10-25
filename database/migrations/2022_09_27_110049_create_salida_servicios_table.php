@@ -20,7 +20,7 @@ class CreateSalidaServiciosTable extends Migration
             $table->foreign('salida_id')->references('id')->on('salida_productos');
             $table->unsignedBigInteger('detallesol');
             $table->foreign('detallesol')->references('id')->on('service_rep_detalle_solicituds');
-            $table->foreignId('service_id')->constrained();
+        
             $table->enum('estado',['Activo','Inactivo'])->default('Activo');
             //$table->decimal('precio_venta',10,2);
             $table->timestamps();

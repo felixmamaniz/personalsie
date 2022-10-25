@@ -4305,16 +4305,22 @@ class OrderServiceController extends Component
         ->join('lotes','salida_lotes.id','lotes.id')
         ->join('service_rep_detalle_solicituds','service_rep_detalle_solicituds.id','salida_servicios.detallesol')
         ->where('service_rep_detalle_solicituds.id',$id)
-        ->where('salida_productos.destino',$dest)
+        //->where('salida_productos.destino',$dest)
         //->where('detalle_salida_productos.product_id',$detalle_sol->product_id)
         //->select('detalle_salida_productos.product_id as prod','lotes.product_id as lotprod')
         ->get();
+
+        $lt=Lote::join('salida_lotes','salida_lotes.lote_id','lotes.id')
+        ->join('detalle_salida_productos','detalle_salida_productos.id','salida_lotes.salida_detalle_id')
+        ->join('salida_productos','salida_productos.id','detalle_salida_productos.id_salida')
+        ->join('salida_servicios','salida_servicios.salida_id','salida_productos.id')
+        ->where('salida_servicios.detallesol',$id)->get();
 
         
 
 
 
-        dd($lotes);
+        dd($lt);
        
     }
 }

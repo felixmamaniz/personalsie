@@ -498,7 +498,7 @@ class SolicitudRepuestosController extends Component
 
              SalidaServicio::create([
                 'salida_id'=>$operacion->id,
-                'service_id'=>$detalle_solicitud->service_id, 
+                'detallesol'=>$detalle_solicitud->id, 
                 'estado'=>'Activo'
             ]);
     

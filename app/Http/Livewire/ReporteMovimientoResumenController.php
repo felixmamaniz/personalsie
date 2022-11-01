@@ -667,6 +667,43 @@ class ReporteMovimientoResumenController extends Component
         return $utilidad;
     }
 
+    
+    public function utilidadservicio($idmovimiento)
+    {
+
+        $servrep = 0;
+        $serv = Service::join('mov_services as m', 'm.service_id', 'services.id')
+            ->join('movimientos', 'movimientos.id', 'm.movimiento_id')
+            ->where('movimientos.id', $idmovimiento)
+            ->select('movimientos.import as ms', 'services.costo as mc', 'services.id as servid')
+            ->get();
+
+
+        //tendria que añadir los repuestos utilizados como costo del servicio, buscar los repuestos del servicio de la tabla service_rep_venta_internas, el precio de venta
+
+        $servrep = ServiceRepVentaInterna::where('service_id', $serv[0]->servid)->get();
+
+        //dd($servrep);
+        if ($servrep->isNotEmpty()) {
+            $servrep = $servrep->sum(
+                function ($value) {
+                    return $value['cantidad'] * $value['precio_venta'];
+                }
+            );
+            return $utilidad2 = $serv[0]->ms - $serv[0]->mc - $servrep;
+
+        } else {
+           return $utilidad2 = $serv[0]->ms - $serv[0]->mc;
+        }
+
+        //dd($servrep);
+        //  $this->sumaProductosTienda=$this->repuestostienda->sum(function($value){
+        //     return $value['quantity']*$value['precioventa'];
+        //     });
+
+
+    }
+
 
     public function operaciones()
     {

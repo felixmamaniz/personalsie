@@ -56,11 +56,11 @@ class MercanciaController extends Component
     //    $this->ajustarLotes();
     //$this->productosajustados();
     //Correr estos metodos para los lotes
-$this->CrearLotes();
-$this->Ventas();
-$this->limpiarstock();
-$this->buscarproducto();
-$this->inactivarlotes();
+// $this->CrearLotes();
+// $this->Ventas();
+// $this->limpiarstock();
+// $this->buscarproducto();
+// $this->inactivarlotes();
 
     }
     public function render()

@@ -3889,14 +3889,13 @@ class OrderServiceController extends Component
                 {
                     
                     
-                                    $cajaId= session('sesionCajaID');
+                                    $cajaId= Caja::join('carteras','cajas.id','carteras.caja_id')->join('cartera_movs','cartera_movs,cartera_id','cartera_id')->where('cartera_movs.id',$carteramovs->id);
                                     //verificar que esta venta no tuvo operaciones en caja general
                                     if ($this->listarcarterasg()->contains('idcartera',$this->edit_carteraservicioterminado)) {
                                     
                                     $op = OperacionesCarterasCompartidas::create([
                                             'caja_id'=>$cajaId,
-                                            'cartera_mov_id'=>$carteramovs->cartera_id])
-                                            ;
+                                            'cartera_mov_id'=>$carteramovs->cartera_id]);
                                         }
                 }
 

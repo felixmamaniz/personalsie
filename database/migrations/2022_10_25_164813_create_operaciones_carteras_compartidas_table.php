@@ -19,6 +19,7 @@ class CreateOperacionesCarterasCompartidasTable extends Migration
             $table->foreign('caja_id')->references('id')->on('cajas');
             $table->unsignedBigInteger('cartera_mov_id');
             $table->foreign('cartera_mov_id')->references('id')->on('cartera_movs');
+            $table->enum('status',['ACTIVO','INACTIVO'])->default('ACTIVO');
             $table->timestamps();
         });
     }

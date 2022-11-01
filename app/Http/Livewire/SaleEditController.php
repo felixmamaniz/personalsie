@@ -9,6 +9,7 @@ use App\Models\Cliente;
 use App\Models\ClienteMov;
 use App\Models\Destino;
 use App\Models\Lote;
+use App\Models\OperacionesCarterasCompartidas;
 use App\Models\Product;
 use App\Models\ProductosDestino;
 use App\Models\Sale;
@@ -703,6 +704,21 @@ class SaleEditController extends Component
             'cartera_id' => $this->cartera_id
         ]);
         $cartera_mov->save();
+        
+        if (!$this->listarcarterasg()->contains('idcartera', $cartera_mov->cartera_id) and $this->listarcarterasg()->contains('idcartera',$this->cartera_id)) 
+        {
+            
+            
+                            $cajaId= session('sesionCajaID');
+                            //verificar que esta venta no tuvo operaciones en caja general
+                            if ($this->listarcarterasg()->contains('idcartera',$this->edit_carteraservicioterminado)) {
+                            
+                            $op = OperacionesCarterasCompartidas::create([
+                                    'caja_id'=>$cajaId,
+                                    'cartera_mov_id'=>$cartera_mov->cartera_id])
+                                    ;
+                                }
+        }
         //-------------------------------------
 
 

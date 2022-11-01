@@ -15,6 +15,7 @@ use App\Models\Lote;
 use App\Models\Marca;
 use App\Models\Movimiento;
 use App\Models\MovService;
+use App\Models\OperacionesCarterasCompartidas;
 use App\Models\Service;
 use App\Models\OrderService;
 use App\Models\Product;
@@ -3294,7 +3295,7 @@ class OrderServiceController extends Component
                     ]);
 
 
-                    CarteraMov::create([
+                    $cv= CarteraMov::create([
                         'type' => 'INGRESO',
                         'tipoDeMovimiento' => 'SERVICIOS',
                         'comentario' => '',
@@ -3318,12 +3319,27 @@ class OrderServiceController extends Component
                     ]);
 
                     $this->emit('servicioentregado');
+
+                    //verificar que caja esta aperturada
+                    $cajaId= session('sesionCajaID');
+                    //verificar que esta venta no tuvo operaciones en caja general
+                    if ($this->listarcarterasg()->contains('idcartera',$this->cartera_id)) {
+                    
+                    $op = OperacionesCarterasCompartidas::create([
+                            'caja_id'=>$cajaId,
+                            'cartera_mov_id'=>$cv->id]);}
+
+
                 } catch (Exception $e) {
                     DB::rollback();
                     $this->emit('item-error', 'ERROR' . $e->getMessage());
                 }
             }
         }
+
+      
+
+    
 
 
         //Venta de repuestos de tienda
@@ -3466,7 +3482,7 @@ class OrderServiceController extends Component
             'import' => $this->edit_precioservicio,
             'user_id' => $this->id_usuario,
             'on_account' => $this->edit_acuenta,
-            'saldo' => $this->edit_saldo,
+            'saldo' => $this->edit_saldo
         ]);
 
 
@@ -3866,6 +3882,29 @@ class OrderServiceController extends Component
                 $carteramovs->save();
 
                 break;
+            
+            
+
+                if (!$this->listarcarterasg()->contains('idcartera', $carteramovs->cartera_id) and $this->listarcarterasg()->contains('idcartera',$this->edit_carteraservicioterminado)) 
+                {
+                    
+                    
+                                    $cajaId= session('sesionCajaID');
+                                    //verificar que esta venta no tuvo operaciones en caja general
+                                    if ($this->listarcarterasg()->contains('idcartera',$this->edit_carteraservicioterminado)) {
+                                    
+                                    $op = OperacionesCarterasCompartidas::create([
+                                            'caja_id'=>$cajaId,
+                                            'cartera_mov_id'=>$carteramovs->cartera_id])
+                                            ;
+                                        }
+                }
+
+
+
+    
+
+
             }
         }
 

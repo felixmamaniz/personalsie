@@ -54,9 +54,11 @@ class MercanciaController extends Component
     // $this->buscarproducto();
     //$this->borrarLotes();
     //    $this->ajustarLotes();
-    //    $this->productosajustados();
+    //$this->productosajustados();
     //Correr estos metodos para los lotes
-//  $this->limpiarstock();
+// $this->CrearLotes();
+// $this->Ventas();
+// $this->limpiarstock();
 // $this->buscarproducto();
 // $this->inactivarlotes();
 
@@ -340,9 +342,9 @@ class MercanciaController extends Component
                    ]);
 
                    $lot= Lote::create([
-                    'existencia'=>$data->sum + $stockActual,
+                    'existencia'=>$data->sum,
                     'costo'=>$data->costo,
-                    'status'=>'Activo',
+                    'status'=>'Inactivo',
                     'product_id'=>$data->product_id
                 ]);
 
@@ -375,7 +377,7 @@ class MercanciaController extends Component
 
                 foreach ($v4 as $data3) {
 
-                    $lot=Lote::where('product_id',$data3->product_id)->where('status','Activo')->get();
+                    $lot=Lote::where('product_id',$data3->product_id)->get();
 
                     //obtener la cantidad del detalle de la venta
                     $this->qq=$data3->quantity;//q=8

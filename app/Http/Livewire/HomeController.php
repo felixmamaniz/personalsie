@@ -31,7 +31,7 @@ class HomeController extends Component
         }
        
       
-        return view('livewire.caja');
+        return view('livewire.vistas.cajas');
     }
 }
 

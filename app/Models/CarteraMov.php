@@ -15,4 +15,12 @@ class CarteraMov extends Model
     {
         return $this->belongsTo(Cartera::class);
     }
+    public function movimiento()
+    {
+        return $this->belongsTo(Movimiento::class);
+    }
+    public function carteramov()
+    {
+        return $this->belongsTo(CarteraMov::class);
+    }
 }

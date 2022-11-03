@@ -9,7 +9,6 @@ use App\Models\Cliente;
 use App\Models\ClienteMov;
 use App\Models\Destino;
 use App\Models\Lote;
-use App\Models\OperacionesCarterasCompartidas;
 use App\Models\Product;
 use App\Models\ProductosDestino;
 use App\Models\Sale;
@@ -162,7 +161,7 @@ class SaleEditController extends Component
             "pd.stock as stock", "products.codigo as barcode")
             ->where('products.nombre', 'like', '%' . $this->buscarproducto . '%')
             ->orWhere('products.codigo', 'like', '%' . $this->buscarproducto . '%')
-            ->groupBy('products.id')
+            ->distinct()
             ->paginate($this->paginacion);
         }
         //Lista a todos los clientes que tengan el nombre de la variable $this->buscarcliente
@@ -411,6 +410,15 @@ class SaleEditController extends Component
     //Para verificar que quede stock disponible en la TIENDA para la venta
     public function stocktienda($idproducto, $cantidad)
     {
+        $detalle_venta = SaleDetail::where("sale_details.sale_id", $this->venta_id)
+        ->where("sale_details.product_id", $idproducto)
+        ->first();
+
+        $cantidad_previa = $detalle_venta->quantity;
+
+
+
+
         //Buscando stock dispnible del producto en el destino TIENDA
         $producto = Destino::join("productos_destinos as pd", "pd.destino_id", "destinos.id")
         ->join("products as p", "p.id", "pd.product_id")
@@ -419,7 +427,6 @@ class SaleEditController extends Component
         ->where('destinos.nombre', 'TIENDA')
         ->where('pd.product_id', $idproducto)
         ->where('p.status', 'ACTIVO')
-        ->where('pd.stock','>=', $cantidad)
         ->get();
 
 
@@ -435,7 +442,7 @@ class SaleEditController extends Component
                 $stock_cart = $p->first()['quantity'];
             }
             //Restamos el stock de la tienda con el stock del Carrito de Ventas
-            $stock = $producto->first()->stock - $stock_cart;
+            $stock = $producto->first()->stock - $stock_cart + $cantidad_previa;
             if($stock > 0)
             {
                 return true;
@@ -619,8 +626,6 @@ class SaleEditController extends Component
     {
         //Actualizando la variable $this->cantidad_venta para mostrar cantidad en lotes en la ventana modal lotes productos
         $this->cantidad_venta = $cantidad_nueva;
-
-
         //Guardamos los datos del producto del Carrito de Ventas
         $product_cart = $this->carrito_venta->where('product_id', $idproducto)->first();
         if($this->stocktienda($idproducto, $cantidad_nueva))
@@ -704,20 +709,6 @@ class SaleEditController extends Component
             'cartera_id' => $this->cartera_id
         ]);
         $cartera_mov->save();
-        
-        if (!$this->listarcarterasg()->contains('idcartera', $cartera_mov->cartera_id) and $this->listarcarterasg()->contains('idcartera',$this->cartera_id)) 
-        {
-            
-            
-            $cajaId= Caja::join('carteras','cajas.id','carteras.caja_id')->join('cartera_movs','cartera_movs,cartera_id','cartera_id')->where('cartera_movs.id',$carteramovs->id);
-            //verificar que esta venta no tuvo operaciones en caja general
-            if ($this->listarcarterasg()->contains('idcartera',$this->edit_carteraservicioterminado)) {
-            
-            $op = OperacionesCarterasCompartidas::create([
-                    'caja_id'=>$cajaId,
-                    'cartera_mov_id'=>$cartera_mov->cartera_id]);
-                }
-        }
         //-------------------------------------
 
 
@@ -729,7 +720,7 @@ class SaleEditController extends Component
         ->get()
         ->first();
         $cliente_mov = ClienteMov::find($cliente_mov_id->idclientemov);
-        //Actualizando el id de la cartera movimiento
+        //Actualizando el id del cliente movimiento
         $cliente_mov->update([
             'cliente_id' => $this->cliente_id
         ]);
@@ -820,6 +811,7 @@ class SaleEditController extends Component
         {
             $sd = SaleDetail::create([
                 'price' => $p['price'],
+                'cost' => 0,
                 'quantity' => $p['quantity'],
                 'product_id' => $p['id'],
                 'sale_id' => $venta->id,

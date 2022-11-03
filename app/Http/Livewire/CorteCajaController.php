@@ -29,21 +29,18 @@ class CorteCajaController extends Component
         $this->idsucursal = $this->idsucursal();
         $this->nombre_caja = null;
         $this->id_caja = null;
-    }
-    public function render()
-    {
         /* Caja en la cual se encuentra el usuario */
-        $cajausuario = Caja::join('sucursals as s', 's.id', 'cajas.sucursal_id')
-        ->join('sucursal_users as su', 'su.sucursal_id', 's.id')
-        ->join('carteras as car', 'cajas.id', 'car.caja_id')
-        ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
-        ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
-        ->select("cajas.nombre as nombre_caja","cajas.id as id_caja")
-        ->where('cajas.id','<>', 1)
-        ->where('mov.user_id', Auth()->user()->id)
-        ->where('mov.status', 'ACTIVO')
-        ->where('mov.type', 'APERTURA')
-        ->get();
+        // $cajausuario = Caja::join('sucursals as s', 's.id', 'cajas.sucursal_id')
+        // ->join('sucursal_users as su', 'su.sucursal_id', 's.id')
+        // ->join('carteras as car', 'cajas.id', 'car.caja_id')
+        // ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
+        // ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
+        // ->select("cajas.nombre as nombre_caja","cajas.id as id_caja")
+        // ->where('cajas.id','<>', 1)
+        // ->where('mov.user_id', Auth()->user()->id)
+        // ->where('mov.status', 'ACTIVO')
+        // ->where('mov.type', 'APERTURA')
+        // ->get();
 
 
 
@@ -64,12 +61,16 @@ class CorteCajaController extends Component
 
 
         //Verificando si el usuario tiene una caja abierta
-        if($cajausuario->count() > 0)
-        {
-            //Si el usuario tiene una caja abierta se actualizaran estas variables
-            $this->nombre_caja = $cajausuario->first()->nombre_caja;
-            $this->id_caja = $cajausuario->first()->id_caja;
-        }
+        // if($cajausuario->count() > 0)
+        // {
+        //     //Si el usuario tiene una caja abierta se actualizaran estas variables
+        //     $this->nombre_caja = $cajausuario->first()->nombre_caja;
+        //     $this->id_caja = $cajausuario->first()->id_caja;
+        // }
+    }
+    public function render()
+    {
+        
         //Listando todas las cajas dependiendo la eleccion de la sucursal
         if($this->idsucursal != "Todos")
         {

@@ -68,11 +68,11 @@ class MercanciaController extends Component
         
         if ($this->tipo_de_operacion == "Entrada") {
             
-            $ingprod= IngresoProductos::with(['detalleingreso'])->orderBy('ingreso_productos.created_at','desc')->paginate($this->pagination);
+            $ingprod= IngresoProductos::with('detalleingreso')->orderBy('ingreso_productos.created_at','desc')->paginate($this->pagination);
         }
         else{
 
-            $ingprod=SalidaProductos::with(['detallesalida'])->orderBy('salida_productos.created_at','desc')->paginate($this->pagination);
+            $ingprod=SalidaProductos::with('detallesalida')->orderBy('salida_productos.created_at','desc')->paginate($this->pagination);
         }
 
         //dd($ingprod);

@@ -60,7 +60,6 @@ class DetalleComprasController extends Component
         $this->tipo_transaccion = "CONTADO";
         $this->tipo_documento = "FACTURA";
         $this->status = "ACTIVO";
-        
         $this->subtotal = Compras::getTotal();
         $this->total_compra= $this->subtotal-$this->dscto;
         $this->porcentaje=0;
@@ -139,10 +138,11 @@ class DetalleComprasController extends Component
         $products = array(
             'id'=>$product->id,
             'name'=>$product->nombre,
-            'price'=>$precio_compra,
+            'price'=>$product->costo,
             'quantity'=>$cant,
             'attributes'=>$attributos
         );
+       
         Compras::add($products);
         // Compras::add($product->id, $product->name, $precio_compra, $cant);
         $this->total = Compras::getTotal();

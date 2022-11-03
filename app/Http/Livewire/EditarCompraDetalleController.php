@@ -136,20 +136,16 @@ class EditarCompraDetalleController extends Component
          $this->datalistcarrito=Compra::join('compra_detalles','compra_detalles.compra_id','compras.id')
          ->join('products','products.id','compra_detalles.product_id')
          ->join('lotes','lotes.id','compra_detalles.lote_compra')
-         ->select('compras.*','products.id as product_id','products.codigo as codigo_prod','products.nombre as product_nombre','compra_detalles.cantidad as cantidad','compra_detalles.precio as precio','lotes.pv_lote')
+->select('compras.*','products.id as product_id','products.codigo as codigo_prod','products.nombre as product_nombre','compra_detalles.cantidad as cantidad','compra_detalles.precio as precio','lotes.pv_lote','lotes.costo')
          ->where('compras.id',$this->ide)
          ->get();
          //$bn =EditarTransferencia::getContent();
 
-         dd($this->datalistcarrito);
+         //dd($this->datalistcarrito);
  
          foreach ($this->datalistcarrito as $value) 
          {
-            
-      
-            if ($value->tipo_doc == 'FACTURA') {
 
-                
         $attributos=[
             'precio'=>$value->pv_lote,
             'codigo'=>$value->codigo_prod,
@@ -159,17 +155,14 @@ class EditarCompraDetalleController extends Component
         $products = array(
             'id'=>$value->product_id,
             'name'=>$value->product_nombre,
-            'price'=>$value->precio,
+            'price'=>$value->costo,
             'quantity'=>$value->cantidad,
             'attributes'=>$attributos
         );
                 
                 EditarCompra::add($products);
-            }
-            
-            else{
-                EditarCompra::add($products);
-            }
+         
+        
          }
  
      }
@@ -181,12 +174,6 @@ class EditarCompraDetalleController extends Component
         ->where('products.id',$productId)->first();
        
         $exist = EditarCompra::get($product->id);
-
-        if ($exist) {
-            $title = 'Cantidad actualizada';
-        } else {
-            $title = "Producto agregado";
-        }
 
         $attributos=[
             'precio'=>$product->precio_venta,
@@ -259,7 +246,7 @@ class EditarCompraDetalleController extends Component
 
     public function UpdateQty($productId, $cant = 3)
     {
-        $title = '';
+     
         $product = Product::select('products.*')
         ->where('products.id',$productId)->first();
        
@@ -267,12 +254,7 @@ class EditarCompraDetalleController extends Component
         $prices=$exist->price;
         $precio_venta=$exist->attributes->precio;
         $codigo=$exist->attributes->codigo;
-       
-        if ($exist) {
-            $title = "cantidad actualizada";
-        } else {
-            $title = "producto agregado";
-        }
+    
        
         $this->removeItem($productId);
        
@@ -298,7 +280,7 @@ class EditarCompraDetalleController extends Component
             EditarCompra::add($products);
             $this->subtotal = EditarCompra::getTotal();
             $this->itemsQuantity = EditarCompra::getTotalQuantity();
-            $this->emit('scan-ok', $title);
+           
             $this->subtotal = EditarCompra::getTotal();
             $this->total_compra= $this->subtotal-$this->descuento;
 
@@ -345,7 +327,7 @@ class EditarCompraDetalleController extends Component
 
             $this->subtotal = EditarCompra::getTotal();
             $this->itemsQuantity = EditarCompra::getTotalQuantity();
-            $this->emit('scan-ok', $title);
+       
             $this->subtotal = EditarCompra::getTotal();
             $this->total_compra= $this->subtotal-$this->descuento;
         }
@@ -410,7 +392,7 @@ class EditarCompraDetalleController extends Component
 
         $this->subtotal = EditarCompra::getTotal();
         $this->itemsQuantity = EditarCompra::getTotalQuantity();
-        $this->emit('scan-ok', 'Producto eliminado');
+
         $this->subtotal = EditarCompra::getTotal();
         $this->total_compra= $this->subtotal-$this->descuento;
         $this->descuento_change();
@@ -546,16 +528,17 @@ class EditarCompraDetalleController extends Component
                             'product_id'=>$item->id,
                             'pv_lote'=>$item->attributes->precio
                         ]);
-
-
-                        CompraDetalle::create([
+                        
+                        $cp=CompraDetalle::create([
                             'precio' => $this->tipo_documento== 'FACTURA'?$item->price*0.87:$item->price,
                             'cantidad' => $item->quantity,
                             'product_id' => $item->id,
                             'compra_id' => $this->ide,
                             
+                           
                             
                         ]);
+                        
 
                      
                       
@@ -620,13 +603,14 @@ class EditarCompraDetalleController extends Component
 
     public function verificarLotes(){
 
-   $auxi= CompraDetalle::where('compra_detalles.compra_id',$this->ide)->get();
-  //
+   $auxi= CompraDetalle::where('compra_detalles.compra_id',$this->ide)
+   ->get();
+  //verificar si la cantidad es menor o igual al lote de ese producto
      
         foreach ($auxi as $data) {
            
-           $lotetotal=SaleLote::where('lote_id',$data->lote_compra)->select('cantidad')->value('cantidad')
-            +$sl=SalidaLote::where('lote_id',$data->lote_compra)->select('cantidad')->value('cantidad');
+           $lotetotal=SaleLote::where('lote_id',$data->lote_compra)->select('cantidad')->value('cantidad');
+    
           
            // dd($lotetotal);
             if ($lotetotal>0) 

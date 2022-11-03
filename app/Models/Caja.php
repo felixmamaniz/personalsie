@@ -13,6 +13,12 @@ class Caja extends Model
 
     public function carteras()
     {
+        //de uno a Muchos
         return $this->hasMany(Cartera::class);
+    }
+    public function sucursal()
+    {
+        //de uno a uno
+        return $this->belongsTo(Sucursal::class);
     }
 }

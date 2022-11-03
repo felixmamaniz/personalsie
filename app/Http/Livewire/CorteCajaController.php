@@ -32,18 +32,37 @@ class CorteCajaController extends Component
     }
     public function render()
     {
-         /* Caja en la cual se encuentra el usuario */
-         $cajausuario = Caja::join('sucursals as s', 's.id', 'cajas.sucursal_id')
-         ->join('sucursal_users as su', 'su.sucursal_id', 's.id')
-         ->join('carteras as car', 'cajas.id', 'car.caja_id')
-         ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
-         ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
-         ->select("cajas.nombre as nombre_caja","cajas.id as id_caja")
-         ->where('cajas.id','<>', 1)
-         ->where('mov.user_id', Auth()->user()->id)
-         ->where('mov.status', 'ACTIVO')
-         ->where('mov.type', 'APERTURA')
-         ->get();
+        /* Caja en la cual se encuentra el usuario */
+        $cajausuario = Caja::join('sucursals as s', 's.id', 'cajas.sucursal_id')
+        ->join('sucursal_users as su', 'su.sucursal_id', 's.id')
+        ->join('carteras as car', 'cajas.id', 'car.caja_id')
+        ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
+        ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
+        ->select("cajas.nombre as nombre_caja","cajas.id as id_caja")
+        ->where('cajas.id','<>', 1)
+        ->where('mov.user_id', Auth()->user()->id)
+        ->where('mov.status', 'ACTIVO')
+        ->where('mov.type', 'APERTURA')
+        ->get();
+
+
+
+        /* Caja en la cual se encuentra el usuario */
+        // $cajausuario = Caja::with('carteras','carteras.carteraMovimientos','carteras.carteraMovimientos.movimiento')
+        // ->where('id','<>', 1)
+        // ->whereRelation('carteras.carteraMovimientos.movimiento','user_id', Auth()->user()->id)
+        // ->whereRelation('carteras.carteraMovimientos.movimiento','status', 'ACTIVO')
+        // ->whereRelation('carteras.carteraMovimientos.movimiento','type', 'APERTURA')
+        // ->get();
+
+        // dd($cajausuario);
+
+
+
+
+
+
+
         //Verificando si el usuario tiene una caja abierta
         if($cajausuario->count() > 0)
         {

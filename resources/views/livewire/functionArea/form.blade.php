@@ -36,7 +36,7 @@
                         </div>
                     </div>--}}
 
-                    <div class="col-sm-12 col-md-6">
+                    {{-- <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Areas</label>
                             <br>
@@ -52,8 +52,8 @@
                             <br>
                             @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
-                        {{-- @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror --}}
-                    </div>
+                        ///@error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                    </div> --}}
 
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
@@ -76,8 +76,8 @@
                     <button type="button" wire:click.prevent="Store()"
                     class="btn btn-warning">Guardar</button>
 
-                    <button type="button" wire:click.prevent="nuevoRegistro()"
-                    class="btn btn-warning">Guardar y Cerrar</button>
+                    {{-- <button type="button" wire:click.prevent="nuevoRegistro()"
+                    class="btn btn-warning">Guardar y Cerrar</button> --}}
                 @else
                     <button type="button" wire:click.prevent="Update()"
                     class="btn btn-warning">Actualizar</button>

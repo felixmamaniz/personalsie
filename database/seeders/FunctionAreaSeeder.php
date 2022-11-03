@@ -15,19 +15,22 @@ class FunctionAreaSeeder extends Seeder
     public function run()
     {
         FunctionArea::create([
+            //1
             'name' => 'Administrador',
             'description' => 'Uno',
-            'area_trabajo_id' => 1,
+            //'area_trabajo_id' => 1,
         ]);
         FunctionArea::create([
+            //2
             'name' => 'Tecnico',
             'description' => 'Dos',
-            'area_trabajo_id' => 2,
+            //'area_trabajo_id' => 2,
         ]);
         FunctionArea::create([
+            //3
             'name' => 'Sin Funcion',
             'description' => 'Tres',
-            'area_trabajo_id' => 3,
+            //'area_trabajo_id' => 3,
         ]);
     }
 }

@@ -4,7 +4,8 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Contrato;
-use App\Models\Employee;
+use App\Models\FunctionArea;
+
 use Carbon\Carbon;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -16,7 +17,7 @@ class ContratoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $fechaFin, $descripcion, $nota, $salario, $estado, $selected_id;
+    public $fechaInicio, $fechaFin, $descripcion, $nota, $funcionid, $salario, $estado, $selected_id;
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
@@ -25,7 +26,7 @@ class ContratoController extends Component
         $this -> componentName = 'Contrato';
         
         $this->estado = 'Elegir';
-
+        $this->funcionid = 'Elegir';
         //$this->fechaFin=Carbon::parse(Carbon::now())->format('Y-m-d');
     }
 
@@ -38,8 +39,10 @@ class ContratoController extends Component
     {
         if(strlen($this->search) > 0)
         {
-            $data = Contrato::select('contratos.id as idContrato','contratos.fechaFin as fechaFin','contratos.descripcion as descripcion',
-            'contratos.nota as nota','contratos.salario as salario','contratos.estado as estado',
+            $data = Contrato::join('function_areas as fun', 'fun.id', 'contratos.funcion_area_id') // se uno amabas tablas
+            ->select('contratos.*', 'contratos.id as idContrato', 
+                //'fun.name as funcion', 
+                //'contratos.funcion_area_id as funcion_area_id',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->where('contratos.descripcion', 'like', '%' . $this->search . '%')
@@ -56,8 +59,10 @@ class ContratoController extends Component
   
  
    /* Seleccionar los datos de la base de datos y paginarlos. */
-            $data = Contrato::select('contratos.id as idContrato','contratos.fechaFin as fechaFin','contratos.descripcion as descripcion',
-            'contratos.nota as nota','contratos.salario as salario','contratos.estado as estado',
+            $data = Contrato::join('function_areas as fun', 'fun.id', 'contratos.funcion_area_id') // se uno amabas tablas
+            ->select('contratos.*', 'contratos.id as idContrato', 
+            //'fun.name as funcion', 
+            //'contratos.funcion_area_id as funcion_area_id',
             DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
@@ -69,7 +74,10 @@ class ContratoController extends Component
             }
         }
 
-        return view('livewire.contrato.component', ['contratos' => $data]) // se envia contratos
+        return view('livewire.contrato.component', [
+            'contratos' => $data,
+            'funciones' => FunctionArea::orderBy('name', 'asc')->get()
+            ]) // se envia contratos
         ->extends('layouts.theme.app')
         ->section('content');
     }
@@ -94,12 +102,14 @@ class ContratoController extends Component
 
     // editar 
     public function Edit($id){
-        $record = Contrato::find($id, ['id', 'fechaFin', 'descripcion', 'nota', 'salario','estado']);
+        $record = Contrato::find($id, ['id','fechaInicio', 'fechaFin', 'descripcion', 'nota','funcion_area_id', 'salario','estado']);
         //dd(\Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d'));
+        $this->fechaInicio = \Carbon\Carbon::parse($record->fechaInicio)->format('Y-m-d');
         $this->fechaFin = \Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d');
         //Carbon::parse(Carbon::now())->format('Y-m-d');
         $this->descripcion = $record->descripcion;
         $this->nota = $record->nota;
+        $this->funcionid = $record->funcion_area_id;
         $this->salario = $record->salario;
         $this->estado = $record->estado;
         $this->selected_id = $record->id;
@@ -111,19 +121,23 @@ class ContratoController extends Component
         $rules = [
             'salario' => 'required',
             //'estado' => 'required|not_in:Elegir',
+            'funcionid' => 'required|not_in:Elegir'
         ];
         $messages =  [
             'salario.required' => 'El salario es requerido',
             //'estado.required' => 'seleccione estado de contrato',
             //'estado.not_in' => 'selecciona estado de contrato',
+            'funcionid.not_in' => 'elije un nombre de funcion diferente de elegir',
         ];
 
         $this->validate($rules, $messages);
        
         $contrato = Contrato::create([
+            'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
+            'funcion_area_id' => $this->funcionid,
             'salario'=>$this->salario,
             'estado'=>'Activo'
         ]);
@@ -137,20 +151,24 @@ class ContratoController extends Component
         $rules = [
             'salario' => 'required',
             //'estado' => 'required|not_in:Elegir',
+            'funcionid' => 'required|not_in:Elegir'
         ];
 
         $messages = [
             'salario.required' => 'El salario es requerido',
             //'estado.required' => 'seleccione estado de contrato',
             //'estado.not_in' => 'selecciona estado de contrato',
+            'funcionid.not_in' => 'elije un nombre de funcion diferente de elegir',
         ];
         $this->validate($rules,$messages);
 
         $contrato = Contrato::find($this->selected_id);
         $contrato -> update([
+            'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
             'nota'=>$this->nota,
+            'funcion_area_id' => $this->funcionid,
             'salario'=>$this->salario,
             'estado'=>$this->estado
         ]);
@@ -161,8 +179,10 @@ class ContratoController extends Component
 
     public function resetUI(){
         $this->fechaFin='';
+        $this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
+        $this->funcionid='Elegir';
         $this->salario='';
         $this->estado = 'Elegir';
         $this->search='';

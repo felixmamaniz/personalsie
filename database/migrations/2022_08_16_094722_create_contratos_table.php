@@ -16,9 +16,14 @@ class CreateContratosTable extends Migration
         Schema::create('contratos', function (Blueprint $table) {
             $table->id();
 
+            $table->timestamp('fechaInicio')->nullable();
             $table->timestamp('fechaFin')->nullable();
             $table->string('descripcion',255)->nullable();
             $table->string('nota',255)->nullable();
+
+            $table->unsignedBigInteger('funcion_area_id');
+            $table->foreign('funcion_area_id')->references('id')->on('function_areas');
+
             $table->string('salario',255);
 
             $table->enum('estado',['Activo','Finalizado'])->default('Activo');

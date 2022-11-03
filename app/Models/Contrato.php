@@ -8,5 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Contrato extends Model
 {
     use HasFactory;
-    protected $fillable = ['fechaFin','descripcion','nota','salario','estado'];
+    protected $fillable = [
+        'fechaInicio',
+        'fechaFin',
+        'descripcion',
+        'nota',
+        'funcion_area_id',
+        'salario',
+        'estado'
+    ];
 }

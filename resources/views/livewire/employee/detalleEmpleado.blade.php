@@ -64,10 +64,10 @@
                     <div class="number">Estado Civil</div>
                     <div class="number">Area de Trabajo</div>
                     <div class="number">Cargo</div>
-                    <div class="number">Fecha de Inicio</div>
+                    {{-- <div class="number">Fecha de Inicio</div> --}}
                     <div class="number">Fecha de Final</div>
                     <div class="number">Salario</div>
-                    <div class="number">Estado de Contrato</div>
+                    {{-- <div class="number">Estado de Contrato</div> --}}
                   </div>
                   <div class="col">
                     <div class="number">{{ $address }}</div>
@@ -75,9 +75,9 @@
                     <div class="number">{{ $estadoCivil }}</div>
                     <div class="number">{{ $areaid }}</div>
                     <div class="number">{{ $cargoid }}</div>
-                    <div class="number">{{ $fechaInicio }}</div>
-                    <div class="number">{{ $contratoid }}</div>
-                    <div class="number">{{ $salario }} Bs</div>
+                    {{-- <div class="number">{{ $fechaInicio }}</div> --}}
+                    {{-- <div class="number">{{ $contratoid }}</div> --}}
+                    {{-- <div class="number">{{ $salario }} Bs</div> --}}
                     <div class="number">{{ $estado }}</div>
                   </div>
                 </div>

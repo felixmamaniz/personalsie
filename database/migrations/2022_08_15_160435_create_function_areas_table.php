@@ -19,8 +19,8 @@ class CreateFunctionAreasTable extends Migration
             $table->string('name',255);
             $table->string('description',500)->nullable();
 
-            $table->unsignedBigInteger('area_trabajo_id');
-            $table->foreign('area_trabajo_id')->references('id')->on('area_trabajos');
+            /*$table->unsignedBigInteger('area_trabajo_id');
+            $table->foreign('area_trabajo_id')->references('id')->on('area_trabajos');*/
 
             $table->timestamps();
         });

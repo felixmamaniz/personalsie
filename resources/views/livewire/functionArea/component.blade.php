@@ -20,7 +20,7 @@
                             <tr>
                                <th class="table-th text-white">NOMBRE</th>
                                <th class="table-th text-white text-center">DESCRIPCION</th>
-                               <th class="table-th text-withe text-center">AREA</th>
+                               {{-- <th class="table-th text-withe text-center">AREA</th> --}}
                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
@@ -29,7 +29,7 @@
                             <tr>
                                 <td><h6>{{$func->name}}</h6></td>
                                 <td><h6 class="text-center">{{$func->description}}</h6></td>
-                                <td><h6 class="text-center">{{ $func->area }}</h6></td>
+                                {{-- <td><h6 class="text-center">{{ $func->area }}</h6></td> --}}
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"
@@ -54,7 +54,7 @@
         </div>
     </div>
     @include('livewire.functionArea.form')
-    @include('livewire.functionArea.nuevArea')
+    {{-- @include('livewire.functionArea.nuevArea') --}}
 </div>
 
 @section('javascript')
@@ -81,12 +81,12 @@
         });
 
         // formulario de Nueva Area
-        window.livewire.on('show-modal-area', Msg => {
+        /*window.livewire.on('show-modal-area', Msg => {
             $('#theModal-area').modal('show')
         })
         window.livewire.on('modal-hide-area', Msg => {
             $('#theModal-area').modal('hide')
-        }) 
+        })*/
     });
 
 

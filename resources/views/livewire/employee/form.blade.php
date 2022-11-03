@@ -109,32 +109,32 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6">
+                    {{-- <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Fecha de Inicio</label>
                             <input type="date" wire:model.lazy="fechaInicio" class="form-control">
                             @error('fechaInicio') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <div class="col-sm-12 col-md-6">
+                    {{-- <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Contrato</label>
                             <br>
-                            <div class="btn-group">
-                                <select wire:model="contratoid" class="form-control col-md-12">
+                            <div class="btn-group"> --}}
+                                {{-- <select wire:model="contratoid" class="form-control col-md-12">
                                     <option value="Elegir" disabled>Elegir</option>
                                     @foreach($contratos as $contrato)
                                         <option value="{{$contrato->id}}">{{$contrato->descripcion}}</option>
                                     @endforeach
-                                </select>
-                                <a type="button" wire:click="NuevoContrato()" class="btn btn-warning close-btn text-info">Nuevo</a>
+                                </select> --}}
+                                {{-- <a type="button" wire:click="NuevoContrato()" class="btn btn-warning close-btn text-info">Nuevo</a>
                             </div>
-                            <br>
-                            @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror
-                        </div>
+                            <br> --}}
+                            {{-- @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror --}}
+                        {{-- </div> --}}
                         {{-- @error('contratoid') <span class="text-danger er"> {{ $message }}</span> @enderror --}}
-                    </div>
+                    {{-- </div> --}}
 
                     <div class="col-sm-12 mt-3">
                         <div class="form-group custom-file">

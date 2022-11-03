@@ -26,8 +26,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -42,8 +42,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -58,8 +58,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 1,
             'cargo_id' => 1,
-            'contrato_id' => 2,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 2,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -74,8 +74,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 1,
             'cargo_id' => 5,
-            'contrato_id' => 6,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 6,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -90,8 +90,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 8,
-            'contrato_id' => 14,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 14,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -106,8 +106,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 1,
             'cargo_id' => 6,
-            'contrato_id' => 7,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 7,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -122,8 +122,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 10,
-            'contrato_id' => 11,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 11,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -138,8 +138,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 11,
-            'contrato_id' => 12,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 12,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -154,8 +154,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 8,
-            'contrato_id' => 18,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 18,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -170,8 +170,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 1,
             'cargo_id' => 4,
-            'contrato_id' => 5,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 5,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -186,8 +186,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 9,
-            'contrato_id' => 10,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 10,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -202,8 +202,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 7,
-            'contrato_id' => 8,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 8,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -218,8 +218,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 1,
             'cargo_id' => 3,
-            'contrato_id' => 4,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 4,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -233,9 +233,9 @@ class EmployeeSeeder extends Seeder
             'phone' => '77777778',
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
-            'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'cargo_id' => 14,
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -250,8 +250,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 1,
             'cargo_id' => 2,
-            'contrato_id' => 3,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 3,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -265,9 +265,9 @@ class EmployeeSeeder extends Seeder
             'phone' => '77777778',
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
-            'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'cargo_id' => 14,
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -281,9 +281,9 @@ class EmployeeSeeder extends Seeder
             'phone' => '77777778',
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
-            'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'cargo_id' => 14,
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -298,8 +298,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 13,
-            'contrato_id' => 17,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'contrato_id' => 17,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -314,8 +314,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 13,
-            'contrato_id' => 16,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'contrato_id' => 16,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -330,8 +330,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 8,
-            'contrato_id' => 9,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'contrato_id' => 9,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -346,8 +346,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -362,8 +362,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -378,8 +378,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -394,8 +394,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -410,8 +410,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -426,8 +426,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -442,8 +442,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -458,8 +458,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -474,8 +474,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -490,8 +490,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 12,
-            'contrato_id' => 15,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            //'contrato_id' => 15,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -506,8 +506,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -522,8 +522,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -538,8 +538,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -554,8 +554,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -570,8 +570,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -586,8 +586,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -602,8 +602,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -618,8 +618,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -634,8 +634,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -650,8 +650,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -666,8 +666,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -682,8 +682,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -698,8 +698,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 3,
             'cargo_id' => 14,
-            'contrato_id' => 1,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            // //'contrato_id' => 1,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
         Employee::create([
@@ -714,8 +714,8 @@ class EmployeeSeeder extends Seeder
             'estadoCivil' => 'Soltero',
             'area_trabajo_id' => 2,
             'cargo_id' => 8,
-            'contrato_id' => 13,
-            'fechaInicio' => '2022-01-01 01:01:01',
+            ////'contrato_id' => 13,
+            //'fechaInicio' => '2022-01-01 01:01:01',
             'image' => '6328d2231e599_.webp',
         ]);
     }

@@ -22,11 +22,11 @@
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
                                 <th class="table-th text-withe text-center">CI</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
-                                <th class="table-th text-withe text-center">FECHA DE INGRESO</th>
+                                {{-- <th class="table-th text-withe text-center">FECHA DE INGRESO</th> --}}
                                 <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">CARGO</th>
-                                <th class="table-th text-withe text-center">CONTRATO</th>
+                                {{-- <th class="table-th text-withe text-center">CONTRATO</th> --}}
                                 <th class="table-th text-white text-center">IMAGEN</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
@@ -44,7 +44,7 @@
                                         </span>
                                     </td>--}}
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
-                                    <td><h6 class="text-center">{{ \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') }}</h6></td>
+                                    {{-- <td><h6 class="text-center">{{ \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') }}</h6></td> --}}
 
                                     <td>
                                         <h6 class="text-center">
@@ -62,7 +62,7 @@
 
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->cargo}}</h6></td>
-                                    <td><h6 class="text-center">{{ $employee->contrato}}</h6></td>
+                                    {{-- <td><h6 class="text-center">{{ $employee->contrato}}</h6></td> --}}
 
                                     <td class="text-center">
                                         <span>
@@ -101,7 +101,7 @@
         </div>
     </div>
     @include('livewire.employee.form')
-    @include('livewire.employee.nuevoContrato')
+    {{-- @include('livewire.employee.nuevoContrato') --}}
     @include('livewire.employee.detalleEmpleado')
 </div>
 

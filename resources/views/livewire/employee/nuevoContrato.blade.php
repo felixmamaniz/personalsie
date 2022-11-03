@@ -13,11 +13,20 @@
                     <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
+                                <label>Fecha de Inicio</label>
+                                <input type="date" wire:model.lazy="fechaInicio" class="form-control">
+                            </div>
+                            @error('fechaInicio') <span class="text-danger er">{{ $message }}</span> @enderror
+                        </div>
+
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
                                 <label>Fecha de Final</label>
                                 <input type="date" wire:model.lazy="fechaFin" class="form-control">
                                 @error('fechaFin') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                         </div>
+
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Descripcion</label>
@@ -25,6 +34,7 @@
                                 @error('descripcion') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                         </div>
+
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Nota</label>
@@ -32,13 +42,14 @@
                                 @error('nota') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
                         </div>
+
+                        
                         <div class="col-sm-12 col-md-6">
                             <div class="form-group">
                                 <label>Salario</label>
                                 <input type="number" wire:model.lazy="salario" class="form-control" placeholder="0.00">
                                 @error('salario') <span class="text-danger er">{{ $message }}</span> @enderror
                             </div>
-                            
                         </div>
 
                         {{-- <div class="col-sm-12 col-md-6">

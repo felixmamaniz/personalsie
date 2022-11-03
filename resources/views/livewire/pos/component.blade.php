@@ -257,8 +257,8 @@
                     <h3><b>Cliente Anónimo</b></h3>
                     <div class="form-group">
                         <label class="switch">
-                        <input type="checkbox" wire:change="clienteanonimo()" {{ $clienteanonimo ? 'checked' : '' }}>
-                        <span class="slider round"></span>
+                            <input type="checkbox" wire:change="clienteanonimo()" {{ $clienteanonimo ? 'checked' : '' }}>
+                            <span class="slider round"></span>
                         </label>
                     </div>
                 </div>
@@ -266,8 +266,8 @@
                     <h3><b>Factura</b></h3>
                     <div class="form-group">
                         <label class="switch">
-                        <input type="checkbox" wire:change="facturasino()" {{ $factura ? 'checked' : '' }}>
-                        <span class="slider round"></span>
+                            <input type="checkbox" wire:change="facturasino()" {{ $factura ? 'checked' : '' }}>
+                            <span class="slider round"></span>
                         </label>
                     </div>
                 </div>
@@ -399,20 +399,17 @@
                     </div>
                     @else
                     <div class="row" style="height: 44.2px;">
-                        <div class="col-3 text-center">
+                        <div class="col-4 text-center">
                             
                         </div>
-                        <div class="col-3 text-center">
-                            <button wire:click.prevent="modalbuscarcliente()" type="button" class="btn btn-outline-dark">
-                                Buscar Cliente
+
+                        <div class="col-4 text-center">
+                            <button wire:click="$emit('show-buscarcliente')" type="button" class="boton-azul-g">
+                                Buscar o Crear Cliente
                             </button>
                         </div>
-                        <div class="col-3 text-center">
-                            <button wire:click.prevent="modalcrearcliente()" type="button" class="btn btn-outline-dark">
-                                Crear Cliente
-                            </button>
-                        </div>
-                        <div class="col-3 text-center">
+
+                        <div class="col-4 text-center">
                             
                         </div>
                     </div>
@@ -463,16 +460,16 @@
                                     </td>
                                     <td>
                                         <div class="btn-group" role="group" aria-label="Basic example">
-                                            <button title="Ver Precio y Costos por Lotes" wire:click.prevent="modal_lotes({{ $item->id }})" class="btn btn-sm" style="background-color: rgb(0, 156, 135); color:white">
+                                            {{-- <button title="Ver Precio y Costos por Lotes" wire:click.prevent="modal_lotes({{ $item->id }})" class="btn btn-sm" style="background-color: rgb(0, 156, 135); color:white">
                                                 <i class="fas fa-list-ul"></i>
-                                            </button>
-                                            <a title="Eliminar Producto" href="#" onclick="ConfirmarEliminar('{{ $item->id }}', '{{$item->name}}')" class="btn btn-sm" style="background-color: red; color:white">
+                                            </button> --}}
+                                            <a title="Eliminar Producto" href="#" onclick="ConfirmarEliminar('{{ $item->id }}', '{{$item->name}}')" class="boton-rojo">
                                                 <i class="fas fa-trash-alt"></i>
                                             </a>
-                                            <button title="Quitar una unidad" wire:click.prevent="decrease({{ $item->id }})" class="btn btn-sm" style="background-color: #7c7a76; color:white">
+                                            <button title="Quitar una unidad" wire:click.prevent="decrease({{ $item->id }})" class="boton-plomo">
                                                 <i class="fas fa-minus"></i>
                                             </button>
-                                            <button title="Incrementar una unidad" wire:click.prevent="increase({{ $item->id }})" class="btn btn-sm" style="background-color: #006caa; color:white">
+                                            <button title="Incrementar una unidad" wire:click.prevent="increase({{ $item->id }})" class="boton-azul">
                                                 <i class="fas fa-plus"></i>
                                             </button>
                                         </div>
@@ -534,7 +531,6 @@
 
         @include('livewire.pos.modal.modalfinalizarventa')
         @include('livewire.pos.modal.modalbuscarcliente')
-        @include('livewire.pos.modal.modalcrearcliente')
         @include('livewire.pos.modal.modal_stock_insuficiente')
         @include('livewire.pos.modal.modallotesproducto')
 
@@ -850,12 +846,6 @@
 
 
 </script>
-
-
-<!-- Scripts para el mensaje de confirmacion arriba a la derecha 'Mensaje Toast' de Éxito y Alerta de Eliminacion -->
-<script src="{{ asset('plugins/sweetalerts/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('plugins/sweetalerts/custom-sweetalert.js') }}"></script>
-<!-- Fin Scripts -->
 @endsection
 
 

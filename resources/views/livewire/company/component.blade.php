@@ -47,7 +47,7 @@
                                     </td>
                                     <td class="text-center">
                                         <span>
-                                            <img src="{{ asset('storage/icons/' . $item->image) }}" alt="imagen" width="70px" height="70px">
+                                            <img src="{{ asset('storage/iconos/' . $item->image) }}" alt="imagen" width="70px" height="70px">
                                         </span>
                                     </td>
                                     <td class="text-center">

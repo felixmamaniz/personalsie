@@ -120,32 +120,35 @@ class PosController extends Component
         $this->nombresucursal = "";
         $this->pdf = false;
         $this->stock_disponible = true;
+
+
+
+         /* Caja en la cual se encuentra el usuario */
+         $cajausuario = Caja::join('sucursals as s', 's.id', 'cajas.sucursal_id')
+         ->join('sucursal_users as su', 'su.sucursal_id', 's.id')
+         ->join('carteras as car', 'cajas.id', 'car.caja_id')
+         ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
+         ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
+         ->where('mov.user_id', Auth()->user()->id)
+         ->where('mov.status', 'ACTIVO')
+         ->where('mov.type', 'APERTURA')
+         ->select('cajas.id as id')
+         ->get();
+ 
+         if($cajausuario->count() > 0)
+         {
+             $this->corte_caja = true;
+         }
+         else
+         {
+             $this->corte_caja = false;
+         }
+
+
+
     }
     public function render()
     {
-
-        /* Caja en la cual se encuentra el usuario */
-        $cajausuario = Caja::join('sucursals as s', 's.id', 'cajas.sucursal_id')
-        ->join('sucursal_users as su', 'su.sucursal_id', 's.id')
-        ->join('carteras as car', 'cajas.id', 'car.caja_id')
-        ->join('cartera_movs as cartmovs', 'car.id', 'cartmovs.cartera_id')
-        ->join('movimientos as mov', 'mov.id', 'cartmovs.movimiento_id')
-        ->where('mov.user_id', Auth()->user()->id)
-        ->where('mov.status', 'ACTIVO')
-        ->where('mov.type', 'APERTURA')
-        ->select('cajas.id as id')
-        ->get();
-
-        if($cajausuario->count() > 0)
-        {
-            $this->corte_caja = true;
-        }
-        else
-        {
-            $this->corte_caja = false;
-        }
-
-
         //Variable para guardar todos los productos encontrados que contengan el nombre o código en $buscarproducto
         $listaproductos = [];
         if($this->buscarproducto != "")

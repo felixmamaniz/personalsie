@@ -104,7 +104,7 @@ class CompaniesController extends Component
 
         if ($this->image) {
             $customFileName = uniqid() . '_.' . $this->image->extension();
-            $this->image->storeAs('public/icons', $customFileName);
+            $this->image->storeAs('public/iconos', $customFileName);
             $imageTemp = $comp->image;
 
             $comp->image = $customFileName;

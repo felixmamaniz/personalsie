@@ -109,7 +109,7 @@ class ReporteMovimientoResumenController extends Component
     {
         $this->utilidadtotal = 0;
         if ($this->caja != 'TODAS') {
-            $this->operacionEnCajaGeneral();
+            // $this->operacionEnCajaGeneral();
             //dd($this->ventas);
             //Totales Ingresos Ventas
 
@@ -277,6 +277,7 @@ class ReporteMovimientoResumenController extends Component
                     'movimientos.id as idmov')
                 ->where('movimientos.status', 'ACTIVO')
                 ->where('crms.tipoDeMovimiento', 'EGRESO/INGRESO')
+                // ->where('crms.tipoDeMovimiento','!=','RECAUDO')
                 ->where('ca.id', $this->caja)
                 ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                 ->orderBy('movimientos.created_at', 'asc')
@@ -298,6 +299,7 @@ class ReporteMovimientoResumenController extends Component
                 'movimientos.created_at as movcreacion',
                 'movimientos.id as idmov')
             ->where('crms.tipoDeMovimiento','EGRESO/INGRESO')
+            // ->where('crms.tipoDeMovimiento','!=','RECAUDO')
             ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
             ->where('movimientos.status', 'ACTIVO')
             ->where('operaciones_carteras_compartidas.caja_id',$this->caja)
@@ -451,6 +453,7 @@ class ReporteMovimientoResumenController extends Component
                     'movimientos.id as idmov'
                 )->where('movimientos.status', 'ACTIVO')
                 ->where('crms.tipoDeMovimiento', 'EGRESO/INGRESO')
+                // ->where('crms.tipoDeMovimiento','!=','RECAUDO')
                 ->where('ca.sucursal_id', $this->sucursal)
                 ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                 ->orderBy('movimientos.created_at', 'asc')
@@ -583,7 +586,7 @@ class ReporteMovimientoResumenController extends Component
                         'movimientos.id as idmov'
                     )
                     ->where('movimientos.status', 'ACTIVO')
-              
+                    // ->where('crms.comentario', '=', 'RECAUDO DEL DIA')
                     ->where('crms.tipoDeMovimiento', 'EGRESO/INGRESO')
                     ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->orderBy('movimientos.created_at', 'asc')
@@ -613,7 +616,7 @@ class ReporteMovimientoResumenController extends Component
                     )
                     ->where('movimientos.status', 'ACTIVO')
                     ->where('crms.type', 'EGRESO')
-                    ->where('crms.comentario', '<>', 'RECAUDO DEL DIA')
+                    // ->where('crms.comentario', '<>', 'RECAUDO DEL DIA')
                     ->where('crms.tipoDeMovimiento', 'VENTA')
                     ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                     ->orderBy('movimientos.created_at', 'asc')
@@ -744,8 +747,8 @@ class ReporteMovimientoResumenController extends Component
                 ->join('carteras as c', 'c.id', 'crms.cartera_id')
                 ->join('cajas as ca', 'ca.id', 'c.caja_id')
                 ->where('movimientos.status', 'ACTIVO')
-                ->where('crms.type', 'EGRESO')
-                ->where('crms.comentario', '=', 'RECAUDO DEL DIA')
+                ->where('crms.tipoDeMovimiento', 'RECAUDO')
+          
                 ->where('ca.id', $this->caja)
                 ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
                 ->select('movimientos.import')->value('movimientos.import');
@@ -1305,122 +1308,122 @@ class ReporteMovimientoResumenController extends Component
         $this->emit('opentap');
     }
 
-    public function operacionEnCajaGeneral($id = 0)
-    {
-        $this->Banco = [];
+    // public function operacionEnCajaGeneral($id = 0)
+    // {
+    //     $this->Banco = [];
 
-        //dump($this->Banco);
-        $this->ventas = [];
-        $this->servicios = [];
-        $this->ingresoEgreso = [];
+    //     //dump($this->Banco);
+    //     $this->ventas = [];
+    //     $this->servicios = [];
+    //     $this->ingresoEgreso = [];
 
-        if ($id != 0) {
-            $consulta = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
-                ->join('carteras as c', 'c.id', 'crms.cartera_id')
-                ->join('cajas as ca', 'ca.id', 'c.caja_id')
-                ->join('users as u', 'u.id', 'movimientos.user_id')
-                ->where('ca.sucursal_id', $id)
-                ->where('movimientos.type', 'APERTURA')
-                ->where('c.tipo', 'CajaFisica')
-                //->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
-                ->select('movimientos.*', 'ca.nombre', 'c.tipo')
-                ->orderBy('movimientos.created_at', 'desc')
-                ->get();
-        } else {
-            $consulta = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
-                ->join('carteras as c', 'c.id', 'crms.cartera_id')
-                ->join('cajas as ca', 'ca.id', 'c.caja_id')
-                ->join('users as u', 'u.id', 'movimientos.user_id')
-                ->where('ca.id', $this->caja)
-                ->where('movimientos.type', 'APERTURA')
-                ->where('c.tipo', 'CajaFisica')
-                //->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
-                ->select('movimientos.*', 'ca.nombre', 'c.tipo')
-                ->orderBy('movimientos.created_at', 'desc')
-                ->get();
-        }
-
-
-        foreach ($consulta as $data) {
-            if ($data->created_at == $data->created_at) {
-
-                $ls = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
-                    ->join('carteras as c', 'c.id', 'crms.cartera_id')
-                    ->join('cajas as ca', 'ca.id', 'c.caja_id')
-                    ->join('users as u', 'u.id', 'movimientos.user_id')
-                    ->where('ca.id', 1)
-                    ->where('movimientos.user_id', $data->user_id)
-                    ->where('movimientos.created_at', '>', $data->created_at)
-                    ->select('movimientos.*', 'c.tipo', 'crms.tipoDeMovimiento')
-                    ->get();
-                $ls = $ls->whereBetween('created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59']);
-                //dump($ls);
-                foreach ($ls as $value) {
+    //     if ($id != 0) {
+    //         $consulta = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
+    //             ->join('carteras as c', 'c.id', 'crms.cartera_id')
+    //             ->join('cajas as ca', 'ca.id', 'c.caja_id')
+    //             ->join('users as u', 'u.id', 'movimientos.user_id')
+    //             ->where('ca.sucursal_id', $id)
+    //             ->where('movimientos.type', 'APERTURA')
+    //             ->where('c.tipo', 'CajaFisica')
+    //             //->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
+    //             ->select('movimientos.*', 'ca.nombre', 'c.tipo')
+    //             ->orderBy('movimientos.created_at', 'desc')
+    //             ->get();
+    //     } else {
+    //         $consulta = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
+    //             ->join('carteras as c', 'c.id', 'crms.cartera_id')
+    //             ->join('cajas as ca', 'ca.id', 'c.caja_id')
+    //             ->join('users as u', 'u.id', 'movimientos.user_id')
+    //             ->where('ca.id', $this->caja)
+    //             ->where('movimientos.type', 'APERTURA')
+    //             ->where('c.tipo', 'CajaFisica')
+    //             //->whereBetween('movimientos.created_at',[ Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00',Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
+    //             ->select('movimientos.*', 'ca.nombre', 'c.tipo')
+    //             ->orderBy('movimientos.created_at', 'desc')
+    //             ->get();
+    //     }
 
 
-                    if (!in_array($value->id, $this->Banco)) {
-                        array_push($this->Banco, $value->id);
-                    }
-                }
+    //     foreach ($consulta as $data) {
+    //         if ($data->created_at == $data->created_at) {
 
-                $vent = $ls->where('tipoDeMovimiento', 'VENTA')->pluck('id');
-                foreach ($vent as $dvent) {
-                    array_push($this->ventas, $dvent);
-                }
-                $serv = $ls->where('tipoDeMovimiento', 'SERVICIOS')->pluck('id');
-                foreach ($serv as $dserv) {
-                    array_push($this->servicios, $dserv);
-                }
-                $ing = $ls->where('tipoDeMovimiento', 'EGRESO/INGRESO')->pluck('id');
-                foreach ($ing as $ding) {
-                    array_push($this->ingresoEgreso, $ding);
-                }
-
-                //dump("primero",$ls);
-                //dump("ventas",$this->ventas);
-
-            }
-            //dd($consulta);
+    //             $ls = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
+    //                 ->join('carteras as c', 'c.id', 'crms.cartera_id')
+    //                 ->join('cajas as ca', 'ca.id', 'c.caja_id')
+    //                 ->join('users as u', 'u.id', 'movimientos.user_id')
+    //                 ->where('ca.id', 1)
+    //                 ->where('movimientos.user_id', $data->user_id)
+    //                 ->where('movimientos.created_at', '>', $data->created_at)
+    //                 ->select('movimientos.*', 'c.tipo', 'crms.tipoDeMovimiento')
+    //                 ->get();
+    //             $ls = $ls->whereBetween('created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59']);
+    //             //dump($ls);
+    //             foreach ($ls as $value) {
 
 
+    //                 if (!in_array($value->id, $this->Banco)) {
+    //                     array_push($this->Banco, $value->id);
+    //                 }
+    //             }
 
-            $ls = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
-                ->join('carteras as c', 'c.id', 'crms.cartera_id')
-                ->join('cajas as ca', 'ca.id', 'c.caja_id')
-                ->join('users as u', 'u.id', 'movimientos.user_id')
-                ->where('ca.id', 1)
-                ->where('movimientos.user_id', $data->user_id)
-                ->whereBetween('movimientos.created_at', [$data->created_at, $data->created_at])
-                ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
-                ->select('movimientos.id', 'c.tipo', 'movimientos.import', 'crms.tipoDeMovimiento')
-                ->get();
+    //             $vent = $ls->where('tipoDeMovimiento', 'VENTA')->pluck('id');
+    //             foreach ($vent as $dvent) {
+    //                 array_push($this->ventas, $dvent);
+    //             }
+    //             $serv = $ls->where('tipoDeMovimiento', 'SERVICIOS')->pluck('id');
+    //             foreach ($serv as $dserv) {
+    //                 array_push($this->servicios, $dserv);
+    //             }
+    //             $ing = $ls->where('tipoDeMovimiento', 'EGRESO/INGRESO')->pluck('id');
+    //             foreach ($ing as $ding) {
+    //                 array_push($this->ingresoEgreso, $ding);
+    //             }
 
-            // dump($data);
-            foreach ($ls as $value) {
+    //             //dump("primero",$ls);
+    //             //dump("ventas",$this->ventas);
 
-                if (!in_array($value->id, $this->Banco)) {
-                    array_push($this->Banco, $value->id);
-                }
-            }
-            //dump($this->Banco);
+    //         }
+    //         //dd($consulta);
 
 
-            //dump($vent);
-            $vent = $ls->where('tipoDeMovimiento', 'VENTA')->pluck('id');
 
-            foreach ($vent as $daven) {
-                array_push($this->ventas, $daven);
-            }
-            $serv = $ls->where('tipoDeMovimiento', 'SERVICIOS')->pluck('id');
-            foreach ($serv as $daserv) {
-                array_push($this->servicios, $daserv);
-            }
-            $ing = $ls->where('tipoDeMovimiento', 'EGRESO/INGRESO')->pluck('id');
-            foreach ($ing as $daing) {
-                array_push($this->ingresoEgreso, $daing);
-            }
-        }
+    //         $ls = Movimiento::join('cartera_movs as crms', 'crms.movimiento_id', 'movimientos.id')
+    //             ->join('carteras as c', 'c.id', 'crms.cartera_id')
+    //             ->join('cajas as ca', 'ca.id', 'c.caja_id')
+    //             ->join('users as u', 'u.id', 'movimientos.user_id')
+    //             ->where('ca.id', 1)
+    //             ->where('movimientos.user_id', $data->user_id)
+    //             ->whereBetween('movimientos.created_at', [$data->created_at, $data->created_at])
+    //             ->whereBetween('movimientos.created_at', [Carbon::parse($this->fromDate)->format('Y-m-d') . ' 00:00:00', Carbon::parse($this->toDate)->format('Y-m-d') . ' 23:59:59'])
+    //             ->select('movimientos.id', 'c.tipo', 'movimientos.import', 'crms.tipoDeMovimiento')
+    //             ->get();
 
-        $this->sumaBanco = Movimiento::whereIn('movimientos.id', $this->Banco)->where('movimientos.status', 'ACTIVO')->sum('movimientos.import');
-    }
+    //         // dump($data);
+    //         foreach ($ls as $value) {
+
+    //             if (!in_array($value->id, $this->Banco)) {
+    //                 array_push($this->Banco, $value->id);
+    //             }
+    //         }
+    //         //dump($this->Banco);
+
+
+    //         //dump($vent);
+    //         $vent = $ls->where('tipoDeMovimiento', 'VENTA')->pluck('id');
+
+    //         foreach ($vent as $daven) {
+    //             array_push($this->ventas, $daven);
+    //         }
+    //         $serv = $ls->where('tipoDeMovimiento', 'SERVICIOS')->pluck('id');
+    //         foreach ($serv as $daserv) {
+    //             array_push($this->servicios, $daserv);
+    //         }
+    //         $ing = $ls->where('tipoDeMovimiento', 'EGRESO/INGRESO')->pluck('id');
+    //         foreach ($ing as $daing) {
+    //             array_push($this->ingresoEgreso, $daing);
+    //         }
+    //     }
+
+    //     $this->sumaBanco = Movimiento::whereIn('movimientos.id', $this->Banco)->where('movimientos.status', 'ACTIVO')->sum('movimientos.import');
+    // }
 }

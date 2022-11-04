@@ -679,21 +679,11 @@ class SaleEditController extends Component
         //Buscando la venta
         $venta = Sale::find($this->venta_id);
 
-        $f = "Si";
-
-        if($this->factura == false)
-        {
-            $f = "No";
-        }
-        
-        //Actualizando Venta
-        $venta->update([
-            'tipopago' => Cartera::find($this->cartera_id)->nombre,
-            'factura' => $f,
-            'cartera_id' => $this->cartera_id,
-            'observacion' => $this->observacion,
+        $cartera = Cartera::find($venta->cartera_id);
+        $cartera->update([
+            'saldocartera' => $cartera->saldocartera + $venta->total,
         ]);
-        $venta->save();
+        $cartera->save();
 
         //ACTUALIZANDO EL TIPO DE PAGO
         //Buscando el id de la cartera movimiento
@@ -913,6 +903,49 @@ class SaleEditController extends Component
         }
 
 
+
+        $f = "Si";
+
+        if($this->factura == false)
+        {
+            $f = "No";
+        }
+
+
+
+
+        //Obteniendo la cantidad total de los productos de una venta
+        $detalle = SaleDetail::select('sale_details.*')
+        ->where('sale_details.sale_id', $venta->id)
+        ->get();
+        $totalcantidad = 0;
+        $totalbs = 0;
+        foreach($detalle as $d)
+        {
+            $totalcantidad = $d->quantity + $totalcantidad;
+            $totalbs = ($d->quantity * $d->price) + $totalbs;
+        }
+
+
+        
+        //Actualizando Venta
+        $venta->update([
+            'total' => $totalbs,
+            'items' => $totalcantidad,
+            'tipopago' => Cartera::find($this->cartera_id)->nombre,
+            'factura' => $f,
+            'cartera_id' => $this->cartera_id,
+            'observacion' => $this->observacion,
+        ]);
+        $venta->save();
+
+
+
+        $cartera = Cartera::find($venta->cartera_id);
+        $cartera->update([
+            'saldocartera' => $cartera->saldocartera - $venta->total,
+        ]);
+        $cartera->save();
 
 
 

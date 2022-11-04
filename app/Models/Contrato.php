@@ -9,12 +9,13 @@ class Contrato extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'employee_id',
         'fechaInicio',
         'fechaFin',
         'descripcion',
-        'nota',
-        'funcion_area_id',
+        /*'nota',*/
         'salario',
+        'funcion_id',
         'estado'
     ];
 }

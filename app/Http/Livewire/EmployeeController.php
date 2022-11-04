@@ -91,16 +91,16 @@ class EmployeeController extends Component
                 $os->verificar = $this->verificar($os->idEmpleado);
             }
 
-            /*foreach ($employ as $e)
+            foreach ($employ as $e)
             {
                 $e->year = $this->year($e->id);
                 $e->mouth = $this->mouth($e->id);
                 $e->day = $this->day($e->id);
 
-                $e->yearR = $this->yearR($e->id);
-                $e->mouthR = $this->yearR($e->id);
-                $e->dayR = $this->yearR($e->id);
-            }*/
+                //$e->yearR = $this->yearR($e->id);
+                //$e->mouthR = $this->yearR($e->id);
+                //$e->dayR = $this->yearR($e->id);
+            }
 
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
@@ -132,7 +132,7 @@ class EmployeeController extends Component
 
     // TIEMPO TRASCURRIDO
     // años transcurridos
-    /*public function year($idUsuario)
+    public function year($idUsuario)
     {
         $TiempoTranscurrido = 0;
         $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('Y');
@@ -149,7 +149,7 @@ class EmployeeController extends Component
     {
         $TiempoTranscurrido = 0;
         $meses = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('m');
-
+         
         if($meses != Carbon::parse(Carbon::now())->format('m'))
         {
             $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('m') - $meses;
@@ -164,7 +164,16 @@ class EmployeeController extends Component
     public function day($idUsuario)
     {
         $TiempoTranscurrido = 0;
-        $diasInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('d');
+        $empleado = Employee::find($idUsuario)->first();
+
+        //$empleado->contrato()->first()->fechaInicio; // s
+        //dd($empleado->contrato()->first()->fechaInicio);
+        //dd($empleado);
+        $diasInicio = Carbon::parse($empleado->contrato()->first()->fechaInicio)->format('d');
+        //dd($diasInicio );
+        /*foreach ($empleado as $data) {
+            dd( $data->contrato);
+        }*/
         
         if($diasInicio != Carbon::parse(Carbon::now())->format('d'))
         {
@@ -173,12 +182,13 @@ class EmployeeController extends Component
                 $TiempoTranscurrido = $TiempoTranscurrido * -1;
             }
         }
+        //dd($TiempoTranscurrido);
         return $TiempoTranscurrido;
     }
 
     //  TIEMPO RESTANTE
     // años restantes
-    public function yearR($idUsuario)
+    /*public function yearR($idUsuario)
     {
         $tiempoRestante = 0;
 
@@ -195,14 +205,14 @@ class EmployeeController extends Component
             $tiempoRestante = $aniosR - Carbon::parse(Carbon::now())->format('Y');
         }
         return $tiempoRestante;
-    }
+    }*/
     
     // meses restantes
     public function mouthR($idUsuario)
     {
         $tiempoRestante = 0;
 
-        $tiempoR = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
+        $tiempoR = Employee::join('contratos as ct', 'ct.employee_id', 'employees.id')
         ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
         ->where('employees.id', $idUsuario)
         ->get()
@@ -218,7 +228,7 @@ class EmployeeController extends Component
     }
 
     // dias restantes
-    public function dayR($idUsuario)
+    /*public function dayR($idUsuario)
     {
         $tiempoRestante = 0;
 
@@ -235,7 +245,7 @@ class EmployeeController extends Component
             $tiempoRestante = $diasR - Carbon::parse(Carbon::now())->format('d');
         }
         return $tiempoRestante;
-    }*/
+    }
 
     // Abre el modal de Nuevo empleado
     public function NuevoEmpleado()

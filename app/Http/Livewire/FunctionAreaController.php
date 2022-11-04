@@ -7,7 +7,7 @@ use App\Models\FunctionArea;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
 
-use App\Models\AreaTrabajo;
+//use App\Models\AreaTrabajo;
 use Illuminate\Support\Facades\DB;
 
 class FunctionAreaController extends Component
@@ -16,7 +16,7 @@ class FunctionAreaController extends Component
     use WithPagination;
 
     // Datos de Funciones
-    public $name, $description, $selected_id; /*, $areaid*/
+    public $name, $selected_id; /* $description, $areaid, */
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
@@ -27,8 +27,8 @@ class FunctionAreaController extends Component
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Funciones';
 
-        //$this -> componentNuevArea = 'Areas';
-        //$this -> areaid = 'Elegir';
+        /*$this -> componentNuevArea = 'Areas';
+        $this -> areaid = 'Elegir';*/
     }
 
     public function paginationView()
@@ -41,7 +41,7 @@ class FunctionAreaController extends Component
         if(strlen($this->search) > 0)
         {
             $data = FunctionArea::/*join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id') // se uno amabas tablas
-            ->*/select('function_areas.*'/*,'at.nameArea as area'*/, 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
+            ->*/select('function_areas.*', /*'at.nameArea as area'*/ 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
             ->where('function_areas.name', 'like', '%' . $this->search . '%')   
             //->orWhere('at.nameArea', 'like', '%' . $this->search . '%')         
             ->orderBy('function_areas.name', 'asc')
@@ -55,7 +55,7 @@ class FunctionAreaController extends Component
         }
         else
             $data = FunctionArea::/*join('area_trabajos as at', 'at.id', 'function_areas.area_trabajo_id')
-            ->*/select('function_areas.*'/*,'at.nameArea as area'*/, 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
+            ->*/select('function_areas.*', /*'at.nameArea as area',*/ 'function_areas.id as idFuncion', DB::raw('0 as verificar'))
             ->orderBy('function_areas.name', 'asc')
             ->paginate($this->pagination);
 
@@ -89,7 +89,7 @@ class FunctionAreaController extends Component
         }
     }
 
-    // Abre el modal de Nuevo Area
+    // Abre el modal de Nueva Area
     /*public function NuevArea()
     {
         //$this->resetUI();
@@ -98,11 +98,11 @@ class FunctionAreaController extends Component
     }*/
 
     // Cierra el modal y abre el modal de Registro de empleados
-    public function cancelar()
+    /*public function cancelar()
     {
         $this->resetPage(); // regresa la pagina
         $this->emit('show-modal', 'show modal!');
-    }
+    }*/
 
     // Registrar nueva Area
     /*public function RegNuevArea(){
@@ -128,14 +128,14 @@ class FunctionAreaController extends Component
         $this->emit('show-modal', 'show modal!');
     }*/
 
-    public function nuevoRegistro()
+    /*public function nuevoRegistro()
     {
         $this->Store();
         $this->resetUI();
         $this->emit('fun-added', 'Funcion Registrada');
-        $this->emit('modal-hide-area', 'show modal!');
-        $this->emit('show-modal', 'show modal!');
-    }
+        //$this->emit('modal-hide-area', 'show modal!');
+        //$this->emit('show-modal', 'show modal!');
+    }*/
 
     // Registrar nueva funcion
     public function Store(){
@@ -154,10 +154,11 @@ class FunctionAreaController extends Component
 
         $functionarea = FunctionArea::create([
             'name'=>$this->name,
-            'description'=>$this->description,
-            //'area_trabajo_id' => $this->areaid
+            // 'description'=>$this->description,
+            // 'area_trabajo_id' => $this->areaid
         ]);
-        $this->resetUI2();
+        $this->resetUI();
+        $this->emit('fun-added', 'Funcion Registrada');
     }
 
 
@@ -165,8 +166,8 @@ class FunctionAreaController extends Component
     public function Edit(FunctionArea $functionarea){
         $this->selected_id = $functionarea->id;
         $this->name = $functionarea->name;
-        $this->description = $functionarea->description;
-        //$this->areaid = $functionarea->area_trabajo_id;
+        // $this->description = $functionarea->description;
+        // $this->areaid = $functionarea->area_trabajo_id;
 
         $this->emit('show-modal', 'show modal!');
     }
@@ -188,8 +189,8 @@ class FunctionAreaController extends Component
         $functionarea = FunctionArea::find($this->selected_id);
         $functionarea -> update([
             'name' => $this->name,
-            'description' => $this->description,
-            //'area_trabajo_id' => $this->areaid
+            // 'description' => $this->description,
+            // 'area_trabajo_id' => $this->areaid
         ]);
 
         $this->resetUI();
@@ -199,33 +200,33 @@ class FunctionAreaController extends Component
     // vaciar formulario
     public function resetUI(){
         $this->name='';
-        $this->description='';
-        //$this->areaid = 'Elegir';
+        // $this->description='';
+        // $this->areaid = 'Elegir';
         $this->search='';
         $this->selected_id=0;
 
          // Datos de Area
-         /*$this->nameArea='';
-         $this->descriptionArea='';
-         $this->select_area_id = 0;
-         $this->resetValidation(); */// resetValidation para quitar los smg Rojos
+        //  $this->nameArea='';
+        //  $this->descriptionArea='';
+        //  $this->select_area_id = 0;
+         $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
 
     // reset sin area id
-    public function resetUI2()
+    /*public function resetUI2()
     {
         $this->name='';
-        $this->description='';
+        //$this->description='';
         //$this->areaid = 'Elegir';
         $this->search='';
         $this->selected_id=0;
 
-         // Datos de Area
-        /* $this->nameArea='';
-         $this->descriptionArea='';
-         $this->select_area_id = 0;*/
-         $this->resetValidation(); // resetValidation para quitar los smg Rojos
-    }
+        //Datos de Area
+        //$this->nameArea='';
+        //$this->descriptionArea='';
+        //$this->select_area_id = 0;
+        $this->resetValidation(); // resetValidation para quitar los smg Rojos
+    }*/
 
     protected $listeners = [
         'deleteRow' => 'Destroy'

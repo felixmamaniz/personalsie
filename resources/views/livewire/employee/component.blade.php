@@ -22,7 +22,7 @@
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
                                 <th class="table-th text-withe text-center">CI</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
-                                {{-- <th class="table-th text-withe text-center">FECHA DE INGRESO</th> --}}
+                                <th class="table-th text-withe text-center">FECHA DE INGRESO</th>
                                 <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">CARGO</th>
@@ -44,24 +44,34 @@
                                         </span>
                                     </td>--}}
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
+
+                                    @if ($employee->contrato->count() != null)
+                                        
+                                    <td><h6 class="text-center">{{\Carbon\Carbon::parse($employee->contrato->first()->fechaInicio)->format('Y-m-d')}}</h6></td>
+                                    @else
+                                        <td class="text-center">Sin Contrato</td>
+                                    @endif
+                                    {{-- <td><h6 class="text-center">Tiempo trascurrido</h6></td> --}}
                                     {{-- <td><h6 class="text-center">{{ \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') }}</h6></td> --}}
 
                                     <td>
                                         <h6 class="text-center">
-                                            @if($employee->year != 0)
-                                                {{$employee->year}} años
-                                            @endif
-                                            @if($employee->mouth != 0)
-                                                {{$employee->mouth}} meses
-                                            @endif
+                                            {{-- @if($employee->year != 0) --}}
+                                                {{-- {{$employee->year}} años --}}
+                                            {{-- @endif --}}
+                                            {{-- @if($employee->mouth != 0) --}}
+                                                {{-- {{$employee->mouth}} meses --}}
+                                                
+                                            {{-- @endif --}}
                                             @if($employee->day != 0)
-                                                {{$employee->day}} dias
+                                               {{$employee->day}} dias
                                             @endif
                                         </h6>
                                     </td>
 
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->cargo}}</h6></td>
+                                    {{-- <td><h6 class="text-center">Sin contrato</h6></td> --}}
                                     {{-- <td><h6 class="text-center">{{ $employee->contrato}}</h6></td> --}}
 
                                     <td class="text-center">

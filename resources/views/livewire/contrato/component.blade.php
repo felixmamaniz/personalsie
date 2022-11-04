@@ -18,12 +18,13 @@
                     <table class="table table-bordered table striped mt-1" >
                         <thead class="text-white" style="background: #02b1ce">
                             <tr>
+                                <th class="table-th text-white">EMPLEADO</th>
                                 <th class="table-th text-white">FECHA INICIO</th>
                                 <th class="table-th text-white">FECHA FINAL</th>
                                 <th class="table-th text-white">DESCRIPCION</th>
-                                <th class="table-th text-white">NOTA</th>
-                                <th class="table-th text-white">FUNCION</th>
+                                {{-- <th class="table-th text-white">NOTA</th> --}}
                                 <th class="table-th text-white">SALARIO</th>
+                                <th class="table-th text-white">FUNCIONES</th>
                                 <th class="table-th text-white text-center">ESTADO</th>
                                 <th class="table-th text-white text-center">ACCION</th>
                             </tr>
@@ -31,12 +32,13 @@
                         <tbody>
                             @foreach($contratos as $datos)
                             <tr>
+                                <td><h6>{{$datos->name}}</h6></td>
                                 <td><h6>{{\Carbon\Carbon::parse($datos->fechaInicio)->format('Y-m-d')}}</h6></td>
                                 <td><h6>{{\Carbon\Carbon::parse($datos->fechaFin)->format('Y-m-d')}}</h6></td>
                                 <td><h6>{{$datos->descripcion}}</h6></td>
-                                <td><h6>{{$datos->nota}}</h6></td>
-                                <td><h6>{{$datos->funcion}}</h6></td>
+                                {{-- <td><h6>{{$datos->nota}}</h6></td> --}}
                                 <td><h6>{{$datos->salario}}</h6></td>
+                                <td><h6>{{$datos->funcion}}</h6></td>
 
                                 <td class="text-center">
                                     <span class="badge {{$datos->estado == 'Activo' ? 'badge-success' : 'badge-danger'}}

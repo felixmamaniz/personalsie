@@ -1,3 +1,17 @@
+    
+    Correcciones
+
+    registro de empleado
+    
+    compleatdo
+    
+    contrato
+    Usuario Empleado
+    cargos
+    area de trabajo
+    adelanto 
+    permisos y licencias
+    funciones
 
     /*Swal.fire({
         title: 'CONFIRMAR',

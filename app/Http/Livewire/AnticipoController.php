@@ -39,9 +39,9 @@ class AnticipoController extends Component
         if(strlen($this->search) > 0)
         {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id')
-            ->join('contratos as ct', 'ct.id', 'at.contrato_id')
+            //->join('contratos as ct', 'ct.id', 'at.contrato_id')
             //->join('discountsvs as dc', 'dc.ci', 'at.ci')
-            ->select('anticipos.*', 'at.name as empleado', 'ct.salario', /*'dc.descuento as descuento',*/ 'anticipos.id as idAnticipo',
+            ->select('anticipos.*', 'at.name as empleado', /*'ct.salario', 'dc.descuento as descuento',*/ 'anticipos.id as idAnticipo',
                 DB::raw('0 as verificar'))
             ->where('at.name', 'like', '%' . $this->search . '%')   
             //->orWhere('at.contrato_id', 'like', '%' . $this->search . '%')         
@@ -57,9 +57,9 @@ class AnticipoController extends Component
         else
         {
             $data = Anticipo::join('employees as at', 'at.id', 'anticipos.empleado_id')
-            ->join('contratos as ct', 'ct.id', 'at.contrato_id')
+            //->join('contratos as ct', 'ct.id', 'at.contrato_id')
             //->join('discountsvs as dc', 'dc.ci', 'at.ci')
-            ->select('anticipos.*', 'at.name as empleado', 'ct.salario as salario', /*'dc.descuento as descuento',*/ 'anticipos.id as idAnticipo',
+            ->select('anticipos.*', 'at.name as empleado', /*'ct.salario as salario', 'dc.descuento as descuento',*/ 'anticipos.id as idAnticipo',
                 DB::raw('0 as verificar'))
             ->orderBy('at.name', 'asc')
             ->paginate($this->pagination);

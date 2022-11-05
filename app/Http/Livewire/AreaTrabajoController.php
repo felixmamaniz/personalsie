@@ -74,12 +74,12 @@ class AreaTrabajoController extends Component
         ->select('area_trabajos.*')
         ->where('area_trabajos.id', $idarea)
         ->get();
-        $consulta2 = AreaTrabajo::join('function_areas as fa', 'fa.area_trabajo_id', 'area_trabajos.id')
-        ->select('area_trabajos.*')
-        ->where('area_trabajos.id', $idarea)
-        ->get();
+        // $consulta2 = AreaTrabajo::join('function_areas as fa', 'fa.area_trabajo_id', 'area_trabajos.id')
+        // ->select('area_trabajos.*')
+        // ->where('area_trabajos.id', $idarea)
+        // ->get();
 
-        if($consulta1->count() > 0 || $consulta2->count() > 0)
+        if($consulta1->count() > 0 /*|| $consulta2->count() > 0*/)
         {
             return "no";
         }

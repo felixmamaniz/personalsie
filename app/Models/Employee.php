@@ -31,12 +31,8 @@ class Employee extends Model
             return 'noimg.jpg';
     }
 
-    public function area(){
-        return $this->belongsTo(AreaTrabajo::class);
-    }
-
-    public function puesto(){
-        return $this->belongsTo(PuestoTrabajo::class);
+    public function contrato(){
+        return $this->hasMany(Contrato::class);
     }
 
     

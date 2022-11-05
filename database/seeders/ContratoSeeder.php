@@ -16,198 +16,216 @@ class ContratoSeeder extends Seeder
     {
         Contrato::create([
             //1
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Sin Contrato',
-            'nota' => 'null',
-            'funcion_area_id' => '3',
+            //'nota' => 'null',
             'salario' => '0',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
 
         // Contrato area Admin
         Contrato::create([
             //2
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Edwin',
-            'nota' => 'null',
-            'funcion_area_id' => '1',
+            //'nota' => 'null',
             'salario' => '4000',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //3
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Yazmin',
-            'nota' => 'null',
-            'funcion_area_id' => '1',
+            //'nota' => 'null',
             'salario' => '2500',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //4
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Armando',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2500',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //5
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Angel',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2300',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //6
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Rosa',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
-            'funcion_area_id' => '1',
+            //'nota' => 'null',
             'salario' => '1600',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //7
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Jhonn',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '1500',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
 
         //Contrato Personal tecnico
         Contrato::create([
             //8
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Ernesto',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2700',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //9
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Fabio',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2500',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //10
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Roger',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2500',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //11
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Gery',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '900',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //12
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Gustavo',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2250',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //13
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Nadir',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '2300',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //14
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Mauricio',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '1300',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //15
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Joshua',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '1800',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //16
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Branlin',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '1000',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //17
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Rocio',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '1000',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
             //18
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Enzo',
-            'nota' => 'null',
-            'funcion_area_id' => '2',
+            //'nota' => 'null',
             'salario' => '1300',
+            'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
 
         Contrato::create([
             //19
-            'fechaInicio' => '2020-09-28 00:00:00',
+            'Employee_id' => 'No definido',
+            'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-11 14:33:34',
             'descripcion' => 'Contrato de Prueba',
-            'nota' => 'Uno',
-            'funcion_area_id' => '3',
+            //'nota' => 'Uno',
             'salario' => '1000',
+            'funcion_id' => '3',
             'estado' => 'Finalizado',
         ]);
     }

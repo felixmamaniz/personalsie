@@ -680,31 +680,38 @@ class SaleListController extends Component
                     'stock' => $tiendaproducto->stock + $item->cantidad
                 ]);
             }
-            // foreach($detalleventa as $i)
-            // {
-            //     $lotes = SaleLote::where('sale_detail_id', $i->sid)
-            //     ->get();
+            foreach($detalleventa as $i)
+            {
+                $lotes = SaleLote::where('sale_detail_id', $i->sid)
+                ->get();
 
-            //     foreach($lotes as $j)
-            //     {
+                foreach($lotes as $j)
+                {
 
-            //         $lot=Lote::where('lotes.id',$j->lote_id)->first();
-
-            //         //dump($lot);
-            //         $lot->update([
-            //             'existencia' => $lot->existencia + $j->cantidad,
-            //             'status'=>'Activo'
-            //         ]);
+                    $lot=Lote::where('lotes.id',$j->lote_id)->first();
+                    $lot->update([
+                        'existencia' => $lot->existencia + $j->cantidad,
+                        'status'=>'Activo'
+                    ]);
                     
-            //         $lotes = SaleLote::where('sale_detail_id', $i->sid)->delete();
-            //     }
+                    $lotes = SaleLote::where('sale_detail_id', $i->sid)->delete();
+                }
     
-            // }
+            }
             //Anulando la venta
             $venta->update([
                 'status' => 'CANCELED',
             ]);
             $venta->save();
+
+
+
+            $cartera = Cartera::find($venta->cartera_id);
+            $cartera->update([
+                'saldocartera' => $cartera->saldocartera - $venta->total,
+            ]);
+            $cartera->save();
+
 
             $this->venta_id = $idventa;
             DB::commit();

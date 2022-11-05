@@ -18,18 +18,20 @@
                     <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
                         <thead class="text-white" style="background: #02b1ce">
                             <tr>
-                               <th class="table-th text-white">NOMBRE</th>
-                               <th class="table-th text-white text-center">DESCRIPCION</th>
-                               {{-- <th class="table-th text-withe text-center">AREA</th> --}}
-                               <th class="table-th text-white text-center">ACTIONS</th>
+                                <th class="table-th text-white text-center">ID</th>
+                                <th class="table-th text-white text-center">FUNCION</th>
+                                {{-- <th class="table-th text-white text-center">DESCRIPCION</th>
+                                <th class="table-th text-withe text-center">AREA</th> --}}
+                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($functionarea as $func)
                             <tr>
-                                <td><h6>{{$func->name}}</h6></td>
-                                <td><h6 class="text-center">{{$func->description}}</h6></td>
-                                {{-- <td><h6 class="text-center">{{ $func->area }}</h6></td> --}}
+                                <td><h6 class="text-center">{{$func->id}}</h6></td>
+                                <td><h6 class="text-center">{{$func->name}}</h6></td>
+                                {{-- <td><h6 class="text-center">{{$func->description}}</h6></td>
+                                <td><h6 class="text-center">{{ $func->area }}</h6></td> --}}
 
                                 <td class="text-center">
                                     <a href="javascript:void(0)"

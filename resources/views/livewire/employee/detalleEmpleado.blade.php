@@ -27,12 +27,11 @@
                   <div class="name">{{ $name }} {{ $lastname }}</div>
                   <div class="name">{{ $ci }}</div>
                   <div class="name">{{ $genero }}</div>
-                  <div class="social-media">
-                    Fecha de Nacimiento: {{ $dateNac }}
+                  <div class="social-media">Fecha de Nacimiento: {{ $dateNac }}
                   </div>
                   <div class="view-profile">
                     <a href="#" class="btn btn-primary btn-block">Tiempo Transcurrido: 
-                      @if($yearEmployee != 0)
+                      {{-- @if($yearEmployee != 0)
                         {{$this->yearEmployee}} años
                       @endif
                       @if($mouthEmployee != 0)
@@ -51,7 +50,7 @@
                       @endif
                       @if($diasRestante != 0)
                         {{$this->diasRestante}} dias
-                      @endif
+                      @endif --}}
                     </a>
                   </div>
                 </div>

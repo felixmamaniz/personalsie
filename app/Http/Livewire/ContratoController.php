@@ -4,8 +4,8 @@ namespace App\Http\Livewire;
 
 use Livewire\Component;
 use App\Models\Contrato;
+use App\Models\Employee;
 use App\Models\FunctionArea;
-
 use Carbon\Carbon;
 use Livewire\WithFileUploads;
 use Livewire\WithPagination;
@@ -17,16 +17,17 @@ class ContratoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $fechaInicio, $fechaFin, $descripcion, $nota, $funcionid, $salario, $estado, $selected_id;
+    public $employeeid, $fechaInicio, $fechaFin, $descripcion, $salario, $funcionid, $estado, $selected_id;  /*$nota,*/
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
     public function mount(){
         $this -> pageTitle = 'Listado';
         $this -> componentName = 'Contrato';
-        
+        $this->employeeid = 'Elegir';
         $this->estado = 'Elegir';
         $this->funcionid = 'Elegir';
+
         //$this->fechaFin=Carbon::parse(Carbon::now())->format('Y-m-d');
     }
 
@@ -39,13 +40,11 @@ class ContratoController extends Component
     {
         if(strlen($this->search) > 0)
         {
-            $data = Contrato::join('function_areas as fun', 'fun.id', 'contratos.funcion_area_id') // se uno amabas tablas
-            ->select('contratos.*', 'contratos.id as idContrato', 
-                //'fun.name as funcion', 
-                //'contratos.funcion_area_id as funcion_area_id',
-            DB::raw('0 as verificar'))
+            $data = Contrato::join('employees as at', 'at.id', 'contratos.Employee_id')
+            ->join('function_areas as fun', 'fun.id', 'contratos.funcion_id')
+            ->select('contratos.*','at.name as name','fun.name as funcion','contratos.id as idContrato', DB::raw('0 as verificar'))
             ->orderBy('id','desc')
-            ->where('contratos.descripcion', 'like', '%' . $this->search . '%')
+            ->where('at.name', 'like', '%' . $this->search . '%')
             ->paginate($this->pagination);
 
             foreach ($data as $os)
@@ -58,12 +57,10 @@ class ContratoController extends Component
         {
   
  
-   /* Seleccionar los datos de la base de datos y paginarlos. */
-            $data = Contrato::join('function_areas as fun', 'fun.id', 'contratos.funcion_area_id') // se uno amabas tablas
-            ->select('contratos.*', 'contratos.id as idContrato', 
-            //'fun.name as funcion', 
-            //'contratos.funcion_area_id as funcion_area_id',
-            DB::raw('0 as verificar'))
+            /* Seleccionar los datos de la base de datos y paginarlos. */
+            $data = Contrato::join('employees as at', 'at.id', 'contratos.employee_id')
+            ->join('function_areas as fun', 'fun.id', 'contratos.funcion_id')
+            ->select('contratos.*','at.name as name','fun.name as funcion','contratos.id as idContrato',DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
 
@@ -75,9 +72,10 @@ class ContratoController extends Component
         }
 
         return view('livewire.contrato.component', [
-            'contratos' => $data,
-            'funciones' => FunctionArea::orderBy('name', 'asc')->get()
-            ]) // se envia contratos
+                'contratos' => $data, // se envia contratos
+                'empleados' => Employee::orderBy('name', 'asc')->get(),
+                'funciones' => FunctionArea::orderBy('name', 'asc')->get(),
+            ])
         ->extends('layouts.theme.app')
         ->section('content');
     }
@@ -85,32 +83,30 @@ class ContratoController extends Component
     // verificar 
     public function verificar($idContrato)
     {
-        $consulta = Contrato::join('employees as e', 'e.contrato_id', 'contratos.id')
-        ->select('contratos.*')
-        ->where('contratos.id', $idContrato)
-        ->get();
+        $consulta = Contrato::where('contratos.id', $idContrato);
        
         if($consulta->count() > 0)
         {
-            return "no";
+            return "si";
         }
         else
         {
-            return "si";
+            return "no";
         }
     }
 
     // editar 
     public function Edit($id){
-        $record = Contrato::find($id, ['id','fechaInicio', 'fechaFin', 'descripcion', 'nota','funcion_area_id', 'salario','estado']);
+        $record = Contrato::find($id, ['id', 'employee_id', 'fechaInicio', 'fechaFin', 'descripcion', /*'nota',*/ 'salario', 'funcion_id','estado']);
         //dd(\Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d'));
+        $this->employeeid = $record->employee_id;
         $this->fechaInicio = \Carbon\Carbon::parse($record->fechaInicio)->format('Y-m-d');
         $this->fechaFin = \Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d');
         //Carbon::parse(Carbon::now())->format('Y-m-d');
         $this->descripcion = $record->descripcion;
-        $this->nota = $record->nota;
-        $this->funcionid = $record->funcion_area_id;
+        //$this->nota = $record->nota;
         $this->salario = $record->salario;
+        $this->funcionid = $record->funcion_id;
         $this->estado = $record->estado;
         $this->selected_id = $record->id;
 
@@ -119,26 +115,31 @@ class ContratoController extends Component
 
     public function Store(){
         $rules = [
+            'employeeid' => 'required|not_in:Elegir',
             'salario' => 'required',
+            'funcionid' => 'required|not_in:Elegir',
             //'estado' => 'required|not_in:Elegir',
-            'funcionid' => 'required|not_in:Elegir'
         ];
         $messages =  [
+            'employeeid.required' => 'Elija un Empleado',
+            'employeeid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'salario.required' => 'El salario es requerido',
+            'funcionid.required' => 'Elija una Funcion',
+            'funcionid.not_in' => 'Elije una funcion diferente de elegir',
             //'estado.required' => 'seleccione estado de contrato',
             //'estado.not_in' => 'selecciona estado de contrato',
-            'funcionid.not_in' => 'elije un nombre de funcion diferente de elegir',
         ];
 
         $this->validate($rules, $messages);
        
         $contrato = Contrato::create([
+            'employee_id'=>$this->employeeid,
             'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota,
-            'funcion_area_id' => $this->funcionid,
+            //'nota'=>$this->nota,
             'salario'=>$this->salario,
+            'funcion_id'=>$this->funcionid,
             'estado'=>'Activo'
         ]);
 
@@ -149,27 +150,32 @@ class ContratoController extends Component
     // actualizar
     public function Update(){
         $rules = [
+            'employeeid' => 'required|not_in:Elegir',
             'salario' => 'required',
+            'funcionid' => 'required|not_in:Elegir',
             //'estado' => 'required|not_in:Elegir',
-            'funcionid' => 'required|not_in:Elegir'
         ];
 
         $messages = [
+            'employeeid.required' => 'Elija un Empleado',
+            'employeeid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'salario.required' => 'El salario es requerido',
+            'funcionid.required' => 'Elija una Funcion',
+            'funcionid.not_in' => 'Elije una funcion diferente de elegir',
             //'estado.required' => 'seleccione estado de contrato',
             //'estado.not_in' => 'selecciona estado de contrato',
-            'funcionid.not_in' => 'elije un nombre de funcion diferente de elegir',
         ];
         $this->validate($rules,$messages);
 
         $contrato = Contrato::find($this->selected_id);
         $contrato -> update([
+            'employee_id'=>$this->employeeid,
             'fechaInicio'=>$this->fechaInicio,
             'fechaFin'=>$this->fechaFin,
             'descripcion'=>$this->descripcion,
-            'nota'=>$this->nota,
-            'funcion_area_id' => $this->funcionid,
+            //'nota'=>$this->nota,
             'salario'=>$this->salario,
+            'funcion_id'=>$this->funcionid,
             'estado'=>$this->estado
         ]);
 
@@ -178,12 +184,13 @@ class ContratoController extends Component
     }
 
     public function resetUI(){
-        $this->fechaFin='';
+        $this->employeeid='Elegir';
+        $this->fechaInicio='';
         $this->fechaFin='';
         $this->descripcion='';
-        $this->nota='';
-        $this->funcionid='Elegir';
+        //$this->nota='';
         $this->salario='';
+        $this->funcionid='Elegir';
         $this->estado = 'Elegir';
         $this->search='';
         $this->selected_id=0;

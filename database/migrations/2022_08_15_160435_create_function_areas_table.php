@@ -17,7 +17,7 @@ class CreateFunctionAreasTable extends Migration
             $table->id();
 
             $table->string('name',255);
-            $table->string('description',500)->nullable();
+            //$table->string('description',500)->nullable();
 
             /*$table->unsignedBigInteger('area_trabajo_id');
             $table->foreign('area_trabajo_id')->references('id')->on('area_trabajos');*/

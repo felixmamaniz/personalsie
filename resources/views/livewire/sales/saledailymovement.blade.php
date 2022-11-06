@@ -135,7 +135,6 @@
                                         
                                         @endif
                                     </td>
-                                       
                                         <td class="text-right">
                                             {{ ucwords($item->motivo) }}
                                         </td>

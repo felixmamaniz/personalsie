@@ -684,6 +684,16 @@
                     )
             });
 
+
+        //Mostrar Mensaje a ocurrido un error en la venta
+        window.livewire.on('message-error', event => {
+                swal(
+                    '¡A ocurrido un error!',
+                    'Detalle del error'+ @this.mensaje_toast,
+                    'error'
+                    )
+            });
+
         //Cerrar ventana modal finalizar venta y mostrar mensaje toast de venta realizada con éxito
         window.livewire.on('sale-ok', msg => {
             $("#modalfinalizarventa").modal("hide");

@@ -1,11 +1,14 @@
     
     Correcciones
 
-    registro de empleado
+    crea nuevo modal de subarea
+    registro de empleado 
+    contrato -> seleccion multiple de funciones
+    crear una relacion entre cargo y area de trabajo al selecciionar un cargo filtrar areas de trabajo correspondientes
+    corregir delatalle de empleados
     
     compleatdo
     
-    contrato
     Usuario Empleado
     cargos
     area de trabajo

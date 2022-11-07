@@ -14,7 +14,7 @@ class ContratoSeeder extends Seeder
      */
     public function run()
     {
-        Contrato::create([
+        /*Contrato::create([
             //1
             'Employee_id' => 'No definido',
             'fechaInicio' => '2018-01-01 00:00:00',
@@ -24,12 +24,12 @@ class ContratoSeeder extends Seeder
             'salario' => '0',
             'funcion_id' => '3',
             'estado' => 'Activo',
-        ]);
+        ]);*/
 
         // Contrato area Admin
         Contrato::create([
             //2
-            'Employee_id' => 'No definido',
+            'Employee_id' => '8037861',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Edwin',
@@ -40,7 +40,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //3
-            'Employee_id' => 'No definido',
+            'Employee_id' => '5913978',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Yazmin',
@@ -51,7 +51,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //4
-            'Employee_id' => 'No definido',
+            'Employee_id' => '7046351',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Armando',
@@ -62,7 +62,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //5
-            'Employee_id' => 'No definido',
+            'Employee_id' => '8697768',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Angel',
@@ -73,7 +73,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //6
-            'Employee_id' => 'No definido',
+            'Employee_id' => '3',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Rosa',
@@ -84,7 +84,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //7
-            'Employee_id' => 'No definido',
+            'Employee_id' => '4',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Jhonn',
@@ -97,7 +97,7 @@ class ContratoSeeder extends Seeder
         //Contrato Personal tecnico
         Contrato::create([
             //8
-            'Employee_id' => 'No definido',
+            'Employee_id' => '11267379',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Ernesto',
@@ -108,7 +108,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //9
-            'Employee_id' => 'No definido',
+            'Employee_id' => '7861796',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Fabio',
@@ -119,7 +119,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //10
-            'Employee_id' => 'No definido',
+            'Employee_id' => '8770492',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Roger',
@@ -130,7 +130,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //11
-            'Employee_id' => 'No definido',
+            'Employee_id' => '7993972',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Gery',
@@ -141,7 +141,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //12
-            'Employee_id' => 'No definido',
+            'Employee_id' => '12552162',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Gustavo',
@@ -152,7 +152,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //13
-            'Employee_id' => 'No definido',
+            'Employee_id' => '2',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Nadir',
@@ -163,7 +163,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //14
-            'Employee_id' => 'No definido',
+            'Employee_id' => '9326584',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Mauricio',
@@ -174,7 +174,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //15
-            'Employee_id' => 'No definido',
+            'Employee_id' => '13749839',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Joshua',
@@ -185,7 +185,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //16
-            'Employee_id' => 'No definido',
+            'Employee_id' => '8693177',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Branlin',
@@ -196,7 +196,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //17
-            'Employee_id' => 'No definido',
+            'Employee_id' => '9399947',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Rocio',
@@ -207,7 +207,7 @@ class ContratoSeeder extends Seeder
         ]);
         Contrato::create([
             //18
-            'Employee_id' => 'No definido',
+            'Employee_id' => '14263548',
             'fechaInicio' => '2018-01-01 00:00:00',
             'fechaFin' => '2022-09-28 00:00:00',
             'descripcion' => 'Contrato Enzo',
@@ -217,7 +217,7 @@ class ContratoSeeder extends Seeder
             'estado' => 'Activo',
         ]);
 
-        Contrato::create([
+        /*Contrato::create([
             //19
             'Employee_id' => 'No definido',
             'fechaInicio' => '2018-01-01 00:00:00',
@@ -227,6 +227,6 @@ class ContratoSeeder extends Seeder
             'salario' => '1000',
             'funcion_id' => '3',
             'estado' => 'Finalizado',
-        ]);
+        ]);*/
     }
 }

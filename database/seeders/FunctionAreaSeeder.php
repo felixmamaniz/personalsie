@@ -29,5 +29,6 @@ class FunctionAreaSeeder extends Seeder
             // 'description' => 'Tres',
             // 'area_trabajo_id' => 3,
         ]);
+        
     }
 }

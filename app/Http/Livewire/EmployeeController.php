@@ -28,15 +28,9 @@ class EmployeeController extends Component
 
     // Datos de Empleados
     public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $cargoid, $image, $selected_id; /* $contratoid, $fechaInicio,*/
-    public $pageTitle, $componentName, $search; /* , $componentNuevoContrato*/
-    private $pagination = 6;
+    public $pageTitle, $componentName, $search; /*, $componentNuevoContrato*/
+    private $pagination = 12;
 
-    public $anioRestante, $mesesRestante, $diasRestante;
-    public $yearEmployee, $mouthEmployee, $dayEmployee;
-
-    // Datos de Contrato
-    //public $fechaInicio, $fechaFin, $descripcion, $nota, $funcionid, $salario, $estado, $select_contrato_id;
-    
     public function paginationView()
     {
         return 'vendor.livewire.bootstrap';
@@ -45,12 +39,10 @@ class EmployeeController extends Component
     public function mount(){
         $this->pageTitle = 'Listado';
         $this->componentName = 'Empleados';
-        //$this->componentNuevoContrato = 'Nuevo Contrato';
         $this->areaid = 'Elegir';
         $this->cargoid = 'Elegir';
         $this->genero = 'Seleccionar';
         $this->estadoCivil = 'Seleccionar';
-        //$this->contratoid = 'Elegir';
 
         $this->estado = 'Elegir';
         
@@ -62,11 +54,11 @@ class EmployeeController extends Component
         if(strlen($this->search) > 0){
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id') // se uno amabas tablas
             ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
-            //->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.nameArea as area', 'pt.name as cargo', /*'ct.descripcion as contrato',*/ 'employees.id as idEmpleado', DB::raw('0 as verificar'))
+            ->select('employees.*','c.nameArea as area', 'pt.name as cargo', 
+                'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->where('employees.name', 'like', '%' . $this->search . '%')    // busquedas employees
             ->orWhere('employees.ci', 'like', '%' . $this->search . '%')    // busquedas
-            ->orWhere('c.nameArea', 'like', '%' . $this->search . '%')          // busqueda nombre de categoria
+            ->orWhere('c.nameArea', 'like', '%' . $this->search . '%')      // busqueda nombre de categoria
             ->orderBy('employees.created_at', 'desc')
             ->paginate($this->pagination);
 
@@ -79,9 +71,7 @@ class EmployeeController extends Component
         else
             $employ = Employee::join('area_trabajos as c', 'c.id', 'employees.area_trabajo_id')
             ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
-            //->join('contratos as ct', 'ct.id', 'employees.contrato_id')
-            ->select('employees.*','c.nameArea as area','pt.name as cargo', /*'ct.descripcion as contrato',*/ 
-                DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'), 'employees.id as idEmpleado', DB::raw('0 as verificar'))
+            ->select('employees.*','c.nameArea as area','pt.name as cargo', 'employees.id as idEmpleado', DB::raw('0 as verificar'))
             ->orderBy('employees.created_at', 'desc')
             ->paginate($this->pagination);
 
@@ -91,22 +81,10 @@ class EmployeeController extends Component
                 $os->verificar = $this->verificar($os->idEmpleado);
             }
 
-            foreach ($employ as $e)
-            {
-                $e->year = $this->year($e->id);
-                $e->mouth = $this->mouth($e->id);
-                $e->day = $this->day($e->id);
-
-                //$e->yearR = $this->yearR($e->id);
-                //$e->mouthR = $this->yearR($e->id);
-                //$e->dayR = $this->yearR($e->id);
-            }
-
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
             'areas' => AreaTrabajo::orderBy('nameArea', 'asc')->get(),
             'cargos' => Cargo::orderBy('name', 'asc')->get(), // Cargo
-            //'contratos' => Contrato::orderBy('descripcion', 'asc')->get(),
         ])
         ->extends('layouts.theme.app')
         ->section('content');
@@ -128,123 +106,6 @@ class EmployeeController extends Component
         {
             return "si";
         }
-    }
-
-    // TIEMPO TRASCURRIDO
-    // años transcurridos
-    public function year($idUsuario)
-    {
-        $TiempoTranscurrido = 0;
-        $anioInicio = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('Y');
-
-        if($anioInicio != Carbon::parse(Carbon::now())->format('Y'))
-        {
-            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('Y') - $anioInicio;
-        }
-        return $TiempoTranscurrido;
-    }
-
-    // meses transcurridos
-    public function mouth($idUsuario)
-    {
-        $TiempoTranscurrido = 0;
-        $meses = Carbon::parse(Employee::find($idUsuario)->fechaInicio)->format('m');
-         
-        if($meses != Carbon::parse(Carbon::now())->format('m'))
-        {
-            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('m') - $meses;
-            if($TiempoTranscurrido < 0){
-                $TiempoTranscurrido = $TiempoTranscurrido * -1;
-            }
-        }
-        return $TiempoTranscurrido;
-    }
-
-    // dias transcurridos
-    public function day($idUsuario)
-    {
-        $TiempoTranscurrido = 0;
-        $empleado = Employee::find($idUsuario)->first();
-
-        //$empleado->contrato()->first()->fechaInicio; // s
-        //dd($empleado->contrato()->first()->fechaInicio);
-        //dd($empleado);
-        $diasInicio = Carbon::parse($empleado->contrato()->first()->fechaInicio)->format('d');
-        //dd($diasInicio );
-        /*foreach ($empleado as $data) {
-            dd( $data->contrato);
-        }*/
-        
-        if($diasInicio != Carbon::parse(Carbon::now())->format('d'))
-        {
-            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('d') - $diasInicio;
-            if($TiempoTranscurrido < 0){
-                $TiempoTranscurrido = $TiempoTranscurrido * -1;
-            }
-        }
-        //dd($TiempoTranscurrido);
-        return $TiempoTranscurrido;
-    }
-
-    //  TIEMPO RESTANTE
-    // años restantes
-    /*public function yearR($idUsuario)
-    {
-        $tiempoRestante = 0;
-
-        $tiempoR = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
-        ->where('employees.id', $idUsuario)
-        ->get()
-        ->first();
-
-        $aniosR = Carbon::parse($tiempoR->fechafinal)->format('Y');
- 
-        if($aniosR != Carbon::parse(Carbon::now())->format('Y'))
-        {
-            $tiempoRestante = $aniosR - Carbon::parse(Carbon::now())->format('Y');
-        }
-        return $tiempoRestante;
-    }*/
-    
-    // meses restantes
-    public function mouthR($idUsuario)
-    {
-        $tiempoRestante = 0;
-
-        $tiempoR = Employee::join('contratos as ct', 'ct.employee_id', 'employees.id')
-        ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
-        ->where('employees.id', $idUsuario)
-        ->get()
-        ->first();
-
-        $mesesR = Carbon::parse($tiempoR->fechafinal)->format('m');
- 
-        if($mesesR != Carbon::parse(Carbon::now())->format('m'))
-        {
-            $tiempoRestante = $mesesR - Carbon::parse(Carbon::now())->format('m');
-        }
-        return $tiempoRestante;
-    }
-
-    // dias restantes
-    /*public function dayR($idUsuario)
-    {
-        $tiempoRestante = 0;
-
-        $tiempoR = Employee::join('contratos as ct', 'ct.id', 'employees.contrato_id')
-        ->select('employees.id as idEmpleado', 'ct.fechaFin as fechafinal')
-        ->where('employees.id', $idUsuario)
-        ->get()
-        ->first();      // permite tomar solo el primer dato
-
-        $diasR = Carbon::parse($tiempoR->fechafinal)->format('d');
- 
-        if($diasR != Carbon::parse(Carbon::now())->format('d'))
-        {
-            $tiempoRestante = $diasR - Carbon::parse(Carbon::now())->format('d');
-        }
-        return $tiempoRestante;
     }
 
     // Abre el modal de Nuevo empleado
@@ -281,7 +142,6 @@ class EmployeeController extends Component
     {
         $detalle = Employee::join('area_trabajos as at', 'at.id', 'employees.area_trabajo_id')
         ->join('cargos as pt', 'pt.id', 'employees.cargo_id')
-        //->join('contratos as ct', 'ct.id', 'employees.contrato_id')
         ->select('employees.id as idEmpleado',
             'employees.ci',
             'employees.name',
@@ -291,14 +151,9 @@ class EmployeeController extends Component
             'employees.address',
             'employees.phone',
             'employees.estadoCivil',
+            'employees.image',
             'at.nameArea as nombrearea',
             'pt.name as nombrecargo',
-            //'employees.contrato_id',
-            //'employees.fechaInicio',
-            //'ct.fechaFin as fechafinal',
-            //'ct.salario',
-            //'ct.estado',
-            'employees.image',
             )
         ->where('employees.id', $idEmpleado)    // selecciona al empleado
         ->get()
@@ -316,24 +171,7 @@ class EmployeeController extends Component
         $this->estadoCivil = $detalle->estadoCivil;
         $this->areaid = $detalle->nombrearea;
         $this->cargoid = $detalle->nombrecargo;
-        //$this->fechaInicio = $detalle->fechaInicio;
-        //$this->contratoid = $detalle->fechafinal;
-        //$this->salario = $detalle->salario;
-        //$this->estado = $detalle->estado;
         $this->image = $detalle->image;
-
-
-        // tiempo transcurrido
-        /*$this->yearEmployee = $this->year($idEmpleado);
-        $this->mouthEmployee = $this->mouth($idEmpleado);
-        $this->dayEmployee = $this->day($idEmpleado);
-
-        // tiempo restante
-        $this->anioRestante = $this->yearR($idEmpleado);
-        $this->mesesRestante = $this->mouthR($idEmpleado);
-        $this->diasRestante = $this->dayR($idEmpleado);*/
-
-       // dd($this->anioRestante);
     }
 
     // Registro de nuevo Contrato
@@ -607,12 +445,12 @@ class EmployeeController extends Component
         $this->selected_id = 0;
 
         // Datos de contrato
-        $this->fechaFin='';
+        /*$this->fechaFin='';
         $this->descripcion='';
         $this->nota='';
         $this->salario='';
         $this->estado = 'Elegir';
-        $this->select_contrato_id = 0;
+        $this->select_contrato_id = 0;*/
         $this->resetValidation(); // resetValidation para quitar los smg Rojos
     }
     //

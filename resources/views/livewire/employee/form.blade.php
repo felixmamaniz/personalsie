@@ -73,14 +73,13 @@
 
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
-                            <label>Area de Trabajo</label>
-                            <select wire:model="areaid" class="form-control">
-                                <option value="Elegir" disabled>Elegir</option>
-                                @foreach($areas as $area)
-                                <option value="{{$area->id}}">{{$area->nameArea}}</option>
-                                @endforeach
+                            <label>Estado Civil</label>
+                            <select wire:model="estadoCivil" class="form-control">
+                                <option value="Seleccionar" disabled>Elegir</option>
+                                <option value="Soltero" selected>Soltero</option>
+                                <option value="Casado" selected>Casado</option>
                             </select>
-                            @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                            @error('estadoCivil') <span class="text-danger er">{{ $message }}</span> @enderror
                         </div>
                     </div>
 
@@ -99,15 +98,18 @@
 
                     <div class="col-sm-12 col-md-6">
                         <div class="form-group">
-                            <label>Estado Civil</label>
-                            <select wire:model="estadoCivil" class="form-control">
-                                <option value="Seleccionar" disabled>Elegir</option>
-                                <option value="Soltero" selected>Soltero</option>
-                                <option value="Casado" selected>Casado</option>
+                            <label>Area de Trabajo</label>
+                            <select wire:model="areaid" class="form-control">
+                                <option value="Elegir" disabled>Elegir</option>
+                                @foreach($areas as $area)
+                                <option value="{{$area->id}}">{{$area->nameArea}}</option>
+                                @endforeach
                             </select>
-                            @error('estadoCivil') <span class="text-danger er">{{ $message }}</span> @enderror
+                            @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
                     </div>
+
+                    
 
                     {{-- <div class="col-sm-12 col-md-6">
                         <div class="form-group">

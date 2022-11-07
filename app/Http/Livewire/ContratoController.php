@@ -60,7 +60,8 @@ class ContratoController extends Component
             /* Seleccionar los datos de la base de datos y paginarlos. */
             $data = Contrato::join('employees as at', 'at.id', 'contratos.employee_id')
             ->join('function_areas as fun', 'fun.id', 'contratos.funcion_id')
-            ->select('contratos.*','at.name as name','fun.name as funcion','contratos.id as idContrato',DB::raw('0 as verificar'))
+            ->select('contratos.*','at.name as name','fun.name as funcion',
+                DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'),'contratos.id as idContrato',DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
 
@@ -68,6 +69,14 @@ class ContratoController extends Component
             {
                 //Obtener los servicios de la orden de servicio idContrato
                 $os->verificar = $this->verificar($os->idContrato);
+            }
+
+            foreach ($data as $e)
+            {
+                // Tiempo transcurrido
+                $e->year = $this->year($e->id);
+                $e->mouth = $this->mouth($e->id);
+                $e->day = $this->day($e->id);
             }
         }
 
@@ -93,6 +102,58 @@ class ContratoController extends Component
         {
             return "no";
         }
+    }
+
+    // TIEMPO TRASCURRIDO
+    // años transcurridos
+    public function year($id)
+    {
+        $TiempoTranscurrido = 0;
+        $anioInicio = Carbon::parse(Contrato::find($id)->fechaInicio)->format('Y');
+
+        if($anioInicio != Carbon::parse(Carbon::now())->format('Y'))
+        {
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('Y') - $anioInicio;
+        }
+        return $TiempoTranscurrido;
+    }
+
+    // meses transcurridos
+    public function mouth($id)
+    {
+        $TiempoTranscurrido = 0;
+        $meses = Carbon::parse(Contrato::find($id)->fechaInicio)->format('m');
+         
+        if($meses != Carbon::parse(Carbon::now())->format('m'))
+        {
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('m') - $meses;
+            if($TiempoTranscurrido < 0){
+                $TiempoTranscurrido = $TiempoTranscurrido * -1;
+            }
+        }
+        return $TiempoTranscurrido;
+    }
+    // dias transcurridos
+    public function day($id)
+    {
+        // datos de prueba 
+        // 2022-11-04 fecha de inicio 
+        // 2022-11-04 fecha final
+
+        // tiempo transcurrido 3 dias
+        //restante 5 dias
+
+        $TiempoTranscurrido = 0;
+        $meses = Carbon::parse(Contrato::find($id)->fechaInicio)->format('d');
+         
+        if($meses != Carbon::parse(Carbon::now())->format('d'))
+        {
+            $TiempoTranscurrido = Carbon::parse(Carbon::now())->format('d') - $meses;
+            if($TiempoTranscurrido < 0){
+                $TiempoTranscurrido = $TiempoTranscurrido * -1;
+            }
+        }
+        return $TiempoTranscurrido;
     }
 
     // editar 

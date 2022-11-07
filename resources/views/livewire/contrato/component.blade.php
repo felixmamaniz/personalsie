@@ -26,6 +26,7 @@
                                 <th class="table-th text-white">SALARIO</th>
                                 <th class="table-th text-white">FUNCIONES</th>
                                 <th class="table-th text-white text-center">ESTADO</th>
+                                <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>
                                 <th class="table-th text-white text-center">ACCION</th>
                             </tr>
                         </thead>
@@ -45,6 +46,22 @@
                                         text-uppercase">
                                         {{$datos->estado}}
                                     </span>
+                                </td>
+
+                                <td>
+                                    <h6 class="text-center">
+                                        @if($datos->year != 0)
+                                            {{$datos->year}} años
+                                        @endif
+
+                                        @if($datos->mouth != 0)
+                                            {{$datos->mouth}} meses
+                                        @endif
+
+                                        @if($datos->day != 0)
+                                            {{$datos->day}} dias
+                                        @endif
+                                    </h6>
                                 </td>
                                
                                 <td class="text-center">

@@ -5,7 +5,10 @@ namespace App\Http\Livewire;
 use App\Models\Caja;
 use App\Models\Cartera;
 use App\Models\CarteraMov;
+use App\Models\Lote;
 use App\Models\Sale;
+use App\Models\SaleDetail;
+use App\Models\SaleLote;
 use App\Models\Sucursal;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -420,6 +423,7 @@ class SaleDailyMovementController extends Component
 
 
 
+
     
 
 
@@ -433,24 +437,53 @@ class SaleDailyMovementController extends Component
         return $venta;
     }
 
-    //Buscar la utilidad de una venta mediante el idventa
+
+
+
     public function buscarutilidad($idventa)
     {
-        $utilidadventa = Sale::join('sale_details as sd', 'sd.sale_id', 'sales.id')
-        ->join('products as p', 'p.id', 'sd.product_id')
-        ->select('sd.quantity as cantidad','sd.price as precio','p.costo as costoproducto')
-        ->where('sales.id', $idventa)
-        ->get();
+        $auxi = 0;
 
-        $utilidad = 0;
+        $utilidad_total = 0;
 
-        foreach ($utilidadventa as $item)
+        $detalle_venta = SaleDetail::where('sale_id', $idventa)->get();
+        foreach ($detalle_venta as $d) 
         {
-            $utilidad = $utilidad + ($item->cantidad * $item->precio) - ($item->cantidad * $item->costoproducto);
+            $sl = SaleLote::where('sale_detail_id', $d->id)->get();
+            foreach ($sl as $s) 
+            {
+
+                $costo_lote = Lote::where('id', $s->lote_id)->value('costo');
+
+                $auxi = ($d->price * $s->cantidad) - ($costo_lote * $s->cantidad);
+
+                $utilidad_total = $utilidad_total + $auxi;
+            }
         }
 
-        return $utilidad;
+        return $utilidad_total;
     }
+
+
+
+    //Buscar la utilidad de una venta mediante el idventa
+    // public function buscarutilidad($idventa)
+    // {
+    //     $utilidadventa = Sale::join('sale_details as sd', 'sd.sale_id', 'sales.id')
+    //     ->join('products as p', 'p.id', 'sd.product_id')
+    //     ->select('sd.quantity as cantidad','sd.price as precio','p.costo as costoproducto')
+    //     ->where('sales.id', $idventa)
+    //     ->get();
+
+    //     $utilidad = 0;
+
+    //     foreach ($utilidadventa as $item)
+    //     {
+    //         $utilidad = $utilidad + ($item->cantidad * $item->precio) - ($item->cantidad * $item->costoproducto);
+    //     }
+
+    //     return $utilidad;
+    // }
 
     //Buscar caja 
     public function verificar_caja_sucursal($idcaja, $idsucursal)

@@ -207,7 +207,7 @@
                                                 </td>
                                                 <td class="text-right">
                                                     <span class="stamp stamp" style="background-color: #00969b; font-size: 20px; border-radius: 5px;">
-                                                        {{$cg->saldocartera}}
+                                                        {{ number_format($cg->saldocartera, 2, ",", ".")}}
                                                     </span>
                                                 </td>
                                                 <td>
@@ -227,7 +227,7 @@
                                                 </td>
                                                 <td class="text-right">
                                                     <span class="stamp stamp" style="background-color: #5e7074; font-size: 20px; border-radius: 5px;">
-                                                        {{$car->saldocartera}}
+                                                        {{number_format($car->saldocartera, 2, ",", ".")}}
                                                     </span>
                                                 </td>
                                                 <td>

@@ -13,8 +13,8 @@
         <div class="form-group row">
             <label class="col-lg-12">Codigo</label>
            
-                <input type="text" wire:model.lazy="codigo" class="form-control col-lg-6" placeholder="ej: 20202225">
-                <a href="javascript:void(0)" wire:click="GenerateCode()" class="btn btn-info m-0 p-l-0 p-r-0 col-lg-6" title="Generar Codigo">
+                <input type="text" wire:model.lazy="codigo" class="form-control col-lg-4" placeholder="ej: 20202225">
+                <a href="javascript:void(0)" wire:click="GenerateCode()" class="btn btn-info m-0 p-l-0 p-r-0" title="Generar Codigo">
                    <i class="fas fa-barcode"></i> Generar Codigo
                 </a>
         

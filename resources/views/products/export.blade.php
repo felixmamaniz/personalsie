@@ -11,6 +11,7 @@
             <th> SUBCATEGORIA</th>
             <th> CODIGO</th>
             <th> PRECIO VENTA</th>
+            <th> COSTO</th>
             <th> STATUS</th>
          
         </tr>
@@ -56,6 +57,10 @@
                 <td>
                 
                    {{ $products->precio_venta }}
+                </td>
+                <td>
+                
+                   {{ $products->costo }}
                 </td>
              
                 <td>

@@ -10,6 +10,7 @@
                     data-target="#theModal">Agregar</a>
                 </ul>
             </div>
+            {{-- http://talentoreciclaje.blogspot.com/2010/11/areas-y-cargos_18.html --}}
 
             @include('common.searchbox')
 

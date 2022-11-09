@@ -9,13 +9,18 @@
         </div>
     </div>
 
-    {{--<div class="col-sm-12 col-md-6">
+    <div class="col-sm-12 col-md-6">
         <div class="form-group">
-            <label>Nro de Vacantes</label>
-            <input type="text" class="form-control" wire:model.lazy="nrovacantes" placeholder="Ingrese nro de vacante requerido">
+            <label>Areas</label>
+            <select wire:model="areaid" class="form-control">
+                <option value="Elegir" disabled>Elegir</option>
+                @foreach($areas as $area)
+                    <option value="{{$area->id}}">{{$area->nameArea}}</option>
+                @endforeach
+            </select>
+            @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
         </div>
-        @error('nrovacantes') <span class="text-danger er">{{ $message }}</span> @enderror
-    </div>--}}
+    </div>
 
     @if ($selected_id > 1)
         <div class="col-sm-12 col-md-5">

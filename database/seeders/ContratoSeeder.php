@@ -22,7 +22,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Sin Contrato',
             //'nota' => 'null',
             'salario' => '0',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);*/
 
@@ -35,7 +35,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Edwin',
             //'nota' => 'null',
             'salario' => '4000',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -46,7 +46,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Yazmin',
             //'nota' => 'null',
             'salario' => '2500',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -57,7 +57,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Armando',
             //'nota' => 'null',
             'salario' => '2500',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -68,7 +68,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Angel',
             //'nota' => 'null',
             'salario' => '2300',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -79,7 +79,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Rosa',
             //'nota' => 'null',
             'salario' => '1600',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -90,7 +90,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Jhonn',
             //'nota' => 'null',
             'salario' => '1500',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
 
@@ -103,7 +103,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Ernesto',
             //'nota' => 'null',
             'salario' => '2700',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -114,7 +114,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Fabio',
             //'nota' => 'null',
             'salario' => '2500',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -125,7 +125,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Roger',
             //'nota' => 'null',
             'salario' => '2500',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -136,7 +136,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Gery',
             //'nota' => 'null',
             'salario' => '900',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -147,7 +147,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Gustavo',
             //'nota' => 'null',
             'salario' => '2250',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -158,7 +158,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Nadir',
             //'nota' => 'null',
             'salario' => '2300',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -169,7 +169,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Mauricio',
             //'nota' => 'null',
             'salario' => '1300',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -180,7 +180,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Joshua',
             //'nota' => 'null',
             'salario' => '1800',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -191,7 +191,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Branlin',
             //'nota' => 'null',
             'salario' => '1000',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -202,7 +202,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Rocio',
             //'nota' => 'null',
             'salario' => '1000',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
         Contrato::create([
@@ -213,7 +213,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato Enzo',
             //'nota' => 'null',
             'salario' => '1300',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Activo',
         ]);
 
@@ -225,7 +225,7 @@ class ContratoSeeder extends Seeder
             'descripcion' => 'Contrato de Prueba',
             //'nota' => 'Uno',
             'salario' => '1000',
-            'funcion_id' => '3',
+            // 'funcion_id' => '3',
             'estado' => 'Finalizado',
         ]);*/
     }

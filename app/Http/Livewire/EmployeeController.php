@@ -3,8 +3,8 @@
 namespace App\Http\Livewire;
 
 use Livewire\Component;
-use App\Models\AreaTrabajo;
 use App\Models\Cargo;
+use App\Models\AreaTrabajo;
 use App\Models\Employee;
 use Livewire\withPagination;
 use Livewire\withFileUploads;
@@ -27,7 +27,8 @@ class EmployeeController extends Component
     use withFileUploads;
 
     // Datos de Empleados
-    public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $areaid, $cargoid, $image, $selected_id; /* $contratoid, $fechaInicio,*/
+    public $idEmpleado, $ci, $name, $lastname, $genero, $dateNac, $address, $phone, $estadoCivil, $image, $selected_id; /* $contratoid, $fechaInicio,*/
+    public $cargoid = null, $areaid = null, $cargos = null;
     public $pageTitle, $componentName, $search; /*, $componentNuevoContrato*/
     private $pagination = 12;
 
@@ -39,12 +40,12 @@ class EmployeeController extends Component
     public function mount(){
         $this->pageTitle = 'Listado';
         $this->componentName = 'Empleados';
-        $this->areaid = 'Elegir';
-        $this->cargoid = 'Elegir';
+        //$this->areaid = 'Elegir';   // null
+        //$this->cargoid = 'Elegir';  // null
         $this->genero = 'Seleccionar';
         $this->estadoCivil = 'Seleccionar';
 
-        $this->estado = 'Elegir';
+        //$this->estado = 'Elegir';
         
         $this->idEmpleado = 0;
     }
@@ -83,11 +84,18 @@ class EmployeeController extends Component
 
         return view('livewire.employee.component', [
             'data' => $employ,    //se envia data
-            'areas' => AreaTrabajo::orderBy('nameArea', 'asc')->get(),
-            'cargos' => Cargo::orderBy('name', 'asc')->get(), // Cargo
+            //'areas' => AreaTrabajo::orderBy('nameArea', 'asc')->get(),
+            //'cargos' => Cargo::orderBy('name', 'asc')->get(), // Cargo
+
+            'areas' => AreaTrabajo::all()
         ])
         ->extends('layouts.theme.app')
         ->section('content');
+    }
+
+    public function updatedareaid($area_id)
+    {
+        $this->cargos = Cargo::where('area_id',$area_id)->get();
     }
 
     // verificar empleado
@@ -320,8 +328,8 @@ class EmployeeController extends Component
         $this->address = $employee->address;
         $this->phone = $employee->phone;
         $this->estadoCivil = $employee->estadoCivil;
-        $this->areaid = $employee->area_trabajo_id;
         $this->cargoid = $employee->cargo_id;
+        //$this->areaid = $employee->area_trabajo_id;
         //$this->contratoid = $employee->contrato_id;
         //$this->fechaInicio = \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') ;
         $this->image = $employee->null;

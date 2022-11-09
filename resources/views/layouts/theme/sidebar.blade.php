@@ -663,34 +663,33 @@
 											<i class="fa fas fa-minus"></i>
 											Registro</a>
 									  </li>
-								
+									  @can('Reportes_Tigo_Index')
+									  <li>
+										<a href="{{ url('contratos') }}">
+											<i class="fa fas fa-minus"></i>
+											Contrato</a>
+									  </li>
+									  @endcan
 									<li>
 											<a href="{{ url('areas_de_trabajos') }}">
 												<i class="fa fas fa-minus"></i>
 												Areas de Trabajo</a>
 									  </li>
-								  @can('Arqueos_Tigo_Index')
-									  <li>
-										<a href="{{ url('function_areas') }}">
-											<i class="fa fas fa-minus"></i>
-											Funciones</a>
-									  </li>
-								  @endcan
-
-								  @can('Reportes_Tigo_Index')
+									  @can('Reportes_Tigo_Index')
 									  <li>
 										<a href="{{ url('cargos') }}">
 											<i class="fa fas fa-minus"></i>
 											Cargos</a>
 									  </li>
 								  @endcan
-								  @can('Reportes_Tigo_Index')
-								  <li>
-									<a href="{{ url('contratos') }}">
-										<i class="fa fas fa-minus"></i>
-										Contrato</a>
-								  </li>
-								  @endcan
+								  {{-- @can('Arqueos_Tigo_Index')
+									  <li>
+										<a href="{{ url('function_areas') }}">
+											<i class="fa fas fa-minus"></i>
+											Funciones</a>
+									  </li>
+								  @endcan --}}
+
 								  <li>
 									<a href="{{ url('comisiones') }}">
 										<i class="fa fas fa-minus"></i>

@@ -19,15 +19,17 @@
                     <table class="table table-bordered table-bordered-bd-warning striped mt-1" >
                         <thead class="text-white" style="background: #02b1ce">
                             <tr>
-                               <th class="table-th text-white">NOMBRE</th>
-                               <th class="table-th text-white text-center">DESCRIPCION</th>
-                               <th class="table-th text-white text-center">ACTIONS</th>
+                                {{-- <th class="table-th">CARGO</th> --}}
+                                <th class="table-th text-white">NOMBRE</th>
+                                <th class="table-th text-white text-center">DESCRIPCION</th>
+                                <th class="table-th text-white text-center">ACTIONS</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach($areas as $area)
                             <tr>
-                                <td><h6>{{$area->name}}</h6></td>
+                                {{-- <td><h6>{{$area->cargo}}</h6></td> --}}
+                                <td><h6 class="text-center">{{$area->name}}</h6></td>
                                 <td><h6 class="text-center">{{$area->description}}</h6></td>
 
                                 <td class="text-center">

@@ -22,9 +22,8 @@
                                 <th class="table-th text-white">FECHA INICIO</th>
                                 <th class="table-th text-white">FECHA FINAL</th>
                                 <th class="table-th text-white">DESCRIPCION</th>
-                                {{-- <th class="table-th text-white">NOTA</th> --}}
                                 <th class="table-th text-white">SALARIO</th>
-                                <th class="table-th text-white">FUNCIONES</th>
+                                {{-- <th class="table-th text-white">FUNCIONES</th> --}}
                                 <th class="table-th text-white text-center">ESTADO</th>
                                 <th class="table-th text-withe text-center">TIEMPO TRANCURRIDO</th>
                                 <th class="table-th text-white text-center">ACCION</th>
@@ -37,9 +36,8 @@
                                 <td><h6>{{\Carbon\Carbon::parse($datos->fechaInicio)->format('Y-m-d')}}</h6></td>
                                 <td><h6>{{\Carbon\Carbon::parse($datos->fechaFin)->format('Y-m-d')}}</h6></td>
                                 <td><h6>{{$datos->descripcion}}</h6></td>
-                                {{-- <td><h6>{{$datos->nota}}</h6></td> --}}
                                 <td><h6>{{$datos->salario}}</h6></td>
-                                <td><h6>{{$datos->funcion}}</h6></td>
+                                {{-- <td><h6>{{$datos->funcion}}</h6></td> --}}
 
                                 <td class="text-center">
                                     <span class="badge {{$datos->estado == 'Activo' ? 'badge-success' : 'badge-danger'}}

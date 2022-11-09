@@ -54,7 +54,7 @@
         </div>
     </div>
 
-    <div class="col-sm-12 col-md-6">
+    {{-- <div class="col-sm-12 col-md-6">
         <div class="form-group">
             <label>Funciones</label>
             <select wire:model="funcionid" class="form-control">
@@ -65,7 +65,7 @@
             </select>
             @error('funcionid') <span class="text-danger er"> {{ $message }}</span> @enderror
         </div>
-    </div>
+    </div> --}}
 
     @if ($selected_id > 1)
         <div class="col-sm-12 col-md-5">

@@ -12,15 +12,16 @@
             </div>
 
             @include('common.searchbox')
-            
+
             <div class="widget-content">
                 <div class="table-responsive">
                     <table class="table table-bordered table striped mt-1" >
                         <thead class="text-white" style="background: #02b1ce">
                             <tr>
-                               <th class="table-th text-white">ID</th>
+                               {{-- <th class="table-th text-white">ID</th> --}}
                                <th class="table-th text-white">CARGO</th>
-                               {{--<th class="table-th text-white text-center">NRO VACANTES</th>--}}
+                               <th class="table-th text-white text-center">AREA</th>
+                               <th class="table-th text-white text-center">FUNCIONES</th>
                                <th class="table-th text-white text-center">ESTADO</th>
                                <th class="table-th text-white text-center">ACTIONS</th> 
                             </tr>
@@ -28,10 +29,18 @@
                         <tbody>
                             @foreach($cargos as $cargo)
                             <tr>
-                                <td><h6>{{$cargo->idcargo}}</h6></td>
+                                {{-- <td><h6>{{$cargo->idcargo}}</h6></td> --}}
                                 <td><h6>{{$cargo->name}}</h6></td>
-                                {{--<td><h6 class="text-center">{{$cargo->nrovacantes}}</h6></td>--}}
-                                
+                                <td><h6 class="text-center">{{$cargo->area}}</h6></td>
+
+                                <td><h6 class="text-center">
+                                    <a href="javascript:void(0)"
+                                        wire:click="NuevaVFuncion()" 
+                                        class="btn btn-warning close-btn text-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </h6></td>
+
                                 <td class="text-center">
                                     <span class="badge {{$cargo->estado == 'Disponible' ? 'badge-success' : 'badge-danger'}}
                                         text-uppercase">
@@ -44,6 +53,12 @@
                                         wire:click="Edit({{$cargo->idcargo}})"
                                         class="btn btn-dark mtmobile" title="Edit">
                                         <i class="fas fa-edit"></i>
+                                    </a>
+
+                                    <a href="javascript:void(0)"
+                                        wire:click="NuevoFuncion()" 
+                                        class="btn btn-warning close-btn text-info">
+                                        <i class="fas fa-plus-circle"></i>
                                     </a>
 
                                     <a onclick="Confirmar1({{$cargo->idcargo}},'{{$cargo->verificar}}')" 
@@ -62,6 +77,8 @@
         </div>
     </div>
     @include('livewire.cargo.form')
+    @include('livewire.cargo.nuevaFuncion')
+    @include('livewire.cargo.VistaFunciones')
 </div>
 
 @section('javascript')
@@ -79,6 +96,25 @@
         window.livewire.on('cargo-updated', msg=>{
             $('#theModal').modal('hide')
         });
+
+        // Fomrmulario de nueva funcion
+        window.livewire.on('show-modal-funcion', Msg => {
+            $('#theModal-funcion').modal('show')
+        })
+        window.livewire.on('modal-hide', msg => {
+            $('#theModal').modal('hide')
+        });
+        window.livewire.on('modal-hide-funcion', Msg => {
+            $('#theModal-funcion').modal('hide')
+        })
+        window.livewire.on('hidden.bs.modal', msg => {
+            $('.er').css('display','none')
+        });
+
+        // Formulario Vista de Funciones
+        window.livewire.on('show-modal-Vfuncion', Msg => {
+            $('#theModal-Vfuncion').modal('show')
+        })
     });
 
     function Confirmar1(id, verificar)

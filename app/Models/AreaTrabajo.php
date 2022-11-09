@@ -10,11 +10,11 @@ class AreaTrabajo extends Model
     use HasFactory;
     protected $fillable = ['nameArea', 'descriptionArea'];
 
-    public function employee(){
-        return $this->hasMany(Employee::class);
-    }
+    // public function employee(){
+    //     return $this->hasMany(Employee::class);
+    // }
 
-    public function functionArea(){
-        return $this->hasMany(FunctionArea::class);
-    }
+    // public function functionArea(){
+    //     return $this->hasMany(Cargo::class);
+    // }
 }

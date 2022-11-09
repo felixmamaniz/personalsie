@@ -15,7 +15,7 @@ class Contrato extends Model
         'descripcion',
         /*'nota',*/
         'salario',
-        'funcion_id',
+        //'funcion_id',
         'estado'
     ];
 }

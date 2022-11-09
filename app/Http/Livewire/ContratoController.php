@@ -17,7 +17,7 @@ class ContratoController extends Component
     use WithFileUploads;
     use WithPagination;
 
-    public $employeeid, $fechaInicio, $fechaFin, $descripcion, $salario, $funcionid, $estado, $selected_id;  /*$nota,*/
+    public $employeeid, $fechaInicio, $fechaFin, $descripcion, $salario, $estado, $selected_id;  /*$nota, $funcionid, */
     public $pageTitle, $componentName, $search;
     private $pagination = 10;
 
@@ -26,7 +26,7 @@ class ContratoController extends Component
         $this -> componentName = 'Contrato';
         $this->employeeid = 'Elegir';
         $this->estado = 'Elegir';
-        $this->funcionid = 'Elegir';
+        //$this->funcionid = 'Elegir';
 
         //$this->fechaFin=Carbon::parse(Carbon::now())->format('Y-m-d');
     }
@@ -41,8 +41,8 @@ class ContratoController extends Component
         if(strlen($this->search) > 0)
         {
             $data = Contrato::join('employees as at', 'at.id', 'contratos.Employee_id')
-            ->join('function_areas as fun', 'fun.id', 'contratos.funcion_id')
-            ->select('contratos.*','at.name as name','fun.name as funcion','contratos.id as idContrato', DB::raw('0 as verificar'))
+            //->join('function_areas as fun', 'fun.id', 'contratos.funcion_id')
+            ->select('contratos.*','at.name as name','contratos.id as idContrato', DB::raw('0 as verificar')) // ,'fun.name as funcion'
             ->orderBy('id','desc')
             ->where('at.name', 'like', '%' . $this->search . '%')
             ->paginate($this->pagination);
@@ -59,8 +59,8 @@ class ContratoController extends Component
  
             /* Seleccionar los datos de la base de datos y paginarlos. */
             $data = Contrato::join('employees as at', 'at.id', 'contratos.employee_id')
-            ->join('function_areas as fun', 'fun.id', 'contratos.funcion_id')
-            ->select('contratos.*','at.name as name','fun.name as funcion',
+            //->join('function_areas as fun', 'fun.id', 'contratos.funcion_id') ,'fun.name as funcion'
+            ->select('contratos.*','at.name as name',
                 DB::raw('0 as year'), DB::raw('0 as mouth'), DB::raw('0 as day'),'contratos.id as idContrato',DB::raw('0 as verificar'))
             ->orderBy('id','desc')
             ->paginate($this->pagination);
@@ -83,7 +83,7 @@ class ContratoController extends Component
         return view('livewire.contrato.component', [
                 'contratos' => $data, // se envia contratos
                 'empleados' => Employee::orderBy('name', 'asc')->get(),
-                'funciones' => FunctionArea::orderBy('name', 'asc')->get(),
+                //'funciones' => FunctionArea::orderBy('name', 'asc')->get(),
             ])
         ->extends('layouts.theme.app')
         ->section('content');
@@ -158,7 +158,7 @@ class ContratoController extends Component
 
     // editar 
     public function Edit($id){
-        $record = Contrato::find($id, ['id', 'employee_id', 'fechaInicio', 'fechaFin', 'descripcion', /*'nota',*/ 'salario', 'funcion_id','estado']);
+        $record = Contrato::find($id, ['id', 'employee_id', 'fechaInicio', 'fechaFin', 'descripcion', /*'nota',*/ 'salario', /*'funcion_id',*/'estado']);
         //dd(\Carbon\Carbon::parse($record->fechaFin)->format('Y-m-d'));
         $this->employeeid = $record->employee_id;
         $this->fechaInicio = \Carbon\Carbon::parse($record->fechaInicio)->format('Y-m-d');
@@ -167,7 +167,7 @@ class ContratoController extends Component
         $this->descripcion = $record->descripcion;
         //$this->nota = $record->nota;
         $this->salario = $record->salario;
-        $this->funcionid = $record->funcion_id;
+        //$this->funcionid = $record->funcion_id;
         $this->estado = $record->estado;
         $this->selected_id = $record->id;
 
@@ -178,15 +178,15 @@ class ContratoController extends Component
         $rules = [
             'employeeid' => 'required|not_in:Elegir',
             'salario' => 'required',
-            'funcionid' => 'required|not_in:Elegir',
+            //'funcionid' => 'required|not_in:Elegir',
             //'estado' => 'required|not_in:Elegir',
         ];
         $messages =  [
             'employeeid.required' => 'Elija un Empleado',
             'employeeid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'salario.required' => 'El salario es requerido',
-            'funcionid.required' => 'Elija una Funcion',
-            'funcionid.not_in' => 'Elije una funcion diferente de elegir',
+            //'funcionid.required' => 'Elija una Funcion',
+            //'funcionid.not_in' => 'Elije una funcion diferente de elegir',
             //'estado.required' => 'seleccione estado de contrato',
             //'estado.not_in' => 'selecciona estado de contrato',
         ];
@@ -200,7 +200,7 @@ class ContratoController extends Component
             'descripcion'=>$this->descripcion,
             //'nota'=>$this->nota,
             'salario'=>$this->salario,
-            'funcion_id'=>$this->funcionid,
+            //'funcion_id'=>$this->funcionid,
             'estado'=>'Activo'
         ]);
 
@@ -213,7 +213,7 @@ class ContratoController extends Component
         $rules = [
             'employeeid' => 'required|not_in:Elegir',
             'salario' => 'required',
-            'funcionid' => 'required|not_in:Elegir',
+            //'funcionid' => 'required|not_in:Elegir',
             //'estado' => 'required|not_in:Elegir',
         ];
 
@@ -221,8 +221,8 @@ class ContratoController extends Component
             'employeeid.required' => 'Elija un Empleado',
             'employeeid.not_in' => 'Elije un nombre de empleado diferente de elegir',
             'salario.required' => 'El salario es requerido',
-            'funcionid.required' => 'Elija una Funcion',
-            'funcionid.not_in' => 'Elije una funcion diferente de elegir',
+            //'funcionid.required' => 'Elija una Funcion',
+            //'funcionid.not_in' => 'Elije una funcion diferente de elegir',
             //'estado.required' => 'seleccione estado de contrato',
             //'estado.not_in' => 'selecciona estado de contrato',
         ];
@@ -236,7 +236,7 @@ class ContratoController extends Component
             'descripcion'=>$this->descripcion,
             //'nota'=>$this->nota,
             'salario'=>$this->salario,
-            'funcion_id'=>$this->funcionid,
+            //'funcion_id'=>$this->funcionid,
             'estado'=>$this->estado
         ]);
 
@@ -251,7 +251,7 @@ class ContratoController extends Component
         $this->descripcion='';
         //$this->nota='';
         $this->salario='';
-        $this->funcionid='Elegir';
+        //$this->funcionid='Elegir';
         $this->estado = 'Elegir';
         $this->search='';
         $this->selected_id=0;

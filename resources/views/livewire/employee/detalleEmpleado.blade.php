@@ -151,12 +151,12 @@
                   <span class="status-specification">{{$estadoCivil}}</span>
                 </li>
                 <li>
-                  <span class="name-specification">AREA</span>
-                  <span class="status-specification">{{$areaid}}</span>
-                </li>
-                <li>
                   <span class="name-specification">CARGO</span>
                   <span class="status-specification">{{$cargoid}}</span>
+                </li>
+                <li>
+                  <span class="name-specification">AREA</span>
+                  <span class="status-specification">{{$areaid}}</span>
                 </li>
               </ul>
             </div>

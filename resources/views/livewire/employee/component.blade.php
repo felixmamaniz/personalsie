@@ -8,7 +8,6 @@
                 <ul class="tabs tab-pills">
                     <a href="javascript:void(0)" class="btn btn-warning" wire:click="NuevoEmpleado()">Agregar</a>
                 </ul>
-
                {{-- <h6>{{ date('Y-m-d H:i:s') }}</h6>   muestra hora de sistema--}}
             </div>
             @include('common.searchbox')
@@ -22,10 +21,10 @@
                                 <th class="table-th text-withe text-center">APELLIDOS</th>
                                 <th class="table-th text-withe text-center">CI</th>
                                 <th class="table-th text-withe text-center">TELEFONO</th>
-                                <th class="table-th text-withe text-center">FECHA DE REGISTRO</th>
                                 <th class="table-th text-withe text-center">AREA</th>
                                 <th class="table-th text-withe text-center">CARGO</th>
                                 <th class="table-th text-white text-center">IMAGEN</th>
+                                <th class="table-th text-withe text-center">FECHA DE REGISTRO</th>
                                 <th class="table-th text-withe text-center">ACCIONES</th>
                             </tr>
                         </thead>
@@ -43,7 +42,6 @@
                                     </td>--}}
                                     <td><h6 class="text-center">{{ $employee->phone }}</h6></td>
 
-                                    <td><h6 class="text-center">{{\Carbon\Carbon::parse($employee->created_at)->format('Y-m-d')}}</h6></td>
                                     {{-- <td><h6 class="text-center">Sin Tiempo trascurrido</h6></td> --}}
                                     {{-- <td><h6 class="text-center">{{ \Carbon\Carbon::parse($employee->fechaInicio)->format('Y-m-d') }}</h6></td> --}}
 
@@ -61,7 +59,6 @@
                                             {{-- @endif --}}
                                         {{-- </h6>
                                     </td> --}}
-
                                     <td><h6 class="text-center">{{ $employee->area }}</h6></td>
                                     <td><h6 class="text-center">{{ $employee->cargo}}</h6></td>
 
@@ -71,6 +68,8 @@
                                              alt="Sin Imagen" height="70" width="80" class="rounded">
                                         </span>
                                     </td>
+
+                                    <td><h6 class="text-center">{{\Carbon\Carbon::parse($employee->created_at)->format('Y-m-d')}}</h6></td>
 
                                     <td class="text-center">
                                         <div class="btn-group" role="group" aria-label="Basic mixed styles example">

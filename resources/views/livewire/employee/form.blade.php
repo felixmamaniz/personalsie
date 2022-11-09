@@ -83,20 +83,7 @@
                         </div>
                     </div>
 
-                    <div class="col-sm-12 col-md-6">
-                        <div class="form-group">
-                            <label>Cargo</label>
-                            <select wire:model="cargoid" class="form-control">
-                                <option value="Elegir" disabled>Elegir</option>
-                                @foreach($cargos as $cargo)
-                                    <option value="{{$cargo->id}}">{{$cargo->name}}</option>
-                                @endforeach
-                            </select>
-                            @error('cargoid') <span class="text-danger er"> {{ $message }}</span> @enderror
-                        </div>
-                    </div>
-
-                    <div class="col-sm-12 col-md-6">
+                    {{-- <div class="col-sm-12 col-md-6">
                         <div class="form-group">
                             <label>Area de Trabajo</label>
                             <select wire:model="areaid" class="form-control">
@@ -107,8 +94,48 @@
                             </select>
                             @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
                         </div>
+                    </div> --}}
+
+                    
+                    <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label>Area de Trabajo</label>
+                            <select wire:model="areaid" class="form-control">
+                                <option value="" >Elegir</option>
+                                @foreach($areas as $area)
+                                <option value="{{$area->id}}">{{$area->nameArea}}</option>
+                                @endforeach
+                            </select>
+                            @error('areaid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                        </div>
                     </div>
 
+                    {{-- <div class="col-sm-12 col-md-6">
+                        <div class="form-group">
+                            <label>Cargo</label>
+                            <select wire:model="cargoid" class="form-control">
+                                <option value="Elegir" disabled>Elegir</option>
+                                @foreach($cargos as $cargo)
+                                    <option value="{{$cargo->id}}">{{$cargo->name}}</option>
+                                @endforeach
+                            </select>
+                            @error('cargoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                        </div>
+                    </div> --}}
+                    @if (!is_null($cargos))
+                        <div class="col-sm-12 col-md-6">
+                            <div class="form-group">
+                                <label>Cargo</label>
+                                <select wire:model="cargoid" class="form-control">
+                                    <option value="">Elegir</option>
+                                    @foreach($cargos as $cargo)
+                                        <option value="{{$cargo->id}}">{{$cargo->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('cargoid') <span class="text-danger er"> {{ $message }}</span> @enderror
+                            </div>
+                        </div>
+                    @endif
                     
 
                     {{-- <div class="col-sm-12 col-md-6">

@@ -27,7 +27,7 @@ class ContratoController extends Component
         $this->employeeid = 'Elegir';
         $this->estado = 'Elegir';
         //$this->funcionid = 'Elegir';
-
+        // prueba
         //$this->fechaFin=Carbon::parse(Carbon::now())->format('Y-m-d');
     }
 
